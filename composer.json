@@ -35,13 +35,12 @@
     "league/plates": "^3.3",
     "league/route": "^4.2",
     "league/uri": "^5.2",
-    "minishlink/web-push": "^4.0",
     "presstify/framework": "1.4.*",
     "symfony/filesystem": "^3.3",
     "symfony/finder": "^4.0",
     "symfony/http-foundation": "^4.0",
     "symfony/psr-http-message-bridge": "^1.0",
-    "zendframework/zend-diactoros": "^1.7",
+    "zendframework/zend-diactoros": "^2.1",
     "zendframework/zend-httphandlerrunner": "^1.0"
   },
   "autoload": {
