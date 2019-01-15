@@ -8,7 +8,7 @@ use tiFy\Kernel\KernelServiceProvider;
 use tiFy\Routing\RoutingServiceProvider;
 use tiFy\Wp\WpServiceProvider;
 
-class Tify14 extends Container implements tiFy
+class Bridge extends Container implements tiFy
 {
     /**
      * Instance statique de l'instance de l'application.

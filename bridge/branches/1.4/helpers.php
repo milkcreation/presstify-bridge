@@ -1,6 +1,6 @@
 <?php
 
-use tiFy\Tify12;
+use tiFy\Bridge;
 use tiFy\Contracts\Kernel\Request;
 use tiFy\Contracts\Kernel\ParamsBag;
 use tiFy\Routing\Router;
@@ -9,11 +9,11 @@ if (!function_exists('app')) :
     /**
      * Instance du controleur de l'application.
      *
-     * @return Tify12
+     * @return Bridge
      */
     function app()
     {
-        return Tify12::instance();
+        return Bridge::instance();
     }
 endif;
 
