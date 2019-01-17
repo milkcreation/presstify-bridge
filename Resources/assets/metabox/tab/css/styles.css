@@ -1,0 +1,608 @@
+/**
+ * BOOTSTRAP NAV CSS
+ */
+.nav {
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.nav > li {
+    position: relative;
+    display: block;
+}
+
+.nav > li > a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+    text-decoration: none;
+    background-color: #eeeeee;
+}
+
+.nav > li.disabled > a {
+    color: #777777;
+}
+
+.nav > li.disabled > a:hover,
+.nav > li.disabled > a:focus {
+    color: #777777;
+    text-decoration: none;
+    background-color: transparent;
+    cursor: not-allowed;
+}
+
+.nav .open > a,
+.nav .open > a:hover,
+.nav .open > a:focus {
+    background-color: #eeeeee;
+    border-color: #337ab7;
+}
+
+.nav .nav-divider {
+    height: 1px;
+    margin: 9px 0;
+    overflow: hidden;
+    background-color: #e5e5e5;
+}
+
+.nav > li > a > img {
+    max-width: none;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #dddddd;
+}
+
+.nav-tabs > li {
+    float: left;
+    margin-bottom: -1px;
+}
+
+.nav-tabs > li > a {
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+}
+
+.nav-tabs > li > a:hover {
+    border-color: #eeeeee #eeeeee #dddddd;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+    color: #555555;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-bottom-color: transparent;
+    cursor: default;
+}
+
+.nav-tabs.nav-justified {
+    width: 100%;
+    border-bottom: 0;
+}
+
+.nav-tabs.nav-justified > li {
+    float: none;
+}
+
+.nav-tabs.nav-justified > li > a {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.nav-tabs.nav-justified > .dropdown .dropdown-menu {
+    top: auto;
+    left: auto;
+}
+
+@media (min-width: 768px) {
+    .nav-tabs.nav-justified > li {
+        display: table-cell;
+        width: 1%;
+    }
+
+    .nav-tabs.nav-justified > li > a {
+        margin-bottom: 0;
+    }
+}
+
+.nav-tabs.nav-justified > li > a {
+    margin-right: 0;
+    border-radius: 4px;
+}
+
+.nav-tabs.nav-justified > .active > a,
+.nav-tabs.nav-justified > .active > a:hover,
+.nav-tabs.nav-justified > .active > a:focus {
+    border: 1px solid #dddddd;
+}
+
+@media (min-width: 768px) {
+    .nav-tabs.nav-justified > li > a {
+        border-bottom: 1px solid #dddddd;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .nav-tabs.nav-justified > .active > a,
+    .nav-tabs.nav-justified > .active > a:hover,
+    .nav-tabs.nav-justified > .active > a:focus {
+        border-bottom-color: #ffffff;
+    }
+}
+
+.nav-pills > li {
+    float: left;
+}
+
+.nav-pills > li > a {
+    border-radius: 4px;
+}
+
+.nav-pills > li + li {
+    margin-left: 2px;
+}
+
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+    color: #ffffff;
+    background-color: #337ab7;
+}
+
+.nav-stacked > li {
+    float: none;
+}
+
+.nav-stacked > li + li {
+    margin-top: 2px;
+    margin-left: 0;
+}
+
+.nav-justified {
+    width: 100%;
+}
+
+.nav-justified > li {
+    float: none;
+}
+
+.nav-justified > li > a {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.nav-justified > .dropdown .dropdown-menu {
+    top: auto;
+    left: auto;
+}
+
+@media (min-width: 768px) {
+    .nav-justified > li {
+        display: table-cell;
+        width: 1%;
+    }
+
+    .nav-justified > li > a {
+        margin-bottom: 0;
+    }
+}
+
+.nav-tabs-justified {
+    border-bottom: 0;
+}
+
+.nav-tabs-justified > li > a {
+    margin-right: 0;
+    border-radius: 4px;
+}
+
+.nav-tabs-justified > .active > a,
+.nav-tabs-justified > .active > a:hover,
+.nav-tabs-justified > .active > a:focus {
+    border: 1px solid #dddddd;
+}
+
+@media (min-width: 768px) {
+    .nav-tabs-justified > li > a {
+        border-bottom: 1px solid #dddddd;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .nav-tabs-justified > .active > a,
+    .nav-tabs-justified > .active > a:hover,
+    .nav-tabs-justified > .active > a:focus {
+        border-bottom-color: #ffffff;
+    }
+}
+
+.tab-content > .tab-pane {
+    display: none;
+}
+
+.tab-content > .active {
+    display: block;
+}
+
+/**
+ * PERSONNALISATION
+ */
+#post-body #normal-sortables {
+    min-height:0;
+}
+
+.MetaboxTab-container {
+    margin-bottom: 30px;
+}
+
+.MetaboxTab-containerHeader {
+    margin: 0;
+    padding: 8px 12px;
+
+    font-size: 14px;
+    line-height: 1.4;
+    background-color: #FFF;
+    border-color: #DFDFDF;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.MetaboxTab-wrapper {
+    position: relative;
+    display: block;
+
+    background-color: #F9F9F9;
+    border-style: none solid solid;
+    border-width: 0 1px 1px;
+    border-color: #DFDFDF;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.MetaboxTab-wrapperBack {
+    position: absolute;
+    top: 0;
+    left: 146px;
+    bottom: 0;
+    right: 0;
+    margin-top: 40px;
+
+    background-color: #FFF;
+    border-width: 0 1px 0 1px;
+    border-style: solid;
+    border-color: #DDD;
+    border-right-width: 0;
+    -webkit-border-bottom-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.MetaboxTab-wrapperContent {
+    position: relative;
+    margin: 0 -4px 0 0;
+    padding: 0;
+    overflow: auto;
+}
+
+.MetaboxTab-wrapperContent .nav::before,
+.MetaboxTab-wrapperContent .nav::after {
+    display: table;
+    content: '';
+}
+
+.MetaboxTab-wrapperContent .nav::after {
+    clear: both;
+}
+
+.MetaboxTab-wrapperContent .nav {
+    margin: -10px -10px 0;
+}
+
+.MetaboxTab-wrapperContent .tiFyPartial-NavtabsNavItem > a {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 8px 15px 14px;
+
+    text-decoration: none;
+    outline: none;
+
+    border-style: solid;
+    border-color: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.MetaboxTab-wrapperContent .nav-stacked {
+    margin: 39px 0;
+    width: 150px;
+}
+
+.MetaboxTab-wrapperContent .nav-stacked .tiFyPartial-NavtabsNavItem {
+    margin: 0;
+}
+
+.MetaboxTab-wrapperContent .nav-stacked .tiFyPartial-NavtabsNavItem > a {
+    z-index: 3;
+    margin-right: 3px;
+    padding: 10px 15px;
+    overflow: hidden;
+    text-decoration: none;
+    border-width: 1px 0px 1px 4px;
+}
+
+.MetaboxTab-wrapperContent .nav-stacked .tiFyPartial-NavtabsNavItem.active > a,
+.MetaboxTab-wrapperContent .nav-stacked .tiFyPartial-NavtabsNavItem.active > a:hover {
+    border-color: #DDD transparent #DDD #0974A8;
+    *border-right-color: #FFF;
+    background-color: #FFF;
+    color: #555;
+}
+
+.MetaboxTab-wrapperContent .nav-tabs {
+    background-color: #F9F9F9;
+    margin-left: -11px;
+}
+
+.MetaboxTab-wrapperContent .nav-tabs .tiFyPartial-NavtabsNavItem > a {
+    border-radius: 0;
+    border-width: 4px 1px 0px 1px;
+    margin-bottom: -4px;
+}
+
+.MetaboxTab-wrapperContent .nav-tabs .tiFyPartial-NavtabsNavItem.active > a,
+.MetaboxTab-wrapperContent .nav-tabs .tiFyPartial-NavtabsNavItem.active > a:hover {
+    border-width: 4px 1px 0px 1px;
+    border-color: #0974A8 #DDD transparent #DDD;
+    *border-bottom-color: #FFF;
+}
+
+.MetaboxTab-wrapperContent .nav-pills {
+    padding: 10px;
+    background-color: #FFF;
+}
+
+.MetaboxTab-wrapperContent .nav-pills .tiFyPartial-NavtabsNavItem > a {
+    background-color: #FFF;
+    border-radius: 0;
+    border-width: 0px 0px 4px 0px;
+}
+
+.MetaboxTab-wrapperContent .nav-pills .tiFyPartial-NavtabsNavItem.active > a,
+.MetaboxTab-wrapperContent .nav-pills .tiFyPartial-NavtabsNavItem.active > a:hover {
+    background-color: #FFF;
+    color: #555;
+    border-color: transparent transparent #0974A8 transparent;
+    border-width: 0px 0px 4px 0px;
+}
+
+.MetaboxTab-wrapperContent .tab-content > .tab-pane {
+    position: relative;
+    z-index: 2;
+    margin-right: 4px;
+    margin-left: -4px;
+    padding: 10px 10px 30px;
+
+    background-color: #FFF;
+    border-left: 1px #DDD solid;
+}
+
+.MetaboxTab-wrapperContent .tab-content > .tab-pane .tab-pane {
+    margin-left: -11px;
+}
+
+#poststuff .MetaboxTab-container .tab-content > .tab-pane > h3,
+.MetaboxTab-container .tab-content > .tab-pane > h3,
+.MetaboxTab-container .tab-content > .tab-pane .section_title {
+    display: block;
+    font-size: 16px !important;
+    padding: 8px 0 5px !important;
+    border-bottom: solid 1px #E4E4E4;
+    margin: 10px 0 !important;
+    color: #0074a2;
+    font-weight: 400;
+}
+
+/**
+ * @deprecated
+ */
+.tiFyTaboox-TotemList,
+.tiFyTaboox-TotemList > * {
+    box-sizing: border-box;
+}
+
+.tiFyTaboox-TotemList::before,
+.tiFyTaboox-TotemList::after {
+    display: table;
+    content: "";
+}
+
+.tiFyTaboox-TotemList::after {
+    clear: both;
+}
+
+.tiFyTaboox-TotemList {
+    margin-left: -10px;
+    margin-right: -10px;
+}
+
+.tiFyTaboox-TotemListItem {
+    float: left;
+    width: 25%;
+    padding-right: 10px;
+    padding-left: 10px;
+    overflow: hidden;
+}
+
+.tiFyTaboox-TotemListItem:nth-child(4n+1) {
+    clear: both;
+}
+
+.tiFyTaboox-TotemListItemWrapper {
+    position: relative;
+    border: solid 1px #DDD;
+    background-color: #F4F4F4;
+    height: 280px;
+    padding: 10px;
+}
+
+.tiFyTaboox-TotemListItemWrapperThumbnail {
+    max-width: 100%;
+    max-height: 150px;
+    min-width: 150px;
+    min-height: 150px;
+    height: auto;
+    display: block;
+    margin: 0 auto 10px;
+    background-color: #CCC;
+    border: solid 1px #DDD;
+    object-fit: cover;
+}
+
+.tiFyTaboox-TotemListItemWrapperTitle {
+    text-transform: uppercase;
+    margin: 5px 0 10px;
+    text-align: center;
+    line-height: 1.2em;
+    font-size: 14px;
+    height: 2.4em;
+}
+
+.tiFyTaboox-TotemList--sortable .MetaboxTab-TotemListItem {
+    cursor: move;
+}
+
+.tiFyTaboox-TotemListItem--sortablePlaceholder {
+    float: left;
+    width: 25%;
+    display: block;
+    background-color: #F4F4F4;
+    border: dashed 2px #CCC;
+}
+
+.tiFyTaboox-TotemListItem--sortablePlaceholder {
+    height: 300px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/**
+ * @TODO
+ */
+.MetaboxTab-container .ui-sortable-placeholder {
+    visibility: visible !important;
+}
+
+/** Module de galerie d'images */
+/** Images */
+.MetaboxTab-container .thumb-list {
+    margin: 0;
+    padding: 10px;
+    list-style-type: none;
+    margin-top: 20px;
+    margin-left: -10px;
+    overflow: hidden;
+}
+
+.MetaboxTab-container .thumb-list li {
+    position: relative;
+    float: left;
+    margin: 0;
+    padding: 0;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    padding: 10px 10px 25px;
+    border: solid 1px #E4E4E4;
+    background-color: #F4F4F4;
+    cursor: move;
+    text-align: center;
+    min-height: 150px;
+}
+
+.MetaboxTab-container .thumb-list li img {
+    display: inline-block;
+    margin-bottom: 5px;
+    border: solid 1px #DDD;
+}
+
+.MetaboxTab-container .thumb-list li h4 {
+    margin: 5px 0;
+    height: 2.4em;
+    overflow: hidden;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+}
+
+.MetaboxTab-container .thumb-list .ui-sortable-placeholder {
+    min-width: 150px;
+    min-height: 130px;
+    border: dashed 3px #E4E4E4;
+    background: #F4F4F4;
+}
+
+.MetaboxTab-container .thumb-list .order {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    font-size: 0.8em;
+    text-align: center;
+    padding: 0.1em;
+}
+
+.MetaboxTab-container .thumb-list .post_status {
+    position: absolute;
+    bottom: 0px;
+    left: 10px;
+    font-size: 0.9em;
+    color: #0074A2;
+}
+
+/** Zone d'ajout de vignette */
+.MetaboxTab-container .add-thumb-area-150 {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border: dashed 3px #E4E4E4;
+    background: #F4F4F4;
+
+    vertical-align: middle;
+}
+
+.MetaboxTab-container .add-thumb-area-150 a.add {
+    position: absolute;
+    display: block;
+    color: #666;
+    margin: 0;
+    padding: 70px 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1em;
+}
+
+.MetaboxTab-container .add-thumb-area-150 img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150px;
+    height: 150px;
+    z-index: 2;
+}
+
+.MetaboxTab-container .add-thumb-area-150 a.remove {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 3;
+    display: none;
+}
+
+.MetaboxTab-container .add-thumb-area-150:hover a.remove {
+    display: block;
+}
