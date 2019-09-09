@@ -1,0 +1,7 @@
+[data-control="pdf-preview.page"] {
+  display: none;
+}
+
+[data-control="pdf-preview.page"][aria-visible="true"] {
+  display: inline-block;
+}
