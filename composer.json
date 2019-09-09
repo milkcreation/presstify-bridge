@@ -59,7 +59,6 @@
     "redeyeventures/geopattern": "^1.1",
     "respect/validation": "^1.1",
     "symfony/console": "^4.2",
-    "symfony/filesystem": "^4.2",
     "symfony/finder": "^4.2",
     "symfony/framework-bundle": "^4.2",
     "symfony/http-foundation": "^4.2",
