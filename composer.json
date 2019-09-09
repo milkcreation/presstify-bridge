@@ -69,8 +69,6 @@
     "symfony/security-csrf": "^4.2",
     "symfony/serializer": "^4.2",
     "swiftmailer/swiftmailer": "^6.0",
-    "zendframework/zend-diactoros": "^2.1",
-    "zendframework/zend-httphandlerrunner": "^1.0"
   },
   "suggest": {
     "bshaffer/oauth2-server-php": "Serveur OAuth 2.0",
