@@ -55,7 +55,6 @@
     "monolog/monolog": "^1.22",
     "nyholm/psr7": "^1.1",
     "pelago/emogrifier": "^2.0",
-    "phpmailer/phpmailer": "^6.0",
     "ralouphie/mimey": "^2.1",
     "redeyeventures/geopattern": "^1.1",
     "respect/validation": "^1.1",
