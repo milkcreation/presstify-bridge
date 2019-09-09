@@ -3,7 +3,6 @@
 namespace tiFy\Kernel\Walker;
 
 use Illuminate\Support\Arr;
-use tiFy\Kernel\Tools;
 
 class WalkerBaseController
 {
