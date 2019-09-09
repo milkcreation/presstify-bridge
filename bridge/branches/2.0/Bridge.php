@@ -1,21 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace tiFy;
+namespace tiFy\Plugins\Bridge;
 
 use App\App;
 use tiFy\Container\Container;
 use tiFy\Kernel\KernelServiceProvider;
 
-/**
- * Class tiFy
- *
- * @desc PresstiFy -- Framework Milkcreation.
- * @author Jordy Manner <jordy@milkcreation.fr>
- * @package tiFy
- * @version 2.0.197
- * @copyright Milkcreation
- */
-final class tiFy extends Container
+class Bridge extends Container
 {
     /**
      * Instance de la classe
@@ -67,7 +58,7 @@ final class tiFy extends Container
      *
      * @return static|null
      */
-    public static function instance(): ?tiFy
+    public static function instance(): ?Bridge
     {
         return self::$instance instanceof static ? self::$instance : null;
     }
