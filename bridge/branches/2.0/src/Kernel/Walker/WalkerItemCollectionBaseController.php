@@ -3,7 +3,6 @@
 namespace tiFy\Kernel\Walker;
 
 use Illuminate\Support\Collection;
-use tiFy\Kernel\Tools;
 
 class WalkerItemCollectionBaseController extends Collection
 {

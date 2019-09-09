@@ -41,7 +41,7 @@ use tiFy\Contracts\User\User;
 use tiFy\Contracts\Validation\Validator;
 use tiFy\Contracts\View\ViewController;
 use tiFy\Contracts\View\ViewEngine;
-use tiFy\tiFy;
+use tiFy\Plugins\Bridge\Bridge;
 
 if (!function_exists('app')) {
     /**
@@ -144,7 +144,7 @@ if (!function_exists('container')) {
      */
     function container($abstract = null)
     {
-        $factory = tiFy::instance();
+        $factory = Bridge::instance();
 
         if (is_null($abstract)) {
             return $factory;

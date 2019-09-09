@@ -3,7 +3,7 @@
 namespace tiFy\Kernel;
 
 use tiFy\Components\Tools\File\File;
-use tiFy\tiFy;
+use tiFy\Plugins\Bridge\Bridge;
 
 /**
  * @method static File File()
@@ -21,13 +21,13 @@ class Tools
     public static function __callStatic($name, $args)
     {
         $alias = "tiFy\\Components\\Tools\\{$name}\\{$name}";
-        if (!tiFy::instance()->has($alias)) :
+        if (!Bridge::instance()->has($alias)) :
             if (!class_exists($alias)) :
                 wp_die(sprintf(__('La boîte à outils "%s" ne semble pas disponible', 'tify'), $name), __('Librairie indisponible', 'tify'), 500);
             endif;
-            tiFy::instance()->add($alias);
+            Bridge::instance()->add($alias);
         endif;
 
-        return tiFy::instance()->get($alias, $args);
+        return Bridge::instance()->get($alias, $args);
     }
 }

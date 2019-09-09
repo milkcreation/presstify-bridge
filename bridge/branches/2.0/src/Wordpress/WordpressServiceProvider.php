@@ -9,8 +9,8 @@ use tiFy\Wordpress\Column\Column;
 use tiFy\Wordpress\Cookie\Cookie;
 use tiFy\Wordpress\Database\Database;
 use tiFy\Wordpress\Db\Db;
-use tiFy\Wordpress\Filesystem\Filesystem;
 use tiFy\Wordpress\Field\Field;
+use tiFy\Wordpress\Filesystem\Filesystem;
 use tiFy\Wordpress\Form\Form;
 use tiFy\Wordpress\Mail\Mail;
 use tiFy\Wordpress\Media\Download;
@@ -32,10 +32,10 @@ use tiFy\Wordpress\Routing\WpQuery;
 use tiFy\Wordpress\Routing\WpScreen;
 use tiFy\Wordpress\Taxonomy\Taxonomy;
 use tiFy\Wordpress\Template\Template;
-use tiFy\Wordpress\User\User;
 use tiFy\Wordpress\User\Role\RoleFactory;
-use WP_Query;
+use tiFy\Wordpress\User\User;
 use WP_Post;
+use WP_Query;
 use WP_Screen;
 use WP_Term;
 use WP_Term_Query;
@@ -96,11 +96,11 @@ class WordpressServiceProvider extends ServiceProvider
 
             if ($wp->is()) {
                 if ($this->getContainer()->has('router')) {
-                    $this->getContainer()->get('wp.routing');
+                    //$this->getContainer()->get('wp.routing');
                 }
 
                 if ($this->getContainer()->has('asset')) {
-                    $this->getContainer()->get('wp.asset');
+                    //$this->getContainer()->get('wp.asset');
                 }
 
                 $this->getContainer()->get('wp.auth');
@@ -110,7 +110,7 @@ class WordpressServiceProvider extends ServiceProvider
                 }
 
                 if ($this->getContainer()->has('cookie')) {
-                    $this->getContainer()->get('wp.cookie');
+                    //$this->getContainer()->get('wp.cookie');
                 }
 
                 if ($this->getContainer()->has('cron')) {
@@ -126,7 +126,7 @@ class WordpressServiceProvider extends ServiceProvider
                 }
 
                 if ($this->getContainer()->has('field')) {
-                    $this->getContainer()->get('wp.field');
+                    //$this->getContainer()->get('wp.field');
                 }
 
                 if ($this->getContainer()->has('form')) {
@@ -150,7 +150,7 @@ class WordpressServiceProvider extends ServiceProvider
                 }
 
                 if ($this->getContainer()->has('partial')) {
-                    $this->getContainer()->get('wp.partial');
+                    //$this->getContainer()->get('wp.partial');
                 }
 
                 if ($this->getContainer()->has('post-type')) {
@@ -170,7 +170,7 @@ class WordpressServiceProvider extends ServiceProvider
                 }
 
                 if ($this->getContainer()->has('template')) {
-                    $this->getContainer()->get('wp.template');
+                    //$this->getContainer()->get('wp.template');
                 }
 
                 if ($this->getContainer()->has('user')) {
@@ -222,6 +222,7 @@ class WordpressServiceProvider extends ServiceProvider
             return new Asset($this->getContainer()->get('asset'));
         });
     }
+
     /**
      * Déclaration du gestionnaire d'authentification.
      *
