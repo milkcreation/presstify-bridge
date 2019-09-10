@@ -1,0 +1,26 @@
+[data-control='media_file'] {
+    position: relative;
+}
+
+[data-control='media_file'] [data-control='infos'] {
+    cursor: pointer;
+    color: #333;
+    padding-left: 20px;
+}
+
+[data-control='media_file'] [data-control='reset'] {
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    margin-top: -9px;
+    z-index: 1;
+    display: none;
+}
+
+[data-control='media_file'][aria-active='true'] [data-control='reset'] {
+    display: inherit;
+}
+
+[data-control='media_file'] .tiFyField-mediaFileInput.tiFy-Input--media {
+    display:block;
+}
