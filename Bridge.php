@@ -6,6 +6,13 @@ use App\App;
 use tiFy\Container\Container;
 use tiFy\Kernel\KernelServiceProvider;
 
+/**
+ * @desc Bridge PresstifyFramework.
+ * @author Jordy Manner <jordy@milkcreation.fr>
+ * @package tiFy
+ * @version 2.0.197
+ * @copyright Milkcreation
+ */
 class Bridge extends Container
 {
     /**
