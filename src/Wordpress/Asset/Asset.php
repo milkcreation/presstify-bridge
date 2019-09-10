@@ -17,7 +17,6 @@ class Asset
         $this->manager = $manager;
 
         $ajax_url = admin_url('admin-ajax.php', 'relative');
-        $this->manager->setInlineJs("let tify_ajaxurl='{$ajax_url}'");
         $this->manager->setDataJs('ajax_url', $ajax_url);
         $this->manager->setDataJs('base_url', $this->manager->getContainer()->get('request')->getBaseUrl(), false);
         $this->manager->setDataJs('rewrite_base', $this->manager->getContainer()->get('url')->rewriteBase(), false);

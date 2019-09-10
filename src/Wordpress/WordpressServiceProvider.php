@@ -96,11 +96,11 @@ class WordpressServiceProvider extends ServiceProvider
 
             if ($wp->is()) {
                 if ($this->getContainer()->has('router')) {
-                    //$this->getContainer()->get('wp.routing');
+                    $this->getContainer()->get('wp.routing');
                 }
 
                 if ($this->getContainer()->has('asset')) {
-                    //$this->getContainer()->get('wp.asset');
+                    $this->getContainer()->get('wp.asset');
                 }
 
                 $this->getContainer()->get('wp.auth');
@@ -110,7 +110,7 @@ class WordpressServiceProvider extends ServiceProvider
                 }
 
                 if ($this->getContainer()->has('cookie')) {
-                    //$this->getContainer()->get('wp.cookie');
+                    $this->getContainer()->get('wp.cookie');
                 }
 
                 if ($this->getContainer()->has('cron')) {
@@ -126,7 +126,7 @@ class WordpressServiceProvider extends ServiceProvider
                 }
 
                 if ($this->getContainer()->has('field')) {
-                    //$this->getContainer()->get('wp.field');
+                    $this->getContainer()->get('wp.field');
                 }
 
                 if ($this->getContainer()->has('form')) {
@@ -150,7 +150,7 @@ class WordpressServiceProvider extends ServiceProvider
                 }
 
                 if ($this->getContainer()->has('partial')) {
-                    //$this->getContainer()->get('wp.partial');
+                    $this->getContainer()->get('wp.partial');
                 }
 
                 if ($this->getContainer()->has('post-type')) {
@@ -170,7 +170,7 @@ class WordpressServiceProvider extends ServiceProvider
                 }
 
                 if ($this->getContainer()->has('template')) {
-                    //$this->getContainer()->get('wp.template');
+                    $this->getContainer()->get('wp.template');
                 }
 
                 if ($this->getContainer()->has('user')) {
