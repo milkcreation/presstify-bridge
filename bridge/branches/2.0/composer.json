@@ -1,8 +1,9 @@
 {
   "name": "presstify-plugins/bridge",
-  "description": "Bridge Framework PresstiFy",
+  "description": "Bridge PresstiFy Framework - Compatibilité des versions ultérieures de tiFy",
   "keywords": [
     "bridge",
+    "compatibility",
     "framework",
     "presstify",
     "wordpress"
