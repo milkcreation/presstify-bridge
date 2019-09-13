@@ -20,15 +20,15 @@ class QueryComment extends ParamsBag implements QueryCommentContract
     /**
      * CONSTRUCTEUR.
      *
-     * @param WP_Comment $wp_comment Instance de commentaire Wordpress.
+     * @param WP_Comment|null $wp_comment Instance de commentaire Wordpress.
      *
      * @return void
      */
-    public function __construct(WP_Comment $wp_comment)
+    public function __construct(?WP_Comment $wp_comment = null)
     {
-        $this->wp_comment = $wp_comment;
-
-        $this->set($this->wp_comment->to_array())->parse();
+        if ($this->wp_comment = $wp_comment instanceof WP_Comment ? $wp_comment : null) {
+            $this->set($this->wp_comment->to_array())->parse();
+        }
     }
 
     /**

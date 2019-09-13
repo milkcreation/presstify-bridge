@@ -98,7 +98,7 @@ class FieldServiceProvider extends ServiceProvider
     /**
      * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->share('field', function () {
             return new Field($this->getContainer());

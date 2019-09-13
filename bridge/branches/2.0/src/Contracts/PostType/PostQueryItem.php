@@ -178,7 +178,7 @@ interface PostQueryItem extends ParamsBag
      *
      * @return string
      */
-    public function getThumbnailUrl($size = 'post-thumbnail');
+    public function getThumbnailSrc($size = 'post-thumbnail');
 
     /**
      * Récupération de la valeur brute ou formatée de l'intitulé de qualification.

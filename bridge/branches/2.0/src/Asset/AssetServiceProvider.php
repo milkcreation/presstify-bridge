@@ -11,14 +11,12 @@ class AssetServiceProvider extends ServiceProvider
      * @internal requis. Tous les noms de qualification de services à traiter doivent être renseignés.
      * @var string[]
      */
-    protected $provides = [
-        'asset'
-    ];
+    protected $provides = ['asset'];
 
     /**
      * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->share('asset', function () {
             return new Asset($this->getContainer()->get('app'));

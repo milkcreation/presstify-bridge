@@ -12,11 +12,11 @@ class DatabaseServiceProvider extends ServiceProvider
      * @var string[]
      */
     protected $provides = [
-        'database'
+        'database',
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function register(): void
     {
@@ -30,7 +30,7 @@ class DatabaseServiceProvider extends ServiceProvider
                 'password'  => getenv('DB_PASSWORD'),
                 'charset'   => getenv('DB_CHARSET') ?: 'utf8mb4',
                 'collation' => getenv('DB_COLLATE') ?: 'utf8mb4_unicode_ci',
-                'prefix'    => getenv('DB_PREFIX') ?: ''
+                'prefix'    => getenv('DB_PREFIX') ?: '',
             ]);
 
             $manager->setAsGlobal();

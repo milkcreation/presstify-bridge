@@ -2,7 +2,7 @@
 
 namespace tiFy\Support\Proxy;
 
-use tiFy\Contracts\Filesystem\{Filesystem, LocalAdapter, LocalFilesystem, StorageManager};
+use tiFy\Contracts\Filesystem\{Filesystem, LocalAdapter, LocalFilesystem};
 
 /**
  * @method static Filesystem|null disk(string $name)

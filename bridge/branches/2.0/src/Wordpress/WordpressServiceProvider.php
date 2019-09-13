@@ -9,8 +9,8 @@ use tiFy\Wordpress\Column\Column;
 use tiFy\Wordpress\Cookie\Cookie;
 use tiFy\Wordpress\Database\Database;
 use tiFy\Wordpress\Db\Db;
-use tiFy\Wordpress\Field\Field;
 use tiFy\Wordpress\Filesystem\Filesystem;
+use tiFy\Wordpress\Field\Field;
 use tiFy\Wordpress\Form\Form;
 use tiFy\Wordpress\Mail\Mail;
 use tiFy\Wordpress\Media\Download;
@@ -32,10 +32,10 @@ use tiFy\Wordpress\Routing\WpQuery;
 use tiFy\Wordpress\Routing\WpScreen;
 use tiFy\Wordpress\Taxonomy\Taxonomy;
 use tiFy\Wordpress\Template\Template;
-use tiFy\Wordpress\User\Role\RoleFactory;
 use tiFy\Wordpress\User\User;
-use WP_Post;
+use tiFy\Wordpress\User\Role\RoleFactory;
 use WP_Query;
+use WP_Post;
 use WP_Screen;
 use WP_Term;
 use WP_Term_Query;
@@ -222,7 +222,6 @@ class WordpressServiceProvider extends ServiceProvider
             return new Asset($this->getContainer()->get('asset'));
         });
     }
-
     /**
      * Déclaration du gestionnaire d'authentification.
      *

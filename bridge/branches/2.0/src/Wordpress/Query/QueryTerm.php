@@ -26,15 +26,15 @@ class QueryTerm extends ParamsBag implements QueryTermContract
     /**
      * CONSTRUCTEUR.
      *
-     * @param WP_Term $wp_term Instance de terme de taxonomie Wordpress.
+     * @param WP_Term|null $wp_term Instance de terme de taxonomie Wordpress.
      *
      * @return void
      */
-    public function __construct(WP_Term $wp_term)
+    public function __construct(?WP_Term $wp_term = null)
     {
-        $this->wp_term = $wp_term;
-
-        $this->set($this->wp_term->to_array())->parse();
+        if ($this->wp_term = $wp_term instanceof WP_Term ? $wp_term : null) {
+            $this->set($this->wp_term->to_array())->parse();
+        }
     }
 
     /**

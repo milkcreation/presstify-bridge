@@ -18,15 +18,15 @@ class QueryComments extends Collection implements QueryCommentsContract
     /**
      * CONSTRUCTEUR.
      *
-     * @param WP_Comment_Query $wp_comment_query Requête Wordpress de récupération de post.
+     * @param WP_Comment_Query|null $wp_comment_query Requête Wordpress de récupération de post.
      *
      * @return void
      */
-    public function __construct(WP_Comment_Query $wp_comment_query)
+    public function __construct(?WP_Comment_Query $wp_comment_query = null)
     {
-        $this->wp_comment_query = $wp_comment_query;
-
-        $this->set($this->wp_comment_query->comments ?: []);
+        if ($this->wp_comment_query = $wp_comment_query) {
+            $this->set($this->wp_comment_query->comments ?: []);
+        }
     }
 
     /**

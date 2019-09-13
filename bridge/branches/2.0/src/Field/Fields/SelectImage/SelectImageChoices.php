@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Field\Fields\SelectImage;
 
 use Symfony\Component\Finder\Finder;
 use tiFy\Field\Fields\SelectJs\SelectJsChoices;
-use tiFy\Kernel\Tools;
+use tiFy\Support\Img;
 
 class SelectImageChoices extends SelectJsChoices
 {
@@ -13,6 +13,8 @@ class SelectImageChoices extends SelectJsChoices
      *
      * @param array|string $items
      * @param mixed $selected Liste des éléments selectionnés
+     *
+     * @return void
      */
     public function __construct($items, $selected = null)
     {
@@ -25,7 +27,7 @@ class SelectImageChoices extends SelectJsChoices
                 ->name('#(\.ico$|\.gif$|\.jpe?g$|\.png$|\.svg$)#');
             $items = [];
             foreach ($finder as $file) {
-                $items[$file->getRelativePathname()] = Tools::File()->imgBase64Src($file->getRealPath());
+                $items[$file->getRelativePathname()] = Img::getBase64Src($file->getRealPath());
             }
         }
 

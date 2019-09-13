@@ -234,7 +234,7 @@ class PostQueryItem extends ParamsBag implements PostQueryItemContract
     /**
      * {@inheritdoc}
      */
-    public function getThumbnailUrl($size = 'post-thumbnail')
+    public function getThumbnailSrc($size = 'post-thumbnail')
     {
         return get_the_post_thumbnail_url($this->getId(), $size);
     }

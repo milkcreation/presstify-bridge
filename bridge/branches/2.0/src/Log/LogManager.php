@@ -152,7 +152,7 @@ class LogManager extends Manager implements LogManagerContract
     {
         if(!$logger instanceof LoggerContract) {
             $params = $logger;
-            $logger = $this->getContainer() ? $this->getContainer()->get('logger', [$key]) : new Logger((string)$key);
+            $logger = (new Logger((string)$key))->setContainer($this->getContainer());
             $logger->setParams($params);
         }
 

@@ -32,15 +32,15 @@ class QueryUser extends ParamsBag implements QueryUserContract
     /**
      * CONSTRUCTEUR
      *
-     * @param WP_User $wp_user Instance d'utilisateur Wordpress.
+     * @param WP_User|null $wp_user Instance d'utilisateur Wordpress.
      *
      * @return void
      */
-    public function __construct(WP_User $wp_user)
+    public function __construct(?WP_User $wp_user = null)
     {
-        $this->wp_user = $wp_user;
-
-        $this->set($this->wp_user->to_array())->parse();
+        if ($this->wp_user = $wp_user instanceof WP_User ? $wp_user : null) {
+            $this->set($this->wp_user->to_array())->parse();
+        }
     }
 
     /**

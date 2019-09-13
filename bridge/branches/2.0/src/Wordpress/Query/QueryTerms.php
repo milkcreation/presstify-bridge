@@ -18,15 +18,15 @@ class QueryTerms extends Collection implements QueryTermsContract
     /**
      * CONSTRUCTEUR.
      *
-     * @param null|WP_Term_Query $wp_term_query Requête Wordpress de récupération de termes.
+     * @param WP_Term_Query|null $wp_term_query Requête Wordpress de récupération de termes.
      *
      * @return void
      */
-    public function __construct(WP_Term_Query $wp_term_query)
+    public function __construct(?WP_Term_Query $wp_term_query = null)
     {
-        $this->wp_term_query = $wp_term_query;
-
-        $this->set($this->wp_term_query->terms ? : []);
+        if ($this->wp_term_query = $wp_term_query) {
+            $this->set($this->wp_term_query->terms ? : []);
+        }
     }
 
     /**

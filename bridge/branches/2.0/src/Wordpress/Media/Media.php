@@ -1,6 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Wordpress\Media;
+
+use tiFy\Support\Img;
 
 class Media
 {
@@ -74,5 +76,37 @@ class Media
 
             return $sources;
         }, 10, 5);
+    }
+
+    /**
+     * Récupération de la source d'une image de la médiathèque au format base64.
+     *
+     * @param int $attachment_id Identifiant de qualification du média.
+     *
+     * @return string|null
+     */
+    public function getBase64Src(int $id): ?string
+    {
+        return ($filename = get_attached_file($id)) ? Img::getBase64Src($filename) : null;
+    }
+
+    /**
+     * Récupération du chemin absolu vers un fichier de la médiathèque.
+     *
+     * @param string $path Chemin relatif depuis la racine du site.
+     *
+     * @return string|null
+     */
+    public function getSrcFilename(string $path): ?string
+    {
+        if (preg_match('/^' . preg_quote(site_url('/'), '/') . '/', $path)) {
+            $filename = preg_replace('/^' . preg_quote(site_url('/'), '/') . '/', ABSPATH, $path);
+        } elseif (preg_match('/^' . preg_quote(network_site_url('/'), '/') . '/', $path)) {
+            $filename = preg_replace('/^' . preg_quote(network_site_url('/'), '/') . '/', ABSPATH, $path);
+        } else {
+            $filename = $path;
+        }
+
+        return file_exists($filename)? $filename : null;
     }
 }

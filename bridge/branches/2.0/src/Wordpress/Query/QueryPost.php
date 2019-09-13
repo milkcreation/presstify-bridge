@@ -5,10 +5,13 @@ namespace tiFy\Wordpress\Query;
 use tiFy\Contracts\PostType\{PostTypeFactory, PostTypeStatus};
 use tiFy\Support\{Arr, DateTime, ParamsBag};
 use tiFy\Support\Proxy\PostType;
-use tiFy\Wordpress\Contracts\{Database\PostBuilder,
-    QueryComment as QueryCommentContract,
-    QueryPost as QueryPostContract};
-use tiFy\Wordpress\Database\Model\Post as Model;
+use tiFy\Wordpress\{
+    Contracts\Database\PostBuilder,
+    Contracts\QueryComment as QueryCommentContract,
+    Contracts\QueryPost as QueryPostContract,
+    Database\Model\Post as ModelPost,
+    Proxy\Media
+};
 use WP_Post;
 use WP_Query;
 use WP_Term_Query;
@@ -177,7 +180,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     public function db(): PostBuilder
     {
         if (!$this->db) {
-            $this->db = (new Model())->find($this->getId());
+            $this->db = (new ModelPost())->find($this->getId());
         }
 
         return $this->db;
@@ -189,37 +192,6 @@ class QueryPost extends ParamsBag implements QueryPostContract
     public function getAuthorId()
     {
         return intval($this->get('post_author', 0));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getBase64Src(int $id, $size = 'thumbnail'): ?string
-    {
-        if (!$src = wp_get_attachment_image_src($id, $size)) {
-            return null;
-        } else {
-            $src = reset($src);
-        }
-
-        if (preg_match('/^' . preg_quote(site_url('/'), '/') . '/', $src)) {
-            $filename = preg_replace('/' . preg_quote(site_url('/'), '/') . '/', ABSPATH, $src);
-        } elseif (preg_match('/^' . preg_quote(network_site_url('/'), '/') . '/', $src)) {
-            $filename = preg_replace('/' . preg_quote(network_site_url('/'), '/') . '/', ABSPATH, $src);
-        } else {
-            return null;
-        }
-
-        if (file_exists($filename)) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-
-            return sprintf(
-                'data:%s;base64,%s',
-                finfo_file($finfo, $filename),
-                base64_encode(file_get_contents($filename))
-            );
-        }
-        return null;
     }
 
     /**
@@ -329,7 +301,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public function getMeta(string $meta_key, $single = false, $default = null)
+    public function getMeta(string $meta_key, bool $single = false, $default = null)
     {
         return get_post_meta($this->getId(), $meta_key, $single) ?: $default;
     }
@@ -455,7 +427,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public function getTerms($taxonomy, $args = [])
+    public function getTerms($taxonomy, array $args = [])
     {
         $args['taxonomy'] = $taxonomy;
         $args['object_ids'] = $this->getId();
@@ -466,7 +438,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public function getThumbnail($size = 'post-thumbnail', $attrs = [])
+    public function getThumbnail($size = 'post-thumbnail', array $attrs = [])
     {
         return get_the_post_thumbnail($this->getId(), $size, $attrs);
     }
@@ -474,9 +446,17 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public function getThumbnailUrl($size = 'post-thumbnail')
+    public function getThumbnailSrc($size = 'post-thumbnail')
     {
         return get_the_post_thumbnail_url($this->getId(), $size);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getThumbnailBase64Src($size = 'thumbnail'): ?string
+    {
+        return ($id = (int)get_post_thumbnail_id($this->getId())) ? Media::getBase64Src($id) : null;
     }
 
     /**
@@ -516,7 +496,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public function save($postdata): void
+    public function save(array $postdata): void
     {
         $p = ParamsBag::createFromAttrs($postdata);
         $columns = $this->db()->getConnection()->getSchemaBuilder()->getColumnListing($this->db()->getTable());

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\PostType;
 
@@ -17,9 +17,9 @@ class PostTypeServiceProvider extends ServiceProvider
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->registerManager();
         $this->registerPostMeta();
@@ -30,7 +30,7 @@ class PostTypeServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function registerManager()
+    public function registerManager(): void
     {
         $this->getContainer()->share('post-type', function() {
             return new PostTypeManager($this->getContainer());
@@ -42,7 +42,7 @@ class PostTypeServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function registerPostMeta()
+    public function registerPostMeta(): void
     {
         $this->getContainer()->share('post-type.post-meta', function () {
             return new PostTypePostMeta();

@@ -16,12 +16,12 @@ class EncryptionServiceProvider extends ServiceProvider
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
-        $this->getContainer()->add('encrypter', function ($secret = null, $private = null) {
-            return new Encrypter($secret, $private);
+        $this->getContainer()->add('encrypter', function () {
+            return new Encrypter();
         });
     }
 }

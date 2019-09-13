@@ -16,9 +16,9 @@ class CronServiceProvider extends ServiceProvider
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->share('cron', function () {
             return (new CronManager($this->getContainer()->get('app')))->set(config('cron', []));

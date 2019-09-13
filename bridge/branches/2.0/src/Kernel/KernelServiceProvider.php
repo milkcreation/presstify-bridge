@@ -69,12 +69,15 @@ class KernelServiceProvider extends ServiceProvider
             return new Listener($callback);
         });
 
+        /**
+         * @todo deprecated Mais dépendance Form
+         */
         $this->getContainer()->add('notices', function () {
             return new Notices();
         });
 
-        $this->getContainer()->add('params.bag', function (?array $attrs = []) {
-            return is_array($attrs) ? ParamsBag::createFromAttrs($attrs) : new ParamsBag();
+        $this->getContainer()->add('params.bag', function (array $attrs = []) {
+            return (new ParamsBag())->set($attrs);
         });
 
         $this->getContainer()->share('request', function () {
