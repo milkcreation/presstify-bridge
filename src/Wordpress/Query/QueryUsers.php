@@ -18,15 +18,15 @@ class QueryUsers extends Collection implements QueryUsersContract
     /**
      * CONSTRUCTEUR.
      *
-     * @param WP_User_Query $wp_user_query Instance de requête Wordpress de récupération des utilisateurs.
+     * @param WP_User_Query|null $wp_user_query Instance de requête Wordpress de récupération des utilisateurs.
      *
      * @return void
      */
-    public function __construct(WP_User_Query $wp_user_query)
+    public function __construct(?WP_User_Query $wp_user_query = null)
     {
-        $this->wp_user_query = $wp_user_query;
-
-        $this->set($this->wp_user_query->get_results());
+        if ($this->wp_user_query = $wp_user_query) {
+            $this->set($this->wp_user_query->get_results() ?: []);
+        }
     }
 
     /**
@@ -78,6 +78,14 @@ class QueryUsers extends Collection implements QueryUsersContract
     }
 
     /**
+     * @inheritdoc
+     */
+    public function WpUserQuery(): WP_User_Query
+    {
+        return $this->wp_user_query;
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @param WP_User $item Objet utilisateur Wordpress.
@@ -87,13 +95,5 @@ class QueryUsers extends Collection implements QueryUsersContract
     public function walk($item, $key = null)
     {
         $this->items[$key] = new QueryUser($item);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function WpUserQuery(): WP_User_Query
-    {
-        return $this->wp_user_query;
     }
 }

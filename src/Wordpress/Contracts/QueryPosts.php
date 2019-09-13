@@ -17,7 +17,7 @@ interface QueryPosts extends Collection
      *
      * @return static
      */
-    public static function createFromArgs($args = []): QueryPosts;
+    public static function createFromArgs(array $args = []): QueryPosts;
 
     /**
      * Récupération d'une instance basée sur une resultat de requête en base de données.
@@ -42,7 +42,7 @@ interface QueryPosts extends Collection
      * @see https://codex.wordpress.org/Class_Reference/WP_Query
      * @see https://developer.wordpress.org/reference/classes/wp_query/
      *
-     * @param $ids
+     * @param int[] $ids
      *
      * @return static
      */

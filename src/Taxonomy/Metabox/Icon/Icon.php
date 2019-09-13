@@ -20,7 +20,7 @@ class Icon extends MetaboxWpTermController
             $this->args,
             [
                 'name' => '_icon',
-                'dir'  => \tiFy\tiFy::$AbsDir . '/vendor/Assets/svg',
+                'dir'  => '',
             ]
         );
         $this->args['dir'] = wp_normalize_path(rtrim($this->args['dir'], '/'));

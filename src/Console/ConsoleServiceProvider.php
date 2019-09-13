@@ -4,6 +4,7 @@ namespace tiFy\Console;
 
 use Symfony\Component\Console\Input\InputOption;
 use tiFy\Container\ServiceProvider;
+use tiFy\Kernel\Application as App;
 
 class ConsoleServiceProvider extends ServiceProvider
 {
@@ -12,29 +13,27 @@ class ConsoleServiceProvider extends ServiceProvider
      * @internal requis. Tous les noms de qualification de services à traiter doivent être renseignés.
      * @var string[]
      */
-    protected $provides = [
-        'console.application'
-    ];
+    protected $provides = ['console.application'];
 
     /**
      * @inheritDoc
      */
-    public function boot()
+    public function boot(): void
     {
-        add_action('shutdown', function () {
-            /** @var \tiFy\Kernel\Application $app */
+        register_shutdown_function(function () {
+            /** @var App $app */
             $app = $this->getContainer()->get('app');
 
             if($app->runningInConsole()) {
                 $this->getContainer()->get('console.application')->run();
             }
-        }, 999999);
+        });
     }
 
     /**
      * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->share('console.application', function() {
             $app = new Application('presstiFy PHP CLI Console', '1.0.0');

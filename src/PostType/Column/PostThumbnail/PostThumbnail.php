@@ -3,7 +3,8 @@
 namespace tiFy\PostType\Column\PostThumbnail;
 
 use tiFy\Column\AbstractColumnDisplayPostTypeController;
-use tiFy\Kernel\Tools;
+use tiFy\Wordpress\Query\QueryPost;
+use tiFy\Wordpress\Proxy\Partial;
 
 class PostThumbnail extends AbstractColumnDisplayPostTypeController
 {
@@ -22,7 +23,7 @@ class PostThumbnail extends AbstractColumnDisplayPostTypeController
      */
     public function admin_enqueue_scripts()
     {
-        partial('holder')->enqueue();
+        Partial::get('holder')->enqueue();
 
         $column_name = "column-{$this->item->getName()}";
         asset()->setInlineCss(
@@ -36,20 +37,14 @@ class PostThumbnail extends AbstractColumnDisplayPostTypeController
      */
     public function content($column_name = null, $post_id = null, $null = null)
     {
-        $attachment_id = get_post_thumbnail_id($post_id) ? : 0;
+        $qp = QueryPost::createFromId($post_id);
 
-        // Vérifie l'existance de l'image
-        if (($attachment = wp_get_attachment_image_src($attachment_id)) && isset($attachment[0]) && ($path = Tools::File()->getRelPath($attachment[0])) && file_exists(ABSPATH . $path)) :
-            $thumb = wp_get_attachment_image($attachment_id, [60, 60], true);
-        else :
-            $thumb = partial(
-                'holder',
-                [
-                    'width'            => 60,
-                    'height'           => 60,
-                ]
-            );
-        endif;
+        if (!$thumb = $qp->getThumbnail([60, 60])) {
+            $thumb = Partial::get('holder', [
+                'width'  => 60,
+                'height' => 60,
+            ]);
+        }
 
         return $thumb;
     }

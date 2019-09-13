@@ -8,6 +8,7 @@ use Symfony\Component\Console\{
     Input\InputInterface,
     Output\OutputInterface
 };
+use tiFy\Contracts\Console\Command as CommandContract;
 
 /**
  * USAGE :
@@ -15,11 +16,12 @@ use Symfony\Component\Console\{
  * -------------------------------
  * php console list
  *
+ * TIPS :
  * Arrêt complet des commandes CLI lancées
  * ---------------------------------------
  * pkill -9 php
  */
-class Command extends BaseCommand
+class Command extends BaseCommand implements CommandContract
 {
     /**
      * @inheritdoc

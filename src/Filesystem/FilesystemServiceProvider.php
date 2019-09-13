@@ -4,10 +4,9 @@ namespace tiFy\Filesystem;
 
 use League\Flysystem\AdapterInterface;
 use tiFy\Container\ServiceProvider;
-use tiFy\Contracts\Filesystem\{
-    Filesystem as FilesystemContract,
-    LocalFilesystem as LocalFilesystemContract,
-    LocalAdapter as LocalAdapterContract};
+use tiFy\Contracts\Filesystem\{Filesystem as FilesystemContract,
+    LocalAdapter as LocalAdapterContract,
+    LocalFilesystem as LocalFilesystemContract};
 
 class FilesystemServiceProvider extends ServiceProvider
 {
@@ -19,13 +18,13 @@ class FilesystemServiceProvider extends ServiceProvider
         FilesystemContract::class,
         LocalAdapterContract::class,
         LocalFilesystemContract::class,
-        'storage'
+        'storage',
     ];
 
     /**
      * @inheritDoc
      */
-    public function register():void
+    public function register(): void
     {
         $this->getContainer()->share('storage', function () {
             return new StorageManager($this->getContainer());
@@ -38,7 +37,7 @@ class FilesystemServiceProvider extends ServiceProvider
     /**
      * @inheritDoc
      */
-    public function registerAdapter():void
+    public function registerAdapter(): void
     {
         $this->getContainer()->add(
             LocalAdapterContract::class,
@@ -51,7 +50,7 @@ class FilesystemServiceProvider extends ServiceProvider
     /**
      * @inheritDoc
      */
-    public function registerFilesystem():void
+    public function registerFilesystem(): void
     {
         $this->getContainer()->add(FilesystemContract::class, function (AdapterInterface $adapter) {
             return new Filesystem($adapter);
@@ -60,7 +59,7 @@ class FilesystemServiceProvider extends ServiceProvider
         $this->getContainer()->add(LocalFilesystemContract::class, function (string $root, array $config = []) {
             return new LocalFilesystem($this->getContainer()->get('storage')->localAdapter($root, $config), [
                 'disable_asserts' => true,
-                'case_sensitive' => true
+                'case_sensitive'  => true,
             ]);
         });
     }

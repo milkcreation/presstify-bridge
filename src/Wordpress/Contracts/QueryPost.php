@@ -115,12 +115,11 @@ interface QueryPost extends ParamsBag
     /**
      * Récupération de la source base64 d'une image.
      *
-     * @param int $id Identifiant de qualification de l'image.
      * @param string|array $size Taille de l'image. Nom de qualification (full|large|thumbnail|...)|taille perso [w,h].
      *
      * @return string|null
      */
-    public function getBase64Src(int $id, $size = 'thumbnail'): ?string;
+    public function getThumbnailBase64Src($size = 'thumbnail'): ?string;
 
     /**
      * Récupération de la liste des classes associées.
@@ -219,7 +218,7 @@ interface QueryPost extends ParamsBag
      *
      * @return mixed
      */
-    public function getMeta(string $meta_key, $single = false, $default = null);
+    public function getMeta(string $meta_key, bool $single = false, $default = null);
 
     /**
      * Récupération de la liste des indices de métadonnées.
@@ -334,7 +333,7 @@ interface QueryPost extends ParamsBag
      *
      * @return array|WP_Term[]
      */
-    public function getTerms($taxonomy, $args = []);
+    public function getTerms($taxonomy, array $args = []);
 
     /**
      * Récupération de l'image représentative.
@@ -344,7 +343,7 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getThumbnail($size = 'post-thumbnail', $attrs = []);
+    public function getThumbnail($size = 'post-thumbnail', array $attrs = []);
 
     /**
      * Récupération de l'url de l'image représentative.
@@ -353,7 +352,7 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getThumbnailUrl($size = 'post-thumbnail');
+    public function getThumbnailSrc($size = 'post-thumbnail');
 
     /**
      * Récupération de la valeur brute ou formatée de l'intitulé de qualification.

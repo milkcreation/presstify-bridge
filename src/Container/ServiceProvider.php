@@ -23,16 +23,10 @@ class ServiceProvider extends AbstractServiceProvider implements ServiceProvider
     /**
      * @inheritDoc
      */
-    public function boot()
-    {
-
-    }
+    public function boot() {}
 
     /**
      * @inheritDoc
      */
-    public function register()
-    {
-
-    }
+    public function register() {}
 }

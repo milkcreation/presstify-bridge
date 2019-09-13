@@ -19,23 +19,15 @@ class LogServiceProvider extends ServiceProvider
      * @internal requis. Tous les noms de qualification de services à traiter doivent être renseignés.
      * @var string[]
      */
-    protected $provides = [
-        'log',
-        'logger'
-    ];
+    protected $provides = ['log'];
 
     /**
      * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->share('log', function () {
             return new LogManager($this->getContainer()->get('app'));
-        });
-
-        $this->getContainer()->add('logger', function (?string $name = null) {
-            return (new Logger($name ?? Str::random()))
-                ->setContainer($this->getContainer()->get('app'));
         });
     }
 }

@@ -27,14 +27,14 @@ class QueryPosts extends Collection implements QueryPostsContract
     public function __construct(?WP_Query $wp_query = null)
     {
         if ($this->wp_query = $wp_query) {
-            $this->set($this->wp_query->posts);
+            $this->set($this->wp_query->posts ?: []);
         }
     }
 
     /**
      * @inheritDoc
      */
-    public static function createFromArgs($args = []): QueryPostsContract
+    public static function createFromArgs(array $args = []): QueryPostsContract
     {
         return new static(new WP_Query($args));
     }
@@ -65,11 +65,9 @@ class QueryPosts extends Collection implements QueryPostsContract
     /**
      * @inheritDoc
      */
-    public static function createFromIds(array $ids, $post_types = null): QueryPostsContract
+    public static function createFromIds(array $ids): QueryPostsContract
     {
-        if (is_null($post_types)) :
-            $post_types = array_keys(get_post_types());
-        endif;
+        $post_types = func_get_arg(1) ? : array_keys(get_post_types());
 
         return new static(new WP_Query(['post__in' => $ids, 'post_type' => $post_types, 'posts_per_page' => -1]));
     }

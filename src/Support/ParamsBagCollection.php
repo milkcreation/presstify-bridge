@@ -1,6 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Support;
+
+use tiFy\Contracts\Support\ParamsBag as ParamsBagContract;
 
 class ParamsBagCollection extends Collection
 {
@@ -19,8 +21,8 @@ class ParamsBagCollection extends Collection
     /**
      * @inheritdoc
      */
-    public function walk($attrs, $key = null)
+    public function walk($attrs, $key = null): ParamsBagContract
     {
-        return $this->items[$key] = ParamsBag::createFromAttrs($attrs);
+        return $this->items[$key] = (new ParamsBag())->set($attrs);
     }
 }

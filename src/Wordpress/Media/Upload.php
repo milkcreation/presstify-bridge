@@ -2,8 +2,6 @@
 
 namespace tiFy\Wordpress\Media;
 
-use tiFy\Kernel\Tools;
-
 /**
  * Class Upload
  * @package tiFy\Wordpress\Media

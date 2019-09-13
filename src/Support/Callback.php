@@ -4,9 +4,8 @@ namespace tiFy\Support;
 
 use ArgumentCountError;
 use Exception;
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 use tiFy\Contracts\Support\Callback as CallbackContract;
-use tiFy\tiFy;
 use Closure;
 
 class Callback implements CallbackContract
@@ -30,7 +29,7 @@ class Callback implements CallbackContract
 
     /**
      * Instance du conteneur d'injection de dépendances.
-     * @var ContainerInterface
+     * @var Container
      */
     protected $container;
 
@@ -59,15 +58,15 @@ class Callback implements CallbackContract
     /**
      * Traitement d'une classe, d'une méthode de classe ou d'une fonction.
      *
-     * @param ContainerInterface|null $container Instance du conteneur d'injection de dépendances.
+     * @param Container|null $container Instance du conteneur d'injection de dépendances.
      * @param array $permissions Liste des permissions de traitement.
      * @param null|Closure $fallback Traitement de retour en cas d'échec.
      *
      * @return void
      */
-    public function __construct(?ContainerInterface $container = null, $permissions = [], ?Closure $fallback = null)
+    public function __construct(?Container $container = null, $permissions = [], ?Closure $fallback = null)
     {
-        $this->container = !is_null($container) ? $container : tiFy::instance();
+        $this->container = $container;
         $this->permissions = array_merge($this->permissions, $permissions);
         $this->fallback = $fallback ?: null;
     }
@@ -84,7 +83,7 @@ class Callback implements CallbackContract
      */
     private function _resolve($class)
     {
-        if ($this->getContainer() instanceof ContainerInterface && $this->getContainer()->has($class)) {
+        if (($this->getContainer() instanceof Container) && $this->getContainer()->has($class)) {
             return $this->getContainer()->get($class);
         }
 
@@ -98,7 +97,7 @@ class Callback implements CallbackContract
     /**
      * @inheritdoc
      */
-    public function getContainer(): ContainerInterface
+    public function getContainer(): ?Container
     {
         return $this->container;
     }

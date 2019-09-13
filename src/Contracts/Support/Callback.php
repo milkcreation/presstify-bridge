@@ -19,9 +19,9 @@ interface Callback
     /**
      * Récupération de l'instance du conteneur d'injection de dépendances.
      *
-     * @return ContainerInterface
+     * @return ContainerInterface|null
      */
-    public function getContainer(): ContainerInterface;
+    public function getContainer(): ?ContainerInterface;
 
     /**
      * Execution de la fonction de rappel.
