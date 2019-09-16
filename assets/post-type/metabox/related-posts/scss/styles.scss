@@ -1,0 +1,148 @@
+[data-control="metabox.related-posts.item.metas"] {
+  display: none;
+}
+
+[data-control="metabox.related-posts.item"][aria-metas="true"] [data-control="metabox.related-posts.item.metas"] {
+  display: inherit;
+}
+
+.MetaboxRelatedPosts,
+.MetaboxRelatedPosts > * {
+  box-sizing: border-box;
+}
+
+.MetaboxRelatedPosts {
+  max-width: 1140px;
+}
+
+.MetaboxRelatedPosts-suggest {
+  display:block;
+  padding:0 5px 10px;
+  border-bottom:solid 1px #E4E4E4;
+  margin-bottom:10px;
+}
+
+.MetaboxRelatedPosts-suggestInput {
+  padding:8px;
+  width: 100%;
+}
+
+.MetaboxRelatedPosts-item {
+  position: relative;
+  min-height: 80px;
+  border: solid 1px #E4E4E4;
+  background-color: #FFF;
+}
+
+.MetaboxRelatedPosts-item::before,
+.MetaboxRelatedPosts-item::after {
+  display: block;
+  content: " ";
+}
+
+.MetaboxRelatedPosts-item::after {
+  clear: both;
+}
+
+.MetaboxRelatedPosts-itemOrder {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  text-align: center;
+  font-size: 10px;
+  margin: 0;
+  padding: 0.2em;
+}
+
+.MetaboxRelatedPosts-itemMetas {
+  position: absolute;
+  left: -1px;
+  bottom: 20px;
+  font-size: 10px;
+  line-height: 1.1;
+  margin: 0;
+  padding: 5px;
+  background-color: #FFF;
+  border: solid 1px #CCC;
+  z-index: 5;
+  width: 250px;
+}
+
+.MetaboxRelatedPosts-itemMeta {
+  padding: 0 0 2px;
+  margin: 0 0 3px;
+  border-bottom: dotted 1px #CCC;
+}
+
+.MetaboxRelatedPosts-itemMeta:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.MetaboxRelatedPosts-itemMeta label {
+  font-weight: bold;
+  vertical-align: middle;
+  display: inline-block;
+  margin-bottom: 0.2em;
+}
+
+.MetaboxRelatedPosts-itemMetasToggle {
+  position: absolute;
+  left: 3px;
+  bottom: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 10px;
+  background-color: #0074A2;
+  content: "";
+}
+
+.MetaboxRelatedPosts-itemMetasToggle::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  font-size: 10px;
+  font-style: italic;
+  font-weight: bold;
+  line-height: 15px;
+  content: "i";
+  display: block;
+  color: #FFF;
+}
+
+.MetaboxRelatedPosts-itemSort {
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  z-index: 3;
+  color: #999;
+  cursor: move;
+  display: block;
+  font-weight: 700;
+  padding: 2px 0;
+  margin: 0;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.MetaboxRelatedPosts-itemThumb {
+  float: left;
+  margin-right:10px;
+  min-width:80px;
+}
+
+.MetaboxRelatedPosts-itemThumbImg {
+  width: auto;
+  height: 80px;
+}
+
+.MetaboxRelatedPosts-itemTitle {
+  margin:10px 0;
+  padding: 0;
+  font-weight:400;
+  font-size: 14px;
+  text-transform: uppercase;
+}
