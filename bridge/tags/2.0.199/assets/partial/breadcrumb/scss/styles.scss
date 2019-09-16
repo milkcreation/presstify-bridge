@@ -1,0 +1,13 @@
+.Breadcrumb {
+    margin: 0;
+    padding: 0;
+}
+
+.Breadcrumb > li + li::before {
+    padding: 0 5px;
+    content: "/\00a0";
+}
+
+.Breadcrumb > li {
+    display: inline-block;
+}
