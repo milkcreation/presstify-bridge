@@ -3,8 +3,8 @@
 namespace tiFy\Wordpress\Query;
 
 use tiFy\Contracts\PostType\{PostTypeFactory, PostTypeStatus};
-use tiFy\Support\{Arr, DateTime, ParamsBag};
-use tiFy\Support\Proxy\PostType;
+use tiFy\Support\{DateTime, ParamsBag};
+use tiFy\Support\Proxy\{Cache, PostType};
 use tiFy\Wordpress\{
     Contracts\Database\PostBuilder,
     Contracts\QueryComment as QueryCommentContract,
@@ -19,24 +19,6 @@ use WP_User;
 
 class QueryPost extends ParamsBag implements QueryPostContract
 {
-    /**
-     * Indicateur d'activaction du cache.
-     * @var boolean
-     */
-    protected $cacheable = true;
-
-    /**
-     * Nombre de seconde jusqu'à expiration du cache.
-     * @var int
-     */
-    protected $cacheExpire = 3600*24*365*5;
-
-    /**
-     * Clé d'indice d'enregistrement du cache.
-     * @var string
-     */
-    protected $cacheKey = '_cache';
-
     /**
      * Instance du modèle de base de données associé.
      * @var PostBuilder
@@ -114,22 +96,17 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public function cacheable(): bool
     {
-        return $this->cacheable;
+        return true;
     }
 
     /**
      * @inheritDoc
      */
-    public function cacheAdd($key, $value = null): QueryPostContract
+    public function cacheAdd(string $key, $value = null): QueryPostContract
     {
-        if (!$cache = $this->getMetaSingle('_cache', []) ?: []) {
-            $cache['expire'] = time()+ $this->cacheExpire;
-            $cache['created'] = time();
+        if ($this->cacheable()) {
+            Cache::put($this->cacheKey(), array_merge($this->cacheGet(), [$key => $value]), $this->cacheExpire());
         }
-        $keys = !is_array($key) ? [$key => $value] : $key;
-        $cache['data'] = array_merge($cache['data'] ?? [], $keys);
-
-        $this->saveMeta($this->cacheKey, $cache);
 
         return $this;
     }
@@ -137,10 +114,10 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public function cacheClear(string $key = null): QueryPostContract
+    public function cacheClear(): QueryPostContract
     {
-        if (is_null($key)) {
-            $this->saveMeta($this->cacheKey, []);
+        if ($this->cacheable()) {
+            Cache::forget($this->cacheKey());
         }
 
         return $this;
@@ -159,11 +136,23 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
+    public function cacheExpire(): ?int
+    {
+        return 3600 * 24;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function cacheGet(?string $key = null, $default = null)
     {
-        $cache = $this->getMetaSingle($this->cacheKey, []);
+        if ($this->cacheable()) {
+            $cache = Cache::get($this->cacheKey()) ?: [];
+        } else {
+            $cache = [];
+        }
 
-        return is_null($key) ? $cache : Arr::get($cache, "data.{$key}", $default);
+        return is_null($key) ? $cache : ($cache[$key] ?? $default);
     }
 
     /**
@@ -171,7 +160,15 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public function cacheHas(string $key): bool
     {
-        return $this->cacheable() && !is_null($this->cacheGet($key, null));
+        return $this->cacheable() && ! is_null($this->cacheGet($key, null));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function cacheKey(): string
+    {
+        return "{$this->getType()}_{$this->getId()}";
     }
 
     /**
@@ -179,7 +176,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public function db(): PostBuilder
     {
-        if (!$this->db) {
+        if ( ! $this->db) {
             $this->db = (new ModelPost())->find($this->getId());
         }
 
@@ -227,10 +224,10 @@ class QueryPost extends ParamsBag implements QueryPostContract
     {
         $content = (string)$this->get('post_content', '');
 
-        if (!$raw) :
+        if ( ! $raw) {
             $content = apply_filters('the_content', $content);
             $content = str_replace(']]>', ']]&gt;', $content);
-        endif;
+        }
 
         return $content;
     }
@@ -266,7 +263,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public function getExcerpt(bool $raw = false)
     {
-        if (!$excerpt = (string)$this->get('post_excerpt', '')) :
+        if ( ! $excerpt = (string)$this->get('post_excerpt', '')) {
             $text = $this->get('post_content', '');
 
             // @see /wp-includes/post-template.php \get_the_excerpt()
@@ -275,9 +272,9 @@ class QueryPost extends ParamsBag implements QueryPostContract
             $text = str_replace(']]>', ']]&gt;', $text);
 
             $excerpt_length = apply_filters('excerpt_length', 55);
-            $excerpt_more = apply_filters('excerpt_more', ' ' . '[&hellip;]');
-            $excerpt = wp_trim_words($text, $excerpt_length, $excerpt_more);
-        endif;
+            $excerpt_more   = apply_filters('excerpt_more', ' ' . '[&hellip;]');
+            $excerpt        = wp_trim_words($text, $excerpt_length, $excerpt_more);
+        }
 
         return $raw ? $excerpt : ($excerpt ? apply_filters('get_the_excerpt', $excerpt) : '');
     }
@@ -429,7 +426,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public function getTerms($taxonomy, array $args = [])
     {
-        $args['taxonomy'] = $taxonomy;
+        $args['taxonomy']   = $taxonomy;
         $args['object_ids'] = $this->getId();
 
         return (new WP_Term_Query($args))->terms;
@@ -498,7 +495,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public function save(array $postdata): void
     {
-        $p = ParamsBag::createFromAttrs($postdata);
+        $p       = (new ParamsBag())->set($postdata);
         $columns = $this->db()->getConnection()->getSchemaBuilder()->getColumnListing($this->db()->getTable());
 
         $update = [];
@@ -544,6 +541,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
             foreach ($commentdata['meta'] as $k => $v) {
                 add_comment_meta($comment_id, $k, $v);
             }
+
             return $comment_id;
         } else {
             return 0;

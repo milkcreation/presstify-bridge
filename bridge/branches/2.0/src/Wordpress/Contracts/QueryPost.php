@@ -55,21 +55,19 @@ interface QueryPost extends ParamsBag
     /**
      * Ajout de données de cache associées au produit.
      *
-     * @param string|array Clé d'indice de la données de cache.
+     * @param string Clé d'indice de la données de cache.
      * @param mixed $value Valeur de retour par défaut
      *
      * @return static
      */
-    public function cacheAdd($key, $value = null): QueryPost;
+    public function cacheAdd(string $key, $value = null): QueryPost;
 
     /**
      * Suppression des données de cache associées au produit.
      *
-     * @param string $key Clé d'indice de donnée mise en cache.
-     *
      * @return static
      */
-    public function cacheClear(string $key = null): QueryPost;
+    public function cacheClear(): QueryPost;
 
     /**
      * Génération des données mise en cache.
@@ -79,8 +77,15 @@ interface QueryPost extends ParamsBag
     public function cacheCreate(): QueryPost;
 
     /**
-     * Récupération de donnée de cache associées au produit.
-     * {@internal Permet de récupérer de manière optimale des données relatives aux attributs de variation ...}
+     * Délai d'expiration du cache en secondes.
+     * {@internal Une journée par défaut. Si null, le cache n'expire jamais.}
+     *
+     * @return int|null
+     */
+    public function cacheExpire(): ?int;
+
+    /**
+     * Récupération de données de post en cache.
      *
      * @param string|null Clé d'indice de la données de cache. Si null, retourne la liste complète des données.
      * @param mixed $default Valeur de retour par défaut
@@ -90,13 +95,20 @@ interface QueryPost extends ParamsBag
     public function cacheGet(?string $key = null, $default = null);
 
     /**
-     * Vérification d'éxistance d'une donnée en cache.
+     * Vérification d'existance de données de post en cache.
      *
      * @param string Clé d'indice de la données de cache. Syntaxe à point permise.
      *
      * @return boolean
      */
     public function cacheHas(string $key): bool;
+
+    /**
+     * Définition de la clé d'indice d'enregistrement des données de post en cache.
+     *
+     * @return string
+     */
+    public function cacheKey(): string;
 
     /**
      * Récupération de l'instance du modèle de base de donnée associé.
@@ -195,10 +207,10 @@ interface QueryPost extends ParamsBag
 
     /**
      * Récupération de l'identifiant unique de qualification global.
-     * @internal Ne devrait pas être utilisé en tant que lien.
+     * @return string
      * @see https://developer.wordpress.org/reference/functions/the_guid/
      *
-     * @return string
+     * @internal Ne devrait pas être utilisé en tant que lien.
      */
     public function getGuid();
 
