@@ -153,7 +153,7 @@ class WpQueryPart
                         'tag'     => 'a',
                         'attrs'   => [
                             'href'  => home_url('/'),
-                            'title' => sprintf(__('Revenir à l\'accueil du site %s', 'theme'), get_bloginfo('name')),
+                            'title' => sprintf(__('Revenir à l\'accueil du site %s', 'tify'), get_bloginfo('name')),
                             'class' => $this->getItemContentClass()
                         ],
                         'content' => __('Accueil', 'tify')

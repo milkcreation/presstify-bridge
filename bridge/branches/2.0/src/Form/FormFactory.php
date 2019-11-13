@@ -5,7 +5,7 @@ namespace tiFy\Form;
 use tiFy\Contracts\Form\FormFactory as FormFactoryContract;
 use tiFy\Contracts\Form\FormManager;
 use tiFy\Form\Factory\ResolverTrait;
-use tiFy\Support\ParamsBag;
+use tiFy\Support\{LabelsBag, ParamsBag};
 
 class FormFactory extends ParamsBag implements FormFactoryContract
 {
@@ -22,6 +22,12 @@ class FormFactory extends ParamsBag implements FormFactoryContract
      * @var boolean|null
      */
     protected $auto;
+
+    /**
+     * Instance de gestion des intitulés.
+     * @var LabelsBag|null
+     */
+    protected $labels;
 
     /**
      * Instance du gestionnaire de formulaire.
@@ -168,6 +174,28 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     public function isPrepared(): bool
     {
         return $this->prepared;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function label($key = null, string $default = '')
+    {
+        if (!$this->labels instanceof LabelsBag) {
+            $this->labels = LabelsBag::createFromAttrs([
+                'gender'    => $this->get('labels.gender', false),
+                'plural'    => $this->get('labels.plural', $this->getTitle()),
+                'singular'  => $this->get('labels.singular', $this->getTitle()),
+            ]);
+        }
+
+        if(is_string($key)) {
+            return $this->labels->get($key, $default);
+        }  elseif (is_array($key)) {
+            return $this->labels->set($key);
+        } else {
+            return $this->labels;
+        }
     }
 
     /**

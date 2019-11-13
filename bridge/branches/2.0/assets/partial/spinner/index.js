@@ -1,3 +1,1 @@
-// DEPS
-// Spinkit
-import "./css/spinkit.min.css";
+import './scss/styles.scss';

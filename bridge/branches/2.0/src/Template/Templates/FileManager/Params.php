@@ -2,10 +2,10 @@
 
 namespace tiFy\Template\Templates\FileManager;
 
-use tiFy\Template\Factory\FactoryParams;
+use tiFy\Template\Factory\Params as BaseParams;
 use tiFy\Template\Templates\FileManager\Contracts\Params as ParamsContract;
 
-class Params extends FactoryParams implements ParamsContract
+class Params extends BaseParams implements ParamsContract
 {
     /**
      * Instance du gabarit associé.

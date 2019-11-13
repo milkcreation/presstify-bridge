@@ -2,7 +2,7 @@
 
 namespace tiFy\Kernel;
 
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use tiFy\Contracts\Kernel\Config as ConfigContract;
@@ -13,7 +13,7 @@ class Config extends ParamsBag implements ConfigContract
 {
     /**
      * Instancedu conteneur d'injection de dépendances.
-     * @var
+     * @var Container
      */
     protected $container;
 
@@ -26,9 +26,11 @@ class Config extends ParamsBag implements ConfigContract
     /**
      * CONSTRUCTEUR.
      *
+     * @param Container $container Instance du conteneur d'injection de dépendances.
+     *
      * @return void
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
         $this->paths = $this->container->get('path');

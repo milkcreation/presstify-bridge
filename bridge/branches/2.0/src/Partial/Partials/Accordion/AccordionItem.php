@@ -3,7 +3,7 @@
 namespace tiFy\Partial\Partials\Accordion;
 
 use tiFy\Contracts\Partial\AccordionItem as AccordionItemContract;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
 
 class AccordionItem extends ParamsBag implements AccordionItemContract
 {
@@ -25,11 +25,11 @@ class AccordionItem extends ParamsBag implements AccordionItemContract
     {
         $this->name = $name;
 
-        if (is_string($attrs)) :
+        if (is_string($attrs)) {
             $attrs = ['content' => $attrs];
-        endif;
+        }
 
-        parent::__construct($attrs);
+        $this->set($attrs)->parse();
     }
 
     /**
@@ -91,12 +91,14 @@ class AccordionItem extends ParamsBag implements AccordionItemContract
     /**
      * {@inheritdoc}
      */
-    public function parse($attrs = [])
+    public function parse()
     {
-        parent::parse($attrs);
+        parent::parse();
 
         $this->set('attrs.data-control', 'accordion.item.content');
 
         $this->set('attrs.class', 'Accordion-itemContent');
+
+        return $this;
     }
 }

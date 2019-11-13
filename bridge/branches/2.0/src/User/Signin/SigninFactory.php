@@ -400,7 +400,7 @@ class SigninFactory extends ParamsBag implements SigninFactoryContract
         if (!$this->viewer) {
             $this->viewer = view()->setDirectory(dirname(__DIR__) . '/Resources/views/signin')
                 ->setController(SigninView::class)
-                ->set('signin', $this);
+                ->params(['signin' => $this]);
         }
 
         if (func_num_args() === 0) {

@@ -4,7 +4,6 @@ namespace tiFy\Log;
 
 use App\App;
 use tiFy\Container\ServiceProvider;
-use tiFy\Support\Str;
 
 class LogServiceProvider extends ServiceProvider
 {

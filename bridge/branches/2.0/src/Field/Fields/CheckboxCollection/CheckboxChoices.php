@@ -5,7 +5,7 @@ namespace tiFy\Field\Fields\CheckboxCollection;
 use Illuminate\Support\Arr;
 use tiFy\Contracts\Field\CheckboxChoices as CheckboxChoicesContract;
 use tiFy\Contracts\Field\CheckboxCollection;
-use tiFy\Kernel\Collection\Collection;
+use tiFy\Support\Collection;
 
 class CheckboxChoices extends Collection implements CheckboxChoicesContract
 {
@@ -31,7 +31,7 @@ class CheckboxChoices extends Collection implements CheckboxChoicesContract
     public function __construct($items, $name, $checked = null)
     {
         array_walk($items, function($item, $key) use ($name) {
-            $this->wrap($item, $key)->setName($name);
+            $this->walk($item, $key)->setName($name);
         });
 
         $this->setChecked($checked);
@@ -86,7 +86,7 @@ class CheckboxChoices extends Collection implements CheckboxChoicesContract
     /**
      * {@inheritdoc}
      */
-    public function wrap($item, $key = null)
+    public function walk($item, $key = null)
     {
         if (!$item instanceof CheckboxChoice) {
             $item = new CheckboxChoice($key, $item);

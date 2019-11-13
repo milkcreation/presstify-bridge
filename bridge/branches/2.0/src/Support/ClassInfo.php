@@ -9,9 +9,6 @@ use ReflectionException;
 use tiFy\Contracts\Support\ClassInfo as ClassInfoContract;
 
 /**
- * Class ClassInfo
- * @package tiFy\Support
- *
  * @mixin ReflectionClass
  */
 class ClassInfo implements ClassInfoContract
@@ -100,6 +97,6 @@ class ClassInfo implements ClassInfoContract
      */
     public function getUrl(): string
     {
-        return rtrim(url()->root($this->getRelPath()), '/');
+        return rtrim((string)url()->root($this->getRelPath()), '/');
     }
 }

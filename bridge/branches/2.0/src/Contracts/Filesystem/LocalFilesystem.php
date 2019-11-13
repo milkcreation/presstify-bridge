@@ -10,6 +10,8 @@ interface LocalFilesystem extends Filesystem
     /**
      * Récupération du contenu d'un fichier.
      *
+     * @param string $path Chemin relatif vers le fichier.
+     *
      * @return string
      */
     public function __invoke(string $path): string;

@@ -7,8 +7,6 @@ use tiFy\Contracts\Container\Container;
 use tiFy\Contracts\Cron\CronJob;
 use tiFy\Contracts\Cron\CronManager;
 use tiFy\Contracts\Database\Database;
-use tiFy\Contracts\Db\DbFactory;
-use tiFy\Contracts\Db\DbManager;
 use tiFy\Contracts\Field\Field;
 use tiFy\Contracts\Field\FieldFactory;
 use tiFy\Contracts\Filesystem\Filesystem;
@@ -30,7 +28,6 @@ use tiFy\Contracts\Routing\Redirector;
 use tiFy\Contracts\Routing\Route;
 use tiFy\Contracts\Routing\Router;
 use tiFy\Contracts\Routing\Url;
-use tiFy\Contracts\Routing\UrlFactory;
 use tiFy\Contracts\Support\ClassInfo;
 use tiFy\Contracts\Support\ParamsBag;
 use tiFy\Contracts\Taxonomy\TaxonomyFactory;
@@ -193,26 +190,6 @@ if (!function_exists('database')) {
     }
 }
 
-if (!function_exists('db')) {
-    /**
-     * Récupération du gestionnaire de base de données ou d'une instance de controleur de base de données.
-     *
-     * @param null|string $name Nom de qualification du controleur de base de données.
-     *
-     * @return DbManager|DbFactory|null
-     */
-    function db(?string $name = null)
-    {
-        /* @var DbManager $manager */
-        $manager = app('db');
-
-        if (is_null($name)) {
-            return $manager;
-        }
-        return $manager->get($name);
-    }
-}
-
 if (!function_exists('events')) {
     /**
      * Events - Controleur d'événements.
@@ -311,7 +288,7 @@ if (!function_exists('partial')) {
      * @param mixed $id Nom de qualification ou Liste des attributs de configuration.
      * @param mixed $attrs Liste des attributs de configuration.
      *
-     * @return null|Partial|PartialFactory
+     * @return Partial|PartialFactory|null
      */
     function partial(?string $name = null, $id = null, ?array $attrs = null)
     {
@@ -512,20 +489,6 @@ if (!function_exists('url')) {
     function url(): Url
     {
         return app('url');
-    }
-}
-
-if (!function_exists('url_factory')) {
-    /**
-     * Récupération de l'instance du contrôleur de traitement d'url.
-     *
-     * @param string $url Url à traiter.
-     *
-     * @return UrlFactory
-     */
-    function url_factory($url): UrlFactory
-    {
-        return app()->get('url.factory', [$url]);
     }
 }
 

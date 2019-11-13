@@ -25,7 +25,7 @@ class Ajax extends ParamsBag implements AjaxContract
             'ajax'        => [
                 'url'      => $this->factory->baseUrl() . '/xhr',
                 'dataType' => 'json',
-                'type'     => 'POST',
+                'method'     => 'POST',
             ],
             'data'        => [],
             'columns'     => $this->getColumns(),
@@ -88,7 +88,7 @@ class Ajax extends ParamsBag implements AjaxContract
                 '&eacute;l&eacute;ments', 'tify'),
             'infoEmpty'      => __('Affichage de l\'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments', 'tify'),
             'infoFiltered'   => __('(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)', 'tify'),
-            'infoPostFix'    => __('', 'tify'),
+            'infoPostFix'    => __('&nbsp;', 'tify'),
             'loadingRecords' => __('Chargement en cours...', 'tify'),
             'zeroRecords'    => __('Aucun &eacute;l&eacute;ment &agrave; afficher', 'tify'),
             'emptyTable'     => __('Aucune donnée disponible dans le tableau', 'tify'),

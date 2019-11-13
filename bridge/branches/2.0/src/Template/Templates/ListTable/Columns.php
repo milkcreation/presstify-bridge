@@ -74,9 +74,10 @@ class Columns extends Collection implements ColumnsContract
         ) {
             return (string)$column_primary;
         } else {
-            return $this->collect()->first(function (Column $item) {
+            /** @var Column $column */
+            return ($column = $this->collect()->first(function (Column $item) {
                 return $item->canUseForPrimary();
-            })->getName();
+            })) ? $column->getName() : '';
         }
     }
 

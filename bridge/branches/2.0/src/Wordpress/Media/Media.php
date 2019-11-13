@@ -2,7 +2,7 @@
 
 namespace tiFy\Wordpress\Media;
 
-use tiFy\Support\Img;
+use tiFy\Support\{Img, MimeTypes};
 
 class Media
 {
@@ -13,9 +13,32 @@ class Media
      */
     public function __construct()
     {
-        app()->get('wp.media.download');
-
         app()->get('wp.media.upload');
+
+        MimeTypes::setDefaultMapping(function () {
+            $mapping = [
+                'extensions' => [],
+                'mimes'      => [],
+            ];
+
+            foreach (get_allowed_mime_types() as $exts => $mimeType) {
+                $exts = explode('|', $exts);
+                if (!isset($mapping['extensions'][$mimeType])) {
+                    $mapping['extensions'][$mimeType] = [];
+                }
+                foreach ($exts as $ext) {
+                    if (!in_array($ext, $mapping['extensions'][$mimeType])) {
+                        $mapping['extensions'][$mimeType][] = $ext;
+                    }
+                    if (!isset($mapping['mimes'][$ext])) {
+                        $mapping['mimes'][$ext] = [];
+                    }
+                    $mapping['mimes'][$ext][] = $mimeType;
+                }
+            }
+
+            return $mapping;
+        });
 
         /**
          * @see wp_get_attachment_url()
@@ -62,20 +85,21 @@ class Media
          * Calcul des sources images inclus dans l'attribut 'srcset'.
          * @see wp_calculate_image_srcset()
          */
-        add_filter('wp_calculate_image_srcset', function ($sources, $size_array, $image_src, $image_meta, $attachment_id) {
-            if (! $metadata = \get_post_meta($attachment_id, '_wp_attachment_metadata', true)) :
-                return $sources;
-            endif;
-            if (! isset($metadata['upload_dir'])) :
-                return $sources;
-            endif;
+        add_filter('wp_calculate_image_srcset',
+            function ($sources, $size_array, $image_src, $image_meta, $attachment_id) {
+                if (!$metadata = \get_post_meta($attachment_id, '_wp_attachment_metadata', true)) :
+                    return $sources;
+                endif;
+                if (!isset($metadata['upload_dir'])) :
+                    return $sources;
+                endif;
 
-            foreach($sources as &$attrs) :
-                $attrs['url'] = $metadata['upload_dir']['url'] . '/' . basename($attrs['url']);
-            endforeach;
+                foreach ($sources as &$attrs) :
+                    $attrs['url'] = $metadata['upload_dir']['url'] . '/' . basename($attrs['url']);
+                endforeach;
 
-            return $sources;
-        }, 10, 5);
+                return $sources;
+            }, 10, 5);
     }
 
     /**
@@ -107,6 +131,6 @@ class Media
             $filename = $path;
         }
 
-        return file_exists($filename)? $filename : null;
+        return file_exists($filename) ? $filename : null;
     }
 }

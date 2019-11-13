@@ -2,14 +2,13 @@
 
 namespace tiFy\Template\Templates\FileManager;
 
-use tiFy\Template\Factory\FactoryCache;
+use tiFy\Template\Factory\Cache as BaseCache;
 
-class Cache extends FactoryCache
+class Cache extends BaseCache
 {
     /**
      * Instance du gabarit associé.
      * @var FileManager
      */
     protected $factory;
-
 }

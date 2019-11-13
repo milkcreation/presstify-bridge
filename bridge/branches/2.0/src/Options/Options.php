@@ -4,7 +4,6 @@ namespace tiFy\Options;
 
 use Psr\Container\ContainerInterface as Container;
 use tiFy\Options\Page\OptionsPage;
-use tiFy\Support\Manager;
 
 class Options
 {
@@ -22,6 +21,8 @@ class Options
 
     /**
      * CONSTRUCTEUR.
+     *
+     * @param Container $container Instance du conteneur d'injection de dépendances.
      *
      * @return void
      */

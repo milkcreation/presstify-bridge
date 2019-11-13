@@ -1,3 +1,1 @@
-// DEPS
-// Hover CSS
-import '~/hover.css/scss/hover.scss';
+import './scss/styles.scss';

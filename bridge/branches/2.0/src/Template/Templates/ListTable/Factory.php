@@ -10,6 +10,7 @@ use tiFy\Template\Templates\ListTable\Contracts\{
     BulkActions,
     Columns,
     DbBuilder,
+    Extras,
     Item,
     Items,
     Factory as FactoryContract,
@@ -61,6 +62,14 @@ class Factory extends BaseFactory implements FactoryContract
     public function columns(): Columns
     {
         return $this->resolve('columns');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function extras(): Extras
+    {
+        return $this->resolve('extras');
     }
 
     /**

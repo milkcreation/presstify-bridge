@@ -27,7 +27,7 @@ class OptionsPageView extends ViewController
     {
         if (in_array($name, $this->mixins)) :
             return call_user_func_array(
-                [$this->engine->get('options_page'), $name],
+                [$this->engine->params('options_page'), $name],
                 $arguments
             );
         endif;

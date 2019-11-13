@@ -5,7 +5,7 @@ namespace tiFy\Form;
 use tiFy\Contracts\Form\ButtonController as ButtonControllerContract;
 use tiFy\Contracts\Form\FormFactory;
 use tiFy\Form\Factory\ResolverTrait;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
 
 class ButtonController extends ParamsBag implements ButtonControllerContract
 {
@@ -46,7 +46,7 @@ class ButtonController extends ParamsBag implements ButtonControllerContract
         $this->name = $name;
         $this->form = $form;
 
-        parent::__construct($attrs);
+        $this->set($attrs)->parse();
 
         $this->boot();
     }
@@ -94,9 +94,9 @@ class ButtonController extends ParamsBag implements ButtonControllerContract
     /**
      * {@inheritdoc}
      */
-    public function parse($attrs = [])
+    public function parse()
     {
-        parent::parse($attrs);
+        parent::parse();
 
         // Attributs HTML de l'encapsuleur de champ.
         if ($wrapper = $this->get('wrapper')) :
@@ -136,6 +136,8 @@ class ButtonController extends ParamsBag implements ButtonControllerContract
                 $this->set("{$prefix}attrs.data-grid_{$k}", filter_var($v, FILTER_SANITIZE_STRING));
             endforeach;
         endif;
+
+        return $this;
     }
 
     /**
@@ -143,9 +145,6 @@ class ButtonController extends ParamsBag implements ButtonControllerContract
      */
     public function render()
     {
-        return field(
-            'button',
-            $this->all()
-        );
+        return field('button', $this->all());
     }
 }

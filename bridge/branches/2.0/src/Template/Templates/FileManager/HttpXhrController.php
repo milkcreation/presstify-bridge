@@ -4,10 +4,10 @@ namespace tiFy\Template\Templates\FileManager;
 
 use League\Route\Http\Exception\MethodNotAllowedException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use tiFy\Template\Factory\FactoryHttpXhrController;
+use tiFy\Template\Factory\HttpXhrController as BaseHttpXhrController;
 use tiFy\Template\Templates\FileManager\Contracts\HttpXhrController as HttpXhrControllerContract;
 
-class HttpXhrController extends FactoryHttpXhrController implements HttpXhrControllerContract
+class HttpXhrController extends BaseHttpXhrController implements HttpXhrControllerContract
 {
     /**
      * Instance du gabarit d'affichage.
@@ -198,7 +198,7 @@ class HttpXhrController extends FactoryHttpXhrController implements HttpXhrContr
      */
     public function rename(string $path): array
     {
-        $name = request()->input('name');
+        $name = $this->factory->request()->input('name');
 
         if (!$this->factory->filesystem()->has($path)) {
             return [

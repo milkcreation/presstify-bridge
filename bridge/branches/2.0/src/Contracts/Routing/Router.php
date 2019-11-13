@@ -176,7 +176,7 @@ interface Router extends
      *
      * @return string
      */
-    public function url(string $name, array $parameters = [], bool $absolute = true);
+    public function url(string $name, array $parameters = [], bool $absolute = false);
 
     /**
      * Définition du préfixe du chemin des routes.

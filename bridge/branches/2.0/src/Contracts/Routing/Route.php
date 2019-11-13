@@ -11,6 +11,7 @@ use League\Route\RouteConditionHandlerInterface;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use tiFy\Contracts\Support\ParamsBag;
 
 /**
  * Interface Route
@@ -68,7 +69,7 @@ interface Route extends
      *
      * @throws LogicException
      */
-    public function getUrl(array $params = [], bool $absolute = true): string;
+    public function getUrl(array $params = [], bool $absolute = false): string;
 
     /**
      * Récupération de variable d'url de la route.
@@ -93,6 +94,16 @@ interface Route extends
      * @return boolean
      */
     public function isCurrent(): bool;
+
+    /**
+     * Définition de paramètre|Récupération de paramètres|Récupération de l'instance des paramètres.
+     *
+     * @param array|string|null $key Liste des définitions de paramètres|Indice de qualification du paramètres à récupérer (Syntaxe à point permise).
+     * @param mixed $default Valeur de retour par défaut lors de la récupération de paramètres.
+     *
+     * @return mixed|ParamsBag
+     */
+    public function params($key = null, $default = null);
 
     /**
      * Définition de l'indicateur de route en réponse à la requête courante.

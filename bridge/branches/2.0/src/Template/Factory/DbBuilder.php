@@ -35,7 +35,7 @@ class DbBuilder extends Builder implements FactoryDbBuilderContract
     public function query(): ?EloquentBuilder
     {
         if (is_null($this->query)) {
-            $this->query = $this->db() ? $this->db()::query() : null;
+            $this->query = $this->db() ? $this->db()->newQuery() : null;
         }
 
         return $this->query;

@@ -8,6 +8,7 @@
 ?>
 <div class="tablenav <?php echo esc_attr($which??'top'); ?>">
     <?php $this->insert('bulk-actions', compact('which')); ?>
+    <?php $this->insert('extras', compact('which')); ?>
     <?php $this->insert('pagination', compact('which')); ?>
     <br class="clear" />
 </div>

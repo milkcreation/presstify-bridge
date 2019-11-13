@@ -4,8 +4,6 @@
  * ---------------------------------------------------------------------------------------------------------------------
  * @var tiFy\Contracts\Form\FactoryView $this
  */
-?>
-<?php
 if ($errors = $this->get('notices.error', [])) :
     echo partial('notice', [
         'type'    => 'error',

@@ -1,24 +1,31 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Metabox;
 
+use BadMethodCallException;
+use Exception;
+use tiFy\Contracts\Metabox\MetaboxView as MetaboxViewContract;
 use tiFy\View\ViewController;
 
 /**
- * Class MetaboxView
+ * @method string name()
+ * @method mixed params(string|array|null $key = null, mixed $default = null)
+ * @method mixed value(string|null $key = null, mixed $default = null)
  */
-class MetaboxView extends ViewController
+class MetaboxView extends ViewController implements MetaboxViewContract
 {
     /**
-     * Liste des méthodes héritées.
+     * Liste des méthodes de délégation permises.
      * @var array
      */
     protected $mixins = [
-
+        'name',
+        'params',
+        'value',
     ];
 
     /**
-     * Translation d'appel des méthodes de l'application associée.
+     * Délégation d'appel des méthodes de l'application associée.
      *
      * @param string $name Nom de la méthode à appeler.
      * @param array $arguments Liste des variables passées en argument.
@@ -27,11 +34,18 @@ class MetaboxView extends ViewController
      */
     public function __call($name, $arguments)
     {
-        if (in_array($name, $this->mixins)) :
-            return call_user_func_array(
-                [$this->engine->get('metabox'), $name],
-                $arguments
+        try {
+            $metabox = $this->engine->params('metabox');
+            if (!in_array($name, $this->mixins)) {
+                throw new BadMethodCallException(sprintf(__(
+                    'La méthode [%s] de boîte de saisie ne peut être appelée dans un gabarit d\'affichage.', 'tify'
+                ), $name));
+            }
+            return $metabox->{$name}(...$arguments);
+        } catch (Exception $e) {
+            throw new BadMethodCallException(
+                sprintf(__('La méthode [%s] de metabox n\'est pas disponible.', 'tify'), $name)
             );
-        endif;
+        }
     }
 }

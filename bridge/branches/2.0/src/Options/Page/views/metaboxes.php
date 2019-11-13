@@ -3,7 +3,6 @@
  * @var tiFy\Options\Page\OptionsPageView $this.
  */
 ?>
-
 <div style="margin-right:300px; margin-top:20px;">
     <div style="float:left; width: 100%;">
         <?php settings_fields($this->get('option_group')); ?>

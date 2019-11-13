@@ -6,20 +6,17 @@
  */
 ?>
 <?php echo $this->before(); ?>
-
 <div class="Form">
     <?php $this->insert('notices', $this->all()); ?>
 
     <form <?php echo $this->htmlAttrs($this->form()->get('attrs', [])); ?>>
-        <?php
-        echo field('hidden', [
+        <?php echo field('hidden', [
             'name'  => '_token',
             'value' => $this->form()->csrf(),
             'attrs' => [
                 'class' => ''
             ]
-        ]);
-        ?>
+        ]); ?>
 
         <header class="Form-header Form-header--<?php echo $this->form()->tagName(); ?>">
             <?php $this->insert('header', $this->all()); ?>
@@ -34,6 +31,5 @@
         </footer>
     </form>
 </div>
-
 <?php echo $this->after();
 

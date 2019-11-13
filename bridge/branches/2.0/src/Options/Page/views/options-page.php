@@ -3,7 +3,6 @@
  * @var tiFy\Options\Page\OptionsPageView $this.
  */
 ?>
-
 <div class="wrap">
     <h2><?php echo $this->get('page_title', ''); ?></h2>
 

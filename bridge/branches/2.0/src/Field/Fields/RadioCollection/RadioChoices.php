@@ -5,7 +5,7 @@ namespace tiFy\Field\Fields\RadioCollection;
 use Illuminate\Support\Arr;
 use tiFy\Contracts\Field\RadioChoices as RadioChoicesContract;
 use tiFy\Contracts\Field\RadioCollection;
-use tiFy\Kernel\Collection\Collection;
+use tiFy\Support\Collection;
 
 class RadioChoices extends Collection implements RadioChoicesContract
 {
@@ -31,7 +31,7 @@ class RadioChoices extends Collection implements RadioChoicesContract
     public function __construct($items, $name, $checked = null)
     {
         array_walk($items, function($item, $key) use ($name) {
-            $this->wrap($item, $key)->setName($name);
+            $this->walk($item, $key)->setName($name);
         });
 
         $this->setChecked($checked);
@@ -92,7 +92,7 @@ class RadioChoices extends Collection implements RadioChoicesContract
     /**
      * {@inheritdoc}
      */
-    public function wrap($item, $key = null)
+    public function walk($item, $key = null)
     {
         if (!$item instanceof RadioChoice) {
             $item = new RadioChoice($key, $item);

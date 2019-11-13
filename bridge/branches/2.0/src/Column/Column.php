@@ -53,7 +53,7 @@ final class Column implements ColumnContract
                 foreach ($items as $name => $attrs) :
                     $name = (is_numeric($name)) ? Str::random() : $name;
 
-                    $_screen = (preg_match('#(.*)@(post_type|taxonomy|user)#', $screen))
+                    $_screen = (preg_match('/(.*)@(post_type|taxonomy|user)/', $screen))
                         ? "list::{$screen}": $screen;
 
                     $this->items[] = app()->get('column.item', [$name, $attrs, $_screen]);

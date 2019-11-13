@@ -4,7 +4,7 @@ namespace tiFy\Form\Factory;
 
 use tiFy\Contracts\Form\FactoryOptions;
 use tiFy\Contracts\Form\FormFactory;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
 
 class Options extends ParamsBag implements FactoryOptions
 {
@@ -35,6 +35,6 @@ class Options extends ParamsBag implements FactoryOptions
     {
         $this->form = $form;
 
-        parent::__construct($options);
+        $this->set($options)->parse();
     }
 }

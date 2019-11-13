@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Wordpress\Form;
 
@@ -30,10 +30,6 @@ class Form implements FormContract
             $this->manager->register($name, $attrs);
         }
 
-        app()->add('form.addon.mailer', function ($name, $attrs, FormFactory $form) {
-            return new Mailer($name, $attrs, $form);
-        });
-
         add_action('wp', function () {
             foreach ($this->manager->all() as $form) {
                 /* @var FormFactory $form */
@@ -56,6 +52,20 @@ class Form implements FormContract
                     }
                 }
             }
+        });
+
+        $this->registerOverride();
+    }
+
+    /**
+     * Déclaration des injections de dépendance de surchage.
+     *
+     * @return void
+     */
+    public function registerOverride(): void
+    {
+        app()->add('form.addon.mailer', function () {
+            return new Mailer();
         });
     }
 }

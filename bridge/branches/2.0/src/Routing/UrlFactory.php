@@ -2,39 +2,39 @@
 
 namespace tiFy\Routing;
 
-use League\Uri\{Components\Query,
+use Psr\Http\Message\UriInterface;
+use League\Uri\{
+    Components\Query,
     Http,
     Modifiers\AppendQuery,
     Modifiers\AppendSegment,
     Modifiers\RemoveQueryParams,
-    UriInterface};
+    UriInterface as LeagueUri,
+};
 use tiFy\Contracts\Routing\UrlFactory as UrlFactoryContract;
 
 class UrlFactory implements UrlFactoryContract
 {
     /**
-     * Instance du controleur d'url.
-     * @var UriInterface
+     * Instance de l'url.
+     * @var LeagueUri|UriInterface
      */
-    protected $url;
+    protected $uri;
 
     /**
      * CONSTRUCTEUR
      *
-     * @param string|UriInterface Url à traiter.
+     * @param UriInterface|LeagueUri|string $uri
      *
      * @return void
      */
-    public function __construct($url)
+    public function __construct($uri)
     {
-        if (!$url instanceof UriInterface) {
-            $url = Http::createFromString($url);
-        }
-        $this->url = $url;
+        $this->set($uri);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function __toString(): string
     {
@@ -42,59 +42,72 @@ class UrlFactory implements UrlFactoryContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function appendSegment($segment): UrlFactoryContract
+    public function appendSegment(string $segment): UrlFactoryContract
     {
-        $this->url = (new AppendSegment($segment))->process($this->url);
+        $this->uri = (new AppendSegment($segment))->process($this->uri);
 
         return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function deleteSegments($segment): UrlFactoryContract
+    public function deleteSegment(string $segment): UrlFactoryContract
     {
-        if (preg_match("#{$segment}#", $this->url->getPath(), $matches)) {
-            $this->url = $this->url->withPath(preg_replace("#{$matches[0]}#", '', $this->url->getPath()));
+        if (preg_match("#{$segment}#", $this->uri->getPath(), $matches)) {
+            $this->uri = $this->uri->withPath(preg_replace("#{$matches[0]}#", '', $this->uri->getPath()));
         }
         return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function get(): UriInterface
+    public function get()
     {
-        return $this->url;
+        return $this->uri;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getDecode()
+    public function decoded(bool $raw = true)
     {
-        return urldecode((string)$this->url);
+        return $raw ? rawurldecode((string)$this->uri) : urldecode((string)$this->uri);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function with(array $args)
+    public function set($uri): UrlFactoryContract
     {
-        $this->without(array_keys($args));
-        $this->url = (new AppendQuery((string)Query::createFromPairs($args)))->process($this->url);
+        if (!$uri instanceof UriInterface || !$uri instanceof LeagueUri) {
+            $uri = Http::createFromString($uri);
+        }
+        $this->uri = $uri;
 
         return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function without(array $args)
+    public function with(array $args): UrlFactoryContract
     {
-        $this->url = (new RemoveQueryParams($args))->process($this->url);
+        $this->without(array_keys($args));
+        $this->uri = (new AppendQuery((string)Query::createFromPairs($args)))->process($this->uri);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function without(array $args): UrlFactoryContract
+    {
+        $this->uri = (new RemoveQueryParams($args))->process($this->uri);
 
         return $this;
     }

@@ -7,17 +7,16 @@
  */
 ?>
 <?php $this->insert('spinner'); ?>
-
-<?php
-echo partial('tag', [
+<?php echo partial('tag', [
     'tag'   => 'img',
     'attrs' => [
         'alt'   => $file->getBasename(),
         'class' => 'FileManager-preview FileManager-preview--image',
         'src'   => $file->getUrl()
     ]
-]);
-echo partial('tag', [
+]); ?>
+
+<?php echo partial('tag', [
     'tag'     => 'a',
     'attrs'   => [
         'class'  => 'FileManager-button FileManager-button--fullscreen',

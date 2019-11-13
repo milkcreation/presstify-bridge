@@ -212,7 +212,7 @@ class Router extends LeagueRouter implements RouterContract
     /**
      * @inheritdoc
      */
-    public function url(string $name, array $parameters = [], bool $absolute = true): ?string
+    public function url(string $name, array $parameters = [], bool $absolute = false): ?string
     {
         try {
             $route = $this->getNamedRoute($name);

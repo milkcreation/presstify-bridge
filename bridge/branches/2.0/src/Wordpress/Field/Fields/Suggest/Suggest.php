@@ -2,16 +2,14 @@
 
 namespace tiFy\Wordpress\Field\Fields\Suggest;
 
+use Illuminate\Support\Collection;
 use tiFy\Field\Fields\Suggest\Suggest as BaseSuggest;
-use tiFy\Support\Proxy\Request as req;
+use tiFy\Support\Proxy\Request;
 use tiFy\Wordpress\{
     Contracts\Field\Suggest as SuggestContract,
     Query\QueryPost,
-    Query\QueryPosts,
     Query\QueryTerm,
-    Query\QueryTerms,
-    Query\QueryUser,
-    Query\QueryUsers
+    Query\QueryUser
 };
 
 class Suggest extends BaseSuggest implements SuggestContract
@@ -42,13 +40,15 @@ class Suggest extends BaseSuggest implements SuggestContract
      */
     public function xhrResponsePostQuery(...$args): array
     {
-        $args = array_merge([
-            'post_type' => 'any',
-        ], req::input('query_args', []), ['s' => req::input('_term', '')]);
+        $args = array_merge(
+            ['post_type' => 'any'],
+            Request::input('query_args', []),
+            ['s' => Request::input('_term', '')]
+        );
 
-        $posts = QueryPosts::createFromArgs($args) ?: [];
+        $posts = QueryPost::queryFromArgs($args);
 
-        $items = collect($posts)->map(function (QueryPost &$item) {
+        $items = (new Collection($posts))->map(function (QueryPost &$item) {
             return [
                 'alt'   => (string)$item->getId(),
                 'label' => (string)$item->getTitle(),
@@ -69,11 +69,11 @@ class Suggest extends BaseSuggest implements SuggestContract
      */
     public function xhrResponseTermQuery(...$args): array
     {
-        $args = array_merge(req::input('query_args', []), ['search' => req::input('_term', '')]);
+        $args = array_merge(Request::input('query_args', []), ['search' => Request::input('_term', '')]);
 
-        $terms = QueryTerms::createFromArgs($args) ?: [];
+        $terms = QueryTerm::queryFromArgs($args);
 
-        $items = collect($terms)->map(function (QueryTerm &$item) {
+        $items = (new Collection($terms))->map(function (QueryTerm &$item) {
             return [
                 'alt'   => (string)$item->getId(),
                 'label' => (string)$item->getName(),
@@ -94,11 +94,11 @@ class Suggest extends BaseSuggest implements SuggestContract
      */
     public function xhrResponseUserQuery(...$args): array
     {
-        $args = array_merge(req::input('query_args', []), ['search' => req::input('_term', '')]);
+        $args = array_merge(Request::input('query_args', []), ['search' => Request::input('_term', '')]);
 
-        $terms = QueryUsers::createFromArgs($args) ?: [];
+        $terms = QueryUser::queryFromArgs($args);
 
-        $items = collect($terms)->map(function (QueryUser &$item) {
+        $items = (new Collection($terms))->map(function (QueryUser &$item) {
             return [
                 'alt'   => (string)$item->getId(),
                 'label' => (string)$item->getDisplayName(),

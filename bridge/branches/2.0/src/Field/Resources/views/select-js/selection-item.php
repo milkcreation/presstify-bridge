@@ -5,5 +5,4 @@
  * @var tiFy\Field\FieldView $this
  * @var tiFy\Contracts\Field\SelectChoice $item
  */
-?>
-<?php echo $item->getContent(); ?>
+echo $item->getContent();

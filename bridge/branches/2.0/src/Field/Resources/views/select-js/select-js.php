@@ -6,7 +6,6 @@
  */
 ?>
 <?php $this->before(); ?>
-
 <div <?php $this->attrs(); ?>>
     <?php echo field('select', $this->get('handler', [])); ?>
 
@@ -36,5 +35,4 @@
         </ul>
     </div>
 </div>
-
 <?php $this->after();

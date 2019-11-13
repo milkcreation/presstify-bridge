@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-use tiFy\Contracts\Kernel\Collection;
+use tiFy\Contracts\Support\Collection;
 
 interface DropdownItems extends Collection
 {

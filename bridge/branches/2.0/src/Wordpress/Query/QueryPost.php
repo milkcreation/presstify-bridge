@@ -2,16 +2,15 @@
 
 namespace tiFy\Wordpress\Query;
 
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use tiFy\Contracts\PostType\{PostTypeFactory, PostTypeStatus};
 use tiFy\Support\{DateTime, ParamsBag};
 use tiFy\Support\Proxy\{Cache, PostType};
-use tiFy\Wordpress\{
-    Contracts\Database\PostBuilder,
-    Contracts\QueryComment as QueryCommentContract,
-    Contracts\QueryPost as QueryPostContract,
+use tiFy\Wordpress\{Contracts\Database\PostBuilder,
+    Contracts\Query\QueryComment as QueryCommentContract,
+    Contracts\Query\QueryPost as QueryPostContract,
     Database\Model\Post as ModelPost,
-    Proxy\Media
-};
+    Proxy\Media};
 use WP_Post;
 use WP_Query;
 use WP_Term_Query;
@@ -19,6 +18,18 @@ use WP_User;
 
 class QueryPost extends ParamsBag implements QueryPostContract
 {
+    /**
+     * Nom de qualification du type de post ou liste de types de post associés.
+     * @var string|string[]
+     */
+    protected static $postType = [];
+
+    /**
+     * Liste des arguments de requête de récupération des éléments par défaut.
+     * @var array
+     */
+    protected static $defaultArgs = [];
+
     /**
      * Instance du modèle de base de données associé.
      * @var PostBuilder
@@ -89,6 +100,95 @@ class QueryPost extends ParamsBag implements QueryPostContract
                 'post_type'      => 'any',
                 'posts_per_page' => 1,
             ])) && ($wp_post[0] instanceof WP_Post)) ? new static($wp_post[0]) : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function parseQueryArgs(array $args = []): array
+    {
+        if ($post_type = static::$postType) {
+            $args['post_type'] = $post_type;
+        }
+
+        return array_merge(static::$defaultArgs, $args);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function query(WP_Query $wp_query): array
+    {
+        if ($posts = $wp_query->posts) {
+            array_walk($posts, function (WP_Post &$wp_post) {
+                $wp_post = new static($wp_post);
+            });
+            return $posts;
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromArgs(array $args = []): array
+    {
+        return static::query(new WP_Query(static::parseQueryArgs($args)));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromEloquent(EloquentCollection $collection): array
+    {
+        $items = $collection->toArray();
+        array_walk($items, function (array &$item) {
+            $item = new static(new WP_Post((object) $item));
+        });
+
+        return $items;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromGlobals(): array
+    {
+        global $wp_query;
+
+        return static::query($wp_query);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromIds(array $ids): array
+    {
+        $args = static::parseQueryArgs(['post__in' => $ids, 'posts_per_page' => -1]);
+        if(!isset($args['post_type'])) {
+            $args['post_type'] = 'any';
+        }
+        $args['post__in'] = $ids;
+        $args['posts_per_page'] = -1;
+
+        return static::query(new WP_Query($args));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function setDefaultArgs(array $args): void
+    {
+        self::$defaultArgs = $args;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function setPostType($post_type): void
+    {
+        self::$postType = $post_type;
     }
 
     /**
@@ -212,9 +312,9 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public function getComments(array $args = []): iterable
+    public function getComments(array $args = []): array
     {
-        return QueryComments::createFromArgs(array_merge(['post_id' => $this->getId()], $args)) ?: [];
+        return QueryComment::queryFromArgs(array_merge(['post_id' => $this->getId()], $args));
     }
 
     /**

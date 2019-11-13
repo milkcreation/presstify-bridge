@@ -42,7 +42,7 @@ abstract class PartialFactory extends ParamsBag implements PartialFactoryContrac
 
     /**
      * Instance du moteur de gabarits d'affichage.
-     * @return ViewEngine
+     * @var ViewEngine
      */
     protected $viewer;
 
@@ -205,7 +205,7 @@ abstract class PartialFactory extends ParamsBag implements PartialFactoryContrac
     public function parseViewer(): PartialFactoryContract
     {
         foreach($this->get('viewer', []) as $key => $value) {
-            $this->viewer()->set($key, $value);
+            $this->viewer()->params([$key => $value]);
         }
 
         return $this;

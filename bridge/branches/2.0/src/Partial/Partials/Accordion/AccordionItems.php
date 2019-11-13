@@ -1,14 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Partial\Partials\Accordion;
 
 use Illuminate\Support\Arr;
-use tiFy\Contracts\Partial\Accordion;
-use tiFy\Contracts\Partial\AccordionItems as AccordionItemsContract;
-use tiFy\Kernel\Collection\QueryCollection;
+use tiFy\Contracts\Partial\{
+    Accordion,
+    AccordionItem as AccordionItemContract,
+    AccordionItems as AccordionItemsContract
+};
+use tiFy\Support\Collection;
 use tiFy\Support\HtmlAttrs;
 
-class AccordionItems extends QueryCollection implements AccordionItemsContract
+class AccordionItems extends Collection implements AccordionItemsContract
 {
     /**
      * Instance du controleur d'affichage.
@@ -26,56 +29,49 @@ class AccordionItems extends QueryCollection implements AccordionItemsContract
      */
     public function __construct($items, $opened = null)
     {
-        $this->query($items);
+        array_walk($items, [$this, 'walk']);
+
         $this->setOpened($opened);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->render();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function query($args)
+    public function render(): string
     {
-        array_walk($args, [$this, 'wrap']);
+        return $this->walker($this->items, 0, null);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function render()
+    public function setOpened($opened = null): AccordionItemsContract
     {
-        return $this->walk($this->items, 0, null);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setOpened($opened = null)
-    {
-        if (!is_null($opened)) :
+        if (!is_null($opened)) {
             $opened = Arr::wrap($opened);
 
             $this->collect()->each(function (AccordionItem $item) use ($opened) {
-                if (in_array($item->getName(), $opened)) :
+                if (in_array($item->getName(), $opened)) {
                     $item->set('open', true);
-                endif;
+                }
             });
-        endif;
+        }
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function setPartial(Accordion $partial)
+    public function setPartial(Accordion $partial): AccordionItemsContract
     {
         $this->partial = $partial;
 
@@ -83,22 +79,22 @@ class AccordionItems extends QueryCollection implements AccordionItemsContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function walk($items = [], $depth = 0, $parent = null)
+    public function walker($items = [], $depth = 0, $parent = null): string
     {
         $opened = false;
+        $output = '';
 
-        $output = "";
-        foreach ($items as $item) :
-            if ($item->getParent() !== $parent) :
+        foreach ($items as $item) {
+            if ($item->getParent() !== $parent) {
                 continue;
-            endif;
+            }
 
-            if (!$opened) :
+            if (!$opened) {
                 $output = "<ul class=\"Accordion-items Accordion-items--{$depth}\" data-control=\"accordion.items\">";
                 $opened = true;
-            endif;
+            }
 
             $item->setDepth($depth);
 
@@ -108,23 +104,23 @@ class AccordionItems extends QueryCollection implements AccordionItemsContract
                 'aria-open'    => $item->isOpen() ? 'true' : 'false'
             ];
 
-            $output .= "<li ". HtmlAttrs::createFromAttrs($attrs) .">";
+            $output .= "<li " . HtmlAttrs::createFromAttrs($attrs) . ">";
             $output .= $this->partial->viewer('item', compact('item'));
-            $output .= $this->walk($items, ($depth + 1), $item->getName());
+            $output .= $this->walker($items, ($depth + 1), $item->getName());
             $output .= "</li>";
-        endforeach;
+        }
 
-        if ($opened) :
+        if ($opened) {
             $output .= "</ul>";
-        endif;
+        }
 
         return $output;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function wrap($item, $key = null)
+    public function walk($item, $key = null): AccordionItemContract
     {
         if (!$item instanceof AccordionItem) {
             $item = new AccordionItem($key, $item);

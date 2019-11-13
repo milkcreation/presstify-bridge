@@ -81,6 +81,7 @@ class Groups extends Collection implements FactoryGroups
                 });
             }
         }
+
         return $this;
     }
 
@@ -92,6 +93,7 @@ class Groups extends Collection implements FactoryGroups
         if (!$item instanceof FactoryGroup) {
             $item = new Group(array_merge(['name' => $key], (array)$item));
         }
+
         return $this->items[$item->getName()] = $item->prepare($this);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace tiFy\Form\Field\Recaptcha;
 
-use tiFy\Contracts\Api\Recaptcha as ApiRecaptcha;
+use tiFy\Api\Recaptcha\Contracts\Recaptcha as ApiRecaptcha;
 use tiFy\Contracts\Form\FactoryField;
 use tiFy\Form\FieldController;
 
@@ -53,7 +53,7 @@ class Recaptcha extends FieldController
         return field('recaptcha', array_merge($this->field()->getExtras(), [
             'name'  => $this->field()->getName(),
             'attrs' => array_merge(
-                ['id' => preg_replace('#-#', '_', sanitize_key($this->form()->name()))],
+                ['id' => preg_replace('/-/', '_', sanitize_key($this->form()->name()))],
                 $this->field()->get('attrs', [])
             )
         ]));

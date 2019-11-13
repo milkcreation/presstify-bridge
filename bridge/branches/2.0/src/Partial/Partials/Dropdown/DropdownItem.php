@@ -3,7 +3,7 @@
 namespace tiFy\Partial\Partials\Dropdown;
 
 use tiFy\Contracts\Partial\DropdownItem as DropdownItemContract;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
 
 class DropdownItem extends ParamsBag implements DropdownItemContract
 {
@@ -25,11 +25,11 @@ class DropdownItem extends ParamsBag implements DropdownItemContract
     {
         $this->name = $name;
 
-        if (!is_array($attrs)) :
+        if (!is_array($attrs)) {
             $attrs = ['content' => $attrs];
-        endif;
+        }
 
-        parent::__construct($attrs);
+        $this->set($attrs)->parse();
     }
 
     /**

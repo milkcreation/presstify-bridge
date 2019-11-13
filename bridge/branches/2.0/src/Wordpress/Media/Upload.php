@@ -211,14 +211,14 @@ class Upload
         $is_url = false;
 
         // Chemin absolu local
-        if (preg_match('#' . preg_quote(ABSPATH, '/') . '#', $file)) :
+        if (preg_match('/' . preg_quote(ABSPATH, '/') . '/', $file)) :
 
             // Url locale
-        elseif (preg_match('#' . preg_quote(site_url(), '/') . '#', $file)) :
-            $file = ABSPATH . preg_replace('#' . preg_quote(site_url(), '/') . '#', '', $file);
+        elseif (preg_match('/' . preg_quote(site_url(), '/') . '/', $file)) :
+            $file = ABSPATH . preg_replace('/' . preg_quote(site_url(), '/') . '/', '', $file);
 
         // Url distante
-        elseif (preg_match('#^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$#', $file)) :
+        elseif (preg_match('/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/', $file)) :
             $is_url = true;
 
         // Chemin relatif
@@ -557,9 +557,9 @@ class Upload
                 $baseurl = untrailingslashit($site_url . $rel);
 
             //@todo Repertoire de stockage en dehors du repertoire d'hébergement du site 
-            /*elseif (preg_match('#^'. preg_quote($base, '/') .'(.*)#', ABSPATH, $matches)) :
+            /*elseif (preg_match('/^'. preg_quote($base, '/') .'(.*)/', ABSPATH, $matches)) :
                 $forward_path = trim($matches[1], '/');
-                $forward_parts = preg_split('#/#',$forward_path);
+                $forward_parts = preg_split('/\//',$forward_path);
                 $forward_url = '';
                 foreach ($forward_parts as $part) :
                     $forward_url .= '../'; 

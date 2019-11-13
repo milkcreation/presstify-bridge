@@ -1,12 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Partial\Partials\Pagination;
 
-use tiFy\Kernel\Collection\QueryCollection;
+use tiFy\Support\Collection;
 use WP_Query;
 
-class PaginationQuery extends QueryCollection
+class PaginationQuery extends Collection
 {
+    /**
+     * Nombre de résultats trouvés.
+     * @var int
+     */
+    protected $founds = 0;
+
     /**
      * Nombre d'éléments de décalage.
      * @var int
@@ -40,22 +46,14 @@ class PaginationQuery extends QueryCollection
      */
     public function __construct($args)
     {
-        $this->query($args);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function query($args)
-    {
-        if (empty($args)) :
+        if (empty($args)) {
             /** @var WP_Query $wp_query */
             global $wp_query;
-        elseif ($args instanceof WP_Query) :
+        } elseif ($args instanceof WP_Query) {
             $wp_query = $args;
-        else :
+        } else {
             $wp_query = new WP_Query($args);
-        endif;
+        }
 
         $this->page = intval($wp_query->get('paged', 1));
 
@@ -65,19 +63,19 @@ class PaginationQuery extends QueryCollection
 
         $this->founds = intval($wp_query->found_posts);
 
-        if ($this->founds) :
+        if ($this->founds) {
             $this->total_page = $this->offset
                 ? ceil(
                     ($this->founds + (($this->per_page * ($this->page - 1)) - $this->offset)) / $this->per_page
                 )
                 : ceil($this->founds / $this->per_page);
-        else :
+        } else {
             $this->total_page = 0;
-        endif;
+        }
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getPage()
     {
@@ -85,7 +83,7 @@ class PaginationQuery extends QueryCollection
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getTotalPage()
     {

@@ -4,5 +4,4 @@
  * ---------------------------------------------------------------------------------------------------------------------
  * @var tiFy\Contracts\Form\FactoryView $this
  */
-?>
-<?php $this->insert('buttons', $this->all()); ?>
+$this->insert('buttons', $this->all());

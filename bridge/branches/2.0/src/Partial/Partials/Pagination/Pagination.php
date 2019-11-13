@@ -72,7 +72,7 @@ class Pagination extends PartialFactory implements PaginationContract
         $numbers[] = [
             'tag'     => 'span',
             'content' => '...',
-            'attrs'   => 'PartialPagination-itemEllipsis'
+            'attrs'   => 'Pagination-itemEllipsis'
         ];
     }
 
@@ -100,7 +100,7 @@ class Pagination extends PartialFactory implements PaginationContract
                 'tag'     => 'a',
                 'content' => $num,
                 'attrs'   => [
-                    'class'        => 'PartialPagination-itemPage PartialPagination-itemPage--link',
+                    'class'        => 'Pagination-itemPage Pagination-itemPage--link',
                     'href'         => $this->url->page($num),
                     'aria-current' => $current
                 ]
@@ -148,7 +148,7 @@ class Pagination extends PartialFactory implements PaginationContract
                 'tag'     => 'a',
                 'content' => '&laquo;',
                 'attrs'   => [
-                    'class' => 'PartialPagination-itemPage PartialPagination-itemPage--link',
+                    'class' => 'Pagination-itemPage Pagination-itemPage--link',
                     'href'  => $this->url->page(1),
                 ]
             ],
@@ -156,7 +156,7 @@ class Pagination extends PartialFactory implements PaginationContract
                 'tag'     => 'a',
                 'content' => '&raquo;',
                 'attrs'   => [
-                    'class' => 'PartialPagination-itemPage PartialPagination-itemPage--link',
+                    'class' => 'Pagination-itemPage Pagination-itemPage--link',
                     'href'  => $this->url->page($this->query->getTotalPage()),
                 ]
             ],
@@ -164,7 +164,7 @@ class Pagination extends PartialFactory implements PaginationContract
                 'tag'     => 'a',
                 'content' => '&lsaquo;',
                 'attrs'   => [
-                    'class' => 'PartialPagination-itemPage PartialPagination-itemPage--link',
+                    'class' => 'Pagination-itemPage Pagination-itemPage--link',
                     'href'  => $this->url->page($this->query->getPage() - 1),
                 ]
             ],
@@ -172,7 +172,7 @@ class Pagination extends PartialFactory implements PaginationContract
                 'tag'     => 'a',
                 'content' => '&rsaquo;',
                 'attrs'   => [
-                    'class' => 'PartialPagination-itemPage PartialPagination-itemPage--link',
+                    'class' => 'Pagination-itemPage Pagination-itemPage--link',
                     'href'  => $this->url->page($this->query->getPage() + 1),
                 ]
             ]

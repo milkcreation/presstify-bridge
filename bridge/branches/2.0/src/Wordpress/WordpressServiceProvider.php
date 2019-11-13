@@ -3,6 +3,7 @@
 namespace tiFy\Wordpress;
 
 use tiFy\Container\ServiceProvider;
+use tiFy\Support\Locale;
 use tiFy\Wordpress\Asset\Asset;
 use tiFy\Wordpress\Auth\Auth;
 use tiFy\Wordpress\Column\Column;
@@ -12,8 +13,8 @@ use tiFy\Wordpress\Db\Db;
 use tiFy\Wordpress\Filesystem\Filesystem;
 use tiFy\Wordpress\Field\Field;
 use tiFy\Wordpress\Form\Form;
+use tiFy\Wordpress\Http\Http;
 use tiFy\Wordpress\Mail\Mail;
-use tiFy\Wordpress\Media\Download;
 use tiFy\Wordpress\Media\Media;
 use tiFy\Wordpress\Media\Upload;
 use tiFy\Wordpress\Metabox\Metabox;
@@ -22,11 +23,8 @@ use tiFy\Wordpress\PageHook\PageHook;
 use tiFy\Wordpress\Partial\Partial;
 use tiFy\Wordpress\PostType\PostType;
 use tiFy\Wordpress\Query\QueryPost;
-use tiFy\Wordpress\Query\QueryPosts;
 use tiFy\Wordpress\Query\QueryTerm;
-use tiFy\Wordpress\Query\QueryTerms;
 use tiFy\Wordpress\Query\QueryUser;
-use tiFy\Wordpress\Query\QueryUsers;
 use tiFy\Wordpress\Routing\Routing;
 use tiFy\Wordpress\Routing\WpQuery;
 use tiFy\Wordpress\Routing\WpScreen;
@@ -34,13 +32,10 @@ use tiFy\Wordpress\Taxonomy\Taxonomy;
 use tiFy\Wordpress\Template\Template;
 use tiFy\Wordpress\User\User;
 use tiFy\Wordpress\User\Role\RoleFactory;
-use WP_Query;
 use WP_Post;
 use WP_Screen;
 use WP_Term;
-use WP_Term_Query;
 use WP_User;
-use WP_User_Query;
 
 class WordpressServiceProvider extends ServiceProvider
 {
@@ -59,10 +54,10 @@ class WordpressServiceProvider extends ServiceProvider
         'wp.filesystem',
         'wp.field',
         'wp.form',
+        'wp.http',
         'wp.login-redirect',
         'wp.mail',
         'wp.media',
-        'wp.media.download',
         'wp.media.upload',
         'wp.metabox',
         'wp.page-hook',
@@ -70,11 +65,8 @@ class WordpressServiceProvider extends ServiceProvider
         'wp.options',
         'wp.post-type',
         'wp.query.post',
-        'wp.query.posts',
         'wp.query.term',
-        'wp.query.terms',
         'wp.query.user',
-        'wp.query.users',
         'wp.routing',
         'wp.taxonomy',
         'wp.template',
@@ -95,6 +87,10 @@ class WordpressServiceProvider extends ServiceProvider
             $wp = $this->getContainer()->get('wp');
 
             if ($wp->is()) {
+                require_once(ABSPATH . 'wp-admin/includes/translation-install.php');
+                Locale::set(get_locale());
+                Locale::setLanguages(wp_get_available_translations() ?: []);
+
                 if ($this->getContainer()->has('router')) {
                     $this->getContainer()->get('wp.routing');
                 }
@@ -132,6 +128,8 @@ class WordpressServiceProvider extends ServiceProvider
                 if ($this->getContainer()->has('form')) {
                     $this->getContainer()->get('wp.form');
                 }
+
+                $this->getContainer()->get('wp.http');
 
                 if ($this->getContainer()->has('mailer')) {
                     $this->getContainer()->get('wp.mail');
@@ -197,6 +195,7 @@ class WordpressServiceProvider extends ServiceProvider
         $this->registerFilesystem();
         $this->registerField();
         $this->registerForm();
+        $this->registerHttp();
         $this->registerMail();
         $this->registerMedia();
         $this->registerMetabox();
@@ -315,6 +314,18 @@ class WordpressServiceProvider extends ServiceProvider
     }
 
     /**
+     * Déclaration du controleur des processus HTTP. Requête, Réponse, Session ...
+     *
+     * @return void
+     */
+    public function registerHttp(): void
+    {
+        $this->getContainer()->share('wp.http', function () {
+            return new Http($this->getContainer()->get('request'));
+        });
+    }
+
+    /**
      * Déclaration du controleur de gestion de Wordpress.
      *
      * @return void
@@ -347,10 +358,6 @@ class WordpressServiceProvider extends ServiceProvider
     {
         $this->getContainer()->share('wp.media', function () {
             return new Media();
-        });
-
-        $this->getContainer()->share('wp.media.download', function () {
-            return new Download();
         });
 
         $this->getContainer()->share('wp.media.upload', function () {
@@ -425,24 +432,12 @@ class WordpressServiceProvider extends ServiceProvider
      */
     public function registerQuery(): void
     {
-        $this->getContainer()->add('wp.query.posts', function (?WP_Query $wp_query = null) {
-            return !is_null($wp_query) ? new QueryPosts($wp_query) : QueryPosts::createFromGlobals();
-        });
-
         $this->getContainer()->add('wp.query.post', function (?WP_Post $wp_post = null) {
             return !is_null($wp_post) ? new QueryPost($wp_post) : QueryPost::createFromGlobal();
         });
 
-        $this->getContainer()->add('wp.query.terms', function (WP_Term_Query $wp_term_query) {
-            return new QueryTerms($wp_term_query);
-        });
-
         $this->getContainer()->add('wp.query.term', function (WP_Term $wp_term) {
             return new QueryTerm($wp_term);
-        });
-
-        $this->getContainer()->add('wp.query.users', function (WP_User_Query $wp_user_query) {
-            return new QueryUsers($wp_user_query);
         });
 
         $this->getContainer()->add('wp.query.user', function (?WP_User $wp_user = null) {

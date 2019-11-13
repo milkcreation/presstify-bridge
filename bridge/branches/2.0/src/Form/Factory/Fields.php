@@ -1,11 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Form\Factory;
 
-use tiFy\Contracts\Form\FactoryFields;
-use tiFy\Contracts\Form\FactoryField;
-use tiFy\Contracts\Form\FormFactory;
-use tiFy\Kernel\Collection\Collection;
+use tiFy\Contracts\Form\{FactoryField, FactoryFields, FormFactory};
+use tiFy\Support\Collection;
 
 class Fields extends Collection implements FactoryFields
 {
@@ -45,7 +43,7 @@ class Fields extends Collection implements FactoryFields
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function fromGroup(string $name): ?iterable
     {

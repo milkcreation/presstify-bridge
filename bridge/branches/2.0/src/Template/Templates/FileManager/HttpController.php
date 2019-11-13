@@ -3,12 +3,12 @@
 namespace tiFy\Template\Templates\FileManager;
 
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use tiFy\Template\Factory\FactoryHttpController;
+use tiFy\Template\Factory\HttpController as BaseHttpController;
 use tiFy\Template\Templates\FileManager\Contracts\HttpController as HttpControllerContract;
 use Zend\Diactoros\Response;
 use League\Flysystem\FileNotFoundException;
 
-class HttpController extends FactoryHttpController implements HttpControllerContract
+class HttpController extends BaseHttpController implements HttpControllerContract
 {
     /**
      * Instance du gabarit d'affichage.

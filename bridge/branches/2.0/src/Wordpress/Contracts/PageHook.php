@@ -1,24 +1,40 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Wordpress\Contracts;
+
+use Illuminate\Support\Collection;
 
 interface PageHook
 {
     /**
-     * Récupération de la listes des classes de rappel des pages d'accroche déclarées.
+     * Récupération de la liste des instances des pages d'accroche déclarées.
      *
-     * @return PageHookItem[]
+     * @return PageHookItem[]|array
      */
-    public function all();
+    public function all(): array;
+
+    /**
+     * Récupération de la collection des instances des pages d'accroche déclarées.
+     *
+     * @return Collection
+     */
+    public function collect(): Collection;
 
     /**
      * Récupération de la classe de rappel d'une page d'accroche déclarée.
      *
      * @param string $name Nom de qualification.
      *
-     * @return null|PageHookItem
+     * @return PageHookItem|null
      */
-    public function get($name);
+    public function get($name): ?PageHookItem;
+
+    /**
+     * Vérification d'existance d'un contenu d'accroche sur la page d'affichage courante.
+     *
+     * @return boolean
+     */
+    public function has(): bool;
 
     /**
      * Déclaration de page d'accroche.
@@ -28,5 +44,5 @@ interface PageHook
      *
      * @return static
      */
-    public function set($name, $attrs = []);
+    public function set($name, $attrs = []): PageHook;
 }

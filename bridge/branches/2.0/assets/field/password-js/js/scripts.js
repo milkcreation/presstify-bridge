@@ -1,15 +1,13 @@
-/* global jQuery, tify */
-"use strict";
+'use strict';
 
-!(function ($) {
+import jQuery from 'jquery';
+import 'jquery-ui/ui/core';
+import 'jquery-ui/ui/widget';
+
+jQuery(function ($) {
   $.widget('tify.tifyPasswordJs', {
     widgetEventPrefix: 'password-js:',
-    id: undefined,
-    xhr: undefined,
     options: {},
-
-    // INITIALISATION
-    // -------------------------------------------------------------------------------------------------------------
     // Instanciation de l'élément.
     _create: function () {
       this.instance = this;
@@ -18,11 +16,10 @@
 
       this._initOptions();
 
-      this._on(this.el, {
-        'click [data-control="password-js.toggle"]': this._onActionToggle
-      });
+      this._on(this.el, {'click [data-control="password-js.toggle"]': this._onActionToggle});
     },
-
+    // INITIALISATIONS.
+    // -----------------------------------------------------------------------------------------------------------------
     // Initialisation des attributs de configuration.
     _initOptions: function () {
       $.extend(
@@ -31,7 +28,6 @@
           this.el.data('options') && $.parseJSON(decodeURIComponent(this.el.data('options'))) || {}
       );
     },
-
     // Initialisation des événements.
     _onActionToggle: function (e) {
       e.preventDefault();
@@ -39,7 +35,7 @@
       let self = this,
           $el = $(e.currentTarget),
           ajax = self.option('ajax') || undefined,
-          $target = $('[data-id="' + $el.data('target') +'"]'),
+          $target = $('[data-id="' + $el.data('target') + '"]'),
           $input = $('[data-control="password-js.input"]', $target),
           cypher = $input.attr('data-cypher');
 
@@ -68,8 +64,8 @@
       }
     }
   });
-})(jQuery, document, window);
 
-jQuery(document).ready(function ($) {
-  $('[data-control="password-js"]').tifyPasswordJs();
+  $(document).ready(function () {
+    $('[data-control="password-js"]').tifyPasswordJs();
+  });
 });

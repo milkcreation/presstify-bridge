@@ -4,7 +4,7 @@ namespace tiFy\Form\Factory;
 
 use tiFy\Contracts\Form\FactorySession;
 use tiFy\Contracts\Form\FormFactory;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
 
 class Session extends ParamsBag implements FactorySession
 {
@@ -33,8 +33,6 @@ class Session extends ParamsBag implements FactorySession
     public function __construct(FormFactory $form)
     {
         $this->form = $form;
-
-        parent::__construct();
     }
 
     /**

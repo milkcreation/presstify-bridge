@@ -7,7 +7,7 @@ use Illuminate\Support\Arr;
 use tiFy\Contracts\Form\FactoryField;
 use tiFy\Contracts\Form\FieldController;
 use tiFy\Contracts\Form\FormFactory;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
 
 class Field extends ParamsBag implements FactoryField
 {
@@ -107,7 +107,7 @@ class Field extends ParamsBag implements FactoryField
         $this->slug = $slug;
         $this->form = $form;
 
-        parent::__construct($attrs);
+        $this->set($attrs)->parse();
 
         $this->events('field.init.' . $this->getSlug(), [&$this]);
         $this->events('field.init', [&$this]);
@@ -413,15 +413,12 @@ class Field extends ParamsBag implements FactoryField
             $this->set('validations', $this->parseValidations($validations));
         endif;
 
-        foreach ($this->addons() as $name => $addon) :
+        foreach ($this->addons() as $name => $addon) {
             $this->set(
                 "addons.{$name}",
-                array_merge(
-                    $addon->defaultsFieldOptions(),
-                    $this->get("addons.{$name}", [])
-                )
+                array_merge($addon->defaultsFieldOptions(), $this->get("addons.{$name}", []) ? : [])
             );
-        endforeach;
+        }
 
         $this->events('field.prepared.' . $this->getType(), [&$this]);
         $this->events('field.prepared', [&$this]);

@@ -1,13 +1,13 @@
 /* globals tify, attachMediaBoxL10n */
+'use strict';
 
-"use strict";
+import jQuery from 'jquery';
 
 let scripts;
 
 /**
- * @name : Findpost
- * @description : Pop-in de récupération de post
- * @usage :
+ * USAGE
+ * ---------------------------------------------------------------------------------------------------------------------
  * 1 - Appeler le script :
  tify_enqueue_findposts( );
  *
@@ -32,7 +32,7 @@ let scripts;
         });
     });
  */
-(function ($) {
+jQuery(function ($) {
     scripts = {
         open: function (af_name, af_val) {
             let overlay = $('.ui-find-overlay');
@@ -137,26 +137,28 @@ let scripts;
             $(this).find('.found-radio input').prop('checked', true);
         });
     });
-})(jQuery);
 
-jQuery(document).ready(function ($) {
-    $('#find-posts-submit').on('click', function (e) {
-        e.preventDefault();
+    $(document).ready(function () {
+        $('#find-posts-submit').on('click', function (e) {
+            e.preventDefault();
 
-        let $checked = $('#find-posts-response .found-posts .found-radio > input:checked');
+            let $checked = $('#find-posts-response .found-posts .found-radio > input:checked');
 
-        if ($checked.length) {
-            $.post(tify.ajax_url, {action: 'field_findposts_post_permalink', post_id: $checked.val()}, function (resp) {
-                $($('#affected').val()).val(resp);
+            if ($checked.length) {
+                $.post(tify.ajax_url, {action: 'field_findposts_post_permalink', post_id: $checked.val()}, function (resp) {
+                    $($('#affected').val()).val(resp);
+                    scripts.close();
+                });
+            } else {
                 scripts.close();
-            });
-        } else {
-            scripts.close();
-        }
-        return false;
-    });
+            }
+            return false;
+        });
 
-    $(document).on('click', '[data-control="findposts"] > button', function() {
-        scripts.open('target', '#' + $('.tiFyField-findposts', $(this).closest('[data-control="findposts"]')).attr('id'));
+        $(document).on('click', '[data-control="findposts"] > button', function() {
+            scripts.open('target', '#' + $('.tiFyField-findposts', $(this).closest('[data-control="findposts"]')).attr('id'));
+        });
     });
 });
+
+

@@ -4,7 +4,6 @@
  */
 ?>
 <?php $this->before(); ?>
-
 <div <?php echo $this->htmlAttrs($this->get('container.attrs', [])); ?>>
     <div class="FieldPasswordJs-wrapper">
         <a class="FieldPasswordJs-toggle"
@@ -19,5 +18,4 @@
         ]); ?>
     </div>
 </div>
-
 <?php $this->after();

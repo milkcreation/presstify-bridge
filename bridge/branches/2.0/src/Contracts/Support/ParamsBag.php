@@ -94,6 +94,9 @@ interface ParamsBag extends ArrayAccess, Countable, IteratorAggregate, JsonSeria
     /**
      * Cartographie de donnée.
      *
+     * @param mixed $value
+     * @param string|int $key
+     *
      * @return static
      */
     public function map(&$value, $key);

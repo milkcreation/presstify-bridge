@@ -85,7 +85,7 @@ class Recaptcha extends FieldFactory implements FieldRecaptcha
     /**
      * @inheritDoc
      */
-    public function viewer($view = null, $data = [])
+    public function viewer(?string $view = null, array $data = [])
     {
         if (!$this->viewer) {
             $cinfo = class_info(Recaptcha::class);
@@ -98,7 +98,7 @@ class Recaptcha extends FieldFactory implements FieldRecaptcha
                         ? $override_dir
                         : (is_dir($default_dir) ? $default_dir : $cinfo->getDirname())
                 )
-                ->set('field', $this);
+                ->setParam('field', $this);
         }
 
         if (func_num_args() === 0) {

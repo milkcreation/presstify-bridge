@@ -44,8 +44,8 @@ interface SessionManager
     /**
      * Définition d'une session de stockage des données.
      *
-     * @param string $name Nom de qualification de la session.
-     * @param array $attrs Attributs de configuration.
+     * @param SessionStore $factory
+     * @param string|null $name
      *
      * @return static
      */

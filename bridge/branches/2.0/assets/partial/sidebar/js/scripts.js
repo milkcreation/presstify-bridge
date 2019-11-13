@@ -1,6 +1,8 @@
-"use strict";
+'use strict';
 
-jQuery(document).ready(function ($) {
+import jQuery from 'jquery';
+
+jQuery(function ($) {
   $('body').attr('data-sidebar', true);
 
   $(window).resize(function () {

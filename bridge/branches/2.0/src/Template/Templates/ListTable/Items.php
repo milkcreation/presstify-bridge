@@ -2,7 +2,7 @@
 
 namespace tiFy\Template\Templates\ListTable;
 
-use tiFy\Contracts\Template\FactoryDb;
+use Illuminate\Database\Eloquent\Model;
 use tiFy\Support\Collection;
 use tiFy\Template\Factory\FactoryAwareTrait;
 use tiFy\Template\Templates\ListTable\Contracts\{Items as ItemsContract, Item as ItemContract};
@@ -48,7 +48,7 @@ class Items extends Collection implements ItemsContract
      */
     public function setItem($item): ?ItemContract
     {
-        if ($item instanceof FactoryDb) {
+        if ($item instanceof Model) {
             $item = $item->attributesToArray();
         } elseif (is_object($item)) {
             $item = get_object_vars($item);

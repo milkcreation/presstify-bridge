@@ -3,7 +3,7 @@
 namespace tiFy\Contracts\Form;
 
 use Illuminate\Support\Collection as laraCollection;
-use tiFy\Contracts\Kernel\Collection;
+use tiFy\Contracts\Support\Collection;
 
 interface FactoryFields extends FactoryResolver, Collection
 {

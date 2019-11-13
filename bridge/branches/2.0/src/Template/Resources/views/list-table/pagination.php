@@ -17,11 +17,11 @@
             ?>
         </span>
         <span class="pagination-links">
-            <?php echo $this->insert('pagination-first'); ?>
-            <?php echo $this->insert('pagination-prev'); ?>
-            <?php echo $this->insert('pagination-current'); ?>
-            <?php echo $this->insert('pagination-next'); ?>
-            <?php echo $this->insert('pagination-last'); ?>
+            <?php $this->insert('pagination-first'); ?>
+            <?php $this->insert('pagination-prev'); ?>
+            <?php $this->insert('pagination-current'); ?>
+            <?php $this->insert('pagination-next'); ?>
+            <?php $this->insert('pagination-last'); ?>
         </span>
     </div>
 <?php endif;

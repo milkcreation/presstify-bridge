@@ -82,7 +82,7 @@ class Pagination extends ParamsBag implements PaginationContract
      */
     public function pagedUrl(int $page): string
     {
-        return $this->factory->url()->with(['paged' => $page]);
+        return (string)$this->factory->url()->with(['paged' => $page]);
     }
 
     /**
@@ -265,6 +265,6 @@ class Pagination extends ParamsBag implements PaginationContract
      */
     public function unpagedUrl(): string
     {
-        return $this->factory->url()->without(['paged']);
+        return (string)$this->factory->url()->without(['paged']);
     }
 }

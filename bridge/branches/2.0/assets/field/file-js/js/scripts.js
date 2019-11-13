@@ -1,12 +1,14 @@
-/* global jQuery */
-"use strict";
+'use strict';
 
 import Dropzone from 'dropzone/dist/min/dropzone.min';
+import jQuery from 'jquery';
+import 'jquery-ui/ui/core';
+import 'jquery-ui/ui/widget';
+import 'presstify-framework/observer/js/scripts';
 
 jQuery(function ($) {
   $.widget('tify.tifyFileJs', {
     widgetEventPrefix: 'file-js:',
-    id: undefined,
     options: {},
     // Instanciation de l'élément.
     _create: function () {
@@ -55,10 +57,9 @@ jQuery(function ($) {
           // Special events:
           'totaluploadprogress', 'reset', 'queuecomplete'
         ];
-
         events.forEach(function (event) {
-          self.dropzone.on(event, function () {
-            self._trigger(event, null, arguments);
+          self.dropzone.on(event, function (e) {
+            self._trigger(event, e, arguments);
           });
         });
       }
@@ -67,5 +68,9 @@ jQuery(function ($) {
 
   $(document).ready(function ($) {
     $('[data-control="file-js"]').tifyFileJs();
+
+    $.tify.observe('[data-control="file-js"]', function (i, target) {
+      $(target).tifyFileJs();
+    });
   });
 });

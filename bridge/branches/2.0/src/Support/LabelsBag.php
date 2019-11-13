@@ -71,11 +71,11 @@ class LabelsBag extends ParamsBag implements LabelsBagContract
         }
 
         if ($this->has('plural')) {
-            $this->setPlural(Str::lower($this->pull('plural')));
+            $this->setPlural(lcfirst($this->pull('plural')));
         }
 
         if ($this->has('singular')) {
-            $this->setSingular(Str::lower($this->pull('singular')));
+            $this->setSingular(lcfirst($this->pull('singular')));
         }
 
         parent::parse();

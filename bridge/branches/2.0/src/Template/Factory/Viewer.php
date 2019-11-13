@@ -47,7 +47,7 @@ class Viewer extends ViewController implements FactoryViewerContract
     {
         if (in_array($name, $this->mixins)) {
             try {
-                return $this->getEngine()->get('factory')->$name(...$arguments);
+                return $this->engine()->params('factory')->$name(...$arguments);
             } catch (Exception $e) {
                 throw new BadMethodCallException(sprintf(__('La méthode %s n\'est pas disponible.', 'tify'), $name));
             }

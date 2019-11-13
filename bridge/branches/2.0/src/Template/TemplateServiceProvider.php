@@ -19,6 +19,7 @@ use tiFy\Template\Templates\FileManager\Contracts\{
     Params as FileManagerParamsContract,
     Sidebar as FileManagerSidebarContract};
 use tiFy\Template\Templates\ListTable\Contracts\{
+    Actions as ListTableActionsContract,
     Ajax as ListTableAjaxContract,
     Assets as ListTableAssetsContract,
     Builder as ListTableBuilderContract,
@@ -26,6 +27,8 @@ use tiFy\Template\Templates\ListTable\Contracts\{
     BulkActions as ListTableBulkActionsContract,
     Column as ListTableColumnContract,
     Columns as ListTableColumnsContract,
+    Extra as ListTableExtraContract,
+    Extras as ListTableExtrasContract,
     DbBuilder as ListTableDbBuilderContract,
     HttpXhrController as ListTableHttpXhrControllerContract,
     Item as ListTableItemContract,
@@ -60,6 +63,7 @@ use tiFy\Template\Templates\FileManager\{
     Params as FileManagerParams,
     Sidebar as FileManagerSidebar};
 use tiFy\Template\Templates\ListTable\{
+    Actions as ListTableActions,
     Ajax as ListTableAjax,
     Assets as ListTableAssets,
     Builder as ListTableBuilder,
@@ -67,6 +71,8 @@ use tiFy\Template\Templates\ListTable\{
     BulkActions as ListTableBulkActions,
     Column as ListTableColumn,
     Columns as ListTableColumns,
+    Extra as ListTableExtra,
+    Extras as ListTableExtras,
     DbBuilder as ListTableDbBuilder,
     HttpXhrController as ListTableHttpXhrController,
     Item as ListTableItem,
@@ -112,12 +118,15 @@ class TemplateServiceProvider extends ServiceProvider
         FileManagerParamsContract::class,
         FileManagerSidebarContract::class,
         // ListTable
+        ListTableActionsContract::class,
         ListTableAjaxContract::class,
         ListTableAssetsContract::class,
         ListTableBulkActionContract::class,
         ListTableBulkActionsContract::class,
         ListTableColumnContract::class,
         ListTableColumnsContract::class,
+        ListTableExtraContract::class,
+        ListTableExtrasContract::class,
         ListTableHttpXhrControllerContract::class,
         ListTableItemContract::class,
         ListTableItemsContract::class,
@@ -218,6 +227,10 @@ class TemplateServiceProvider extends ServiceProvider
      */
     public function registerListTable(): void
     {
+        $this->getContainer()->add(ListTableActionsContract::class, function () {
+            return new ListTableActions();
+        });
+
         $this->getContainer()->add(ListTableAjaxContract::class, function () {
             return new ListTableAjax();
         });
@@ -244,6 +257,14 @@ class TemplateServiceProvider extends ServiceProvider
 
         $this->getContainer()->add(ListTableColumnsContract::class, function () {
             return new ListTableColumns();
+        });
+
+        $this->getContainer()->add(ListTableExtraContract::class, function () {
+            return new ListTableExtra();
+        });
+
+        $this->getContainer()->add(ListTableExtrasContract::class, function () {
+            return new ListTableExtras();
         });
 
         $this->getContainer()->add(ListTableDbBuilderContract::class, function () {

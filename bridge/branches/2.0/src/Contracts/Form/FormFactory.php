@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Form;
 
-use tiFy\Contracts\Support\ParamsBag;
+use tiFy\Contracts\Support\{LabelsBag, ParamsBag};
 
 interface FormFactory extends FactoryResolver, ParamsBag
 {
@@ -75,6 +75,16 @@ interface FormFactory extends FactoryResolver, ParamsBag
      * @return boolean
      */
     public function isPrepared(): bool;
+
+    /**
+     * Récupération d'intitulé|Définition d'intitulés|Retourne l'instance du gestionnaire d'intitulés.
+     *
+     * @param string|array|null $key Clé d'indexe de l'intitulé.
+     * @param string $default Valeur de retour par défaut.
+     *
+     * @return LabelsBag|string
+     */
+    public function label($key = null, string $default = '');
 
     /**
      * Récupération du nom de qualification du formulaire.

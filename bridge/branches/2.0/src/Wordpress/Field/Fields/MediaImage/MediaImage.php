@@ -3,8 +3,9 @@
 namespace tiFy\Wordpress\Field\Fields\MediaImage;
 
 use tiFy\Contracts\Field\FieldFactory as BaseFieldFactoryContract;
+use tiFy\Support\Str;
 use tiFy\Wordpress\Contracts\Field\{FieldFactory as FieldFactoryContract, MediaImage as MediaImageContract};
-use tiFy\Field\FieldFactory;
+use tiFy\Wordpress\Field\FieldFactory;
 
 class MediaImage extends FieldFactory implements MediaImageContract
 {
@@ -38,44 +39,35 @@ class MediaImage extends FieldFactory implements MediaImageContract
      * {@inheritDoc}
      *
      * @return array {
-     *      @var string $before Contenu placé avant le champ.
-     *      @var string $after Contenu placé après le champ.
-     *      @var string $name Clé d'indice de la valeur de soumission du champ.
-     *      @var string $value Valeur courante de soumission du champ.
-     *      @var array $attrs Attributs HTML du champ.
-     *      @var array $viewer Liste des attributs de configuration du controleur de gabarit d'affichage.
-     *      @var int|string $default ID de l'attachment ou url de l'image initial.
-     *      @var string $default_color Valeur Hexadécimal de la couleur de fond. "#F4F4F4" par défaut.
-     *      @var int $width Largeur de l'image en pixel. 1920 par défaut.
-     *      @var int $height Hauteur de l'image en pixel. 360 par defaut.
-     *      @var string $size Taille de l'attachment utilisé pour la prévisualisation de l'image. 'large' par défaut.
-     *      @var string $content Contenu HTML d'enrichissement de l'affichage de l'interface de saisie.
-     *      @var string $media_library_title ' Titre de la Médiathèque. "Personnalisation de l'image" par défaut.
-     *      @var string $media_library_button ' Texte d'ajout de l'image dans la Médiathèque. "Utiliser cette image" par défaut.
-     *      @var bool $editable Activation de l'administrabilité de l'image.
-     *      @var bool $removable Activation de la suppression de l'image active.
+     * @var string $before Contenu placé avant le champ.
+     * @var string $after Contenu placé après le champ.
+     * @var string $name Clé d'indice de la valeur de soumission du champ.
+     * @var string $value Valeur courante de soumission du champ.
+     * @var array $attrs Attributs HTML du champ.
+     * @var array $viewer Liste des attributs de configuration du controleur de gabarit d'affichage.
+     * @var string $content Contenu HTML d'enrichissement de l'affichage de l'interface de saisie.
+     * @var int $height Hauteur de l'image en pixel. 100 par defaut.
+     * @var bool|string $infos Etiquette d'information complémentaires. {{largeur}} x {{hauteur}} par défaut
+     * @var bool $removable Activation de la suppression de l'image active.
+     * @var string|array $size Taille de l'attachment utilisé pour la prévisualisation de l'image. 'large' par défaut.
+     * @var int $width Largeur de l'image en pixel. 100 par défaut.
      *  }
      */
     public function defaults(): array
     {
         return [
-            'attrs'                => [],
-            'before'               => '',
-            'after'                => '',
-            'name'                 => '',
-            'value'                => '',
-            'viewer'               => [],
-            'content'              => '',
-            'default'              => '',
-            'default_color'        => "#F4F4F4",
-            'editable'             => true,
-            'height'               => 360,
-            'media_library_title'  => __('Personnalisation de l\'image', 'tify'),
-            'media_library_button' => __('Utiliser cette image', 'tify'),
-            'removable'            => true,
-            'size'                 => 'large',
-            'size_info'            => true,
-            'width'                => 1920
+            'attrs'     => [],
+            'before'    => '',
+            'after'     => '',
+            'name'      => '',
+            'value'     => '',
+            'viewer'    => [],
+            'content'   => __('Cliquez sur la zone', 'tify'),
+            'height'    => 100,
+            'infos'     => true,
+            'removable' => true,
+            'size'      => 'large',
+            'width'     => 100,
         ];
     }
 
@@ -84,10 +76,6 @@ class MediaImage extends FieldFactory implements MediaImageContract
      */
     public function display(): string
     {
-        if (!is_admin()) {
-            return '';
-        }
-
         return parent::display();
     }
 
@@ -107,49 +95,74 @@ class MediaImage extends FieldFactory implements MediaImageContract
      */
     public function parse(): BaseFieldFactoryContract
     {
-        $this->set('viewer.directory', __DIR__ . '/Resources/views/media-image');
-
         parent::parse();
 
-        $this->set(
-            'attrs.style',
-            "background-color:" . $this->get('default_color') . ";" .
-            "max-width:" . $this->get('width') . "px;" .
-            "max-height:" . $this->get('height') . "px;"
-        );
+        $this->set([
+            'attrs.aria-selected' => 'false',
+            'attrs.style'         => "max-width:{$this->get('width')}px;max-height:{$this->get('height')}px;",
+        ]);
 
-        if ($size_info = $this->get('size_info')) {
-            $this->set(
-                'info_txt',
-                is_string($size_info)
-                    ? $size_info
-                    : sprintf(__('%dpx / %dpx', 'tify'), $this->get('width'), $this->get('height'))
+        if ($infos = $this->get('infos')) {
+            $this->set('infos', is_string($infos)
+                ? $infos : sprintf(__('%dpx / %dpx', 'tify'), $this->get('width'), $this->get('height'))
             );
         } else {
-            $this->set('info_txt', '');
+            $this->set('infos', '');
         }
 
-        $default = $this->get('default');
-        if (is_numeric($default) && ($default_image = wp_get_attachment_image_src($default, $this->get('size')))) {
-            $this->set('default_img', $default_image[0]);
+        $value = $this->getValue();
+        if (is_numeric($value)) {
+            if ($img = wp_get_attachment_image_src($value, $this->get('size'))) {
+                $this->set([
+                    'attrs.aria-selected' => 'true',
+                    'preview.attrs.style' => "background-image:url({$img[0]})",
+                ]);
+            }
+        } elseif (is_string($value) && !empty($value)) {
+            $this->set([
+                'attrs.aria-selected' => 'true',
+                'preview.attrs.style' => "background-image:url({$value})",
+            ]);
+        }
+
+        $this->set([
+            'attrs.data-control'         => 'media-image',
+            'preview.attrs.class'        => 'FieldMediaImage-preview',
+            'preview.attrs.data-control' => 'media-image.preview',
+            'sizer'                      => [
+                'attrs' => [
+                    'class'        => 'FieldMediaImage-sizer',
+                    'data-control' => 'media-image.sizer',
+                    'style'        => 'width:100%;padding-top:' .
+                        (100 * ($this->get('height') / $this->get('width'))) . '%',
+                ],
+            ],
+        ]);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseDefaults(): BaseFieldFactoryContract
+    {
+        $base = 'Field' . Str::studly($this->getAlias());
+
+        $default_class = "{$base} {$base}--" . $this->getIndex();
+        if (!$this->has('attrs.class')) {
+            $this->set('attrs.class', $default_class);
         } else {
-            $this->set('default_img', is_string($default) ? $default : '');
-        }
-        $this->set('attrs.data-default', $this->get('default_img'));
-
-        $value = $this->get('value');
-        if (is_numeric($value) && ($image = wp_get_attachment_image_src($value, $this->get('size')))) {
-            $this->set('value_img', $image[0]);
-        } else {
-            $this->set('value_img', is_string($value) && !empty($value) ? $value : $default);
+            $this->set('attrs.class', sprintf($this->get('attrs.class', ''), $default_class));
         }
 
-        if ($this->get('value_img')) {
-            $this->set(
-                'attrs.class',
-                trim($this->get('attrs.class') . ' tiFyField-mediaImage--selected')
-            );
+        if (!$this->get('attrs.class')) {
+            $this->forget('attrs.class');
         }
+
+        $this->parseName();
+        $this->parseValue();
+        $this->parseViewer();
 
         return $this;
     }

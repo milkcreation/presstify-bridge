@@ -139,6 +139,6 @@ class Asset extends ParamsBag implements AssetContract
      */
     public function url(string $path = ''): string
     {
-        return url()->root('/vendor/presstify/framework/assets' . ($path ? '/' . ltrim($path, '/') : $path));
+        return (string)url()->root('/vendor/presstify/framework/assets' . ($path ? '/' . ltrim($path, '/') : $path));
     }
 }

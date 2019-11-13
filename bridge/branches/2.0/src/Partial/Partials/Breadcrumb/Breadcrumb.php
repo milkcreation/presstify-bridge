@@ -3,7 +3,6 @@
 namespace tiFy\Partial\Partials\Breadcrumb;
 
 use tiFy\Contracts\Partial\Breadcrumb as BreadcrumbContract;
-use tiFy\Contracts\Partial\PartialFactory as PartialFactoryContract;
 use tiFy\Partial\PartialFactory;
 
 class Breadcrumb extends PartialFactory implements BreadcrumbContract

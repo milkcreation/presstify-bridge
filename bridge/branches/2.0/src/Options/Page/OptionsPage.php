@@ -2,10 +2,9 @@
 
 namespace tiFy\Options\Page;
 
-use tiFy\Contracts\Metabox\MetaboxManager;
 use tiFy\Contracts\Options\OptionsPage as OptionPageContract;
 use tiFy\Contracts\View\ViewEngine;
-use tiFy\Support\ParamsBag;
+use tiFy\Support\{ParamsBag, Proxy\Metabox};
 use WP_Admin_Bar;
 use WP_Screen;
 
@@ -65,12 +64,6 @@ class OptionsPage extends ParamsBag implements OptionPageContract
                         $attrs['position']
                     );
                 }
-            }
-        });
-
-        add_action('admin_enqueue_scripts', function () {
-            if ((get_current_screen()->id === $this->get('hookname')) && $this->get('admin_enqueue_scripts')) {
-                wp_enqueue_style('optionsPage', asset()->url('options/css/styles.css'), [], 171030);
             }
         });
 
@@ -230,15 +223,12 @@ class OptionsPage extends ParamsBag implements OptionPageContract
      */
     public function parseItems()
     {
-        /** @var MetaboxManager $metabox */
-        $metabox = app('metabox');
-
         foreach($this->get('items', []) as $name => $attrs) {
             $this->items[$name] = $attrs;
 
-            $metabox->add($name, $this->getName() . '@options', array_merge([
-                'context' => 'tab'
-            ], $attrs));
+            Metabox::add($name,$attrs)
+                ->setScreen("{$this->getName()}@options")
+                ->setContext('tab');
         }
     }
 
@@ -258,7 +248,7 @@ class OptionsPage extends ParamsBag implements OptionPageContract
                         ? $override_dir
                         : (is_dir($default_dir) ? $default_dir : $cinfo->getDirname())
                 )
-                ->set('options_page', $this);
+                ->setParam('options_page', $this);
         }
 
         if (func_num_args() === 0) {

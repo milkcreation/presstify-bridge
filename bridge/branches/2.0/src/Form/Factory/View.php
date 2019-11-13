@@ -21,7 +21,7 @@ class View extends ViewController implements FactoryViewContract
     {
         if (in_array($name, $this->mixins)) :
             return call_user_func_array(
-                [$this->engine->get('form'), $name],
+                [$this->engine->params('form'), $name],
                 $arguments
             );
         endif;
@@ -66,6 +66,6 @@ class View extends ViewController implements FactoryViewContract
      */
     public function form()
     {
-        return $this->engine->get('form');
+        return $this->engine->params('form');
     }
 }

@@ -16,9 +16,9 @@ class ViewServiceProvider extends ServiceProvider
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->add('viewer', function () {
             return new ViewEngine([]);

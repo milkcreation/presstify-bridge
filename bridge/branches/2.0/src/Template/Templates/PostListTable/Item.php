@@ -7,7 +7,7 @@ use tiFy\Template\Templates\ListTable\{
     Contracts\Item as BaseItemContract
 };
 use tiFy\Template\Templates\PostListTable\Contracts\Item as ItemContract;
-use tiFy\Wordpress\Contracts\QueryPost as QueryPostContract;
+use tiFy\Wordpress\Contracts\Query\QueryPost as QueryPostContract;
 use tiFy\Wordpress\Query\QueryPost;
 
 /**

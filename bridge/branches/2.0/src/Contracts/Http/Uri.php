@@ -18,8 +18,6 @@ interface Uri extends UriInterface
     /**
      * Récupération de la requête HTTP associée.
      *
-     * @param Request $request
-     *
      * @return Request
      */
     public function request(): ?Request;
@@ -35,10 +33,11 @@ interface Uri extends UriInterface
      * Récupération du chemin relatif d'une url du domaine.
      *
      * @param string $url
+     * @param boolean $base
      *
      * @return string|null
      */
-    public function getRelativeUriFromUrl(string $url, $base = true): ?string;
+    public function getRelativeUriFromUrl(string $url, bool $base = true): ?string;
 
     /**
      * Définition de la requête HTTP associée.

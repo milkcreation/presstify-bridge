@@ -74,7 +74,7 @@ class Path extends StorageManager implements PathContract
      */
     public function diskPathFromBase(LocalFilesystemContract $disk, string $path = '', bool $absolute = true): ?string
     {
-        $path = preg_replace('#^' . preg_quote($this->getBasePath(), self::DS) . "#", '', $disk->path($path), 1, $n);
+        $path = preg_replace('/^' . preg_quote($this->getBasePath(), self::DS) . '/', '', $disk->path($path), 1, $n);
 
         return $n === 1 ? $this->getBasePath($path, $absolute) : null;
     }
@@ -258,7 +258,7 @@ class Path extends StorageManager implements PathContract
      */
     public function relPathFromBase(string $pathname): ?string
     {
-        $path = preg_replace('#^' . preg_quote($this->getBasePath(), self::DS) . "#", '', $pathname, 1, $n);
+        $path = preg_replace('/^' . preg_quote($this->getBasePath(), self::DS) . '/', '', $pathname, 1, $n);
 
         return $n === 1 ? $this->getBasePath($path, false): null;
     }

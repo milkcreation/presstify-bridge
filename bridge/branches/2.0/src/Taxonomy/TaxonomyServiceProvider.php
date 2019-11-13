@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Taxonomy;
 
@@ -17,9 +17,9 @@ class TaxonomyServiceProvider extends ServiceProvider
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->registerManager();
         $this->registerTermMeta();
@@ -30,7 +30,7 @@ class TaxonomyServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function registerManager()
+    public function registerManager(): void
     {
         $this->getContainer()->share('taxonomy', function () {
             return new TaxonomyManager($this->getContainer());
@@ -42,7 +42,7 @@ class TaxonomyServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function registerTermMeta()
+    public function registerTermMeta(): void
     {
         $this->getContainer()->share('taxonomy.term-meta', function () {
             return new TaxonomyTermMeta();

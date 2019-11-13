@@ -26,7 +26,7 @@ class ColumnView extends ViewController
     {
         if (in_array($name, $this->mixins)) :
             return call_user_func_array(
-                [$this->engine->get('column'), $name],
+                [$this->engine->params('column'), $name],
                 $arguments
             );
         endif;

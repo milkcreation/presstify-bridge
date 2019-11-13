@@ -15,6 +15,7 @@
         ],
         'content' => __('Select All')
     ]); ?>
+
     <?php echo field('checkbox', [
         'attrs' => [
             'id' => 'cb-select-all-' . $this->get('index')

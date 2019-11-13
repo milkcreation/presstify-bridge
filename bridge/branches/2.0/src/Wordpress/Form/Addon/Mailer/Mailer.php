@@ -1,31 +1,35 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Wordpress\Form\Addon\Mailer;
 
-use tiFy\Form\Addon\Mailer\Mailer as tiFyMailer;
+use tiFy\Form\Addon\Mailer\Mailer as BaseMailer;
+use tiFy\Wordpress\Proxy\Field;
 
-class Mailer extends tiFyMailer
+class Mailer extends BaseMailer
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
 
-        if ($this->get('enqueue_scripts') && ($this->get('admin.confirmation') || $this->get('admin.notification'))) {
+        if (
+            $this->params('enqueue_scripts') &&
+            ($this->params('admin.confirmation') || $this->params('admin.notification'))
+        ) {
             add_action('admin_enqueue_scripts', function () {
-                field('repeater')->enqueue();
-                field('toggle-switch')->enqueue();
+                Field::get('repeater')->enqueue();
+                Field::get('toggle-switch')->enqueue();
             });
         }
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function defaults()
+    public function defaultsParams(): array
     {
-        return array_merge(parent::defaults(), ['enqueue_scripts' => false]);
+        return array_merge(parent::defaultsParams(), ['enqueue_scripts' => false]);
     }
 }

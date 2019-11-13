@@ -35,7 +35,7 @@ class Container extends LeagueContainer implements ContainerContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function getFromThisContainer($alias, array $args = [])
     {
@@ -49,7 +49,7 @@ class Container extends LeagueContainer implements ContainerContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getServiceProviders()
     {
@@ -57,7 +57,7 @@ class Container extends LeagueContainer implements ContainerContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function hasParameter()
     {

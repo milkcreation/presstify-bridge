@@ -7,7 +7,7 @@ use tiFy\Template\Templates\ListTable\{
     Item as BaseItem
 };
 use tiFy\Template\Templates\UserListTable\Contracts\Item as ItemContract;
-use tiFy\Wordpress\Contracts\QueryUser as QueryUserContract;
+use tiFy\Wordpress\Contracts\Query\QueryUser as QueryUserContract;
 use tiFy\Wordpress\Query\QueryUser;
 
 /**

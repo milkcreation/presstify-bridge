@@ -4,8 +4,9 @@ namespace tiFy\Field\Fields\Suggest;
 
 use tiFy\Contracts\Field\FieldFactory as FieldFactoryContract;
 use tiFy\Contracts\Field\Suggest as SuggestContract;
+use tiFy\Contracts\Routing\Route;
 use tiFy\Field\FieldFactory;
-use tiFy\Support\Proxy\{Request as req, Router as route};
+use tiFy\Support\Proxy\{Request, Router};
 
 class Suggest extends FieldFactory implements SuggestContract
 {
@@ -39,10 +40,10 @@ class Suggest extends FieldFactory implements SuggestContract
     ];
 
     /**
-     * Url de traitement.
-     * @var string Url de traitement
+     * Url de traitement de requête XHR.
+     * @var Route|string
      */
-    protected $url;
+    protected $url = '';
 
     /**
      * @inheritDoc
@@ -81,20 +82,21 @@ class Suggest extends FieldFactory implements SuggestContract
             'viewer'    => [],
             'ajax'      => false,
             'alt'       => false,
-            'container' => [],
+            'classes'   => [],
             'options'   => [
                 'minLength' => 2,
             ],
             'spinner'   => true,
+            'reset'     => true
         ];
     }
 
     /**
      * @inheritDoc
      */
-    public function getUrl(): string
+    public function getUrl(...$params): string
     {
-        return $this->url;
+        return $this->url instanceof Route ? $this->url->getUrl($params) : $this->url;
     }
 
     /**
@@ -104,32 +106,25 @@ class Suggest extends FieldFactory implements SuggestContract
     {
         parent::parse();
 
-        $this->set('options.classes', array_merge([
-            'picker'      => 'FieldSuggest-picker',
-            'picker-item' => 'FieldSuggest-pickerItem',
-        ], $this->get('options.classes', [])));
-
-        if ($alt = $this->get('alt')) {
-            $this->set('alt', array_merge([
-                'attrs' => [
-                    'class' => '%s FieldSuggest-alt'
-                ]
-            ],is_array($alt) ? $alt : []));
-            $this->set('alt.attrs.data-control', 'suggest.alt');
-        }
-
-        if ($spinner = $this->get('spinner')) {
-            $this->set('spinner', array_merge([
-                'tag' => 'div',
-                'attrs' => [
-                    'class' => '%s ThemeSpinner FieldSuggest-spinner'
-                ],
-            ],is_array($spinner) ? $spinner : []));
-            $this->set('spinner.attrs.data-control', 'suggest.spinner');
+        $defaultClasses = [
+            'alt'     => 'FieldSuggest-alt',
+            'input'   => 'FieldSuggest-input',
+            'item'    => 'FieldSuggest-pickerItem',
+            'items'   => 'FieldSuggest-picker',
+            'reset'   => 'FieldSuggest-reset ThemeButton--close',
+            'spinner' => 'FieldSuggest-spinner ThemeSpinner',
+            'wrap'    => 'FieldSuggest-wrap',
+        ];
+        foreach ($defaultClasses as $k => $v) {
+            $this->set("classes.{$k}", sprintf($this->get("classes.{$k}", '%s'), $v));
         }
 
         $options = [
+            'alt'          => $this->get('alt'),
             'autocomplete' => $this->get('options', []),
+            'classes'      => $this->get('classes', []),
+            'reset'        => $this->get('reset'),
+            'spinner'      => $this->get('spinner'),
         ];
 
         if ($ajax = $this->get('ajax')) {
@@ -143,22 +138,9 @@ class Suggest extends FieldFactory implements SuggestContract
             $options['autocomplete']['source'] = $this->languages;
         }
 
-        $this->set('attrs.data-control', 'suggest.input');
-
-        $container_class = 'FieldSuggest FieldSuggest--' . $this->getIndex();
-        if (!$this->has('container.attrs.class')) {
-            $this->set('container.attrs.class', $container_class);
-        } else {
-            $this->set('container.attrs.class', sprintf($this->get('container.attrs.class', ''), $container_class));
-        }
-
-        $this->set('container', array_merge([
-            'tag'     => 'span',
-        ], $this->get('container', [])));
-
         $this->set([
-            'container.attrs.data-control' => 'suggest',
-            'container.attrs.data-options' => $options,
+            'attrs.data-control'           => $this->get('attrs.data-control', 'suggest'),
+            'attrs.data-options'           => $options
         ]);
 
         return $this;
@@ -186,9 +168,9 @@ class Suggest extends FieldFactory implements SuggestContract
     /**
      * @inheritDoc
      */
-    public function setUrl(?string $url =  null): FieldFactoryContract
+    public function setUrl(?string $url = null): FieldFactoryContract
     {
-        $this->url = is_null($url) ? route::xhr(md5($this->getAlias()), [$this, 'xhrResponse'])->getUrl() : $url;
+        $this->url = is_null($url) ? Router::xhr(md5($this->getAlias()), [$this, 'xhrResponse']) : $url;
 
         return $this;
     }
@@ -200,12 +182,12 @@ class Suggest extends FieldFactory implements SuggestContract
     {
         $items = collect($this->languages)
             ->filter(function ($label) {
-                return preg_match('/' . req::input('_term', '') . '/i', $label);
+                return preg_match('/' . Request::input('_term', '') . '/i', $label);
             })->map(function (&$label, $value) {
                 return [
-                    'alt'    => (string)$value,
-                    'label'  => (string)$this->viewer('label', compact('label', 'value')),
-                    'value'  => (string)$value
+                    'alt'   => (string)$value,
+                    'label' => (string)$this->viewer('item-label', compact('label', 'value')),
+                    'value' => (string)$value,
                 ];
             })->all();
 

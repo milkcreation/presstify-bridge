@@ -4,8 +4,11 @@ namespace tiFy\Form;
 
 use Closure;
 use Exception;
-use tiFy\Contracts\Form\FormManager as FormManagerContract;
-use tiFy\Contracts\Form\FormFactory;
+use tiFy\Contracts\Form\{
+    AddonFactory as AddonFactoryContract,
+    FormManager as FormManagerContract,
+    FormFactory,
+};
 use tiFy\Support\Manager;
 
 class FormManager extends Manager implements FormManagerContract
@@ -25,17 +28,20 @@ class FormManager extends Manager implements FormManagerContract
     /**
      * @inheritDoc
      */
-    public function addonRegister($name, $controller): FormManagerContract
+    public function addonRegister(string $name, $controller = null): FormManagerContract
     {
-        app()->add("form.addon.{$name}", function ($name, $attrs, FormFactory $form) use ($controller) {
+        $this->getContainer()->add("form.addon.{$name}", function () use ($name, $controller) : AddonFactoryContract {
             if (is_object($controller) || $controller instanceof Closure) {
-                return call_user_func_array($controller, [$name, $attrs, $form]);
+                $addon = call_user_func($controller);
             } elseif (class_exists($controller)) {
-                return new $controller($name, $attrs, $form);
+                $addon = new $controller();
             } else {
-                return app()->get('form.addon', [$name, $attrs, $form]);
+                $addon = new AddonFactory();
             }
+
+            return $addon->setName($name);
         });
+
         return $this;
     }
 
@@ -53,6 +59,7 @@ class FormManager extends Manager implements FormManagerContract
                 return app()->get('form.button', [$name, $attrs, $form]);
             }
         });
+
         return $this;
     }
 
@@ -67,7 +74,7 @@ class FormManager extends Manager implements FormManagerContract
             $form = $this->get($form);
         }
 
-        if (!$form instanceof FormFactory) {
+        if ( ! $form instanceof FormFactory) {
             return null;
         }
 
@@ -92,6 +99,7 @@ class FormManager extends Manager implements FormManagerContract
                 return app()->get('form.field', [$name, $attrs, $form]);
             }
         });
+
         return $this;
     }
 
@@ -144,7 +152,7 @@ class FormManager extends Manager implements FormManagerContract
     public function resourcesUrl($path = ''): string
     {
         $cinfo = class_info($this);
-        $path = $path ? '/' . ltrim($path, '/') : '';
+        $path  = $path ? '/' . ltrim($path, '/') : '';
 
         return (file_exists($cinfo->getDirname() . "/Resources{$path}"))
             ? $cinfo->getUrl() . "/Resources{$path}"
@@ -158,7 +166,7 @@ class FormManager extends Manager implements FormManagerContract
      */
     public function walk(&$item, $name = null): void
     {
-        $name = strval($name);
+        $name  = strval($name);
         $attrs = [];
         if (is_string($item)) {
             $item = new $item();
@@ -173,7 +181,7 @@ class FormManager extends Manager implements FormManagerContract
                 $item = $this->getContainer()->get('form.factory');
             }
         }
-        if (!$item instanceof FormFactory) {
+        if ( ! $item instanceof FormFactory) {
             throw new Exception(sprintf(
                 __('Déclaration de %s en erreur, le formulaire devrait être une instance de %s'),
                 $name,
