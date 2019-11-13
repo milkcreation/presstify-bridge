@@ -22,9 +22,10 @@ class DatabaseServiceProvider extends ServiceProvider
     {
         $this->getContainer()->share('database', function () {
             $manager = new Database();
+
             $manager->addConnection([
-                'driver'    => 'mysql',
-                'host'      => getenv('DB_HOST'),
+                'driver'    => getenv('DB_CONNECTION'),
+                'host'      => getenv('DB_HOST') . (getenv('DB_PORT') ? ':' . getenv('DB_PORT') : ''),
                 'database'  => getenv('DB_DATABASE'),
                 'username'  => getenv('DB_USERNAME'),
                 'password'  => getenv('DB_PASSWORD'),

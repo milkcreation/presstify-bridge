@@ -4,9 +4,5 @@
  */
 ?>
 <?php $this->before(); ?>
-<?php echo partial('tag', array_merge(
-    $this->get('container', []), [
-        'content' => $this->fetch('content', $this->all())
-    ])
-); ?>
+<?php echo field('text', ['attrs' => $this->get('attrs', [])]); ?>
 <?php $this->after();

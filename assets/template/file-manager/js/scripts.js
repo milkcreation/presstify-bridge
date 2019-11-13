@@ -1,4 +1,11 @@
-"use strict";
+'use strict';
+
+import jQuery from 'jquery';
+import 'jquery-ui/ui/core';
+import 'jquery-ui/ui/widget';
+import 'dropzone/dist/min/dropzone.min';
+import 'presstify-framework/partial/notice/js/scripts';
+import 'presstify-framework/partial/pdfviewer/js/scripts';
 
 jQuery(function ($) {
   $.widget('tify.tifyFileManager', {
@@ -245,7 +252,7 @@ jQuery(function ($) {
     },
   });
 
-  $(document).ready(function ($) {
+  $(document).ready(function () {
     $('[data-control="file-manager"]').tifyFileManager();
   });
 });

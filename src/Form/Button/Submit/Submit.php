@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Form\Button\Submit;
 
@@ -7,9 +7,9 @@ use tiFy\Form\ButtonController;
 class Submit extends ButtonController
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function defaults()
+    public function defaults(): array
     {
         return [
             'type'      => 'submit',

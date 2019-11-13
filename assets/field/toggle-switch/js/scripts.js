@@ -1,9 +1,11 @@
-"use strict";
+'use strict';
 
-jQuery(document).ready(function ($) {
-    $(document).on('change', '.tiFyField-toggleSwitchRadio', function (e) {
-        $(this)
-            .closest('.tiFyField-toggleSwitch')
-            .trigger('tify_field.toggleSwitch.change', $(this).val());
-    });
+import jQuery from 'jquery';
+
+jQuery(function ($) {
+  $(document).on('change', '.tiFyField-toggleSwitchRadio', function () {
+    $(this)
+        .closest('.tiFyField-toggleSwitch')
+        .trigger('tify_field.toggleSwitch.change', $(this).val());
+  });
 });

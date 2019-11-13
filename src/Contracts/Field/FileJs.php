@@ -5,11 +5,13 @@ namespace tiFy\Contracts\Field;
 interface FileJs extends FieldFactory
 {
     /**
-     * Récupération de l'url de traitement ajax.
+     * Récupération de l'url de traitement de la requête XHR.
+     *
+     * @param array ...$params Liste des paramètres optionnels de formatage de l'url.
      *
      * @return string
      */
-    public function getUrl(): string;
+    public function getUrl(...$params): string;
 
     /**
      * Traitement des options du moteur de téléchargement Dropzone.
@@ -20,7 +22,7 @@ interface FileJs extends FieldFactory
     public function parseDropzone(): FieldFactory;
 
     /**
-     * Définition de l'url de traitement ajax.
+     * Définition de l'url de traitement de la requête XHR.
      *
      * @param string|null $url
      *
@@ -29,9 +31,11 @@ interface FileJs extends FieldFactory
     public function setUrl(?string $url = null): FieldFactory;
 
     /**
-     * Génération de la réponse HTTP via une requête XHR.
+     * Contrôleur de traitement de la requête XHR.
+     *
+     * @param array ...$args Liste dynamique de variables passés en argument dans l'url de requête
      *
      * @return array
      */
-    public function xhrResponse(): array;
+    public function xhrResponse(...$args): array;
 }

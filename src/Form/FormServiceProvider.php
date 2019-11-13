@@ -1,16 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Form;
 
 use tiFy\Container\ServiceProvider;
-use tiFy\Contracts\Form\FormFactory as FormFactoryContract;
-use tiFy\Contracts\Form\FactoryField as FactoryFieldContract;
-use tiFy\Form\Addon\AjaxSubmit\AjaxSubmit as AddonAjaxSubmit;
-use tiFy\Form\Addon\CookieSession\CookieSession as AddonCookieSession;
+use tiFy\Contracts\Form\{
+    AddonFactory as AddonFactoryContract,
+    FactoryField as FactoryFieldContract,
+    FormFactory as FormFactoryContract};
 use tiFy\Form\Addon\Mailer\Mailer as AddonMailer;
-use tiFy\Form\Addon\Mailer\MailerOptionsConfirmation as AddonMailerOptionsConfirmation;
-use tiFy\Form\Addon\Mailer\MailerOptionsNotification as AddonMailerOptionsNotification;
-use tiFy\Form\Addon\Preview\Preview as AddonPreview;
 use tiFy\Form\Addon\Record\Record as AddonRecord;
 use tiFy\Form\Addon\User\User as AddonUser;
 use tiFy\Form\Button\Submit\Submit as ButtonSubmit;
@@ -40,13 +37,7 @@ class FormServiceProvider extends ServiceProvider
      */
     protected $provides = [
         'form',
-        'form.addon',
-        'form.addon.ajax-submit',
-        'form.addon.cookie-session',
         'form.addon.mailer',
-        'form.addon.mailer.options-confirmation',
-        'form.addon.mailer.options-notification',
-        'form.addon.preview',
         'form.addon.record',
         'form.addon.user',
         'form.button',
@@ -67,13 +58,13 @@ class FormServiceProvider extends ServiceProvider
         'form.field',
         'form.field.html',
         'form.field.recaptcha',
-        'form.field.tag'
+        'form.field.tag',
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->registerManager();
         $this->registerAddon();
@@ -87,42 +78,18 @@ class FormServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function registerAddon()
+    public function registerAddon(): void
     {
-        $this->getContainer()->add('form.addon', function ($name, $attrs, FormFactoryContract $form) {
-            return new AddonController($name, $attrs, $form);
+        $this->getContainer()->add('form.addon.mailer', function (): AddonFactoryContract {
+            return new AddonMailer();
         });
 
-        $this->getContainer()->add('form.addon.ajax-submit', function ($name, $attrs, FormFactoryContract $form) {
-            return new AddonAjaxSubmit($name, $attrs, $form);
+        $this->getContainer()->add('form.addon.record', function (): AddonFactoryContract {
+            return new AddonRecord();
         });
 
-        $this->getContainer()->add('form.addon.cookie-session', function ($name, $attrs, FormFactoryContract $form) {
-            return new AddonCookieSession($name, $attrs, $form);
-        });
-
-        $this->getContainer()->add('form.addon.mailer', function ($name, $attrs, FormFactoryContract $form) {
-            return new AddonMailer($name, $attrs, $form);
-        });
-
-        $this->getContainer()->add('form.addon.mailer.options-confirmation', function (FormFactoryContract $form) {
-            return new AddonMailerOptionsConfirmation($form);
-        });
-
-        $this->getContainer()->add('form.addon.mailer.options-notification', function (FormFactoryContract $form) {
-            return new AddonMailerOptionsNotification($form);
-        });
-
-        $this->getContainer()->add('form.addon.preview', function ($name, $attrs, FormFactoryContract $form) {
-            return new AddonPreview($name, $attrs, $form);
-        });
-
-        $this->getContainer()->add('form.addon.record', function ($name, $attrs, FormFactoryContract $form) {
-            return new AddonRecord($name, $attrs, $form);
-        });
-
-        $this->getContainer()->add('form.addon.user', function ($name, $attrs, FormFactoryContract $form) {
-            return new AddonUser($name, $attrs, $form);
+        $this->getContainer()->add('form.addon.user', function (): AddonFactoryContract {
+            return new AddonUser();
         });
     }
 
@@ -131,14 +98,14 @@ class FormServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function registerButton()
+    public function registerButton(): void
     {
         $this->getContainer()->add('form.button', function ($name, $attrs, FormFactoryContract $form) {
-                return new ButtonController($name, $attrs, $form);
+            return new ButtonController($name, $attrs, $form);
         });
 
         $this->getContainer()->add('form.button.submit', function ($name, $attrs, FormFactoryContract $form) {
-                return new ButtonSubmit($name, $attrs, $form);
+            return new ButtonSubmit($name, $attrs, $form);
         });
     }
 
@@ -147,7 +114,7 @@ class FormServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function registerFactory()
+    public function registerFactory(): void
     {
         $this->getContainer()->add('form.factory', function () {
             return new FormFactory();
@@ -202,7 +169,7 @@ class FormServiceProvider extends ServiceProvider
         });
 
         $this->getContainer()->add('form.factory.viewer', function (FormFactoryContract $form) {
-            $directory = form()->resourcesDir('/views');
+            $directory    = form()->resourcesDir('/views');
             $override_dir = (($override_dir = $form->get('viewer.override_dir')) && is_dir($override_dir))
                 ? $override_dir
                 : $directory;
@@ -211,7 +178,7 @@ class FormServiceProvider extends ServiceProvider
                 ->setDirectory($directory)
                 ->setController(FactoryView::class)
                 ->setOverrideDir($override_dir)
-                ->set('form', $form);
+                ->setParam('form', $form);
         });
     }
 
@@ -220,7 +187,7 @@ class FormServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function registerField()
+    public function registerField(): void
     {
         $this->getContainer()->add('form.field', function ($name, FactoryFieldContract $field) {
             return new FieldController($name, $field);
@@ -231,15 +198,15 @@ class FormServiceProvider extends ServiceProvider
         });*/
 
         $this->getContainer()->add('form.field.html', function ($name, FactoryFieldContract $field) {
-                return new FieldHtml($name, $field);
+            return new FieldHtml($name, $field);
         });
 
         $this->getContainer()->add('form.field.recaptcha', function ($name, FactoryFieldContract $field) {
-                return new FieldRecaptcha($name, $field);
+            return new FieldRecaptcha($name, $field);
         });
 
         $this->getContainer()->add('form.field.tag', function ($name, FactoryFieldContract $field) {
-                return new FieldTag($name, $field);
+            return new FieldTag($name, $field);
         });
     }
 
@@ -248,7 +215,7 @@ class FormServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function registerManager()
+    public function registerManager(): void
     {
         $this->getContainer()->share('form', function () {
             return new FormManager($this->getContainer());

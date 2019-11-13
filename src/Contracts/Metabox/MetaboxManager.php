@@ -1,45 +1,150 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Metabox;
+
+use Psr\Container\ContainerInterface as Container;
 
 interface MetaboxManager
 {
     /**
-     * Ajout d'un élément.
+     * Ajout d'une boîte de saisie.
      *
-     * @param string Nom de qualification.
-     * @param null|string $screen Ecran d'affichage de l'élément. Null correspond à l'écran d'affichage courant.
-     * @param array $attrs Liste des attributs de configuration de l'élément.
+     * @param string $name Nom de qualification.
+     * @param string|array|MetaboxDriver $metabox Nom de qualification du pilote|Attributs de configuration|Instance
+     * du pilote.
      *
-     * @return $this
+     * @return MetaboxDriver
      */
-    public function add($name, $screen = null, $attrs = []);
+    public function add(string $name, $metabox): MetaboxDriver;
 
     /**
-     * Récupération de la collection d'éléments déclarés.
+     * Ajout d'un écran d'affichage.
      *
-     * @return Collection|MetaboxFactory[]
+     * @param string $name Nom de qualification.
+     * @param string|array|MetaboxScreen $screen Nom de qualification de l'écran|Attributs de configuration de l'écran|
+     * Instance de l'écran.
+     *
+     * @return MetaboxScreen
      */
-    public function collect();
+    public function addScreen(string $name, $screen = []): MetaboxScreen;
 
     /**
-     * Déclaration d'une boîte de saisie à supprimer
+     * Récupération de la liste des métaboxes déclarées.
      *
-     * @param string $id Identifiant de qualification HTML de la metaboxe.
-     * @param string $screen Ecran d'affichage de l'élément. Null pour l'écran courant.
-     * @param string $context normal|side|advanced.
-     *
-     * @return $this
+     * @return MetaboxDriver[]|array
      */
-    public function remove($id, $screen = null, $context = 'normal');
+    public function all(): array;
 
     /**
-     * Personnalisation des attributs de configuration d'une boîte à onglets.
+     * Recupère les éléments de rendu pour un contexte associé à un écran d'affichage.
+     * {@internal Utilise l'écran d'affichage courant, si l'écran d'affichage n'est pas défini.}
      *
-     * @param string $attrs Liste des attributs de personnalisation.
-     * @param string $screen Ecran d'affichage de l'élément. Null pour l'écran courant.
+     * @param MetaboxContext $context Instance du contexte de l'écran d'affichage.
+     * @param MetaboxScreen|null $screen Instance de l'écran d'affichage.
      *
-     * @return $this
+     * @return array
      */
-    public function tab($attrs = [], $screen = null);
+    public function fetchRender(MetaboxContext $context, ?MetaboxScreen $screen = null): array;
+
+    /**
+     * Récupération du conteneur d'injection de dépendances.
+     *
+     * @return Container
+     */
+    public function getContainer(): Container;
+
+    /**
+     * Récupération de l'instance d'un contexte d'affichage.
+     *
+     * @param string $name Nom de qualification.
+     *
+     * @return MetaboxContext
+     */
+    public function getContext(string $name): MetaboxContext;
+
+    /**
+     * Récupération de l'instance d'un pilote de boîte de saisie.
+     *
+     * @param string $name Nom de qualification.
+     *
+     * @return MetaboxDriver
+     */
+    public function getDriver(string $name): MetaboxDriver;
+
+    /**
+     * Récupération de la liste des boîtes de saisie affichée pour un contexte d'affichage.
+     *
+     * @param string $context
+     *
+     * @return MetaboxDriver[]|array
+     */
+    public function getRenderItems(string $context): array;
+
+    /**
+     * Récupération de l'instance d'un écran d'affichage.
+     *
+     * @param string $name Nom de qualification.
+     *
+     * @return MetaboxScreen|null
+     */
+    public function getScreen(string $name): ?MetaboxScreen;
+
+    /**
+     * Déclaration d'un contexte d'affichage.
+     *
+     * @param string $name Nom de qualification.
+     * @param MetaboxContext $context Instance du contexte.
+     *
+     * @return static
+     */
+    public function registerContext(string $name, MetaboxContext $context): MetaboxManager;
+
+    /**
+     * Déclaration d'un pilote de boîte de saisie.
+     *
+     * @param string $name Nom de qualification.
+     * @param MetaboxDriver $driver Instance du pilote de boîte de saisie.
+     *
+     * @return static
+     */
+    public function registerDriver(string $name, MetaboxDriver $driver): MetaboxManager;
+
+    /**
+     * Récupération du rendu l'affichage des boîtes de saisies associées à un contexte d'un écran d'affichage.
+     *
+     * @param string $context Nom de qualification du contexte d'affichage.
+     * @param array $args Tableau indexé d'arguments complémentaires.
+     *
+     * @return string
+     */
+    public function render(string $context, array $args = []): string;
+
+    /**
+     * Récupération du chemin absolu vers une ressource.
+     *
+     * @param string $path Chemin relatif de la ressource.
+     *
+     * @return string
+     */
+    public function resourcesDir(string $path = ''): string;
+
+    /**
+     * Récupération de l'url absolue vers une ressource.
+     *
+     * @param string $path Chemin relatif de la ressource.
+     *
+     * @return string
+     */
+    public function resourcesUrl(string $path = ''): string;
+
+    /**
+     * Déclaration d'un jeu de boîte de saisie boîte de saisie.
+     *
+     * @param string $screen Nom de qualification de l'écran d'affichage.
+     * @param string $context Nom de qualification du contexte de l'écran d'affichage.
+     * @param string[][]|array[][]|MetaboxDriver[][] $metaboxes Liste des boîtes de saisie.
+     *
+     * @return static
+     */
+    public function stack(string $screen, string $context, array $metaboxes): MetaboxManager;
 }

@@ -30,13 +30,13 @@ class Tab extends PartialFactory implements TabContract
     public function defaults(): array
     {
         return [
-            'attrs'         => [],
-            'after'         => '',
-            'before'        => '',
-            'viewer'        => [],
+            'attrs'    => [],
+            'after'    => '',
+            'before'   => '',
+            'viewer'   => [],
             'active'   => null,
             'items'    => [],
-            'rotation' => []
+            'rotation' => [],
         ];
     }
 

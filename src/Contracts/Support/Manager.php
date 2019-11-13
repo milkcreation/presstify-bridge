@@ -40,7 +40,7 @@ interface Manager
      * Déclaration d'un élément basée sur une liste d'attributs.
      *
      * @param string|int $key Indice de qualification de l'élément.
-     * @param mixed $attrs Liste des attributs dynamiques.
+     * @param array ...$args Liste des attributs dynamiques.
      *
      * @return static
      */

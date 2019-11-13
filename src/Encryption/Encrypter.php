@@ -3,6 +3,7 @@
 namespace tiFy\Encryption;
 
 use tiFy\Contracts\Encryption\Encrypter as EncrypterContract;
+use RuntimeException;
 
 class Encrypter implements EncrypterContract
 {
@@ -10,98 +11,58 @@ class Encrypter implements EncrypterContract
      * Clé secrète de hashage.
      * @var string
      */
-    private $secret = null;
+    private $secret = '';
 
     /**
      * Clé privée de hashage.
      * @var string
      */
-    private $private = null;
+    private $private = '';
+
+    /**
+     * Algorithme d'encryption.
+     * @var string AES-128-CBC|AES-256-CBC
+     */
+    private $cipher = 'AES-128-CBC';
 
     /**
      * CONSTRUCTEUR.
      *
      * @param string $secret Clé secrète de hashage.
      * @param string $private Clé privée de hashage.
+     * @param string $cipher Algorithme d'encryption AES-128-CBC|AES-256-CBC.
      *
      * @return void
      */
-    public function __construct($secret = null, $private = null)
+    public function __construct($secret, $private, $cipher = 'AES-128-CBC')
     {
-        $this->secret = $secret ? : NONCE_KEY;
-        $this->private = $private ? : NONCE_SALT;
-    }
-
-    /**
-     * Traitement de l'action de cryptage ou de decryptage.
-     *
-     * @param string $value Valeur à traiter.
-     * @param string $action Traitement de la valeur à réaliser. encrypt|decrypt. encrypt par défaut.
-     * @param string $secret Clé secrète de hashage.
-     * @param string $private Clé privée de hashage.
-     *
-     * @return bool|string
-     */
-    protected function handle($value, $action = 'encrypt', $secret = null, $private = null)
-    {
-        $instance = new static($secret, $private);
-        $secret_key = $instance->getSecret();
-        $secret_iv = $instance->getPrivate();
-
-        $encrypt_method = "AES-256-CBC";
-        $key = hash('sha256', $secret_key);
-        $iv = substr(hash('sha256', $secret_iv), 0, 16);
-
-        switch($action) {
-            default :
-            case 'encrypt' :
-                return base64_encode(openssl_encrypt($value, $encrypt_method, $key, 0, $iv));
+        switch($this->cipher = $cipher) {
+            default:
+                throw new RuntimeException(
+                    __('Seuls les algorithmes d\'encryption AES-128-CBC et AES-256-CBC sont supportés.', 'tify')
+                );
                 break;
-            case 'decrypt' :
-                return openssl_decrypt(base64_decode($value), $encrypt_method, $key, 0, $iv);
+            case 'AES-128-CBC':
+            case 'AES-256-CBC':
+                $this->secret = hash('sha256', $secret);
+                $this->private = substr(hash('sha256', $private), 0, 16);
                 break;
         }
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function decrypt(string $hash, ?string $secret = null, ?string $private = null): string
+    public function decrypt(string $hash): ?string
     {
-        return $this->handle($hash, 'decrypt', $secret, $private);
+        return openssl_decrypt(base64_decode($hash), $this->cipher, $this->secret, 0, $this->private) ? : null;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function encrypt($plain, ?string $secret = null, ?string $private = null): string
+    public function encrypt(string $plain): ?string
     {
-        return $this->handle($plain, 'encrypt', $secret, $private);
-    }
-
-    /**
-     * @inheritdoc
-     *
-     * @todo Supprimer l'utilisation du genérateur Wordpress
-     */
-    public function generate(int $length = 12, bool $special_chars = true, bool $extra_special_chars = false): string
-    {
-        return (string)wp_generate_password($length, $special_chars, $extra_special_chars);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    final public function getSecret(): string
-    {
-        return $this->secret;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    final public function getPrivate(): string
-    {
-        return $this->private;
+        return base64_encode(openssl_encrypt($plain, $this->cipher, $this->secret, 0, $this->private)) ? : null;
     }
 }

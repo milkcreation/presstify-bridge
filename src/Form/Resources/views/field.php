@@ -7,7 +7,6 @@
  */
 ?>
 <?php echo $field->before(); ?>
-
 <?php if ($field->hasWrapper()) : ?>
     <?php echo partial('tag', array_merge($field->get('wrapper', []), [
         'content' => $this->fetch('field-label', compact('field')) .
@@ -17,5 +16,4 @@
     <?php $this->insert('field-label', compact('field')); ?>
     <?php $this->insert('field-content', compact('field')); ?>
 <?php endif; ?>
-
 <?php echo $field->after();

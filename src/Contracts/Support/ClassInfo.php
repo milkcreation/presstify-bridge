@@ -5,9 +5,6 @@ namespace tiFy\Contracts\Support;
 use ReflectionClass;
 
 /**
- * Interface ClassInfo
- * @package tiFy\Contracts\Support
- *
  * @mixin ReflectionClass
  */
 interface ClassInfo

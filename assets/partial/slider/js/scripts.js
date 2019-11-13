@@ -1,13 +1,14 @@
-"use strict";
+'use strict';
 
-jQuery(document).ready(function ($) {
-    let $slider = $('[data-control="slider"]');
+import jQuery from 'jquery';
+import 'slick-carousel/slick/slick';
 
-    $slider
-        .on('init', function () {
-            $(this).addClass('is-ready');
-        })
-        .each(function () {
-            $(this).slick();
-        });
+jQuery(function ($) {
+    $('[data-control="slider"]')
+      .on('init', function () {
+        $(this).addClass('is-ready');
+      })
+      .each(function () {
+        $(this).slick();
+      });
 });

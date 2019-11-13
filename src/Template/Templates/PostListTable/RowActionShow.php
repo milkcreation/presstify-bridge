@@ -4,6 +4,7 @@ namespace tiFy\Template\Templates\PostListTable;
 
 use tiFy\Template\Templates\ListTable\{Contracts\Item as BaseItem, RowActionShow as BaseRowActionShow};
 use tiFy\Template\Templates\PostListTable\Contracts\Item;
+use tiFy\Support\Proxy\Url;
 
 class RowActionShow extends BaseRowActionShow
 {
@@ -19,7 +20,7 @@ class RowActionShow extends BaseRowActionShow
             'content' => __('Afficher', 'tify'),
             'url'     => function (BaseItem $item) {
                 /** @var Item $item */
-                return url_factory($item->getPermalink());
+                return Url::set($item->getPermalink());
             }
         ]);
     }

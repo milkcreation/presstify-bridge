@@ -3,7 +3,7 @@
 namespace tiFy\Field\Fields\CheckboxCollection;
 
 use tiFy\Contracts\Field\CheckboxChoice as CheckboxChoiceContract;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
 use tiFy\Field\Fields\Label\Label;
 use tiFy\Field\Fields\Checkbox\Checkbox;
 
@@ -63,7 +63,7 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
         if ($attrs instanceof Checkbox) {
             $this->checkbox = $attrs;
         } else {
-            parent::__construct($attrs);
+            $this->set($attrs)->parse();
         }
     }
 
@@ -143,9 +143,9 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
     /**
      * {@inheritdoc}
      */
-    public function parse($attrs = [])
+    public function parse()
     {
-        parent::parse($attrs);
+        parent::parse();
 
         if (!$this->get('attrs.id')) {
             $this->set('attrs.id', 'FieldCheckboxCollection-item--' . $this->index);
@@ -173,6 +173,8 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
 
         $this->checkbox = field('checkbox', $this->get('checkbox', []));
         $this->label = field('label', $this->get('label', []));
+
+        return $this;
     }
 
     /**

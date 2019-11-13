@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Form;
 
-use tiFy\Contracts\Kernel\ParamsBag;
+use tiFy\Contracts\Support\ParamsBag;
 
 interface ButtonController extends ParamsBag
 {

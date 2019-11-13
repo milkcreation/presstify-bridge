@@ -78,7 +78,7 @@ class Youtube extends MadcodaYoutube
      */
     public static function isUrl($url)
     {
-        return preg_match('#^https?://(?:www\.)?(?:youtube\.com/watch|youtu\.be/)#', $url);
+        return preg_match('/^https?://(?:www\.)?(?:youtube\.com/watch|youtu\.be/)/', $url);
     }
 
     /**

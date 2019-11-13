@@ -8,6 +8,7 @@ use tiFy\Contracts\Partial\{
     CookieNotice as CookieNoticeContract,
     CurtainMenu as CurtainMenuContract,
     Dropdown as DropdownContract,
+    Downloader as DownloaderContract,
     Holder as HolderContract,
     Modal as ModalContract,
     Notice as NoticeContract,
@@ -19,14 +20,17 @@ use tiFy\Contracts\Partial\{
     Tab as TabContract,
     Table as TableContract
 };
+use tiFy\Wordpress\Contracts\Partial\MediaLibrary as MediaLibraryContract;
 use tiFy\Wordpress\Partial\Partials\{
     Accordion\Accordion,
     Breadcrumb\Breadcrumb,
     CookieNotice\CookieNotice,
     CurtainMenu\CurtainMenu,
     Dropdown\Dropdown,
+    Downloader\Downloader,
     Holder\Holder,
     Modal\Modal,
+    MediaLibrary\MediaLibrary,
     Notice\Notice,
     Pagination\Pagination,
     Sidebar\Sidebar,
@@ -58,6 +62,7 @@ class Partial
         $this->registerOverride();
 
         $this->manager->registerDefaults();
+        $this->manager->set('media-library', app()->get(MediaLibraryContract::class));
     }
 
     /**
@@ -87,8 +92,16 @@ class Partial
             return new Dropdown();
         });
 
+        app()->add(DownloaderContract::class, function () {
+            return new Downloader();
+        });
+
         app()->add(HolderContract::class, function () {
             return new Holder();
+        });
+
+        app()->add(MediaLibraryContract::class, function () {
+            return new MediaLibrary();
         });
 
         app()->add(ModalContract::class, function () {

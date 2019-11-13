@@ -69,15 +69,15 @@ class SelectChoice extends ParamsBag implements SelectChoiceContract
     /**
      * @inheritdoc
      */
-    public function getValue()
+    public function getValue(): string
     {
-        return $this->get('value');
+        return (string)$this->get('value');
     }
 
     /**
      * @inheritdoc
      */
-    public function getParent()
+    public function getParent(): ?string
     {
         return $this->get('parent', null);
     }

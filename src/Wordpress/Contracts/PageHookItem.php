@@ -2,8 +2,8 @@
 
 namespace tiFy\Wordpress\Contracts;
 
-use tiFy\Contracts\Support\ParamsBag;
-use tiFy\Contracts\Routing\Route;
+use tiFy\Contracts\{Routing\Route, Support\ParamsBag};
+use tiFy\Wordpress\Contracts\Query\QueryPost;
 use WP_Post;
 
 interface PageHookItem extends ParamsBag
@@ -67,7 +67,7 @@ interface PageHookItem extends ParamsBag
     /**
      * Vérifie si la page d'affichage courante correspond à la page d'accroche associée.
      *
-     * @param WP_Post|null Page d'affichage courante|Identifiant de qualification|Objet post Wordpress à vérifier.
+     * @param WP_Post|null $post Page d'affichage courante|Identifiant de qualification|Objet post Wordpress à vérifier.
      *
      * @return bool
      */

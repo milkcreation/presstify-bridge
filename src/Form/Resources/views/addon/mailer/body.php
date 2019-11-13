@@ -4,7 +4,6 @@
  * @var tiFy\Contracts\Form\FactoryField $field
  */
 ?>
-
 <table cellpadding="0" cellspacing="10" border="0" align="center" id="mailBody">
     <tbody>
     <tr>

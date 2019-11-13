@@ -2,9 +2,12 @@
 
 namespace tiFy\Partial\Partials\Tab;
 
-use tiFy\Contracts\Partial\Tab;
-use tiFy\Contracts\Partial\TabItem as TabItemContract;
-use tiFy\Contracts\Partial\TabItems as TabItemsContract;
+use Illuminate\Support\Collection as LaraCollection;
+use tiFy\Contracts\Partial\{
+    Tab,
+    TabItem as TabItemContract,
+    TabItems as TabItemsContract
+};
 use tiFy\Support\Collection;
 
 class TabItems extends Collection implements TabItemsContract
@@ -104,7 +107,17 @@ class TabItems extends Collection implements TabItemsContract
 
         $this->set($this->registered);
         $this->parseRecursiveItems($this->items);
+
         $this->grouped = $this->collect()->groupBy('parent');
+        foreach ($this->grouped as $group => $tabs) {
+            /** @var LaraCollection $tabs */
+            $max = $tabs->max(function (TabItemContract $tab) { return $tab['position']; }) ? : 0;
+            $pad = 0;
+
+            $this->grouped[$group] = $tabs->each(function (TabItemContract $tab) use (&$pad, $max) {
+                $tab['position'] = is_numeric($tab['position']) ? $tab['position'] : ++$pad + $max;
+            })->sortBy('position')->values();
+        }
 
         return $this;
     }

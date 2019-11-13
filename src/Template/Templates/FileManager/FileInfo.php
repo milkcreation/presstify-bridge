@@ -280,7 +280,7 @@ class FileInfo extends ParamsBag implements FileInfoContract
      */
     public function getTypeOfMime(): ?string
     {
-        return preg_replace('#(\/[a-zA-Z0-9\.\+]+)$#', '', $this->getMimetype()) ?: null;
+        return preg_replace('/(\/[a-zA-Z0-9.+]+)$/', '', $this->getMimetype()) ?: null;
     }
 
     /**

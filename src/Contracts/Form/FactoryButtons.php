@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Form;
 
-use tiFy\Contracts\Kernel\Collection;
+use tiFy\Contracts\Support\Collection;
 
 interface FactoryButtons extends FactoryResolver, Collection
 {

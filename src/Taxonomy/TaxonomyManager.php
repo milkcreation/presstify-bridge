@@ -2,7 +2,6 @@
 
 namespace tiFy\Taxonomy;
 
-use InvalidArgumentException;
 use tiFy\Contracts\Taxonomy\TaxonomyFactory as TaxonomyFactoryContract;
 use tiFy\Contracts\Taxonomy\TaxonomyManager as TaxonomyManagerContract;
 use tiFy\Contracts\Taxonomy\TaxonomyTermMeta;

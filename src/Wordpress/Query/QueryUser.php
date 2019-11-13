@@ -4,13 +4,26 @@ namespace tiFy\Wordpress\Query;
 
 use tiFy\Contracts\User\RoleFactory;
 use tiFy\Support\{ParamsBag, Proxy\Role};
-use tiFy\Wordpress\Contracts\{Database\UserBuilder, QueryUser as QueryUserContract};
-use tiFy\Wordpress\Database\Model\User as Model;
+use tiFy\Wordpress\Contracts\{Database\UserBuilder, Query\QueryUser as QueryUserContract};
+use tiFy\Wordpress\Database\Model\User as UserModel;
 use WP_Site;
 use WP_User;
+use WP_User_Query;
 
 class QueryUser extends ParamsBag implements QueryUserContract
 {
+    /**
+     * Nom de qualification ou liste de roles associés.
+     * @var string|array
+     */
+    protected static $role = [];
+
+    /**
+     * Liste des arguments de requête de récupération des éléments par défaut.
+     * @var array
+     */
+    protected static $defaultArgs = [];
+
     /**
      * Liste des sites pour lequels l'utilisateur est habilité.
      * @var WP_Site[]|array
@@ -73,10 +86,69 @@ class QueryUser extends ParamsBag implements QueryUserContract
     /**
      * @inheritDoc
      */
+    public static function parseQueryArgs(array $args = []): array
+    {
+        if ($role = static::$role) {
+            $args['role'] = $role;
+        }
+
+        return array_merge(static::$defaultArgs, $args);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function query(WP_User_Query $wp_user_query): array
+    {
+        if ($users = $wp_user_query->get_results()) {
+            array_walk($users, function (WP_User &$wp_user) {
+                $wp_user = new static($wp_user);
+            });
+            return $users;
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromArgs(array $args = []): array
+    {
+        return static::query(new WP_User_Query(static::parseQueryArgs($args)));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromIds(array $ids): array
+    {
+        return static::query(new WP_User_Query(static::parseQueryArgs(['include' => $ids])));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function setDefaultArgs(array $args): void
+    {
+        self::$defaultArgs = $args;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function setRole(string $role): void
+    {
+        self::$role = $role;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function db(): UserBuilder
     {
         if (!$this->db) {
-            $this->db = (new Model())->find($this->getId());
+            $this->db = (new UserModel())->find($this->getId());
         }
 
         return $this->db;
@@ -173,6 +245,30 @@ class QueryUser extends ParamsBag implements QueryUserContract
     /**
      * @inheritDoc
      */
+    public function getMeta(string $meta_key, bool $single = false, $default = null)
+    {
+        return get_user_meta($this->getId(), $meta_key, $single) ?: $default;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMetaMulti(string $meta_key, $default = null)
+    {
+        return $this->getMeta($meta_key, false, $default);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMetaSingle(string $meta_key, $default = null)
+    {
+        return $this->getMeta($meta_key, true, $default);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getNicename(): string
     {
         return $this->get('user_nicename', '');
@@ -184,6 +280,14 @@ class QueryUser extends ParamsBag implements QueryUserContract
     public function getNickname(): string
     {
         return $this->getWpUser()->nickname;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOption(string $option_name, $default = null)
+    {
+        return get_user_option($option_name, $this->getId()) ? : $default;
     }
 
     /**

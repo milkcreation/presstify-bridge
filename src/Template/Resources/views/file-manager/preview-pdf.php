@@ -8,8 +8,7 @@
 ?>
 <?php $this->insert('spinner'); ?>
 
-<?php
-echo partial('pdf-preview', [
+<?php echo partial('pdfviewer', [
     'src'   => isset($file)
         ? $file->getUrl()
         : '7855ce7d975d5a1ede9b5a83d7235dee/document-manager/cache/Symfony_quick_tour_4.2.pdf',
@@ -28,9 +27,9 @@ echo partial('pdf-preview', [
         ],
         'content' => $this->getIcon('next')
     ]
-]);
+]); ?>
 
-echo partial('tag', [
+<?php echo partial('tag', [
     'tag'     => 'a',
     'attrs'   => [
         'class'  => 'FileManager-button FileManager-button--fullscreen',

@@ -5,8 +5,8 @@ namespace tiFy\Wordpress\Proxy;
 use tiFy\Support\Proxy\AbstractProxy;
 
 /**
- * @method static getBase64Src(int $id)
- * @method static getSrcFilename(string $src)
+ * @method static string|null getBase64Src(int $id)
+ * @method static string|null getSrcFilename(string $src)
  */
 class Media extends AbstractProxy
 {

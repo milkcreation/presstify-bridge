@@ -91,7 +91,7 @@ interface FactoryBuilder extends FactoryAwareTrait, ParamsBag
      *
      * @param string $search
      *
-     * @return string
+     * @return static
      */
     public function setSearch(string $search): FactoryBuilder;
 }

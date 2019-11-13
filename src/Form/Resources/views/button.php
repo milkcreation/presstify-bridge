@@ -7,9 +7,7 @@
  */
 ?>
 <?php echo $button->get('before'); ?>
-
-<?php
-if ($button->hasWrapper()) :
+<?php if ($button->hasWrapper()) :
     echo partial('tag', array_merge(
         $button->get('wrapper', []),
         [
@@ -19,5 +17,4 @@ if ($button->hasWrapper()) :
 else :
     echo $button;
 endif; ?>
-
 <?php echo $button->get('after'); ?>

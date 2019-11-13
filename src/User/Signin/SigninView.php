@@ -34,7 +34,7 @@ class SigninView extends ViewController
     public function __call($name, $arguments)
     {
         try {
-            return $this->getEngine()->get('signin')->$name(...$arguments);
+            return $this->engine()->params('signin')->$name(...$arguments);
         } catch (Exception $e) {
             throw new BadMethodCallException(sprintf(__('La méthode %s n\'est pas disponible.', 'tify'), $name));
         }

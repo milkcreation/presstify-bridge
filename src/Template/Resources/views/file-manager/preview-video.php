@@ -8,8 +8,7 @@
 ?>
 <?php $this->insert('spinner'); ?>
 
-<?php
-echo partial('tag', [
+<?php echo partial('tag', [
     'tag'     => 'video',
     'attrs'   => [
         'class'    => 'FileManager-preview FileManager-preview--video',

@@ -29,13 +29,6 @@ interface RowAction extends FactoryAwareTrait, ParamsBag
     public function getName(): string;
 
     /**
-     * Controleur de requête HTTP.
-     *
-     * @return mixed
-     */
-    public function httpController();
-
-    /**
      * Vérification de disponibilité de l'action.
      *
      * @return boolean

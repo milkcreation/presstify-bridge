@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Form\Factory;
 
-use tiFy\Contracts\Form\AddonController;
+use tiFy\Contracts\Form\AddonFactory;
 use tiFy\Contracts\Form\ButtonController;
 use tiFy\Contracts\Form\FactoryAddons;
 use tiFy\Contracts\Form\FactoryButtons;
@@ -23,9 +23,6 @@ use tiFy\Contracts\View\ViewEngine;
 use tiFy\Contracts\Form\FactoryResolver;
 
 /**
- * Trait ResolverTrait
- * @package tiFy\Form\Factory
- *
  * @mixin FactoryResolver
  */
 trait ResolverTrait
@@ -43,11 +40,11 @@ trait ResolverTrait
     protected $form;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @return AddonController
+     * @return AddonFactory|null
      */
-    public function addon($name)
+    public function addon($name): ?AddonFactory
     {
         return $this->addons()->get($name);
     }
@@ -55,7 +52,7 @@ trait ResolverTrait
     /**
      * {@inheritdoc}
      *
-     * @return FactoryAddons|AddonController[]
+     * @return FactoryAddons|AddonFactory[]
      */
     public function addons()
     {
@@ -77,16 +74,16 @@ trait ResolverTrait
      *
      * @return mixed|FactoryEvents
      */
-    public function events($name = null)
+    public function events($name = null, array $args = [])
     {
         /** @var FactoryEvents $factory */
         $factory = $this->resolve("factory.events.{$this->form()->name()}");
 
-        if (is_null($name)) :
+        if (is_null($name)) {
             return $factory;
-        endif;
+        }
 
-        return call_user_func_array([$factory, 'trigger'], func_get_args());
+        return call_user_func_array([$factory, 'trigger'], [$name, $args]);
     }
 
     /**
@@ -121,7 +118,7 @@ trait ResolverTrait
     public function fieldTagValue($tags, $raw = true)
     {
         if (is_string($tags)) :
-            if (preg_match_all('#([^%%]*)%%(.*?)%%([^%%]*)?#', $tags, $matches)) :
+            if (preg_match_all('/([^%%]*)%%(.*?)%%([^%%]*)?/', $tags, $matches)) :
                 $tags = '';
                 foreach ($matches[2] as $i => $slug) :
                     $tags .= $matches[1][$i] . (($field = $this->field($slug)) ? $field->getValue($raw) : $matches[2][$i]) . $matches[3][$i];

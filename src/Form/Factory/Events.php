@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Form\Factory;
 
@@ -21,23 +21,23 @@ class Events implements FactoryEvents
     {
         $this->form = $form;
 
-        foreach ($events as $name => $event) :
-            if (is_callable($event)) :
+        foreach ($events as $name => $event) {
+            if (is_callable($event)) {
                 $listener = $event;
                 $priority = 10;
-            elseif (isset($event['call']) && is_callable($event['call'])) :
+            } elseif (isset($event['call']) && is_callable($event['call'])) {
                 $listener = $event['call'];
                 $priority = isset($event['priority']) ? $event['priority'] : 10;
-            else :
+            } else {
                 continue;
-            endif;
+            }
 
             $this->listen($name, $listener, $priority);
-        endforeach;
+        }
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function listen($name, $listener, $priority = 0)
     {
@@ -47,7 +47,7 @@ class Events implements FactoryEvents
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function trigger($name, $args = [])
     {

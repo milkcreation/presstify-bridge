@@ -1,20 +1,33 @@
 {
-  "name": "presstify-plugins/bridge",
-  "description": "Bridge PresstiFy Framework - Compatibilité des versions ultérieures de tiFy",
+  "name": "presstify/framework",
+  "description": "Framework PresstiFy",
   "keywords": [
-    "bridge",
-    "compatibility",
     "framework",
     "presstify",
     "wordpress"
   ],
-  "homepage": "https://svn.tigreblanc.fr/presstify-plugins/bridge",
-  "time": "2019-09-15",
+  "homepage": "https://svn.tigreblanc.fr/presstify-framework",
+  "time": "2019-11-05",
   "authors": [
     {
       "name": "Jordy Manner",
       "email": "jordy.manner@milkcreation.fr",
-      "role": "Developper"
+      "role": "Lead Developper"
+    },
+    {
+      "name": "Julien Picard",
+      "email": "julien@tigreblanc.fr",
+      "role": "Contributing Developper"
+    },
+    {
+      "name": "Louis Dherent",
+      "email": "louis@tigreblanc.fr",
+      "role": "Contributing Developper"
+    },
+    {
+      "name": "Gaetan Thery",
+      "email": "gaetan@tigreblanc.fr",
+      "role": "Contributing Developper"
     }
   ],
   "repositories": [
@@ -32,6 +45,7 @@
     "composer/composer": "^1.6",
     "composer/installers": "~1.0",
     "defuse/php-encryption": "^2.0",
+    "doctrine/dbal": "^2.9",
     "embed/embed": "^3.3",
     "facebook/graph-sdk": "^5.5",
     "google/apiclient": "^2.2",
@@ -95,8 +109,7 @@
       "src/helpers.php"
     ],
     "psr-4": {
-      "tiFy\\": "src",
-      "tiFy\\Plugins\\Bridge\\": ""
+      "tiFy\\": "src"
     }
   },
   "minimum-stability": "dev",
@@ -105,5 +118,13 @@
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "sort-packages": true
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "bower install --allow-root --save"
+    ],
+    "post-update-cmd": [
+      "bower install --allow-root --save"
+    ]
   }
 }

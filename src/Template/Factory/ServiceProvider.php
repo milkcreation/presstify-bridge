@@ -2,7 +2,9 @@
 
 namespace tiFy\Template\Factory;
 
+use Illuminate\Database\Eloquent\Model;
 use tiFy\Contracts\Template\{
+    FactoryActions as FactoryActionsContract,
     FactoryDb as FactoryDbContract,
     FactoryServiceProvider as FactoryServiceProviderContract,
     TemplateFactory};
@@ -42,6 +44,7 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
      */
     public function registerFactories(): void
     {
+        $this->registerFactoryActions();
         $this->registerFactoryAssets();
         $this->registerFactoryBuilder();
         $this->registerFactoryCache();
@@ -54,6 +57,18 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
         $this->registerFactoryRequest();
         $this->registerFactoryUrl();
         $this->registerFactoryViewer();
+    }
+
+    /**
+     * Déclaration du controleur des actions.
+     *
+     * @return void
+     */
+    public function registerFactoryActions(): void
+    {
+        $this->getContainer()->share($this->getFactoryAlias('assets'), function (): FactoryActionsContract {
+            return (new Actions())->setTemplateFactory($this->factory);
+        });
     }
 
     /**
@@ -104,12 +119,16 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
     public function registerFactoryDb(): void
     {
         $this->getContainer()->share($this->getFactoryAlias('db'), function (): ?FactoryDbContract {
-
             if ($db = $this->factory->provider('db')) {
-                $db = $db instanceof FactoryDbContract
-                    ? $db
-                    : new Db();
-                return $db->setTemplateFactory($this->factory);
+                if ($db instanceof Model) {
+                    $db = (new Db())->setDelegate($db);
+                } elseif (!$db instanceof FactoryDbContract) {
+                    $db = new Db();
+                }
+
+                $instance =  $db->setTemplateFactory($this->factory);
+
+                return $instance;
             } else {
                 return null;
             }

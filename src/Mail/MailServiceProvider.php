@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Mail;
 
@@ -20,20 +20,20 @@ class MailServiceProvider extends ServiceProvider
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->add('mailer', function () {
             return new Mailer();
         });
 
         $this->getContainer()->add('mailer.library', function () {
-            switch(config('mail.library')) :
+            switch(config('mail.library')) {
                 default :
                     $adapter = new AdapterPhpMailer(new PHPMailer(true));
                     break;
-            endswitch;
+            }
 
             return $adapter;
         });

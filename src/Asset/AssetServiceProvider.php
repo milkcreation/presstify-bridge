@@ -3,6 +3,7 @@
 namespace tiFy\Asset;
 
 use tiFy\Container\ServiceProvider;
+use tiFy\Support\Locale;
 
 class AssetServiceProvider extends ServiceProvider
 {
@@ -19,7 +20,16 @@ class AssetServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->getContainer()->share('asset', function () {
-            return new Asset($this->getContainer()->get('app'));
+            $instance = new Asset($this->getContainer());
+
+            $instance->setDataJs('base_url', $this->getContainer()->get('request')->getBaseUrl(), false);
+            $instance->setDataJs('rewrite_base', $this->getContainer()->get('url')->rewriteBase(), false);
+            $instance->setDataJs(
+                'locale',
+                ($locale = Locale::getLanguage()) ? $locale : ['language' => '', 'iso' => []]
+            );
+
+            return $instance;
         });
     }
 }

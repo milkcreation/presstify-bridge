@@ -2,25 +2,24 @@
 
 namespace tiFy\Routing;
 
-use tiFy\Contracts\Http\Request;
-use tiFy\Contracts\Routing\{Router, Url as UrlContract};
+use tiFy\Contracts\{Http\Request, Routing\Router, Routing\Url as UrlContract, Routing\UrlFactory as UrlFactoryContract};
 
-class Url implements UrlContract
+class Url extends UrlFactory implements UrlContract
 {
     /**
-     * Instance du controleur de requête HTTP.
+     * Instance des requêtes HTTP.
      * @var Router
      */
     protected $request;
 
     /**
-     * Sous arborescence du chemin de l'url.
+     * Sous arborescence du chemin de l'url racine.
      * @var string
      */
     protected $rewriteBase;
 
     /**
-     * Instance du controleur de routage.
+     * Instance du routage.
      * @var Router
      */
     protected $router;
@@ -37,93 +36,49 @@ class Url implements UrlContract
     {
         $this->router = $router;
         $this->request = $request;
+
+        parent::__construct(app()->runningInConsole() ? (string)$this->root() : $this->request->fullUrl());
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function clean(): string
+    public function current(bool $full = true): UrlFactoryContract
     {
-        return $this->without($this->cleanArgs());
+        return new UrlFactory($full ? $this->request->fullUrl() : $this->request->url());
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function cleanArgs(): array
+    public function rel(string $url): ?string
     {
-        return wp_removable_query_args();
+        $root = (string)$this->root();
+
+        return preg_match('/^' . preg_quote($root, '/') . '/', $url)
+            ? '/'. ltrim(preg_replace('/^' . preg_quote($root, '/') . '/', '', $url), '/')
+            : null;
     }
 
     /**
-     * @inheritdoc
-     */
-    public function current(): string
-    {
-        return $this->request->getUriForPath('');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function decode(): string
-    {
-        return url_factory($this->full())->getDecode();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function domain(): string
-    {
-        return $this->request->url();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function full(): string
-    {
-        return $this->request->fullUrl();
-    }
-
-    /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function rewriteBase(): string
     {
         if (is_null($this->rewriteBase)) {
-            $this->rewriteBase = $this->request->server->has('CONTEXT_PREFIX')
-                ? $this->request->server->get('CONTEXT_PREFIX')
-                : preg_replace('#^' . preg_quote($this->request->getSchemeAndHttpHost()) . '#', '', $this->root());
+            $this->rewriteBase = preg_replace(
+                '/^' . preg_quote($this->request->getSchemeAndHttpHost(), '/') . '/', '', $this->root()
+            );
         }
 
         return $this->rewriteBase;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function root(string $path = ''): string
+    public function root(string $path = ''): UrlFactoryContract
     {
-        $path = $path ? '/' . ltrim($path, '/') : '';
-
-        return config('app_url') . $path;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function with(array $args): string
-    {
-        return (string)url_factory($this->full())->with($args)->get();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function without(array $args): string
-    {
-        return (string)url_factory($this->full())->without($args)->get();
+        return new UrlFactory(config('app_url', $this->request->root()) . ($path ? '/' . ltrim($path, '/') : ''));
     }
 }

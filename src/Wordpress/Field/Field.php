@@ -14,6 +14,7 @@ use tiFy\Contracts\Field\{
     SelectJs as SelectJsContract,
     Suggest as SuggestContract,
     TextRemaining as TextRemainingContract,
+    Tinymce as TinymceContract,
     ToggleSwitch as ToggleSwitchContract};
 use tiFy\Wordpress\Contracts\Field\{
     Findposts as FindpostsContract,
@@ -33,6 +34,7 @@ use tiFy\Wordpress\Field\Fields\{
     SelectJs\SelectJs,
     Suggest\Suggest,
     TextRemaining\TextRemaining,
+    Tinymce\Tinymce,
     ToggleSwitch\ToggleSwitch
 };
 
@@ -139,6 +141,10 @@ class Field
 
         app()->add(TextRemainingContract::class, function () {
             return new TextRemaining();
+        });
+
+        app()->add(TinymceContract::class, function () {
+            return new Tinymce();
         });
 
         app()->add(ToggleSwitchContract::class, function () {

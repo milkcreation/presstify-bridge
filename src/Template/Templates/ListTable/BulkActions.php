@@ -5,6 +5,7 @@ namespace tiFy\Template\Templates\ListTable;
 use tiFy\Support\Collection;
 use tiFy\Template\Factory\FactoryAwareTrait;
 use tiFy\Template\Templates\ListTable\Contracts\{BulkAction, BulkActions as BulkActionsContract};
+use tiFy\Support\Proxy\Field;
 
 class BulkActions extends Collection implements BulkActionsContract
 {
@@ -96,7 +97,7 @@ class BulkActions extends Collection implements BulkActionsContract
         if ($choices = $this->all()) {
             $displayed = !self::$displayed++ ? '' : 2;
 
-            $output .= field('label', [
+            $output .= Field::get('label', [
                 'attrs'   => [
                     'for'   => 'bulk-action-selector-' . esc_attr($this->which),
                     'class' => 'screen-reader-text'
@@ -104,7 +105,7 @@ class BulkActions extends Collection implements BulkActionsContract
                 'content' => __('Choix de l\'action', 'tify')
             ]);
 
-            $output .= field('select', [
+            $output .= Field::get('select', [
                 'name'    => "action{$displayed}",
                 'attrs'   => [
                     'id' => 'bulk-action-selector-' . esc_attr($this->which)
@@ -112,7 +113,7 @@ class BulkActions extends Collection implements BulkActionsContract
                 'choices' => $choices
             ]);
 
-            $output .= field('submit', [
+            $output .= Field::get('submit', [
                 'attrs' => [
                     'id'    => "doaction{$displayed}",
                     'value' => __('Apply'),

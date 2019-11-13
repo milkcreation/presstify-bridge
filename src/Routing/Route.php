@@ -3,10 +3,12 @@
 namespace tiFy\Routing;
 
 use FastRoute\RouteParser\Std as RouteParser;
+use InvalidArgumentException;
 use League\Route\Route as LeagueRoute;
 use LogicException;
 use tiFy\Contracts\Routing\{Route as RouteContract, Router as RouterContract};
 use tiFy\Routing\Concerns\{ContainerAwareTrait, StrategyAwareTrait};
+use tiFy\Support\ParamsBag;
 
 class Route extends LeagueRoute implements RouteContract
 {
@@ -14,7 +16,7 @@ class Route extends LeagueRoute implements RouteContract
 
     /**
      * Instance du controleur de gestion des routes.
-     * @return RouterContract
+     * @var RouterContract
      */
     protected $collection;
 
@@ -23,6 +25,12 @@ class Route extends LeagueRoute implements RouteContract
      * @var boolean
      */
     protected $current = false;
+
+    /**
+     * Instance des paramètres associés
+     * @var ParamsBag|null
+     */
+    protected $params;
 
     /**
      * CONSTRUCTEUR.
@@ -46,7 +54,7 @@ class Route extends LeagueRoute implements RouteContract
     /**
      * {@inheritdoc}
      */
-    public function getUrl(array $params = [], bool $absolute = true): string
+    public function getUrl(array $params = [], bool $absolute = false): string
     {
         $routes = (new RouteParser())->parse($this->collection->parseRoutePath($this->getPath()));
 
@@ -84,7 +92,7 @@ class Route extends LeagueRoute implements RouteContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getVar(string $key, $default = null)
     {
@@ -92,7 +100,7 @@ class Route extends LeagueRoute implements RouteContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function isCurrent(): bool
     {
@@ -100,7 +108,29 @@ class Route extends LeagueRoute implements RouteContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
+     */
+    public function params($key = null, $default = null)
+    {
+        if (!$this->params instanceof ParamsBag) {
+            $this->params = new ParamsBag();
+        }
+
+        if (is_null($key)) {
+            return $this->params;
+        } elseif (is_string($key)) {
+            return $this->params->get($key, $default);
+        } elseif (is_array($key)) {
+            return $this->params->set($key);
+        } else {
+            throw new InvalidArgumentException(
+                __('La définition ou la récupération de paramètre de route est invalide', 'tify')
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
      */
     public function setCurrent()
     {

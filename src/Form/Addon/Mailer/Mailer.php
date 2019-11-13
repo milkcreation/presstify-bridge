@@ -1,14 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Form\Addon\Mailer;
 
-use tiFy\Contracts\Form\FactoryField;
-use tiFy\Contracts\Form\FactoryRequest;
-use tiFy\Contracts\Mail\Mailer as MailerContract;
-use tiFy\Contracts\Metabox\MetaboxManager;
-use tiFy\Form\AddonController;
+use Closure;
+use tiFy\Contracts\{Form\FactoryField, Form\FactoryRequest, Mail\Mailer as MailerContract};
+use tiFy\Form\AddonFactory;
+use tiFy\Support\Proxy\Metabox;
 
-class Mailer extends AddonController
+class Mailer extends AddonFactory
 {
     /**
      * Définition des options de formulaire par défaut
@@ -38,10 +37,7 @@ class Mailer extends AddonController
      * }
      */
     public $attributes = [
-        'admin'              => [
-            'confirmation' => true,
-            'notification' => true,
-        ],
+        'admin'              => true,
         'confirmation'       => [],
         'notification'       => [],
         'option_name_prefix' => '',
@@ -50,77 +46,145 @@ class Mailer extends AddonController
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function boot()
+    public function boot(): void
     {
-        $this->events()
+        $this->form()->events()
              ->listen('request.submit', [$this, 'onRequestSubmit'])
              ->listen('request.success', [$this, 'onRequestSuccess']);
 
-        $prefix       = $this->get('option_name_prefix', "FormMailer_{$this->form()->name()}");
-        $option_names = $this->get('option_names', []);
+        $prefix       = $this->params('option_name_prefix', "FormMailer_{$this->form()->name()}");
+        $option_names = $this->params('option_names', []);
         foreach (['confirmation', 'sender', 'notification', 'recipients'] as $option) {
             $option_names[$option] = $option_names[$option] ?? "{$prefix}{$option}";
         }
-        $this->set('option_names', $option_names);
+        $this->params(['option_names' => $option_names]);
 
-        if ($this->get('confirmation') && get_option($option_names['confirmation'])) :
+        if ($this->params('confirmation') && get_option($option_names['confirmation'])) {
             $from = get_option($option_names['sender']) ? ! '' : ['email' => '', 'name' => ''];
 
-            $this->set('confirmation.from', [$from['email'], $from['name']]);
-        endif;
+            $this->params(['confirmation.from' => [$from['email'], $from['name']]]);
+        }
 
         if (
-            $this->get('notification') &&
+            $this->params('notification') &&
             get_option($option_names['notification']) &&
             ($to = get_option($option_names['recipients']))
-        ) :
+        ) {
             array_walk($to, function (&$item) {
                 $item = [$item['email'], $item['name']];
             });
 
-            $this->set('notification.to', $to);
-        endif;
+            $this->params(['notification.to' => $to]);
+        }
 
-        /** @var MetaboxManager $metabox */
-        if ($this->get('admin.confirmation') || $this->get('admin.notification')) :
-            $metabox = app('metabox');
+        if ($admin = $this->params('admin')) {
+            $defaultAdmin = [
+                'confirmation' => true,
+                'notification' => true,
+            ];
 
-            $metabox->add("FormAddonMailer-{$this->form()->name()}", 'tify_options@options', [
+            $this->params(['admin' => is_array($admin) ? array_merge($defaultAdmin, $admin) : $defaultAdmin]);
+        }
+
+        if ($this->params('admin.confirmation') || $this->params('admin.notification')) {
+            Metabox::add("FormAddonMailer-{$this->form()->name()}", [
                 'title' => $this->form()->getTitle(),
-            ]);
+            ])
+                   ->setScreen('tify_options@options')
+                   ->setContext('tab');
 
-            if ($this->get('admin.confirmation')) :
-                $metabox->add(
-                    "FormAddonMailerConfirmation-{$this->form()->name()}",
-                    'tify_options@options',
-                    [
-                        'parent'   => "FormAddonMailer-{$this->form()->name()}",
-                        'content'  => $this->resolve('addon.mailer.options-confirmation', [$this->form()]),
-                        'position' => 1,
-                    ]
-                );
-            endif;
+            if ($this->params('admin.confirmation')) {
+                Metabox::add("FormAddonMailerConfirmation-{$this->form()->name()}", [
+                    'driver'   => (new MailerConfirmationMetabox())->setAddon($this),
+                    'parent'   => "FormAddonMailer-{$this->form()->name()}",
+                    'position' => 1,
+                ])
+                       ->setScreen('tify_options@options')
+                       ->setContext('tab');
+            }
 
-            if ($this->get('admin.notification')) :
-                $metabox->add(
-                    "FormAddonMailerNotification-{$this->form()->name()}",
-                    'tify_options@options',
-                    [
-                        'parent'   => "FormAddonMailer-{$this->form()->name()}",
-                        'content'  => $this->resolve('addon.mailer.options-notification', [$this->form()]),
-                        'position' => 2,
-                    ]
-                );
-            endif;
-        endif;
+            if ($this->params('admin.notification')) {
+                Metabox::add("FormAddonMailerNotification-{$this->form()->name()}", [
+                    'driver'   => (new MailerNotificationMetabox())->setAddon($this),
+                    'parent'   => "FormAddonMailer-{$this->form()->name()}",
+                    'position' => 2,
+                ])
+                       ->setScreen('tify_options@options')
+                       ->setContext('tab');
+            }
+
+            foreach ($option_names as $key => $option_name) {
+                switch ($key) {
+                    default:
+                        register_setting('tify_options', $option_name);
+                        break;
+                    case 'recipients' :
+                        register_setting('tify_options', $option_name, function ($recipients) {
+                            if ($recipients) {
+                                foreach ($recipients as $recipient => $recip) {
+                                    if (empty($recip['email'])) {
+                                        add_settings_error(
+                                            'tify_options',
+                                            $recipient . '-email_empty',
+                                            __(
+                                                'L\'email du destinataire des messages de notification ne peut être vide',
+                                                'tify'
+                                            )
+                                        );
+                                    } elseif ( ! is_email($recip['email'])) {
+                                        add_settings_error(
+                                            'tify_options',
+                                            $recipient . '-email_format',
+                                            __(
+                                                'Le format de l\'email du destinataire des messages de notification' .
+                                                'n\'est pas valide',
+                                                'tify'
+                                            )
+                                        );
+                                    }
+                                }
+                            }
+
+                            return $recipients;
+                        });
+                        break;
+                    case 'sender' :
+                        register_setting('tify_options', $option_name, function ($sender) {
+                            if (empty($sender['email'])) {
+                                add_settings_error(
+                                    'tify_options',
+                                    'sender-email_empty',
+                                    sprintf(
+                                        __('L\'email "%s" ne peut être vide', 'tify'),
+                                        __('Expéditeur du message de confirmation de reception', 'tify')
+                                    )
+                                );
+                            } elseif ( ! is_email($sender['email'])) {
+                                add_settings_error(
+                                    'tify_options',
+                                    'sender-email_format',
+                                    sprintf(
+                                        __('Le format de l\'email "%s" n\'est pas valide', 'tify'),
+                                        __('Expéditeur du message de confirmation de reception', 'tify')
+                                    )
+                                );
+                            }
+
+                            return $sender;
+                        });
+                        break;
+                }
+
+            }
+        }
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function defaults()
+    public function defaultsParams(): array
     {
         return [
             'notification' => [
@@ -142,7 +206,7 @@ class Mailer extends AddonController
     /**
      * @inheritdoc
      */
-    public function defaultsFieldOptions()
+    public function defaultsFieldOptions(): array
     {
         return [
             'show'  => true,
@@ -168,34 +232,34 @@ class Mailer extends AddonController
         /** @var MailerContract $mailer */
         $mailer = app('mailer');
 
-        if ($debug = $this->get('debug')) :
-            switch ($debug) :
+        if ($debug = $this->params('debug')) {
+            switch ($debug) {
                 default:
                 case 'confirmation' :
-                    if ($params = $this->parseParams($this->get('confirmation', []), 'confirmation')) :
+                    if ($params = $this->parseMail($this->params('confirmation', []), 'confirmation')) {
                         $mailer->debug($params);
-                    else :
+                    } else {
                         wp_die(
                             __('Email de confirmation non configuré.', 'tify'),
                             __('FormAddonMailer - Erreur', 'tify'),
                             500
                         );
-                    endif;
+                    }
                     break;
 
                 case 'notification' :
-                    if ($params = $this->parseParams($this->get('notification', []), 'notification')) :
+                    if ($params = $this->parseMail($this->params('notification', []), 'notification')) {
                         $mailer->debug($params);
-                    else :
+                    } else {
                         wp_die(
                             __('Email de notification non configuré.', 'tify'),
                             __('FormAddonMailer - Erreur', 'tify'),
                             500
                         );
-                    endif;
+                    }
                     break;
-            endswitch;
-        endif;
+            }
+        }
     }
 
     /**
@@ -211,11 +275,11 @@ class Mailer extends AddonController
         /** @var MailerContract $mailer */
         $mailer = app('mailer');
 
-        if ($params = $this->parseParams($this->get('confirmation', []), 'confirmation')) {
+        if ($params = $this->parseMail($this->params('confirmation', []), 'confirmation')) {
             $mailer->send($params);
         }
 
-        if ($params = $this->parseParams($this->get('notification', []), 'notification')) {
+        if ($params = $this->parseMail($this->params('notification', []), 'notification')) {
             $mailer->send($params);
         }
     }
@@ -228,11 +292,11 @@ class Mailer extends AddonController
      *
      * @return array
      */
-    public function parseParams($params, $type)
+    public function parseMail($params, $type)
     {
-        if ($params === false) :
+        if ($params === false) {
             return [];
-        endif;
+        }
 
         $params['subject'] = $params['subject']
                              ?? sprintf(__('%1$s - Demande de contact', 'tify'), get_bloginfo('name'));
@@ -242,24 +306,26 @@ class Mailer extends AddonController
 
         $params = array_map([$this, 'fieldTagValue'], $params);
 
-        $fields = $this->fields()->collect()->filter(function (FactoryField $item) {
+        $fields = $this->form()->fields()->collect()->filter(function (FactoryField $item) {
             return $item->getAddonOption('mailer', 'show') && $item->supports('request');
         });
 
         $fields->each(function (FactoryField $item) {
             $mailer_label         = $item->getAddonOption('mailer', 'label');
-            $item['mailer_label'] = $mailer_label instanceof \Closure
+            $item['mailer_label'] = $mailer_label instanceof Closure
                 ? call_user_func($mailer_label, $item)
                 : $mailer_label;
 
             $mailer_value         = $item->getAddonOption('mailer', 'value');
-            $item['mailer_value'] = $mailer_value instanceof \Closure
+            $item['mailer_value'] = $mailer_value instanceof Closure
                 ? call_user_func($mailer_value, $item)
                 : $mailer_value;
         });
 
         $params['body'] = $params['body']
-                          ?? (string)$this->viewer('addon/mailer/body', array_merge($params, compact('fields')));
+                          ?? (string)$this->form()->viewer(
+                'addon/mailer/body', array_merge($params, compact('fields'))
+            );
 
         return $params;
     }

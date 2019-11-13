@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\User;
 
@@ -35,17 +35,9 @@ class UserServiceProvider extends ServiceProvider
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function boot()
-    {
-
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->share('user', function () {
             return new User($this->getContainer());

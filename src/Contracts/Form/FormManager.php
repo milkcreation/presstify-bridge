@@ -10,11 +10,11 @@ interface FormManager extends Manager
      * Déclaration d'un addon.
      *
      * @param string $name Nom de qualification.
-     * @param callable|object|string $concrete Fonction anonyme|Instance|Nom de classe du contrôleur.
+     * @param callable|object|string|null $concrete Fonction anonyme|Instance|Nom de classe du contrôleur.
      *
      * @return $this
      */
-    public function addonRegister($name, $concrete): FormManager;
+    public function addonRegister(string $name, $concrete = null): FormManager;
 
     /**
      * Déclaration d'un bouton.

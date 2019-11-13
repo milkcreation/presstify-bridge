@@ -5,5 +5,4 @@
  * @var tiFy\Contracts\Form\FactoryView $this
  * @var tiFy\Contracts\Form\FactoryField $field
  */
-?>
-<?php echo $field; ?>
+echo $field;

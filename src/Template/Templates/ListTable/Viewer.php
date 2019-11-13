@@ -7,6 +7,7 @@ use tiFy\Template\Factory\Viewer as BaseViewer;
 use tiFy\Template\Templates\ListTable\Contracts\{
     BulkActions,
     Columns,
+    Extras,
     Items,
     Pagination,
     Builder,
@@ -17,6 +18,7 @@ use tiFy\Template\Templates\ListTable\Contracts\{
  * @method Builder builder()
  * @method BulkActions bulkActions()
  * @method Columns columns()
+ * @method Extras extras()
  * @method Items items()
  * @method FactoryLabels|string label(?string $key = null, string $default = '')
  * @method string name()
@@ -36,7 +38,7 @@ class Viewer extends BaseViewer
     /**
      * @inheritdoc
      */
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
 
@@ -45,6 +47,7 @@ class Viewer extends BaseViewer
             'builder',
             'bulkActions',
             'columns',
+            'extras',
             'items',
             'pagination',
             'row',

@@ -5,16 +5,17 @@ namespace tiFy\Partial\Partials\CookieNotice;
 use Closure;
 use Exception;
 use tiFy\Contracts\Partial\{CookieNotice as CookieNoticeContract, PartialFactory as PartialFactoryContract};
+use tiFy\Contracts\Routing\Route;
 use tiFy\Partial\PartialFactory;
 use tiFy\Support\Proxy\{Cookie, Request, Router};
 
 class CookieNotice extends PartialFactory implements CookieNoticeContract
 {
     /**
-     * Url de traitement.
-     * @var string Url de traitement
+     * Url de traitement de requête XHR.
+     * @var Route|string
      */
-    protected $url;
+    protected $url = '';
 
     /**
      * @inheritDoc
@@ -57,9 +58,9 @@ class CookieNotice extends PartialFactory implements CookieNoticeContract
     /**
      * @inheritDoc
      */
-    public function getUrl(): string
+    public function getUrl(...$params): string
     {
-        return $this->url;
+        return $this->url instanceof Route ? $this->url->getUrl($params) : $this->url;
     }
 
     /**
@@ -101,7 +102,7 @@ class CookieNotice extends PartialFactory implements CookieNoticeContract
      */
     public function setUrl(?string $url = null): PartialFactoryContract
     {
-        $this->url = is_null($url) ? Router::xhr(md5($this->getAlias()), [$this, 'xhrResponse'])->getUrl() : $url;
+        $this->url = is_null($url) ? Router::xhr(md5($this->getAlias()), [$this, 'xhrResponse']) : $url;
 
         return $this;
     }
@@ -129,7 +130,7 @@ class CookieNotice extends PartialFactory implements CookieNoticeContract
     /**
      * @inheritDoc
      */
-    public function xhrResponse(): array
+    public function xhrResponse(...$args): array
     {
         $id = Request::input('_id');
 

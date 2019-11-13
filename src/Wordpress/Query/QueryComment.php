@@ -2,15 +2,28 @@
 
 namespace tiFy\Wordpress\Query;
 
-use tiFy\Wordpress\Contracts\QueryComment as QueryCommentContract;
-use tiFy\Wordpress\Contracts\QueryPost as QueryPostContract;
-use tiFy\Wordpress\Contracts\QueryUser as QueryUserContract;
+use tiFy\Wordpress\Contracts\Query\QueryComment as QueryCommentContract;
+use tiFy\Wordpress\Contracts\Query\QueryPost as QueryPostContract;
+use tiFy\Wordpress\Contracts\Query\QueryUser as QueryUserContract;
 use tiFy\Support\ParamsBag;
 use tiFy\Support\DateTime;
 use WP_Comment;
+use WP_Comment_Query;
 
 class QueryComment extends ParamsBag implements QueryCommentContract
 {
+    /**
+     * Nom de qualification ou liste de types associés.
+     * @var string|array
+     */
+    protected static $type = [];
+
+    /**
+     * Liste des arguments de requête de récupération des éléments par défaut.
+     * @var array
+     */
+    protected static $defaultArgs = [];
+
     /**
      * Instance de commentaire Wordpress.
      * @var WP_Comment
@@ -38,6 +51,65 @@ class QueryComment extends ParamsBag implements QueryCommentContract
     {
         return (($wp_comment = get_comment($comment_id)) && ($wp_comment instanceof WP_Comment))
             ? new static($wp_comment) : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function parseQueryArgs(array $args = []): array
+    {
+        if ($type = static::$type) {
+            $args['type'] = $type;
+        }
+
+        return array_merge(static::$defaultArgs, $args);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function query(WP_Comment_Query $wp_comment_query): array
+    {
+        if ($comments = $wp_comment_query->comments) {
+            array_walk($comments, function (WP_Comment &$wp_comment) {
+                $wp_comment = new static($wp_comment);
+            });
+            return $comments;
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromArgs(array $args = []): array
+    {
+        return static::query(new WP_Comment_Query(static::parseQueryArgs($args)));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromIds(array $ids): array
+    {
+        return static::query(new WP_Comment_Query(static::parseQueryArgs(['comment__in' => $ids])));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function setDefaultArgs(array $args): void
+    {
+        self::$defaultArgs = $args;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function setType(string $type): void
+    {
+        self::$type = $type;
     }
 
     /**

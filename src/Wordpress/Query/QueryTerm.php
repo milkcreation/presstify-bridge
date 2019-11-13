@@ -2,15 +2,26 @@
 
 namespace tiFy\Wordpress\Query;
 
-use tiFy\Wordpress\Contracts\{
-    Database\TaxonomyBuilder,
-    QueryTerm as QueryTermContract};
-use tiFy\Wordpress\Database\Model\Term as Model;
 use tiFy\Support\ParamsBag;
+use tiFy\Wordpress\Contracts\{Database\TaxonomyBuilder, Query\QueryTerm as QueryTermContract};
+use tiFy\Wordpress\Database\Model\Term as Model;
 use WP_Term;
+use WP_Term_Query;
 
 class QueryTerm extends ParamsBag implements QueryTermContract
 {
+    /**
+     * Nom de qualification de la taxonomie associée.
+     * @var string
+     */
+    protected static $taxonomy = '';
+
+    /**
+     * Liste des arguments de requête de récupération des éléments par défaut.
+     * @var array
+     */
+    protected static $defaultArgs = [];
+
     /**
      * Instance du modèle de base de données associé.
      * @var TaxonomyBuilder
@@ -49,10 +60,71 @@ class QueryTerm extends ParamsBag implements QueryTermContract
     /**
      * @inheritDoc
      */
-    public static function createFromSlug(string $term_slug, string $taxonomy): ?QueryTermContract
+    public static function createFromSlug(string $term_slug, ?string $taxonomy = null): ?QueryTermContract
     {
+        $taxonomy = $taxonomy ?? static::$taxonomy;
+
         return (($wp_term = get_term_by('slug', $term_slug, $taxonomy)) && ($wp_term instanceof WP_Term))
             ? new static($wp_term) : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function parseQueryArgs(array $args = []): array
+    {
+        if ($taxonomy = static::$taxonomy) {
+            $args['taxonomy'] = $taxonomy;
+        }
+
+        return array_merge(static::$defaultArgs, $args);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function query(WP_Term_Query $wp_term_query): array
+    {
+        if ($terms = $wp_term_query->terms) {
+            array_walk($terms, function (WP_Term &$wp_term) {
+                $wp_term = new static($wp_term);
+            });
+            return $terms;
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromArgs(array $args = []): array
+    {
+        return static::query(new WP_Term_Query(static::parseQueryArgs($args)));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromIds(array $ids): array
+    {
+        return static::query(new WP_Term_Query(static::parseQueryArgs(['include' => $ids])));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function setDefaultArgs(array $args): void
+    {
+        self::$defaultArgs = $args;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function setTaxonomy(string $taxonomy): void
+    {
+        self::$taxonomy = $taxonomy;
     }
 
     /**
@@ -153,7 +225,7 @@ class QueryTerm extends ParamsBag implements QueryTermContract
     public function save($termdata): void
     {
         $p = ParamsBag::createFromAttrs($termdata);
-        $columns =  $this->db()->getConnection()->getSchemaBuilder()->getColumnListing($this->db()->getTable());
+        $columns = $this->db()->getConnection()->getSchemaBuilder()->getColumnListing($this->db()->getTable());
 
         $data = [];
         foreach ($columns as $col) {
@@ -167,7 +239,7 @@ class QueryTerm extends ParamsBag implements QueryTermContract
         }
 
         $taxdata = [];
-        foreach(['description', 'parent', 'count'] as $col) {
+        foreach (['description', 'parent', 'count'] as $col) {
             if ($p->has($col)) {
                 $taxdata[$col] = $p->get($col);
             }

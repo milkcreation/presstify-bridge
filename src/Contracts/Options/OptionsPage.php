@@ -2,9 +2,11 @@
 
 namespace tiFy\Contracts\Options;
 
-use tiFy\Contracts\Support\ParamsBag;
-use tiFy\Contracts\View\ViewController;
-use tiFy\Contracts\View\ViewEngine;
+use tiFy\Contracts\{
+    Support\ParamsBag,
+    View\ViewController,
+    View\ViewEngine
+};
 
 interface OptionsPage extends ParamsBag
 {

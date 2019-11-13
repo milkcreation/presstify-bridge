@@ -1,0 +1,132 @@
+@import '~presstify-framework/field/suggest/scss/styles';
+
+[data-control="metabox-postfeed.item.tooltip"] {
+  display: none;
+}
+
+[data-control="metabox-postfeed.item.tooltip"][aria-show="true"] {
+  display: inherit;
+}
+
+.MetaboxPostfeed,
+.MetaboxPostfeed > * {
+  box-sizing: border-box;
+}
+
+.MetaboxPostfeed {
+  max-width: 1140px;
+}
+
+.MetaboxPostfeed-suggest {
+  display: block;
+}
+
+.MetaboxPostfeed-items {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: solid 1px #E4E4E4;
+}
+
+.MetaboxPostfeed-itemTooltip {
+  position: absolute;
+  left:18px;
+  bottom:0;
+  font-size: 10px;
+  line-height: 1.1;
+  margin: 0;
+  padding: 5px;
+  background-color: #FFF;
+  border: solid 1px #CCC;
+  z-index: 5;
+  width: 180px;
+  transform: translate(-50%, -100%);
+}
+
+.MetaboxPostfeed-itemTooltip::before {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  content: "";
+  display: inline-block;
+  height: 0;
+  width: 0;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 10px 10px 0 10px;
+  border-top-color: #CCC;
+  transform: translate(-50%, 100%);
+}
+
+.MetaboxPostfeed-itemTooltip::after {
+  position: absolute;
+  bottom: 1px;
+  left: 50%;
+  content: "";
+  display: inline-block;
+  height: 0;
+  width: 0;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 10px 10px 0 10px;
+  border-top-color: #FFF;
+  transform: translate(-50%, 100%);
+}
+
+.MetaboxPostfeed-itemInfo {
+  position:absolute;
+  left:10px;
+  bottom:10px;
+  border-radius:8px;
+  display:block;
+  width:16px;
+  height:16px;
+  line-height:16px;
+  text-align:center;
+  color:#FFF;
+  font-weight: bold;
+  background-color: #0073AA;
+  cursor: pointer;
+}
+
+.MetaboxPostfeed-itemInfo::before {
+  content:"i";
+}
+
+.MetaboxPostfeed-itemInfoLine {
+  padding: 0 0 2px;
+  margin: 0 0 3px;
+  border-bottom: dotted 1px #CCC;
+}
+
+.MetaboxPostfeed-itemInfoLine:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.MetaboxPostfeed-itemInfoLine label {
+  font-weight: bold;
+  vertical-align: middle;
+  display: inline-block;
+  margin-bottom: 0.2em;
+  width: 60px;
+}
+
+.MetaboxPostfeed-itemThumb {
+  float: left;
+  margin-right: 10px;
+  min-width: 80px;
+}
+
+.MetaboxPostfeed-itemThumbImg {
+  width: auto;
+  height: 80px;
+}
+
+.MetaboxPostfeed-itemTitle {
+  margin: 10px 0;
+  padding: 0;
+  font-weight: 400;
+  font-size: 14px;
+  text-transform: uppercase;
+}

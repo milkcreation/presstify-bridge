@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Api;
 
@@ -30,7 +30,7 @@ class ApiServiceProvider extends ServiceProvider
     /**
      * @inheritdoc
      */
-    public function boot()
+    public function boot(): void
     {
         add_action('after_setup_theme', function () {
             $this->getContainer()->get('api');
@@ -40,7 +40,7 @@ class ApiServiceProvider extends ServiceProvider
     /**
      * @inheritdoc
      */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->share('api', function () {
             return new Api($this->getContainer());

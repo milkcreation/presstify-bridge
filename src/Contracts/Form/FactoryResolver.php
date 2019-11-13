@@ -11,14 +11,14 @@ interface FactoryResolver
      *
      * @param string $name Nom de qualification de l'addon.
      *
-     * @return AddonController
+     * @return AddonFactory
      */
     public function addon($name);
 
     /**
      * Récupération de l'instance du contrôleur des addons associés au formulaire.
      *
-     * @return FactoryAddons|AddonController[]
+     * @return FactoryAddons|AddonFactory[]
      */
     public function addons();
 
@@ -33,10 +33,11 @@ interface FactoryResolver
      * Récupération de l'instance du contrôleur des événements associés au formulaire ou déclenchement d'un événement.
      *
      * @param string $name Nom de qualification de l'événement.
+     * @param array $args Liste des arguments complémentaires de déclenchement
      *
      * @return mixed|FactoryEvents
      */
-    public function events($name = null);
+    public function events($name = null, array $args = []);
 
     /**
      * Récupération de l'instance du contrôleur d'un champ associé au formulaire.

@@ -8,7 +8,7 @@ use tiFy\Contracts\Kernel\EventsManager;
 class Manager extends Emitter implements EventsManager
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function listen($name, $listener, $priority = 0)
     {
@@ -18,7 +18,7 @@ class Manager extends Emitter implements EventsManager
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function on($name, $listener, $priority = 0)
     {
@@ -26,7 +26,7 @@ class Manager extends Emitter implements EventsManager
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function trigger($event, $args = [])
     {

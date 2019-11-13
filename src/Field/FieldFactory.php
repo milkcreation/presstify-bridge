@@ -234,7 +234,7 @@ abstract class FieldFactory extends ParamsBag implements FieldFactoryContract
     public function parseViewer(): FieldFactoryContract
     {
         foreach($this->get('viewer', []) as $key => $value) {
-            $this->viewer()->set($key, $value);
+            $this->viewer()->params([$key => $value]);
         }
 
         return $this;
@@ -290,7 +290,7 @@ abstract class FieldFactory extends ParamsBag implements FieldFactoryContract
     /**
      * @inheritDoc
      */
-    public function viewer($view = null, $data = [])
+    public function viewer(?string $view = null, array $data = [])
     {
         if (is_null($this->viewer)) {
             $this->viewer = app()->get('field.viewer', [$this]);

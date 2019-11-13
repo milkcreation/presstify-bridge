@@ -2,130 +2,203 @@
 
 namespace tiFy\Metabox;
 
+use Exception;
 use Illuminate\Support\Collection;
-use tiFy\Contracts\Metabox\MetaboxFactory;
-use tiFy\Contracts\Metabox\MetaboxManager as MetaboxManagerContract;
-use tiFy\Wordpress\Contracts\WpScreen as WpScreenContract;
-use tiFy\Wordpress\Routing\WpScreen;
-use WP_Screen;
+use InvalidArgumentException;
+use Psr\Container\ContainerInterface as Container;
+use tiFy\Contracts\Metabox\{MetaboxContext, MetaboxDriver, MetaboxManager as MetaboxManagerContract, MetaboxScreen};
 
 class MetaboxManager implements MetaboxManagerContract
 {
     /**
-     * Liste des éléments déclarés.
-     * @var MetaboxFactory[]
+     * Instance du conteneur d'injection de dépendances.
+     * @var Container
      */
-    protected $items = [];
+    protected $container;
 
     /**
-     * Instance de l'écran d'affichage courant.
-     * @var WpScreenContract
+     * Liste des instances de contexte d'affichage.
+     * @var MetaboxContext[]
      */
-    protected $screen;
+    protected $contexts = [];
 
     /**
-     * Liste des éléments à supprimer.
-     * @var array
+     * Liste des instances de boîtes de saisie.
+     * @var MetaboxDriver[]
      */
-    protected $removes = [];
+    protected $metaboxes = [];
 
     /**
-     * Liste des boîtes à onglets à personnaliser.
-     * @var array
+     * Liste des instances des écrans d'affichage.
+     * @var MetaboxScreen[]
      */
-    protected $tabs = [];
+    protected $screens = [];
 
     /**
-     * CONSTRUCTEUR.
-     *
-     * @return void
+     * Liste des instances des boîtes de saisie par contexte d'affichage.
+     * @var MetaboxDriver[][]
      */
-    public function __construct()
+    protected $renderItems = [];
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct(Container $container)
     {
-        add_action('wp_loaded', function () {
-            foreach (config('metabox', []) as $screen => $items) {
-                if (!is_null($screen) && preg_match('#(.*)@(post_type|taxonomy|user)#', $screen)) {
-                    $screen = 'edit::' . $screen;
-                }
-
-                foreach ($items as $name => $attrs) {
-                    $this->items[] = app()->get('metabox.factory', [$name, $attrs, $screen]);
-                }
-            }
-        }, 0);
-
-        add_action('current_screen', function ($wp_current_screen) {
-            $this->screen = wordpress()->wp_screen($wp_current_screen);
-
-            $attrs = [];
-            foreach ($this->tabs as $screen => $_attrs) {
-                if (preg_match('#(.*)@(post_type|taxonomy|user)#', $screen)) {
-                    $screen = 'edit::' . $screen;
-                }
-                $WpScreen = WpScreen::get($screen);
-
-                if ($WpScreen->getHookname() === $this->screen->getHookname()) {
-                    $attrs = $_attrs;
-                    break;
-                }
-            }
-
-            /** @var WP_Screen $wp_current_screen */
-            foreach ($this->items as $item) {
-                $item->load($this->screen);
-            }
-
-            app()->get('metabox.tab', [$attrs, $this->screen]);
-        }, 999999);
-
-        add_action('add_meta_boxes', function () {
-            foreach ($this->removes as $screen => $items) {
-                if (preg_match('#(.*)@(post_type|taxonomy|user)#', $screen)) {
-                    $screen = 'edit::' . $screen;
-                }
-                $WpScreen = WpScreen::get($screen);
-
-                foreach ($items as $id => $contexts) {
-                    foreach ($contexts as $context) {
-                        remove_meta_box($id, $WpScreen->getObjectName(), $context);
-                    }
-
-                    // Hack Wordpress : Maintient du support de la modification du permalien.
-                    if ($id === 'slugdiv' && ($WpScreen->getObjectType() === 'post_type')) {
-                        $post_type = $WpScreen->getObjectName();
-
-                        add_action('edit_form_before_permalink', function ($post) use ($post_type) {
-                            if ($post->post_type !== $post_type) {
-                                return;
-                            }
-
-                            $editable_slug = apply_filters('editable_slug', $post->post_name, $post);
-
-                            echo field('hidden', [
-                                'name'  => 'post_name',
-                                'value' => esc_attr($editable_slug),
-                                'attrs' => [
-                                    'id'           => 'post_name',
-                                    'autocomplete' => 'off',
-                                ],
-                            ]);
-                        });
-                    }
-                }
-            }
-        }, 999999);
+        $this->container = $container;
     }
 
     /**
      * @inheritDoc
      */
-    public function add($name, $screen = null, $attrs = [])
+    public function add(string $alias, $item = []): MetaboxDriver
     {
-        if (empty($screen)) {
-            $screen = '';
+        $attrs = [];
+
+        if (isset($this->metaboxes[$alias])) {
+            throw new InvalidArgumentException(sprintf(
+                __('L\'alias de qualification [%s] est déjà utilisé par une autre boîte de saisie.', 'tify'), $alias
+            ));
         }
 
-        config()->set("metabox.{$screen}", array_merge([$name => $attrs], config("metabox.{$screen}", [])));
+        if (is_array($item)) {
+            $driver = $item['driver'] ?? '';
+            unset($item['driver']);
+            $attrs = $item;
+        } else {
+            $driver = $item;
+        }
+
+        if (!$driver) {
+            $driver = $this->getContainer()->get(MetaboxDriver::class);
+        }
+
+        if (is_object($driver)) {
+            $metabox = $driver;
+        } elseif (class_exists($driver)) {
+            $metabox = new $driver();
+        } else {
+            try {
+                $metabox = $this->getDriver($driver);
+            } catch (Exception $e) {
+                throw new InvalidArgumentException(
+                    sprintf(__('Impossible de définir le pilote associé à la boîte de saisie [%s].', 'tify'), $alias)
+                );
+            }
+        }
+
+        $metabox->setManager($this)->boot();
+
+        return $this->metaboxes[$alias] = $metabox->set($attrs)->parse();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addScreen(string $name, $screen = []): MetaboxScreen
+    {
+        if (!$screen instanceof MetaboxScreen) {
+            $screen = $this->getContainer()->get(MetaboxScreen::class);
+        }
+
+        return $this->screens[$name] = $screen->setManager($this)->setName($name);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function all(): array
+    {
+        return $this->metaboxes;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fetchRender(MetaboxContext $context, ?MetaboxScreen $screen = null): array
+    {
+        if (is_null($screen)) {
+            $screens = (new Collection($this->screens))->filter(function (MetaboxScreen $screen) {
+                return $screen->isCurrent();
+            })->all();
+        } else {
+            $screens = [$screen];
+        }
+
+        return (new Collection($this->metaboxes))->filter(function (MetaboxDriver $box) use ($context, $screens) {
+            return ($box->context() === $context) && in_array($box->screen(), array_values($screens));
+        })->all();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContext(string $name): MetaboxContext
+    {
+        if (!isset($this->contexts[$name])) {
+            if ($context = $this->getContainer()->get("metabox.context.{$name}")) {
+                $this->contexts[$name] = $context->setManager($this)->setName($name);
+            } else {
+                throw new InvalidArgumentException(
+                    sprintf(__('Le contexte d\'affichage [%s] de boîte de saisie n\'est pas déclaré.', 'tify'), $name)
+                );
+            }
+        }
+
+        return $this->contexts[$name];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDriver(string $name): MetaboxDriver
+    {
+        if ($driver = $this->getContainer()->get("metabox.driver.{$name}")) {
+            return $driver;
+        } else {
+            throw new InvalidArgumentException(
+                sprintf(__('Le pilote [%s] de boîte de saisie n\'est pas déclaré.', 'tify'), $name)
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRenderItems(string $context): array
+    {
+        return $this->renderItems[$context] ?? [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getScreen(string $name): ?MetaboxScreen
+    {
+        return $this->screens[$name] ?? null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function registerContext(string $name, MetaboxContext $context): MetaboxManagerContract
+    {
+        if (!$this->getContainer()->has("metabox.context.{$name}")) {
+            $this->getContainer()->add("metabox.context.{$name}", $context->setManager($this)->setName($name));
+        } else {
+            throw new InvalidArgumentException(sprintf(__(
+                'Le nom de qualification [%s] est déjà utilisé par un autre contexte d\'affichage de boîte de saisie.',
+                'tify'
+            ), $name));
+        }
 
         return $this;
     }
@@ -133,29 +206,16 @@ class MetaboxManager implements MetaboxManagerContract
     /**
      * @inheritDoc
      */
-    public function collect()
+    public function registerDriver(string $name, MetaboxDriver $driver): MetaboxManagerContract
     {
-        return new Collection($this->items);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function remove($id, $screen = null, $context = 'normal')
-    {
-        if (!$screen) {
-            $screen = '';
+        if (!$this->getContainer()->has("metabox.driver.{$name}")) {
+            $this->getContainer()->add("metabox.driver.{$name}", $driver->setManager($this));
+        } else {
+            throw new InvalidArgumentException(sprintf(__(
+                'Le nom de qualification [%s] est déjà utilisé par un autre pilote de boîte de saisie.',
+                'tify'
+            ), $name));
         }
-
-        if (!isset($this->removes[$screen])) {
-            $this->removes[$screen] = [];
-        }
-
-        if (!isset($this->removes[$screen][$id])) {
-            $this->removes[$screen][$id] = [];
-        }
-
-        array_push($this->removes[$screen][$id], $context);
 
         return $this;
     }
@@ -163,14 +223,51 @@ class MetaboxManager implements MetaboxManagerContract
     /**
      * @inheritDoc
      */
-    public function tab($attrs = [], $screen = null)
+    public function render(string $context, $args = []): string
     {
-        if (!$screen) {
-            $screen = '';
+        if ($ctx = $this->getContext($context)) {
+            if ($this->renderItems[$context] = $items = $this->fetchRender($ctx, null)) {
+                foreach ($items as $item) {
+                    $item->handle($args);
+                }
+            }
+
+            return $ctx->render();
+        } else {
+            return '';
         }
+    }
 
-        $this->tabs[$screen] = $attrs;
+    /**
+     * @inheritDoc
+     */
+    public function resourcesDir(string $path = ''): string
+    {
+        $path = $path ? '/' . ltrim($path, '/') : '';
 
+        return (file_exists(__DIR__ . "/Resources{$path}")) ? __DIR__ . "/Resources{$path}" : '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function resourcesUrl(string $path = ''): string
+    {
+        $cinfo = class_info($this);
+        $path = $path ? '/' . ltrim($path, '/') : '';
+
+        return (file_exists($cinfo->getDirname() . "/Resources{$path}")) ? $cinfo->getUrl() . "/Resources{$path}" : '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function stack(string $screen, string $context, array $metaboxes): MetaboxManagerContract
+    {
+        foreach ($metaboxes as $name => $item) {
+            $metabox = $this->add($name, $item);
+            $metabox->setScreen($screen)->setContext($context);
+        }
         return $this;
     }
 }

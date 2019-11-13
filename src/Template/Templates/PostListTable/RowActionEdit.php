@@ -7,6 +7,7 @@ use tiFy\Template\Templates\ListTable\{
     RowActionEdit as BaseRowActionEdit
 };
 use tiFy\Template\Templates\PostListTable\Contracts\Item;
+use tiFy\Support\Proxy\Url;
 
 class RowActionEdit extends BaseRowActionEdit
 {
@@ -22,7 +23,7 @@ class RowActionEdit extends BaseRowActionEdit
             'content' => __('Modifier', 'tify'),
             'url'     => function (BaseItem $item) {
                 /** @var Item $item */
-                return url_factory($item->getEditLink());
+                return Url::set($item->getEditLink());
             },
         ]);
     }

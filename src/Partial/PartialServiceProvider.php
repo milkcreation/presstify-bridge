@@ -9,6 +9,7 @@ use tiFy\Contracts\Partial\{
     CookieNotice as CookieNoticeContract,
     CurtainMenu as CurtainMenuContract,
     Dropdown as DropdownContract,
+    Downloader as DownloaderContract,
     Holder as HolderContract,
     ImageLightbox as ImageLightboxContract,
     Modal as ModalContract,
@@ -16,25 +17,29 @@ use tiFy\Contracts\Partial\{
     Pagination as PaginationContract,
     Partial as PartialContract,
     PartialFactory,
-    PdfPreview as PdfPreviewContract,
+    Pdfviewer as PdfviewerContract,
+    Progress as ProgressContract,
     Sidebar as SidebarContract,
     Slider as SliderContract,
     Spinner as SpinnerContract,
     Tab as TabContract,
     Table as TableContract,
-    Tag as TagContract};
+    Tag as TagContract
+};
 use tiFy\Partial\Partials\{
     Accordion\Accordion,
     Breadcrumb\Breadcrumb,
     CookieNotice\CookieNotice,
     CurtainMenu\CurtainMenu,
     Dropdown\Dropdown,
+    Downloader\Downloader,
     Holder\Holder,
     ImageLightbox\ImageLightbox,
     Modal\Modal,
     Notice\Notice,
     Pagination\Pagination,
-    PdfPreview\PdfPreview,
+    Pdfviewer\Pdfviewer,
+    Progress\Progress,
     Sidebar\Sidebar,
     Slider\Slider,
     Spinner\Spinner,
@@ -62,7 +67,8 @@ class PartialServiceProvider extends ServiceProvider
         ModalContract::class,
         NoticeContract::class,
         PaginationContract::class,
-        PdfPreviewContract::class,
+        PdfviewerContract::class,
+        ProgressContract::class,
         SidebarContract::class,
         SliderContract::class,
         SpinnerContract::class,
@@ -112,6 +118,10 @@ class PartialServiceProvider extends ServiceProvider
             return new Dropdown();
         });
 
+        $this->getContainer()->add(DownloaderContract::class, function () {
+            return new Downloader();
+        });
+
         $this->getContainer()->add(HolderContract::class, function () {
             return new Holder();
         });
@@ -132,8 +142,12 @@ class PartialServiceProvider extends ServiceProvider
             return new Pagination();
         });
 
-        $this->getContainer()->add(PdfPreviewContract::class, function () {
-            return new PdfPreview();
+        $this->getContainer()->add(PdfviewerContract::class, function () {
+            return new Pdfviewer();
+        });
+
+        $this->getContainer()->add(ProgressContract::class, function () {
+            return new Progress();
         });
 
         $this->getContainer()->add(SidebarContract::class, function () {
@@ -185,7 +199,7 @@ class PartialServiceProvider extends ServiceProvider
                     ? $override_dir
                     : (is_dir($directory) ? $directory : __DIR__)
                 )
-                ->set('partial', $factory);
+                ->setParam('partial', $factory);
         });
     }
 }

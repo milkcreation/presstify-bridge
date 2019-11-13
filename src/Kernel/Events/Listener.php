@@ -2,7 +2,6 @@
 
 namespace tiFy\Kernel\Events;
 
-use League\Event\AbstractListener;
 use League\Event\EventInterface;
 use tiFy\Contracts\Kernel\EventsListener;
 
@@ -38,7 +37,7 @@ class Listener implements EventsListener
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function handle(EventInterface $event)
     {
@@ -49,13 +48,13 @@ class Listener implements EventsListener
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function isListener($listener)
     {
-        if ($listener instanceof self) :
+        if ($listener instanceof self) {
             $listener = $listener->getCallback();
-        endif;
+        }
 
         return $this->callback === $listener;
     }

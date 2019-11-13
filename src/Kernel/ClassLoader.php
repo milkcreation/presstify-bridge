@@ -3,14 +3,14 @@
 namespace tiFy\Kernel;
 
 use Composer\Autoload\ClassLoader as ComposerClassLoader;
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 use tiFy\Contracts\Kernel\ClassLoader as ClassLoaderContract;
 
 class ClassLoader extends ComposerClassLoader implements ClassLoaderContract
 {
     /**
      * Instance du conteneur d'injection de dépendances.
-     * @var ContainerInterface
+     * @var Container
      */
     protected $container;
 
@@ -23,16 +23,18 @@ class ClassLoader extends ComposerClassLoader implements ClassLoaderContract
     /**
      * CONSTRUCTEUR.
      *
+     * @param Container $container Instance du conteneur d'injection de dépendances.
+     *
      * @return void
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
         $this->paths = $this->container->get('path');
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function load(string $prefix, $paths, string $type = 'psr-4'): ClassLoaderContract
     {

@@ -24,12 +24,12 @@ use tiFy\Contracts\Console\Command as CommandContract;
 class Command extends BaseCommand implements CommandContract
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function configure() { }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @throws Exception
      */

@@ -2,6 +2,9 @@
 
 namespace tiFy\Contracts\Routing;
 
+use Psr\Http\Message\UriInterface;
+use League\Uri\UriInterface as LeagueUri;
+
 interface UrlFactory
 {
     /**
@@ -18,7 +21,7 @@ interface UrlFactory
      *
      * @return static
      */
-    public function appendSegment($segment);
+    public function appendSegment(string $segment);
 
     /**
      * Suppression d'une portion de chemin de l'url.
@@ -27,21 +30,32 @@ interface UrlFactory
      *
      * @return static
      */
-    public function deleteSegments($segment);
+    public function deleteSegment(string $segment);
 
     /**
      * Récupération de la chaîne encodée de l'url.
      *
-     * @return string
+     * @return LeagueUri|UriInterface
      */
     public function get();
 
     /**
      * Retourne la chaîne décodée de l'url.
      *
+     * @param boolean $raw Activation de la sortie brute.
+     *
      * @return string
      */
-    public function getDecode();
+    public function decoded(bool $raw = true);
+
+    /**
+     * Définition de l'url.
+     *
+     * @param string|UriInterface|LeagueUri $uri
+     *
+     * @return static
+     */
+    public function set($uri): UrlFactory;
 
     /**
      * Ajout d'arguments à l'url.

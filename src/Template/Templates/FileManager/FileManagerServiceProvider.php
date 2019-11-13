@@ -4,7 +4,7 @@ namespace tiFy\Template\Templates\FileManager;
 
 use League\Flysystem\Adapter\Local;
 use tiFy\Contracts\Filesystem\Filesystem as tiFyFilesystem;
-use tiFy\Template\Factory\FactoryServiceProvider;
+use tiFy\Template\Factory\ServiceProvider as BaseServiceProvider;
 use tiFy\Template\Templates\FileManager\Contracts\{
     Ajax as AjaxContract,
     Breadcrumb,
@@ -21,7 +21,7 @@ use tiFy\Template\Templates\FileManager\Contracts\{
     Sidebar};
 use tiFy\View\ViewEngine;
 
-class FileManagerServiceProvider extends FactoryServiceProvider
+class FileManagerServiceProvider extends BaseServiceProvider
 {
     /**
      * Instance du gabarit d'affichage.

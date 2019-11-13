@@ -21,7 +21,7 @@ class ValidationServiceProvider extends ServiceProvider
     /**
      * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->share('validator', function () {
             return new Validator($this->getContainer(), [

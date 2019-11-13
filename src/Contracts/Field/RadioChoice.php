@@ -2,9 +2,11 @@
 
 namespace tiFy\Contracts\Field;
 
-use tiFy\Contracts\Kernel\ParamsBag;
-use tiFy\Field\Label\Label;
-use tiFy\Field\Radio\Radio;
+use tiFy\Contracts\Support\ParamsBag;
+use tiFy\Field\Fields\{
+    Label\Label,
+    Radio\Radio
+};
 
 interface RadioChoice extends ParamsBag
 {

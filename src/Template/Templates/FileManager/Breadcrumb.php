@@ -36,7 +36,7 @@ class Breadcrumb extends Collection implements BreadcrumbContract
 
         if ($path = ltrim($path, '/')) {
             $root = '';
-            foreach (preg_split('#\/#', $path) as $name) {
+            foreach (preg_split('/\//', $path) as $name) {
                 $root .= "/{$name}";
                 $this->items[$root] = $name;
             }

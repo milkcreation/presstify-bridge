@@ -2,9 +2,11 @@
 
 namespace tiFy\Contracts\Field;
 
-use tiFy\Contracts\Kernel\ParamsBag;
-use tiFy\Field\Label\Label;
-use tiFy\Field\Checkbox\Checkbox;
+use tiFy\Contracts\Support\ParamsBag;
+use tiFy\Field\Fields\{
+    Label\Label,
+    Checkbox\Checkbox
+};
 
 interface CheckboxChoice extends ParamsBag
 {

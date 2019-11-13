@@ -18,7 +18,7 @@
                 <?php echo $this->getIcon('collapse') . __('Racine', 'tify'); ?>
             </a>
             <?php if ($files = $this->getFiles()): ?>
-                <?php echo $this->insert('browser-items', compact('files')); ?>
+                <?php $this->insert('browser-items', compact('files')); ?>
             <?php endif; ?>
         </li>
     </ul>

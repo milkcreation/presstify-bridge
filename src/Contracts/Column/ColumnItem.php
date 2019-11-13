@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Column;
 
-use tiFy\Contracts\Kernel\ParamsBag;
+use tiFy\Contracts\Support\ParamsBag;
 use tiFy\Wordpress\Contracts\WpScreen;
 
 interface ColumnItem extends ParamsBag

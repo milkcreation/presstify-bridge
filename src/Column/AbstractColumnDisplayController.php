@@ -98,7 +98,7 @@ abstract class AbstractColumnDisplayController implements ColumnDisplayInterface
                         ? $override_dir
                         : (is_dir($default_dir) ? $default_dir : $cinfo->getDirname())
                 )
-                ->set('column', $this);
+                ->setParam('column', $this);
         endif;
 
         if (func_num_args() === 0) :

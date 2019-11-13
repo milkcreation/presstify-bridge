@@ -131,7 +131,7 @@ class StorageManager extends MountManager implements StorageManagerContract
         } else {
             throw new InvalidArgumentException(
                 sprintf(
-                    __('Les arguments fournis ne permettent pas de définir le système de fichiers %s', 'theme'),
+                    __('Les arguments fournis ne permettent pas de définir le système de fichiers %s', 'tify'),
                     $name
                 )
             );

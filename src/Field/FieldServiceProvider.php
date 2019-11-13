@@ -30,7 +30,9 @@ use tiFy\Contracts\Field\{
     Text as TextContract,
     Textarea as TextareaContract,
     TextRemaining as TextRemainingContract,
-    ToggleSwitch as ToggleSwitchContract};
+    Tinymce as TinymceContract,
+    ToggleSwitch as ToggleSwitchContract
+};
 use tiFy\Field\Fields\{
     Button\Button,
     Checkbox\Checkbox,
@@ -56,7 +58,9 @@ use tiFy\Field\Fields\{
     Text\Text,
     Textarea\Textarea,
     TextRemaining\TextRemaining,
-    ToggleSwitch\ToggleSwitch};
+    Tinymce\Tinymce,
+    ToggleSwitch\ToggleSwitch
+};
 
 class FieldServiceProvider extends ServiceProvider
 {
@@ -92,6 +96,7 @@ class FieldServiceProvider extends ServiceProvider
         TextContract::class,
         TextareaContract::class,
         TextRemainingContract::class,
+        TinymceContract::class,
         ToggleSwitchContract::class
     ];
 
@@ -212,6 +217,10 @@ class FieldServiceProvider extends ServiceProvider
             return new TextRemaining();
         });
 
+        $this->getContainer()->add(TinymceContract::class, function () {
+            return new Tinymce();
+        });
+
         $this->getContainer()->add(ToggleSwitchContract::class, function () {
             return new ToggleSwitch();
         });
@@ -241,7 +250,7 @@ class FieldServiceProvider extends ServiceProvider
                     ? $override_dir
                     : (is_dir($directory) ? $directory : __DIR__)
                 )
-                ->set('field', $factory);
+                ->setParam('field', $factory);
         });
     }
 }

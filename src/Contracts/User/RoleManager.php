@@ -13,7 +13,7 @@ interface RoleManager extends Manager
     /**
      * Récupération d'une instance de rôle déclaré.
      *
-     * @param string $name Nom de qualification du rôle.
+     * @param array ...$args Liste des arguments dynamiques.
      *
      * @return null|RoleFactory
      */
@@ -23,7 +23,7 @@ interface RoleManager extends Manager
      * Définition d'un rôle.
      *
      * @param string $name Nom de qualification.
-     * @param array $args Liste des arguments dynamiques de définition.
+     * @param array ...$args Liste des arguments dynamiques.
      *
      * @return static
      */

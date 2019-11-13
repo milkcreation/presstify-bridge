@@ -7,6 +7,7 @@ use tiFy\Contracts\Routing\UrlFactory;
 use tiFy\Support\{ParamsBag, Proxy\Partial};
 use tiFy\Template\Factory\FactoryAwareTrait;
 use tiFy\Template\Templates\ListTable\Contracts\{Item as ItemContract, RowAction as RowActionContract};
+use tiFy\Support\Proxy\Url;
 
 class RowAction extends ParamsBag implements RowActionContract
 {
@@ -87,24 +88,6 @@ class RowAction extends ParamsBag implements RowActionContract
     /**
      * @inheritDoc
      */
-    public function httpController()
-    {
-        if ($item = $this->factory->builder()->getItem($this->factory->request()->input('id'))) {
-            return [
-                'success' => true,
-                'data'    => $item->getKeyValue()
-            ];
-        } else {
-            return [
-                'success' => true,
-                'data'    => __('Impossible de récupérer l\'élément associé.', 'tify')
-            ];
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function isAvailable(): bool
     {
         return true;
@@ -157,14 +140,14 @@ class RowAction extends ParamsBag implements RowActionContract
     {
         if ($url = $this->pull('url')) {
             if (is_bool($url)) {
-               $this->url = url_factory($this->getBaseUrl());
+               $this->url = Url::set($this->getBaseUrl());
             } elseif (is_string($url)) {
-                $this->url = url_factory($url);
+                $this->url = Url::set($url);
             } elseif ($url instanceof Closure) {
                 $this->url = $url($this->factory->item());
                 return $this;
             } elseif (is_array($url)) {
-                $this->url = url_factory($url['base'] ?? $this->getBaseUrl());
+                $this->url = Url::set($url['base'] ?? $this->getBaseUrl());
 
                 if (isset($url['query_args'])) {
                     $query_args = $url['query_args'];
@@ -201,7 +184,7 @@ class RowAction extends ParamsBag implements RowActionContract
                 $this->url = $url;
             }
         } else {
-            $this->url = url_factory($this->getBaseUrl());
+            $this->url = Url::set($this->getBaseUrl());
         }
 
         $this->url->with([

@@ -4,7 +4,7 @@ namespace tiFy\Column;
 
 use tiFy\Contracts\Column\ColumnDisplayInterface;
 use tiFy\Contracts\Column\ColumnItem as ColumnItemContract;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
 use tiFy\Wordpress\Contracts\WpScreen as WpScreenContract;
 use tiFy\Wordpress\Routing\WpScreen;
 use WP_Screen;
@@ -92,7 +92,7 @@ class ColumnItemController extends ParamsBag implements ColumnItemContract
             }, 999999);
         endif;
 
-        parent::__construct($attrs);
+        $this->set($attrs);
     }
 
     /**

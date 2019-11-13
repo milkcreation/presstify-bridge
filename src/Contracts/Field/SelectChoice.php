@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Field;
 
@@ -25,14 +25,14 @@ interface SelectChoice extends ParamsBag
      *
      * @return string
      */
-    public function getValue();
+    public function getValue(): string;
 
     /**
      * Récupération du groupe parent.
      *
      * @return string|null
      */
-    public function getParent();
+    public function getParent(): ?string;
 
     /**
      * Vérification d'existance d'un groupe parent.

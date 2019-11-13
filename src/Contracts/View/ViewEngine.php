@@ -1,15 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\View;
 
-use League\Plates\Extension\ExtensionInterface;
-use League\Plates\Template\Folders;
-use League\Plates\Template\Func;
-use League\Plates\Engine;
+use Exception;
+use League\Plates\{
+    Extension\ExtensionInterface,
+    Template\Folders,
+    Template\Func,
+    Engine
+};
+use Throwable;
+use tiFy\Contracts\Support\ParamsBag;
+
 /**
- * Interface ViewEngine
- * @package tiFy\Contracts\View
- *
  * @mixin Engine
  */
 interface ViewEngine
@@ -22,7 +25,7 @@ interface ViewEngine
      * @param array $data Liste des données à associer.
      * @param null|string|array $templates Nom de qualification des gabarits en relation.
      *
-     * @return self
+     * @return static
      */
     public function addData(array $data, $templates = null);
 
@@ -33,16 +36,9 @@ interface ViewEngine
      * @param string  $directory Chemin vers le répertoire de stockage du groupe.
      * @param boolean $fallback Activation du parcours du répertoire principal si le un gabarit appelé est manquant.
      *
-     * @return self
+     * @return static
      */
     public function addFolder($name, $directory, $fallback = false);
-
-    /**
-     * Récupération de la liste complète des attributs de configuration.
-     *
-     * @return array
-     */
-    public function all();
 
     /**
      * Vérification d'existance d'une fonction (macro) instanciable dans les gabarits d'affichage.
@@ -58,7 +54,7 @@ interface ViewEngine
      *
      * @param string $name Nom de qualification de la fonction.
      *
-     * @return self
+     * @return static
      */
     public function dropFunction($name);
 
@@ -79,16 +75,6 @@ interface ViewEngine
      * @return Func
      */
     public function getFunction($name);
-
-    /**
-     * Récupération d'un attribut de configuration.
-     *
-     * @param string $key Clé d'indexe de l'attribut. Syntaxe à point permise.
-     * @param mixed $default Valeur de retour par défaut.
-     *
-     * @return mixed
-     */
-    public function get($key, $default = '');
 
     /**
      * Récupération d'une instance de controleur d'un gabarit d'affichage.
@@ -140,20 +126,11 @@ interface ViewEngine
     public function getFolders();
 
     /**
-     * Vérification d'existance d'un attribut de configuration.
-     *
-     * @param string $key Clé d'indexe de l'attribut. Syntaxe à point permise.
-     *
-     * @return bool
-     */
-    public function has($key);
-
-    /**
      * Instanciation (Chargement) d'une extention (plugin).
      *
      * @param ExtensionInterface $extension Classe de rappel de l'extension
      *
-     * @return self
+     * @return static
      */
     public function loadExtension(ExtensionInterface $extension);
 
@@ -162,7 +139,7 @@ interface ViewEngine
      *
      * @param ExtensionInterface[] $extensions Liste des classes de rappel des extensions
      *
-     * @return self
+     * @return static
      */
     public function loadExtensions(array $extensions = []);
 
@@ -184,9 +161,19 @@ interface ViewEngine
      * @param null|boolean $fallback Activation du parcours du répertoire principal si le un gabarit appelé est
      * manquant. si null prend la valeur d'activation du répertoire supprimé.
      *
-     * @return self
+     * @return static
      */
     public function modifyFolder($name, $directory, $fallback = null);
+
+    /**
+     * Récupération de paramètre|Définition de paramètres|Instance du gestionnaire de paramètre.
+     *
+     * @param string|array|null $key Clé d'indice du paramètre à récupérer|Liste des paramètre à définir.
+     * @param mixed $default Valeur de retour par défaut lorsque la clé d'indice est une chaine de caractère.
+     *
+     * @return mixed|ParamsBag
+     */
+    public function params($key = null, $default = null);
 
     /**
      * Récupération du chemin absolu vers un gabarit d'affichage.
@@ -198,59 +185,12 @@ interface ViewEngine
     public function path($name);
 
     /**
-     * Définition d'un attribut de configuration.
-     *
-     * @param string $key Clé d'indexe de l'attribut. Syntaxe à point permise.
-     * @param mixed $value Valeur de l'attribut.
-     *
-     * @return self
-     */
-    public function set($key, $value);
-
-    /**
-     * Définition du nom de qualification du controleur de gabarits d'affichage.
-     *
-     * @param string $controller Nom de qualification de la classe.
-     *
-     * @return self
-     */
-    public function setController($controller);
-
-    /**
-     * Définition du chemin vers le répertoire principal de stockage des gabarits d'affichage.
-     * @param  string|null $directory Chemin vers le répertoire principal de stockage des gabarits d'affichage.
-     *                                Mettre à null pour désactiver.
-     *
-     * @return self
-     */
-    public function setDirectory($directory);
-
-    /**
-     * Définition de l'extension des fichiers de gabarit d'affichage.
-     *
-     * @param  string|null $fileExtension Extension des fichiers de gabarit d'affichage. Mettre à null pour
-     *                                    personnaliser.
-     *
-     * @return self
-     */
-    public function setFileExtension($fileExtension);
-
-    /**
-     * Définition du repertoire de surcharge des gabarits d'affichages.
-     *
-     * @param string $dir Chemin absolu vers le répertoire de surcharge.
-     *
-     * @return self
-     */
-    public function setOverrideDir($dir);
-
-    /**
      * Déclaration d'une fonction (macro) instanciable dans les gabarits d'affichage.
      *
      * @param string $name Nom de qualification (d'appel dans les gabarits) de la fonction.
      * @param callback $callback Instance de la fonction.
      *
-     * @return self
+     * @return static
      */
     public function registerFunction($name, $callback);
 
@@ -259,7 +199,7 @@ interface ViewEngine
      *
      * @param string $name Nom de qualification du répertoire.
      *
-     * @return self
+     * @return static
      */
     public function removeFolder($name);
 
@@ -271,8 +211,65 @@ interface ViewEngine
      *
      * @return string
      *
-     * @throws \Throwable
-     * @throws \Exception
+     * @throws Throwable
+     * @throws Exception
      */
     public function render($name, array $data = []);
+
+    /**
+     * Définition de données partagées entre les gabarits.
+     *
+     * @param array|string $key
+     * @param mixed|null $value
+     *
+     * @return static
+     */
+    public function share($key, $value = null): ViewEngine;
+
+    /**
+     * Définition du nom de qualification du controleur de gabarits d'affichage.
+     *
+     * @param string $controller Nom de qualification de la classe.
+     *
+     * @return static
+     */
+    public function setController($controller);
+
+    /**
+     * Définition du chemin vers le répertoire principal de stockage des gabarits d'affichage.
+     * @param  string|null $directory Chemin vers le répertoire principal de stockage des gabarits d'affichage.
+     *                                Mettre à null pour désactiver.
+     *
+     * @return static
+     */
+    public function setDirectory($directory);
+
+    /**
+     * Définition de l'extension des fichiers de gabarit d'affichage.
+     *
+     * @param  string|null $fileExtension Extension des fichiers de gabarit d'affichage. Mettre à null pour
+     *                                    personnaliser.
+     *
+     * @return static
+     */
+    public function setFileExtension($fileExtension);
+
+    /**
+     * Définition du repertoire de surcharge des gabarits d'affichages.
+     *
+     * @param string $dir Chemin absolu vers le répertoire de surcharge.
+     *
+     * @return static
+     */
+    public function setOverrideDir($dir);
+
+    /**
+     * Définition d'un attribut de configuration.
+     *
+     * @param string $key Clé d'indexe de l'attribut. Syntaxe à point permise.
+     * @param mixed $value Valeur de l'attribut.
+     *
+     * @return static
+     */
+    public function setParam($key, $value);
 }

@@ -30,10 +30,7 @@ class ColumnNum extends Column
         if (!$item = $this->factory->item()) {
             return '';
         } else {
-            $per_page = $this->factory->pagination()->getPerPage();
-            $page = $this->factory->pagination()->getPage();
-
-            return (string)($per_page*($page-1)+($item->getOffset()+1));
+            return (string)($item->getOffset()+1);
         }
     }
 }

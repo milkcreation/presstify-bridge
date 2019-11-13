@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Taxonomy;
 
-use Illuminate\Support\Str;
 use tiFy\Support\LabelsBag;
 
 /**

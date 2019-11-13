@@ -1,278 +1,185 @@
-<?php
-
-/**
- * USAGE
- * Configuration des champs
-    Standard
-    ----------------------------------------
-    'fields'    => array(
-        [...]
-        array(
-            [...]
-             'addons'        => array(
-                'record'        => array(
-                    // Active l'affichage de la colonne pour ce champ, le label du champ de formulaire est utilisé comme intitulé de colonne
-                    'column'         => true,
-                    // Active l'affichage de l'aperçu en ligne pour ce champ, le label du champ de formulaire est utilisé comme intitulé
-                    'preview'        => true
-                )
-            )
-        )
-        [...]
-    )
-    Avancée
-    ----------------------------------------
-    'fields'    => array(
-        [...]
-        array(
-            [...]
-             'addons'        => array(
-                'record'        => array(
-                    // Active l'affichage de la colonne pour ce champ
-                    'column'         => 'intitulé personnalisé',
-                    // Active l'affichage de l'aperçu en ligne pour ce champ
-                    'preview'        => 'intitulé personnalisé'
-                )
-            )
-        )
-        [...]
-    )
- */
-
+<?php declare(strict_types=1);
 
 namespace tiFy\Form\Addon\Record;
 
-use tiFy\Contracts\Db\DbFactory;
-use tiFy\Contracts\Form\FormFactory;
-use tiFy\Form\AddonController;
-use tiFy\Template\Templates\ListTable\ListTable;
-use tiFy\Template\Templates\ListTable\Contracts\Item;
+use Illuminate\Database\Schema\Blueprint;
+use tiFy\Contracts\Form\FactoryRequest;
+use tiFy\Form\Addon\Record\ListTable\{Model as ListTableModel, Factory as ListTableFactory};
+use tiFy\Form\AddonFactory;
+use tiFy\Support\{DateTime, Proxy\Database, Proxy\Template, Str};
 
-class Record extends AddonController
+/**
+ * USAGE :
+ * ---------------------------------------------------------------------------------------------------------------------
+ * Configuration standard des champs :
+ * 'fields'    => [
+ *      {...}
+ *      [
+ *          {...}
+ *          'addons'        => [
+ *              //
+ *              'record'        => [
+ *                  // Active l'affichage de la colonne pour ce champ. true par défaut.
+ *                  // Par défaut le label du champ de formulaire est utilisé en tant qu'intitulé de colonne.
+ *                  // Utiliser une chaîne de caractère pour personnaliser l'intitulé.
+ *                  // Utiliser un tableau pour personnaliser la colonne
+ *                  // @see \tiFy\Template\Templates\ListTable\Factory.
+ *                  // @var $column boolean|string|array
+ *                  'column'         => true,
+ *                  // Active l'affichage de l'aperçu en ligne pour ce champ. true par défaut.
+ *                  // Par défaut le label du champ de formulaire est utilisé en tant qu'intitulé de qualification.
+ *                  // Utiliser une chaîne de caractère pour personnaliser.
+ *                  'preview'        => true
+ *                  // Active l'enregistrement du champ. true par défaut.
+ *                  // Par défaut l'identifiant du champ de formulaire est utilisé en tant qu'indice de qualification.
+ *                  // Utiliser une chaîne de caractère pour personnaliser.
+ *                  'save'        => true
+ *              ]
+ *              {...}
+ *          ]
+ *      ]
+ *      {...}
+ * ];
+ */
+class Record extends AddonFactory
 {
     /**
-     * Liste des options par défaut du formulaire associé.
-     * @var array
-     */
-    protected $defaultFormOptions = [
-        'cb'     => ListTable::class,
-        'export' => false
-    ];
-
-    /**
-     * Liste des options par défaut des champs du formulaire associé.
-     * @var array
-     */
-    protected $defaultFieldOptions = [
-        'record'   => true,
-        'export'   => false,
-        'column'   => false,
-        'preview'  => false,
-        'editable' => false,
-    ];
-
-    /**
-     * Indicateur d'existance d'une instance
+     * Indicateur d'existance d'une instance.
+     * @var boolean
      */
     protected static $instance = false;
 
     /**
-     * Indicateur d'activation de l'export.
-     * @var bool
+     * @inheritDoc
      */
-    protected static $export = false;
-
-    /**
-     * Instance du controleur de base de données.
-     * @var DbFactory
-     */
-    protected $db;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function boot()
+    public function boot(): void
     {
-        /*$this->events()
-            ->listen('request.success', [$this, 'onRequestSuccess']);*/
+        $schema = Database::schema();
 
-        if (!$this->db = db('form.addon.record.db')) :
-            $this->db = db()->register(
-                'form.addon.record.db',
-                [
-                    'install'    => true,
-                    'name'       => 'form_record',
-                    'col_prefix' => 'record_',
-                    'columns'    => [
-                        'ID'      => [
-                            'type'           => 'BIGINT',
-                            'size'           => 20,
-                            'unsigned'       => true,
-                            'auto_increment' => true,
-                            'prefix'         => false,
-                        ],
-                        'form_id' => [
-                            'type'   => 'VARCHAR',
-                            'size'   => 255,
-                            'prefix' => false,
-                        ],
-                        'session' => [
-                            'type' => 'VARCHAR',
-                            'size' => 32,
-                        ],
-                        'status'  => [
-                            'type'    => 'VARCHAR',
-                            'size'    => 32,
-                            'default' => 'publish',
-                        ],
-                        'date'    => [
-                            'type'    => 'DATETIME',
-                            'default' => '0000-00-00 00:00:00',
-                        ],
-                    ],
-                    'keys'       => ['form_id' => 'form_id'],
-                    'meta'       => true,
-                ]
-            );
-        endif;
+        if (!$schema->hasTable('tify_forms_record')) {
+            $schema->create('tify_forms_record', function (Blueprint $table) {
+                $table->bigIncrements('ID');
+                $table->string('form_id', 255);
+                $table->string('session', 32);
+                $table->string('status', 32)->default('publish');
+                $table->dateTime('created_date')->default('0000-00-00 00:00:00');
+                $table->index('form_id', 'form_id');
+            });
+        }
+        if (!$schema->hasTable('tify_forms_recordmeta')) {
+            $schema->create('tify_forms_recordmeta', function (Blueprint $table) {
+                $table->bigIncrements('meta_id');
+                $table->bigInteger('tify_forms_record_id')->default(0);
+                $table->string('meta_key', 255)->nullable();
+                $table->longText('meta_value')->nullable();
+                $table->index('tify_forms_record_id', 'tify_forms_record_id');
+                $table->index('meta_key', 'meta_key');
+            });
+        }
 
-        if (! self::$instance) :
+        if (! self::$instance) {
             self::$instance = true;
 
-            template()->register(
-                'form.addon.record.template',
-                [
-                    'admin_menu' => [
-                        'menu_title' => __('Formulaires', 'tify'),
-                        'menu_slug'  => 'form_addon_record',
-                        'icon_url'   => 'dashicons-clipboard',
-                    ],
-                    'content' => function () {
-                        return '';
-                    }
-                ]
-            );
-
-            $this->events()->listen('form.init', function (FormFactory $form) {
-                $columns = ['cb'];
-                foreach($this->fields() as $field) :
-                    $columns[$field->getName()] = $field->getName();
-                endforeach;
-
-                template()->register(
-                    "form.addon.record.template.{$this->form()->name()}",
-                    new ListTable(
-                        [
-                            'admin_menu' => [
-                                'parent_slug' => 'form_addon_record',
-                                'menu_slug'   => 'form_addon_record',//"form_addon_record_{$this->form()->name()}",
-                                'menu_title'  => $this->form()->getTitle(),
-                                'position'    => $this->form()->index(),
-                            ],
-                            'params' => [
-                                //'columns' => $columns
-                            ],
-                            'providers' => [
-                                'db' => $this->db
-                            ]
-                        ]
-                    )
+            add_action('admin_menu', function () {
+                add_menu_page(
+                    __('Formulaires', 'tify'),
+                    __('Formulaires', 'tify'),
+                    null,
+                    'form_addon_record',
+                    '',
+                    'dashicons-clipboard'
                 );
             });
-        endif;
+        }
 
-        /*
-            $this->appAddAction('tify_templates_register');
-            $this->appAddAction('tify_db_register');
+        $this->form()->events()->listen('form.prepared', function () {
+            $columns = [
+                '__record' => [
+                    'content' => function ($item) {
+                        return (string) $this->form()->viewer(
+                            'addon/record/list-table/col-details',
+                            compact('item')
+                        );
+                    },
+                    'title'   => __('Informations d\'enregistrement', 'tify')
+                ]
+            ];
 
-            events()->listen(
-                'wp.media.download.register',
-                function ($abspath, MediaDownload $mediaDownload, $event) {
-                    $authorize = request()->get('authorize');
+            foreach ($this->form()->fields() as $field) {
+                if ($column  = $field->getAddonOption('record.column')) {
+                    if (is_string($column)) {
+                        $column = ['title' => $column];
+                    } elseif (!is_array($column)) {
+                        $column = [];
+                    }
 
-                    if (get_transient($_REQUEST['authorize'])) :
-                        $download->register($abspath);
-                    endif;
+                    $slug = $field->getSlug();
+                    $columns[$slug] = array_merge([
+                        'title'     => $field->getTitle(),
+                        'content'   => function ($item) use ($slug) {
+                            return $item->{$slug} ?? '';
+                        }
+                    ], $column);
                 }
-            );
-        */
+            }
 
-    }
-
-    /**
-     * Initialisation de l'addon.
-     *
-     * @return void
-     */
-    public function appBoot()
-    {
-        if (! self::$export && $this->getFormAttr('export', false)) :
-            self::$export = true;
-        endif;
-    }
-
-    /**
-     * Définition d'interface d'administration
-     *
-     * @return void
-     */
-    public function tify_templates_register()
-    {
-        if (self::$export) :
-            Templates::register(
-                'tiFyCoreFormsAddonsRecordExport',
-                [
-                    'admin_menu' => [
-                        'parent_slug' => 'tify_forms_record',
-                        'menu_slug'   => 'tify_forms_record_export',
-                        'menu_title'  => __('Exporter', 'tify'),
-                        'position'    => 2,
+            Template::set(
+                'FormAddonRecord'. Str::studly($this->form()->name()),
+                (new ListTableFactory())->setAddon($this)->set([
+                    'labels'    => [
+                        'gender'   => $this->form()->label()->gender(),
+                        'singular' => $this->form()->label()->singular(),
+                        'plural'   => $this->form()->label()->plural(),
                     ],
-                    'cb'         => Export::class,
-                    'db'         => 'tify_forms_record',
-                ],
-                'admin'
+                    'params'    => [
+                        'bulk-actions' => false,
+                        'columns'      => $columns,
+                        'row-actions'  => false,
+                        'search'       => false,
+                        'view-filters' => false,
+                        'wordpress'    => [
+                            'admin_menu' => [
+                                'parent_slug' => 'form_addon_record'
+                            ],
+                        ],
+                    ],
+                    'providers'    => [
+                        'db'    => (new ListTableModel())->setAddon($this)
+                    ]
+                ])
             );
-        endif;
+        });
+
+        $this->form()->events()->listen('request.submit',  function (FactoryRequest $request) {
+            $datas = [
+                'form_id'      => $this->form()->name(),
+                'session'      => $this->form()->session()->create(),
+                'status'       => 'publish',
+                'created_date' => DateTime::now()->toDateTimeString(),
+            ];
+            if ($id = RecordModel::insertGetId($datas)) {
+                $record = RecordModel::find($id);
+
+                foreach ($this->form()->fields() as $field) {
+                    if ($column = $field->getAddonOption('record.save')) {
+                        $record->saveMeta($field->getSlug(), wp_unslash($field->getValues()));
+                    }
+                }
+            }
+        });
     }
 
     /**
-     * Déclaration de la gestion des données en base.
-     *
-     * @param Db $db Classe de rappel de traitement des données en base.
-     *
-     * @return  void
+     * @inheritDoc
      */
-    public function tify_db_register($db)
+    public function defaultsFieldOptions(): array
     {
-        $db->register(
-            'tify_forms_record',
-            self::$dbAttrs
-        );
-    }
-
-    /**
-     * Court-circuitage de l'issue d'un traitement de formulaire réussi.
-     *
-     * @param FactoryRequest $request Instance du contrôleur de traitement de la requête de soumission associée au formulaire.
-     *
-     * @return void
-     */
-    public function onRequestSuccess($handle)
-    {
-        $datas = [
-            'form_id'        => $this->getForm()->getName(),
-            'record_session' => $this->getForm()->getSession(),
-            'record_status'  => 'publish',
-            'record_date'    => current_time('mysql'),
-            'item_meta'      => $this->getForm()->getFieldsValues(),
+        return [
+            //'export'   => false,
+            //'editable' => false,
+            'column'   => true,
+            'preview'  => true,
+            'save'     => true,
         ];
-
-        // Définition de la base de données (front)
-        if (! db()->get('tify_forms_record')) :
-            db()->register('tify_forms_record', self::$dbAttrs);
-        endif;
-
-        db('tify_forms_record')->handle()->create($datas);
     }
 }

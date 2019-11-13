@@ -4,6 +4,7 @@ namespace tiFy\Template\Templates\ListTable;
 
 use tiFy\Template\Factory\ServiceProvider as BaseServiceProvider;
 use tiFy\Template\Templates\ListTable\Contracts\{
+    Actions as ActionsContract,
     Ajax as AjaxContract,
     Builder,
     BulkAction,
@@ -11,6 +12,8 @@ use tiFy\Template\Templates\ListTable\Contracts\{
     Column,
     Columns,
     DbBuilder,
+    Extra,
+    Extras,
     HttpXhrController,
     Item,
     Items,
@@ -42,12 +45,28 @@ class ServiceProvider extends BaseServiceProvider
         $this->registerFactoryAjax();
         $this->registerFactoryBulkActions();
         $this->registerFactoryColumns();
+        $this->registerFactoryExtras();
         $this->registerFactoryItem();
         $this->registerFactoryItems();
         $this->registerFactoryPagination();
         $this->registerFactoryRowActions();
         $this->registerFactorySearch();
         $this->registerFactoryViewFilters();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function registerFactoryActions(): void
+    {
+        $this->getContainer()->share($this->getFactoryAlias('actions'), function (): ActionsContract {
+            $ctrl = $this->factory->provider('actions');
+            $ctrl = $ctrl instanceof ActionsContract
+                ? $ctrl
+                : $this->getContainer()->get(ActionsContract::class);
+
+            return $ctrl->setTemplateFactory($this->factory);
+        });
     }
 
     /**
@@ -175,6 +194,32 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->getContainer()->add($this->getFactoryAlias('column.num'), function (string $name, array $attrs = []) {
             return (new ColumnNum())->setTemplateFactory($this->factory)->setName($name)->set($attrs)->parse();
+        });
+    }
+
+    /**
+     * Déclaration des controleurs de navigation complémentaires.
+     *
+     * @return void
+     */
+    public function registerFactoryExtras(): void
+    {
+        $this->getContainer()->share($this->getFactoryAlias('extras'), function (): Extras {
+            $ctrl = $this->factory->provider('extras');
+            $ctrl = $ctrl instanceof Extras
+                ? $ctrl
+                : $this->getContainer()->get(Extras::class);
+
+            return $ctrl->setTemplateFactory($this->factory)->set($this->factory->param('extras', []));
+        });
+
+        $this->getContainer()->add($this->getFactoryAlias('extra'), function (): Extra {
+            $ctrl = $this->factory->provider('extra');
+            $ctrl = $ctrl instanceof Extra
+                ? clone $ctrl
+                : $this->getContainer()->get(Extra::class);
+
+            return $ctrl->setTemplateFactory($this->factory);
         });
     }
 
@@ -434,7 +479,7 @@ class ServiceProvider extends BaseServiceProvider
                 $viewer = $params;
             }
 
-            $viewer->set('factory', $this->factory);
+            $viewer->params(['factory' => $this->factory]);
 
             return $viewer;
         });

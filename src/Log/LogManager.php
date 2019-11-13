@@ -125,7 +125,7 @@ class LogManager extends Manager implements LogManagerContract
             return $this->set([$key => $args[0]]);
         }
         throw new InvalidArgumentException(
-            __('La déclaration du controleur de journalisation n\'est pas conforme.', 'theme')
+            __('La déclaration du controleur de journalisation n\'est pas conforme.', 'tify')
         );
     }
 

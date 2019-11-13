@@ -5,7 +5,7 @@ namespace tiFy\Form\Factory;
 use tiFy\Contracts\Form\ButtonController;
 use tiFy\Contracts\Form\FactoryButtons;
 use tiFy\Contracts\Form\FormFactory;
-use tiFy\Kernel\Collection\Collection;
+use tiFy\Support\Collection;
 
 class Buttons extends Collection implements FactoryButtons
 {

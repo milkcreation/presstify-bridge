@@ -13,7 +13,7 @@ class ConsoleServiceProvider extends ServiceProvider
      * @internal requis. Tous les noms de qualification de services à traiter doivent être renseignés.
      * @var string[]
      */
-    protected $provides = ['console.application'];
+    protected $provides = ['console'];
 
     /**
      * @inheritDoc
@@ -25,7 +25,7 @@ class ConsoleServiceProvider extends ServiceProvider
             $app = $this->getContainer()->get('app');
 
             if($app->runningInConsole()) {
-                $this->getContainer()->get('console.application')->run();
+                $this->getContainer()->get('console')->run();
             }
         });
     }
@@ -35,7 +35,7 @@ class ConsoleServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->getContainer()->share('console.application', function() {
+        $this->getContainer()->share('console', function() {
             $app = new Application('presstiFy PHP CLI Console', '1.0.0');
 
             foreach (config('console.commands', []) as $k => $command) {

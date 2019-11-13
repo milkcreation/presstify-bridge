@@ -20,8 +20,12 @@ class EncryptionServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->getContainer()->add('encrypter', function () {
-            return new Encrypter();
+        $this->getContainer()->share('encrypter', function () {
+            return new Encrypter(
+                config('app.secret', md5(getenv('APP_URL'))),
+                config('app.private', base64_encode(md5(getenv('APP_URL')))),
+                config('app.cipher', 'AES-128-CBC')
+            );
         });
     }
 }

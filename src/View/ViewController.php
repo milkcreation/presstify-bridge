@@ -1,11 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\View;
 
+use Exception;
 use Illuminate\Support\Arr;
-use League\Plates\Template\Template;
-use tiFy\Contracts\View\ViewController as ViewControllerContract;
-use tiFy\Contracts\View\ViewEngine;
+use League\Plates\{
+    Template\Folder,
+    Template\Template
+};
+use tiFy\Contracts\View\{
+    ViewController as ViewControllerContract,
+    ViewEngine
+};
+use Throwable;
 use tiFy\Support\HtmlAttrs;
 
 class ViewController extends Template implements ViewControllerContract
@@ -32,47 +39,50 @@ class ViewController extends Template implements ViewControllerContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function all()
+    public function all(): array
     {
         return $this->data;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function boot()
-    {
-
-    }
+    public function boot(): void {}
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function dirname()
+    public function dirname(): string
     {
-        return (is_null($this->name->getFolder()))
+        /** @var Folder $folder */
+        $folder = $this->name->getFolder();
+
+        return (is_null($folder))
             ? $this->engine->getDirectory()
-            : $this->name->getFolder()->getPath();
+            : $folder->getPath();
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     public function fetch($name, array $data = [])
     {
-        return $this->engine->render(
-            ($this->engine->getFolders()->exists('_override')
-                ? '_override::'
-                : ''
-            ) . $name,
-            $data
-        );
+        try {
+            return $this->engine->render(
+                ($this->engine->getFolders()->exists('_override') ? '_override::' : '') . $name,
+                $data
+            );
+        } catch(Exception $e) {
+            return $e->getMessage();
+        } catch(Throwable $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function get($key, $default = '')
     {
@@ -80,23 +90,23 @@ class ViewController extends Template implements ViewControllerContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getEngine()
+    public function engine(): ViewEngine
     {
         return $this->engine;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         return Arr::has($this->data, $key);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function htmlAttrs($attrs, $linearized = true)
     {
@@ -104,36 +114,55 @@ class ViewController extends Template implements ViewControllerContract
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function insert($name, array $data = [])
+    public function insert($name, array $data = []): void
     {
-        echo $this->fetch($name, $data);
+        try {
+            echo $this->fetch($name, $data);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        } catch (Throwable $e) {
+            echo $e->getMessage();
+        }
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function reset($name)
+    public function pull($key, $defaults = null)
     {
-        $this->start($name); $this->stop();
+        return Arr::pull($this->data, $key);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function reset($name): ViewControllerContract
+    {
+        $this->start($name);
+        $this->stop();
 
         return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function share($datas)
+    public function share($key, $value = null): ViewControllerContract
     {
-        return $this->engine->addData($datas);
+        $this->engine->addData(is_array($key) ? $key : [$key => $value]);
+
+        return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function set($key, $value)
+    public function set($key, $value): ViewControllerContract
     {
-        return Arr::set($this->data, $key, $value);
+       Arr::set($this->data, $key, $value);
+
+       return $this;
     }
 }

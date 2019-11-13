@@ -25,7 +25,7 @@ trait NoticesTrait
 
     public function __call($name, $arguments)
     {
-        if (preg_match('#^notices(.*)#', $name, $matches)) :
+        if (preg_match('/^notices(.*)/', $name, $matches)) :
             $method = lcfirst($matches[1]);
             if (!$this->instance) :
                 $this->instance = app('notices');

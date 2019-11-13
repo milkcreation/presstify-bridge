@@ -6,8 +6,8 @@
  * @var string $which top|bottom.
  */
 ?>
-<?php if ($this->items()->exists()) : ?>
+<?php if ($this->items()->exists() && ($bulks = (string)$this->bulkActions()->which($which??'top'))) : ?>
     <div class="alignleft actions bulkactions">
-        <?php echo $this->bulkActions()->which($which??'top'); ?>
+        <?php echo $bulks; ?>
     </div>
 <?php endif;

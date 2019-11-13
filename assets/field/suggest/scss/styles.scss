@@ -1,22 +1,46 @@
-input[type="text"][data-control="suggest.input"].ui-autocomplete-loading,
-input[type="email"][data-control="suggest.input"].ui-autocomplete-loading {
-  background-image: none;
-}
+@import '~jquery-ui/themes/base/core.css';
+@import '~jquery-ui/themes/base/theme.css';
+@import '~jquery-ui/themes/base/menu.css';
+@import '~jquery-ui/themes/base/autocomplete.css';
+@import '~presstify-framework/theme/scss/styles';
 
-.FieldSuggest {
+.FieldSuggest-wrap {
   position:relative;
 }
 
-.FieldSuggest-spinner {
+.FieldSuggest-input {
+  width:100%;
+  padding-right:25px;
+}
+
+input[type="text"].FieldSuggest-input.ui-autocomplete-loading,
+input[type="email"].FieldSuggest-input.ui-autocomplete-loading {
+  background-image: none;
+}
+
+.ThemeButton--close.FieldSuggest-reset,
+.ThemeSpinner.FieldSuggest-spinner {
   position: absolute;
   top:50%;
   right:5px;
-  margin-top:-10px;
-  width:20px; height:20px;
+  margin-top:-8px;
+  width:16px;
+  height:16px;
+}
+
+[aria-selected="false"] > .FieldSuggest-reset {
   display:none;
 }
 
-.FieldSuggest[aria-loaded="true"] .FieldSuggest-spinner{
+[aria-selected="true"] > .FieldSuggest-reset {
+  display:inherit;
+}
+
+[aria-loaded="false"] > .FieldSuggest-spinner {
+  display:none;
+}
+
+[aria-loaded="true"] > .FieldSuggest-spinner {
   display:inherit;
 }
 

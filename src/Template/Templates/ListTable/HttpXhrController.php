@@ -43,11 +43,7 @@ class HttpXhrController extends BaseHttpXhrController implements HttpXhrControll
                 'search'          => (string)$this->factory->viewer('search')
             ];
         } elseif ($action = $this->factory->request()->input('action')) {
-            if ($row_action = $this->factory->rowActions()->get($action)) {
-                return $row_action->httpController(func_get_args());
-            } else {
-                throw new NotFoundException();
-            }
+            return $this->factory->actions()->execute($action, func_get_args());
         } else {
             throw new NotFoundException();
         }

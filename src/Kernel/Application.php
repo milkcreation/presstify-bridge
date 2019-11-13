@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Kernel;
 
@@ -46,7 +46,7 @@ class Application extends Container
      *
      * @throws BadMethodCallException
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
         try {
             return $this->container->$name(...$arguments);

@@ -41,7 +41,7 @@ class KernelServiceProvider extends ServiceProvider
     /**
      * @inheritDoc
      */
-    public function boot()
+    public function boot(): void
     {
         $this->getContainer()->share('path', function () {
             return new Path();
@@ -55,7 +55,7 @@ class KernelServiceProvider extends ServiceProvider
     /**
      * @inheritDoc
      */
-    public function register()
+    public function register(): void
     {
         $this->getContainer()->add('class-info', function ($class) {
             return new ClassInfo($class);
