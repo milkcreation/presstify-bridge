@@ -1,0 +1,45 @@
+{
+  "name": "presstify-components/api",
+  "description": "Gestion d'Api des service tiers.",
+  "type": "presstify-components",
+  "keywords": [
+    "presstify",
+    "plugins",
+    "wordpress",
+    "e-commerce",
+    "woocommerce"
+  ],
+  "homepage": "https://svn.milkcreation.fr/presstify-components/api",
+  "time": "2018-08-31",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Jordy Manner",
+      "email": "jordy.manner@milkcreation.fr",
+      "role": "Developper"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://composer.tigreblanc.fr/presstify/"
+    }
+  ],
+  "require": {
+    "composer/installers": "~1.0",
+    "embed/embed": "^3.3",
+    "presstify/framework": "^1.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "tiFy\\Api\\": ""
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config" : {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}

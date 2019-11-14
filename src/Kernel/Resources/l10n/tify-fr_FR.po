@@ -1,0 +1,2362 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Presstify\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-24 16:14+0200\n"
+"PO-Revision-Date: 2019-10-24 16:33+0200\n"
+"Last-Translator: Milkcreation <contact@milkcreation.fr>\n"
+"Language-Team: Milkcreation <contact@milkcreation.fr>\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:2c,1\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: Api/Facebook/Facebook.php:154
+msgid "Le kit de développement Facebook renvoi une erreur"
+msgstr ""
+
+#: Api/Facebook/Facebook.php:191
+msgid "Correspondance du jeton d'accès en échec"
+msgstr ""
+
+#: Api/Facebook/Facebook.php:203
+msgid "Expiration du jeton d'accès"
+msgstr ""
+
+#: Api/Facebook/Facebook.php:216
+msgid "Récupération du jeton d'accès longue durée en échec"
+msgstr ""
+
+#: Api/Facebook/Facebook.php:226 Api/Facebook/Facebook.php:294
+msgid "Impossible de définir le jeton d'authentification Facebook."
+msgstr ""
+
+#: Api/Facebook/Facebook.php:227 Api/Facebook/Facebook.php:295
+msgid "Récupération du jeton d'accès en échec"
+msgstr ""
+
+#: Api/Facebook/Facebook.php:236 Api/Facebook/FacebookLoginSignup.php:51
+msgid "Impossible de définir les données du jeton d'authentification Facebook."
+msgstr ""
+
+#: Api/Facebook/Facebook.php:237 Api/Facebook/FacebookLoginProfile.php:97
+#: Api/Facebook/FacebookLoginSignin.php:51
+#: Api/Facebook/FacebookLoginSignup.php:52
+msgid "Récupération des données du jeton d'accès en échec"
+msgstr ""
+
+#: Api/Facebook/Facebook.php:272
+msgid "Processus en erreur"
+msgstr ""
+
+#: Api/Facebook/Facebook.php:306
+msgid "Erreur Facebook"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginProfile.php:22
+msgid "Affiliation à un compte Facebook"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginProfile.php:66
+msgid "Action impossible, vous devez être connecté pour effectué cette action"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginProfile.php:67
+msgid "Authentification non trouvée"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginProfile.php:96
+#: Api/Facebook/FacebookLoginSignin.php:50
+msgid ""
+"Impossible de de définir les données du jeton d'authentification Facebook."
+msgstr ""
+
+#: Api/Facebook/FacebookLoginProfile.php:116
+#: Api/Facebook/FacebookLoginSignup.php:71
+msgid "Un utilisateur est déjà enregistré avec ce compte Facebook."
+msgstr ""
+
+#: Api/Facebook/FacebookLoginProfile.php:117
+#: Api/Facebook/FacebookLoginSignup.php:72
+msgid "Utilisateur existant"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginProfile.php:149
+msgid "Associer avec Facebook"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginProfile.php:150
+msgid "Dissocier de Facebook"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginSignin.php:42
+#: Api/Facebook/FacebookLoginSignup.php:43
+msgid "Action impossible, vous êtes déjà authentifié sur le site"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginSignin.php:43
+#: Api/Facebook/FacebookLoginSignup.php:44
+msgid "Authentification existante"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginSignin.php:70
+msgid "Aucun utilisateur ne correspond à votre compte Facebook."
+msgstr ""
+
+#: Api/Facebook/FacebookLoginSignin.php:71
+msgid "Utilisateur non trouvé"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginSignin.php:77
+msgid ""
+"ERREUR SYSTEME : Votre compte Facebook semble être associé à plusieurs "
+"compte > Authentification impossible."
+msgstr ""
+
+#: Api/Facebook/FacebookLoginSignin.php:79
+msgid "Nombre d'utilisateurs trouvés, invalide"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginSignin.php:104
+msgid "Connexion avec Facebook"
+msgstr ""
+
+#: Api/Facebook/FacebookLoginSignup.php:117
+msgid "Inscription avec Facebook"
+msgstr ""
+
+#: Api/Recaptcha/Recaptcha.php:64
+msgid "Api reCaptcha : Erreur de configuration"
+msgstr ""
+
+#: Api/Youtube/Youtube.php:149
+msgid "Url YouTube invalide"
+msgstr ""
+
+#: Api/Youtube/Youtube.php:156
+msgid "Récupération de l\\ID de la vidéo depuis l'url en échec"
+msgstr ""
+
+#: Api/Youtube/Youtube.php:164
+msgid "Impossible de récupérer les informations de la vidéo"
+msgstr ""
+
+#: Api/Youtube/Youtube.php:171
+msgid "Aucune miniature disponible"
+msgstr ""
+
+#: Column/AbstractColumnDisplayController.php:66
+msgid "Pas de contenu à afficher"
+msgstr ""
+
+#: Console/CommandStack.php:75
+msgid "Url du site"
+msgstr ""
+
+#: Console/CommandStack.php:76
+msgid "Libération du verrou"
+msgstr ""
+
+#: Console/CommandStack.php:77
+msgid "Archivage des fichiers"
+msgstr ""
+
+#: Console/CommandStack.php:96
+msgid "Cette commande est déjà en cours d'exécution."
+msgstr ""
+
+#: Console/CommandStack.php:104
+#, php-format
+msgid "La commande \"%s\" est introuvable."
+msgstr ""
+
+#: Console/CommandStack.php:110
+#, php-format
+msgid "Impossible d'exécuter la commande \"%s\"."
+msgstr ""
+
+#: Console/Commands/Sample.php:27
+msgid "Test de commande cli."
+msgstr ""
+
+#: Console/Commands/Sample.php:30
+msgid "Cette commande sert de test de démonstration ..."
+msgstr ""
+
+#: Console/Commands/Sample.php:40
+msgid "Commande de test"
+msgstr ""
+
+#: Console/Commands/Sample.php:45
+msgid "Ça marche !"
+msgstr ""
+
+#: Cron/CronJob.php:66
+#, php-format
+msgid "La tâche \"%s\" démarrée le %s s'est terminée le %s"
+msgstr ""
+
+#: Cron/CronJob.php:77
+#, php-format
+msgid ""
+"<h3>La mode TEST doit être actif</h3><p>Pour afficher le résultat depuis un "
+"navigateur, activer le mode test pour la tâche <em>%s</em>.</p><b>Attention, "
+"veillez à desactiver le mode test de vos tâches en production.</b>"
+msgstr ""
+
+#: Cron/CronJob.php:85
+msgid "Mode test inactif"
+msgstr ""
+
+#: Cron/CronJob.php:284
+msgid "Once Daily"
+msgstr ""
+
+#: Cron/CronManager.php:64
+msgid "Gestion des tâches planifiées"
+msgstr ""
+
+#: Cron/CronManager.php:65 Cron/views/job-list.php:10
+msgid "Tâches planifiées"
+msgstr ""
+
+#: Cron/views/job-list.php:26
+#, php-format
+msgid "<b>Dernière exécution :</b> %s"
+msgstr ""
+
+#: Cron/views/job-list.php:28
+msgid "jamais"
+msgstr ""
+
+#: Cron/views/job-list.php:31 Cron/views/job-list.php:48
+#, php-format
+msgid "%s à %s"
+msgstr ""
+
+#: Cron/views/job-list.php:45
+#, php-format
+msgid "<b>Prochaine exécution :</b> %s"
+msgstr ""
+
+#: Encryption/Encrypter.php:42
+msgid ""
+"Seuls les algorithmes d'encryption AES-128-CBC et AES-256-CBC sont supportés."
+msgstr ""
+
+#: Field/Field.php:100
+#, php-format
+msgid "Aucune instance de champs correspondant à l'alias : %s"
+msgstr ""
+
+#: Field/Field.php:148
+#, php-format
+msgid "La déclaration du champ %s devrait être une instance de %s"
+msgstr ""
+
+#: Field/FieldView.php:50
+#, php-format
+msgid "La méthode %s du controleur de champs n'est pas permise."
+msgstr ""
+
+#: Field/FieldView.php:58
+#, php-format
+msgid "La méthode %s du controleur de champs n'est pas disponible."
+msgstr ""
+
+#: Field/Fields/Button/Button.php:33 Field/Fields/Submit/Submit.php:29
+#: Form/Button/Submit/Submit.php:16
+msgid "Envoyer"
+msgstr ""
+
+#: Field/Fields/DatetimeJs/DatetimeJs.php:121
+#: PostType/Column/Subtitle/Subtitle.php:25
+msgid "Aucun"
+msgstr ""
+
+#: Field/Fields/Repeater/Repeater.php:104
+msgid "Ajouter un élément"
+msgstr ""
+
+#: Field/Fields/Repeater/Repeater.php:181
+msgid "Nombre de valeur maximum atteinte"
+msgstr ""
+
+#: Field/Fields/SelectJs/SelectJs.php:182
+msgid "Le nombre maximum de valeurs autorisées est atteint."
+msgstr ""
+
+#: Field/Fields/TextRemaining/TextRemaining.php:67
+msgid "restants"
+msgstr ""
+
+#: Field/Fields/TextRemaining/TextRemaining.php:68
+#: Field/Fields/TextRemaining/TextRemaining.php:69
+msgid "restant"
+msgstr ""
+
+#: Field/Fields/ToggleSwitch/ToggleSwitch.php:35
+msgctxt "FieldToggleSwitch"
+msgid "Oui"
+msgstr ""
+
+#: Field/Fields/ToggleSwitch/ToggleSwitch.php:36
+msgctxt "FieldToggleSwitch"
+msgid "Non"
+msgstr ""
+
+#: Field/Resources/views/file-js/file-js.php:15
+#: Template/Resources/views/file-manager/action-upload.php:31
+msgid "Cliquez sur la zone ou glisser/déposer des fichiers"
+msgstr ""
+
+#: Filesystem/StaticCacheManager.php:77
+msgid "Impossible de retrouver le média."
+msgstr ""
+
+#: Filesystem/StorageManager.php:113
+#, php-format
+msgid ""
+"Impossible de monter le disque %s. Le gestionnaire de fichiers doit une "
+"instance de %s."
+msgstr ""
+
+#: Filesystem/StorageManager.php:134
+#, php-format
+msgid ""
+"Les arguments fournis ne permettent pas de définir le système de fichiers %s"
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:132
+msgid "L'email du destinataire des messages de notification ne peut être vide"
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:141
+msgid ""
+"Le format de l'email du destinataire des messages de notificationn'est pas "
+"valide"
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:160
+#, php-format
+msgid "L'email \"%s\" ne peut être vide"
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:161 Form/Addon/Mailer/Mailer.php:170
+msgid "Expéditeur du message de confirmation de reception"
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:169
+#, php-format
+msgid "Le format de l'email \"%s\" n'est pas valide"
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:192
+#, php-format
+msgid "Vous avez une nouvelle demande de contact sur le site %s"
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:198
+#, php-format
+msgid "Votre demande de contact sur le site %s"
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:243
+msgid "Email de confirmation non configuré."
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:244 Form/Addon/Mailer/Mailer.php:256
+msgid "FormAddonMailer - Erreur"
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:255
+msgid "Email de notification non configuré."
+msgstr ""
+
+#: Form/Addon/Mailer/Mailer.php:302
+#, php-format
+msgid "%1$s - Demande de contact"
+msgstr ""
+
+#: Form/Addon/Mailer/MailerConfirmationMetabox.php:41
+msgid "Confirmation"
+msgstr ""
+
+#: Form/Addon/Mailer/MailerNotificationMetabox.php:38
+msgid "Notification"
+msgstr ""
+
+#: Form/Addon/Record/Record.php:85 Form/Addon/Record/Record.php:86
+msgid "Formulaires"
+msgstr ""
+
+#: Form/Addon/Record/Record.php:104
+msgid "Informations d'enregistrement"
+msgstr ""
+
+#: Form/Addon/User/User.php:181
+msgid "Cet identifiant est déjà utilisé par un autre utilisateur."
+msgstr ""
+
+#: Form/Addon/User/User.php:195
+msgid ""
+"L'identifiant de connexion ne devrait contenir que des lettres minuscules (a-"
+"z) et des chiffres."
+msgstr ""
+
+#: Form/Addon/User/User.php:213 Form/Addon/User/User.php:223
+msgid "Désolé, cet identifiant de connexion n'est pas permis."
+msgstr ""
+
+#: Form/Addon/User/User.php:232
+msgid "L'identifiant de connexion doit contenir au moins 4 caractères."
+msgstr ""
+
+#: Form/Addon/User/User.php:241
+msgid "L'identifiant de connexion ne doit pas contenir plus de 60 caractères."
+msgstr ""
+
+#: Form/Addon/User/User.php:250
+msgid "L'identifiant de connexion doit contenir des lettres."
+msgstr ""
+
+#: Form/Addon/User/User.php:265
+msgid "Cet email est déjà utilisé par un autre utilisateur."
+msgstr ""
+
+#: Form/Addon/User/User.php:276
+msgid "L'attribution de ce rôle n'est pas permise."
+msgstr ""
+
+#: Form/AddonFactory.php:71
+msgid "Aucune instance de formulaire n'est associé à l'addon."
+msgstr ""
+
+#: Form/AddonFactory.php:100
+msgid "Le traitement des paramètres de l'addon de formulaire est invalide."
+msgstr ""
+
+#: Form/AddonMetaboxDriver.php:35
+msgid ""
+"Aucune instance d'addon de formulaire n'est associé à la boîte de saisie."
+msgstr ""
+
+#: Form/Concerns/AddonAwareTrait.php:36
+#, php-format
+msgid "Aucun addon de formulaire n'est associé à la classe [%s]."
+msgstr ""
+
+#: Form/Factory/Field.php:312
+#, php-format
+msgid "Le format du champ \"%s\" est invalide"
+msgstr ""
+
+#: Form/Factory/Field.php:388
+#, php-format
+msgid "Le champ \"%s\" doit être renseigné."
+msgstr ""
+
+#: Form/Factory/Notices.php:63
+msgid ""
+"Votre demande a bien été prise en compte et sera traitée dès que possible."
+msgstr ""
+
+#: Form/Field/Recaptcha/Recaptcha.php:40
+msgid "La saisie de la protection antispam est incorrecte."
+msgstr ""
+
+#: Form/FormManager.php:186
+#, php-format
+msgid ""
+"Déclaration de %s en erreur, le formulaire devrait être une instance de %s"
+msgstr ""
+
+#: Form/Resources/views/addon/mailer/metabox/confirmation.php:11
+#: Form/Resources/views/addon/mailer/metabox/notification.php:11
+msgid "Activation"
+msgstr ""
+
+#: Form/Resources/views/addon/mailer/metabox/confirmation.php:25
+msgid ""
+"Message de confirmation de réception de la demande de contact, envoyé à "
+"l'émetteur de la demande."
+msgstr ""
+
+#: Form/Resources/views/addon/mailer/metabox/confirmation.php:29
+msgid "Expéditeur de l'email envoyé à l'émetteur"
+msgstr ""
+
+#: Form/Resources/views/addon/mailer/metabox/confirmation.php:34
+#: Form/Resources/views/addon/mailer/metabox/confirmation.php:41
+#: Form/Resources/views/addon/mailer/metabox/repeater/item.php:13
+msgid "Email (requis)"
+msgstr ""
+
+#: Form/Resources/views/addon/mailer/metabox/confirmation.php:50
+#: Form/Resources/views/addon/mailer/metabox/confirmation.php:57
+#: Form/Resources/views/addon/mailer/metabox/repeater/item.php:29
+msgid "Nom (optionnel)"
+msgstr ""
+
+#: Form/Resources/views/addon/mailer/metabox/notification.php:25
+msgid ""
+"Message de notification de réception d'une demande de contact, envoyé aux "
+"administrateurs de site."
+msgstr ""
+
+#: Form/Resources/views/addon/mailer/metabox/notification.php:30
+msgid "Liste des administrateurs de site (destinataires)"
+msgstr ""
+
+#: Form/Resources/views/addon/mailer/metabox/notification.php:34
+msgid "Ajouter un destinataire"
+msgstr ""
+
+#: Form/Resources/views/addon/mailer/metabox/repeater/item.php:20
+msgid "Email du destinataire"
+msgstr ""
+
+#: Form/Resources/views/addon/mailer/metabox/repeater/item.php:36
+msgid "Nom du destinataire"
+msgstr ""
+
+#: Form/Resources/views/addon/record/list-table/col-details.php:9
+msgid "Session"
+msgstr ""
+
+#: Form/Resources/views/addon/record/list-table/col-details.php:13
+#: Template/Templates/PostListTable/Params.php:19
+#: Wordpress/Field/Fields/Findposts/Resources/views/findposts/response.php:17
+msgid "Date"
+msgstr ""
+
+#: Kernel/Application.php:54 Support/ClassInfo.php:67
+#: Template/Factory/Db.php:39 Template/Factory/Viewer.php:52
+#: Template/Templates/FileManager/FileInfo.php:67
+#: Template/Templates/ListTable/Item.php:41 User/Signin/SigninView.php:39
+#, php-format
+msgid "La méthode %s n'est pas disponible."
+msgstr ""
+
+#: Log/LogManager.php:128
+msgid "La déclaration du controleur de journalisation n'est pas conforme."
+msgstr ""
+
+#: Mail/MailQueue.php:54
+msgid "File d'expédition des emails"
+msgstr ""
+
+#: Mail/MailQueue.php:55
+msgid "Expédition des emails en partance de la file d'attente."
+msgstr ""
+
+#: Mail/MailQueue.php:59
+msgid "Chaque minute"
+msgstr ""
+
+#: Mail/MailQueue.php:83
+msgid "Email expédié avec succès"
+msgstr ""
+
+#: Mail/Mailer.php:258
+#, php-format
+msgid "Ceci est un test d'envoi de mail depuis le site %s"
+msgstr ""
+
+#: Mail/Mailer.php:260
+msgid ""
+"Si ce mail, vous est parvenu c'est qu'il vous a été expédié depuis le site : "
+msgstr ""
+
+#: Mail/Mailer.php:262
+msgid ""
+"Néanmoins, il pourrait s'agir d'une erreur. Si vous n'êtes pas concerné par "
+"cet e-mail, "
+msgstr ""
+
+#: Mail/Mailer.php:264
+msgid ""
+"vous pouvez prendre contact avec l'administrateur du site à cette adresse : "
+msgstr ""
+
+#: Mail/Mailer.php:266 Mail/Resources/views/default.php:71
+msgid "Merci de votre compréhension"
+msgstr ""
+
+#: Mail/Mailer.php:320 Mail/Resources/views/default.php:16
+#, php-format
+msgid "Test d'envoi de mail depuis le site %s"
+msgstr ""
+
+#: Mail/Resources/views/debug.php:12
+msgid "Mail - Mode de déboguage"
+msgstr ""
+
+#: Mail/Resources/views/default.php:25
+msgid ""
+"Si ce mail, vous est parvenu c'est qu'un test d'expédition a été envoyé "
+"depuis le site : "
+msgstr ""
+
+#: Mail/Resources/views/default.php:36
+#, php-format
+msgid "Lien vers le site internet - %s"
+msgstr ""
+
+#: Mail/Resources/views/default.php:48
+msgid ""
+"Néanmoins, il pourrait s'agir d'une erreur. Si vous n'êtes pas concerné par "
+"cet e-mail, vous pouvez prendre contact avec l'administrateur du site à "
+"cette adresse :"
+msgstr ""
+
+#: Mail/Resources/views/default.php:60
+#, php-format
+msgid "Contacter l'administrateur du site - %s"
+msgstr ""
+
+#: Metabox/Drivers/Color/Color.php:22 Taxonomy/Column/Color/Color.php:14
+msgid "Couleur"
+msgstr ""
+
+#: Metabox/Drivers/CustomHeader/CustomHeader.php:15
+msgid "Personnalisation de l'image d'entête"
+msgstr ""
+
+#: Metabox/Drivers/CustomHeader/CustomHeader.php:16
+msgid "Utiliser comme image d'entête"
+msgstr ""
+
+#: Metabox/Drivers/CustomHeader/CustomHeader.php:27
+msgid "Image d'entête"
+msgstr ""
+
+#: Metabox/Drivers/Excerpt/Excerpt.php:22
+#: PostType/Column/Excerpt/Excerpt.php:14
+msgid "Extrait"
+msgstr ""
+
+#: Metabox/Drivers/Filefeed/Filefeed.php:76
+msgid "Partage de fichier"
+msgstr ""
+
+#: Metabox/Drivers/Filefeed/Filefeed.php:207
+#: Metabox/Drivers/Postfeed/Postfeed.php:198
+msgid "Nombre maximum de fichiers partagés atteint."
+msgstr ""
+
+#: Metabox/Drivers/Icon/Icon.php:22
+msgid "Icône représentative"
+msgstr ""
+
+#: Metabox/Drivers/Imagefeed/Imagefeed.php:77
+msgid "Images"
+msgstr ""
+
+#: Metabox/Drivers/Imagefeed/Imagefeed.php:215
+msgid "Nombre maximum d'images atteint."
+msgstr ""
+
+#: Metabox/Drivers/Order/Order.php:34
+msgid "Ordre d'affichage"
+msgstr ""
+
+#: Metabox/Drivers/Postfeed/Postfeed.php:68
+msgid "Rechercher un contenu en relation"
+msgstr ""
+
+#: Metabox/Drivers/Postfeed/Postfeed.php:84
+msgid "Éléments en relation"
+msgstr ""
+
+#: Metabox/Drivers/Postfeed/Postfeed.php:218
+msgid "Impossible de récupérer le contenu associé"
+msgstr ""
+
+#: Metabox/Drivers/RelatedTerm/RelatedTerm.php:98
+msgid "Catégories associées"
+msgstr ""
+
+#: Metabox/Drivers/Slidefeed/Slidefeed.php:76
+msgid "Diaporama"
+msgstr ""
+
+#: Metabox/Drivers/Slidefeed/Slidefeed.php:140
+msgid "Rechercher parmi les contenus du site"
+msgstr ""
+
+#: Metabox/Drivers/Slidefeed/Slidefeed.php:154
+msgid "Ajouter une vignette"
+msgstr ""
+
+#: Metabox/Drivers/Slidefeed/Slidefeed.php:208
+msgid "Nombre maximum de vignette atteint."
+msgstr ""
+
+#: Metabox/Drivers/Subtitle/Subtitle.php:35
+#: Metabox/Drivers/Subtitle/Subtitle.php:49
+#: PostType/Column/Subtitle/Subtitle.php:14
+msgid "Sous-titre"
+msgstr ""
+
+#: Metabox/Drivers/Videofeed/Videofeed.php:76
+msgid "Vidéos"
+msgstr ""
+
+#: Metabox/Drivers/Videofeed/Videofeed.php:209
+msgid "Nombre maximum de vidéos atteint."
+msgstr ""
+
+#: Metabox/MetaboxManager.php:60
+#, php-format
+msgid ""
+"L'alias de qualification [%s] est déjà utilisé par une autre boîte de saisie."
+msgstr ""
+
+#: Metabox/MetaboxManager.php:85
+#, php-format
+msgid "Impossible de définir le pilote associé à la boîte de saisie [%s]."
+msgstr ""
+
+#: Metabox/MetaboxManager.php:151
+#, php-format
+msgid "Le contexte d'affichage [%s] de boîte de saisie n'est pas déclaré."
+msgstr ""
+
+#: Metabox/MetaboxManager.php:168
+#, php-format
+msgid "Le pilote [%s] de boîte de saisie n'est pas déclaré."
+msgstr ""
+
+#: Metabox/MetaboxManager.php:198
+#, php-format
+msgid ""
+"Le nom de qualification [%s] est déjà utilisé par un autre contexte "
+"d'affichage de boîte de saisie."
+msgstr ""
+
+#: Metabox/MetaboxManager.php:215
+#, php-format
+msgid ""
+"Le nom de qualification [%s] est déjà utilisé par un autre pilote de boîte "
+"de saisie."
+msgstr ""
+
+#: Metabox/MetaboxView.php:41
+#, php-format
+msgid ""
+"La méthode [%s] de boîte de saisie ne peut être appelée dans un gabarit "
+"d'affichage."
+msgstr ""
+
+#: Metabox/MetaboxView.php:47
+#, php-format
+msgid "La méthode [%s] de metabox n'est pas disponible."
+msgstr ""
+
+#: Metabox/Resources/views/drivers/filefeed/button.php:10
+msgid "Ajouter un fichier"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/filefeed/button.php:11
+#: Template/Resources/views/file-manager/action-upload.php:12
+#: Template/Resources/views/file-manager/sidebar.php:34
+msgid "Ajouter des fichiers"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/imagefeed/button.php:10
+msgid "Ajouter une image"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/imagefeed/button.php:11
+msgid "Ajouter des images"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/order/content.php:10
+msgid "Choix de l'ordre"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/order/content.php:12
+msgid "(-1 pour masquer l'élément)"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/postfeed/item-info.php:8
+#: Template/Resources/views/file-manager/file-infos.php:31
+#: Wordpress/Field/Fields/Findposts/Resources/views/findposts/modal.php:33
+msgid "Type :"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/postfeed/item-info.php:12
+msgid "Statut :"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/postfeed/item.php:11
+msgid "indispo."
+msgstr ""
+
+#: Metabox/Resources/views/drivers/slidefeed/field-caption.php:6
+msgid "Légende"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/slidefeed/field-title.php:6
+#: Template/Templates/PostListTable/ColumnPostTitle.php:15
+msgid "Titre"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/slidefeed/field-url.php:6
+msgid "Lien"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/videofeed/button.php:10
+msgid "Ajouter une video"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/videofeed/button.php:11
+msgid "Ajouter des vidéos"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/videofeed/item.php:11
+msgid "Image de couverture"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/videofeed/item.php:24
+msgid "Url de la vidéo ou iframe"
+msgstr ""
+
+#: Metabox/Resources/views/drivers/videofeed/item.php:38
+msgid "Vidéo de la librairie média"
+msgstr ""
+
+#: Options/Page/OptionsPage.php:123
+msgid "Options du site"
+msgstr ""
+
+#: Options/Page/OptionsPage.php:124
+msgid "Réglages"
+msgstr ""
+
+#: Options/Page/views/metaboxes.php:14
+msgid "Enregistrer"
+msgstr ""
+
+#: Partial/Partial.php:86
+#, php-format
+msgid "Aucune instance de portion d'affichage correspondant à l'alias : %s"
+msgstr ""
+
+#: Partial/Partial.php:128
+#, php-format
+msgid "La déclaration de la portion d'affichage [%s] n'est pas conforme."
+msgstr ""
+
+#: Partial/Partial.php:180
+#, php-format
+msgid ""
+"La déclaration de la portion d'affichage [%s] devrait être une instance de "
+"[%s]"
+msgstr ""
+
+#: Partial/PartialView.php:46
+#, php-format
+msgid "La méthode %s du controleur de portion d'affichage n'est pas permise."
+msgstr ""
+
+#: Partial/PartialView.php:54
+#, php-format
+msgid ""
+"La méthode %s du controleur de portion d'affichage n'est pas disponible."
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:140
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:497
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:519
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:540
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:578
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:615
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:637
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:660
+#, php-format
+msgid "Revenir à %s"
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:143
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:159
+msgid "Accueil"
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:156
+#, php-format
+msgid "Revenir à l'accueil du site %s"
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:184
+msgid "Erreur 404 - Page introuvable"
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:208
+#, php-format
+msgid "Résultats de recherche pour : \"%s\""
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:265
+#, php-format
+msgid "Page %d sur %d"
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:269
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:420
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:559
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:597
+msgid "Actualités"
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:387
+#, php-format
+msgid "Archives du jour : %s"
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:389
+#, php-format
+msgid "Archives du mois : %s"
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:391
+#, php-format
+msgid "Archives de l'année : %s"
+msgstr ""
+
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:556
+#: Partial/Partials/Breadcrumb/WpQueryPart.php:594
+msgid "Revenir à la liste des actualités"
+msgstr ""
+
+#: Partial/Partials/CookieNotice/CookieNotice.php:118
+#: Partial/Resources/views/modal/ajax-content.php:23
+#: Partial/Resources/views/modal/content-footer.php:7
+msgid "Fermer"
+msgstr ""
+
+#: Partial/Partials/CurtainMenu/CurtainMenuItem.php:211
+msgid "Retour"
+msgstr ""
+
+#: Partial/Partials/Downloader/Downloader.php:56
+#: Template/Resources/views/file-manager/file-infos.php:20
+msgid "Télécharger"
+msgstr ""
+
+#: Partial/Partials/Downloader/Downloader.php:125
+#: Wordpress/Partial/Partials/Downloader/Downloader.php:23
+msgid ""
+"ERREUR SYSTEME : Impossible de récupérer les données de téléchargement du "
+"fichier."
+msgstr ""
+
+#: Partial/Partials/Downloader/Downloader.php:132
+#: Wordpress/Partial/Partials/Downloader/Downloader.php:32
+msgid "Téléchargement impossible, la fichier source n'est pas valide."
+msgstr ""
+
+#: Partial/Partials/Downloader/Downloader.php:146
+#: Wordpress/Partial/Partials/Downloader/Downloader.php:46
+msgid "Téléchargement impossible, le fichier n'est pas disponible."
+msgstr ""
+
+#: Partial/Partials/Downloader/Downloader.php:157
+#: Wordpress/Partial/Partials/Downloader/Downloader.php:57
+msgid "Téléchargement impossible, ce type de fichier n'est pas autorisé."
+msgstr ""
+
+#: Partial/Partials/Table/Table.php:48
+msgid "Aucun élément à afficher dans le tableau"
+msgstr ""
+
+#: Partial/Resources/views/modal/ajax-content.php:7
+msgid "Titre de la fenêtre de dialogue Ajax"
+msgstr ""
+
+#: Partial/Resources/views/modal/ajax-content.php:11
+msgid "Exemple de contenu chargé depuis une requête Ajax."
+msgstr ""
+
+#: Partial/Resources/views/modal/content-header.php:6
+msgid "Titre de la fenêtre de dialogue"
+msgstr ""
+
+#: PostType/Column/MenuOrder/MenuOrder.php:14
+#: Taxonomy/Column/Order/Order.php:14
+msgid "Ordre d'affich."
+msgstr ""
+
+#: PostType/PostTypeFactory.php:60 Taxonomy/TaxonomyFactory.php:52
+#, php-format
+msgid "Le gestionnaire %s devrait être défini avant de déclencher le démarrage"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:23 PostType/PostTypeLabelsBag.php:27
+#: Taxonomy/TaxonomyLabelsBag.php:39
+#, php-format
+msgid "Ajouter un %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:24 PostType/PostTypeLabelsBag.php:28
+#: Taxonomy/TaxonomyLabelsBag.php:40
+#, php-format
+msgid "Ajouter une %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:30 Taxonomy/TaxonomyLabelsBag.php:28
+#, php-format
+msgid "Éditer %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:33 Taxonomy/TaxonomyLabelsBag.php:43
+#, php-format
+msgid "Créer un %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:34 Taxonomy/TaxonomyLabelsBag.php:44
+#, php-format
+msgid "Créer une %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:37 Taxonomy/TaxonomyLabelsBag.php:31
+#, php-format
+msgid "Voir cet %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:38 Taxonomy/TaxonomyLabelsBag.php:32
+#, php-format
+msgid "Voir cette %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:40
+#, php-format
+msgid "Voir ces %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:43 Taxonomy/TaxonomyLabelsBag.php:55
+#: Template/Templates/ListTable/Labels.php:34
+#: Template/Templates/PostListTable/Labels.php:41
+#, php-format
+msgid "Rechercher un %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:44 Taxonomy/TaxonomyLabelsBag.php:56
+#: Template/Templates/ListTable/Labels.php:34
+#: Template/Templates/PostListTable/Labels.php:41
+#, php-format
+msgid "Rechercher une %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:47 Taxonomy/TaxonomyLabelsBag.php:69
+#, php-format
+msgid "Aucun %s trouvé"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:48 Taxonomy/TaxonomyLabelsBag.php:70
+#, php-format
+msgid "Aucune %s trouvée"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:51
+#, php-format
+msgid "Aucun %s dans la corbeille"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:52
+#, php-format
+msgid "Aucune %s dans la corbeille"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:55 PostType/PostTypeLabelsBag.php:56
+#: Taxonomy/TaxonomyLabelsBag.php:47 Taxonomy/TaxonomyLabelsBag.php:48
+#: Taxonomy/TaxonomyLabelsBag.php:51 Taxonomy/TaxonomyLabelsBag.php:52
+#, php-format
+msgid "%s parent"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:59 PostType/PostTypeLabelsBag.php:63
+#: PostType/PostTypeLabelsBag.php:67 Taxonomy/TaxonomyLabelsBag.php:25
+#: Template/Templates/ListTable/Labels.php:22
+#: Template/Templates/ListTable/Labels.php:30
+#: Template/Templates/PostListTable/Labels.php:29
+#: Template/Templates/PostListTable/Labels.php:37
+#, php-format
+msgid "Tous les %s"
+msgstr ""
+
+#: PostType/PostTypeLabelsBag.php:60 PostType/PostTypeLabelsBag.php:64
+#: PostType/PostTypeLabelsBag.php:68 Taxonomy/TaxonomyLabelsBag.php:26
+#: Template/Templates/ListTable/Labels.php:22
+#: Template/Templates/ListTable/Labels.php:30
+#: Template/Templates/PostListTable/Labels.php:29
+#: Template/Templates/PostListTable/Labels.php:37
+#, php-format
+msgid "Toutes les %s"
+msgstr ""
+
+#: Routing/Middleware/Xhr.php:21
+msgid ""
+"Dans cette configuration, seules les requêtes XMLHttpRequest (XHR) sont "
+"autorisées"
+msgstr ""
+
+#: Routing/Route.php:69
+msgid "Le nombre de paramètres fournis est insuffisant."
+msgstr ""
+
+#: Routing/Route.php:91
+msgid "Le nombre de paramètres fournis est trop important."
+msgstr ""
+
+#: Routing/Route.php:127
+msgid "La définition ou la récupération de paramètre de route est invalide"
+msgstr ""
+
+#: Routing/Router.php:110
+msgid "La réponse attendue n'est pas conforme"
+msgstr ""
+
+#: Support/ClassInfo.php:47
+#, php-format
+msgid "Récupération de la classe %s impossible. Erreur:%s"
+msgstr ""
+
+#: Support/ClassInfo.php:51
+msgid "Classe indisponible"
+msgstr ""
+
+#: Support/LabelsBag.php:91
+msgid "éléments"
+msgstr ""
+
+#: Support/LabelsBag.php:102 Support/LabelsBag.php:117
+msgid "des"
+msgstr ""
+
+#: Support/LabelsBag.php:106
+msgid "les"
+msgstr ""
+
+#: Support/LabelsBag.php:117
+msgid "d'"
+msgstr ""
+
+#: Support/LabelsBag.php:127
+msgid "élément"
+msgstr ""
+
+#: Support/LabelsBag.php:139
+msgid "de l'"
+msgstr ""
+
+#: Support/LabelsBag.php:140
+msgid "de la"
+msgstr ""
+
+#: Support/LabelsBag.php:140
+msgid "du"
+msgstr ""
+
+#: Support/LabelsBag.php:145
+msgid "l'"
+msgstr ""
+
+#: Support/LabelsBag.php:146
+msgid "la"
+msgstr ""
+
+#: Support/LabelsBag.php:146
+msgid "le "
+msgstr ""
+
+#: Support/LabelsBag.php:157
+msgid "une"
+msgstr ""
+
+#: Support/LabelsBag.php:157
+msgid "un"
+msgstr ""
+
+#: Taxonomy/Column/Icon/Icon.php:14
+msgid "Icone"
+msgstr ""
+
+#: Taxonomy/TaxonomyLabelsBag.php:35
+#, php-format
+msgid "Mettre à jour ce %s"
+msgstr ""
+
+#: Taxonomy/TaxonomyLabelsBag.php:36
+#, php-format
+msgid "Mettre à jour cette %s"
+msgstr ""
+
+#: Taxonomy/TaxonomyLabelsBag.php:58
+#, php-format
+msgid "%s populaires"
+msgstr ""
+
+#: Taxonomy/TaxonomyLabelsBag.php:60
+#, php-format
+msgid "Séparer les %s par une virgule"
+msgstr ""
+
+#: Taxonomy/TaxonomyLabelsBag.php:62
+#, php-format
+msgid "Ajouter ou supprimer des %s"
+msgstr ""
+
+#: Taxonomy/TaxonomyLabelsBag.php:65
+#, php-format
+msgid "Choisir parmi les %s les plus utilisés"
+msgstr ""
+
+#: Taxonomy/TaxonomyLabelsBag.php:66
+#, php-format
+msgid "Choisir parmi les %s les plus utilisées"
+msgstr ""
+
+#: Template/Factory/Actions.php:23
+msgid "Impossible d'exécuter l'action."
+msgstr ""
+
+#: Template/Resources/views/file-manager/action-create.php:12
+#: Template/Resources/views/file-manager/sidebar.php:24
+msgid "Créer un dossier"
+msgstr ""
+
+#: Template/Resources/views/file-manager/action-create.php:23
+msgid "Saisissez le nom du dossier ..."
+msgstr ""
+
+#: Template/Resources/views/file-manager/action-create.php:34
+#: Template/Resources/views/file-manager/action-delete.php:49
+#: Template/Resources/views/file-manager/action-rename.php:66
+msgid "Valider"
+msgstr ""
+
+#: Template/Resources/views/file-manager/action-create.php:45
+#: Template/Resources/views/file-manager/action-delete.php:60
+#: Template/Resources/views/file-manager/action-rename.php:77
+msgid "Annuler"
+msgstr ""
+
+#: Template/Resources/views/file-manager/action-delete.php:12
+#: Template/Resources/views/file-manager/file-infos.php:85
+msgid "Supprimer"
+msgstr ""
+
+#: Template/Resources/views/file-manager/action-delete.php:20
+msgid ""
+"<b>ATTENTION :</b> Vous vous apprêtez à supprimer un répertoire ainsi que "
+"l'ensemble des fichiers et dossiers qu'il contient. Ils ne pourront être "
+"récupérés. <br><b>Êtes vous sûr ?</b>"
+msgstr ""
+
+#: Template/Resources/views/file-manager/action-delete.php:31
+msgid ""
+"<b>ATTENTION :</b> Vous vous apprêtez à supprimer un fichier. Il ne pourra "
+"être récupéré. <br><b>Êtes vous sûr ?</b>"
+msgstr ""
+
+#: Template/Resources/views/file-manager/action-rename.php:12
+#: Template/Resources/views/file-manager/file-infos.php:74
+msgid "Renommer"
+msgstr ""
+
+#: Template/Resources/views/file-manager/action-rename.php:25
+msgid "Saisissez le nouveau nom ..."
+msgstr ""
+
+#: Template/Resources/views/file-manager/browser.php:18
+msgid "Racine"
+msgstr ""
+
+#: Template/Resources/views/file-manager/file-infos.php:27
+msgid "Nom :"
+msgstr ""
+
+#: Template/Resources/views/file-manager/file-infos.php:35
+msgid "Type de médias :"
+msgstr ""
+
+#: Template/Resources/views/file-manager/file-infos.php:39
+msgid "Taille :"
+msgstr ""
+
+#: Template/Resources/views/file-manager/file-infos.php:43
+msgid "Date :"
+msgstr ""
+
+#: Template/Resources/views/file-manager/preview-video.php:18
+msgid "Votre navigateur de fichier n'accepte pas ce type de fichier vidéo"
+msgstr ""
+
+#: Template/Resources/views/file-manager/sidebar.php:10
+msgid "Élèment sélectionné"
+msgstr ""
+
+#: Template/Resources/views/file-manager/sidebar.php:14
+msgid "Répertoire courant"
+msgstr ""
+
+#: Template/Resources/views/list-table/pagination-current.php:11
+msgid "Page actuelle"
+msgstr ""
+
+#: Template/Resources/views/list-table/pagination-current.php:26
+#: Template/Resources/views/list-table/pagination-current.php:33
+msgid "sur"
+msgstr ""
+
+#: Template/Resources/views/list-table/pagination.php:14
+#, php-format
+msgid "%s élément"
+msgid_plural "%s éléments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: Template/Resources/views/list-table/thead-col_cb.php:16
+msgid "Select All"
+msgstr ""
+
+#: Template/TemplateFactory.php:261
+msgid "Aucun contenu à afficher"
+msgstr ""
+
+#: Template/Templates/FileManager/FileInfo.php:190
+msgid "Répertoire"
+msgstr ""
+
+#: Template/Templates/FileManager/FileInfo.php:193
+msgid "Fichier"
+msgstr ""
+
+#: Template/Templates/FileManager/FileInfo.php:196
+msgid "Lien symbolique"
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:67
+msgid "Le nom du dossier ne peut être vide."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:80
+msgid "Un dossier portant ce nom autre existe déjà dans le répertoire courant."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:94
+msgid "Le dossier a été créé avec succès."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:102
+msgid "ERREUR SYSTEME : Impossible de créer le dossier."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:117
+msgid "Impossible de trouver l'élément à supprimer."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:138
+msgid "L'élément a été supprimé avec succès."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:153
+msgid "Impossible de trouver l'élément."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:207
+msgid "Impossible de trouver l'élément à renommer."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:214
+msgid "Le nom ne peut être vide."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:230
+msgid "Un autre élément porte déjà ce nom."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:242
+msgid "L'élément a bien été renommé."
+msgstr ""
+
+#: Template/Templates/FileManager/HttpXhrController.php:250
+msgid "ERREUR SYSTEME : Impossible de renommer l'élément."
+msgstr ""
+
+#: Template/Templates/ListTable/Actions.php:30
+#: Template/Templates/ListTable/Actions.php:49
+#: Template/Templates/ListTable/Actions.php:68
+#: Template/Templates/ListTable/Actions.php:87
+#: Template/Templates/ListTable/Actions.php:106
+#: Template/Templates/ListTable/Actions.php:125
+msgid "Impossible de récupérer l'élément associé."
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:84
+msgid "Traitement en cours..."
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:85
+msgid "Rechercher&nbsp;:"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:86
+msgid "Afficher _MENU_ &eacute;l&eacute;ments"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:87
+msgid ""
+"Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;"
+"l&eacute;ments"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:89
+msgid "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:90
+msgid "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:91
+msgid "&nbsp;"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:92
+msgid "Chargement en cours..."
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:93
+msgid "Aucun &eacute;l&eacute;ment &agrave; afficher"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:94
+msgid "Aucune donnée disponible dans le tableau"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:96
+msgid "Premier"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:97
+msgid "Pr&eacute;c&eacute;dent"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:98
+msgid "Suivant"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:99
+msgid "Dernier"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:102
+msgid ": activer pour trier la colonne par ordre croissant"
+msgstr ""
+
+#: Template/Templates/ListTable/Ajax.php:103
+msgid ": activer pour trier la colonne par ordre décroissant"
+msgstr ""
+
+#: Template/Templates/ListTable/BulkActionTrash.php:13
+msgid "Mettre à la corbeille"
+msgstr ""
+
+#: Template/Templates/ListTable/BulkActions.php:64
+msgid "Actions groupées"
+msgstr ""
+
+#: Template/Templates/ListTable/BulkActions.php:105
+msgid "Choix de l'action"
+msgstr ""
+
+#: Template/Templates/ListTable/BulkActions.php:119
+msgid "Apply"
+msgstr ""
+
+#: Template/Templates/ListTable/ColumnNum.php:21
+msgid "#"
+msgstr ""
+
+#: Template/Templates/ListTable/Labels.php:26
+#: Template/Templates/PostListTable/Labels.php:33
+#, php-format
+msgid "Aucune %s trouvée."
+msgstr ""
+
+#: Template/Templates/ListTable/Labels.php:26
+#: Template/Templates/PostListTable/Labels.php:33
+#, php-format
+msgid "Aucun %s trouvé."
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionActivate.php:15
+msgid "Activation de l'élément"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionActivate.php:17
+msgid "Activer"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionDeactivate.php:15
+msgid "Désactivation de l'élément"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionDeactivate.php:17
+msgid "Désactiver"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionDelete.php:15
+msgid "Suppression définitive de l'élément"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionDelete.php:17
+msgid "Supprimer définitivement"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionDuplicate.php:14
+msgid "Duplication de l'élément"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionDuplicate.php:16
+msgid "Dupliquer"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionEdit.php:15
+#: Template/Templates/PostListTable/RowActionEdit.php:21
+msgid "Modification de l'élément"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionEdit.php:17
+#: Template/Templates/PostListTable/RowActionEdit.php:23
+msgid "Modifier"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionPreview.php:14
+msgid "Prévisualisation de l'élément"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionPreview.php:16
+msgid "Prévisualisation"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionShow.php:15
+#: Template/Templates/PostListTable/RowActionShow.php:18
+msgid "Afficher l'élément"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionShow.php:17
+#: Template/Templates/PostListTable/RowActionShow.php:20
+msgid "Afficher"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionTrash.php:14
+msgid "Mettre l'élément à la corbeille"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionTrash.php:16
+#: Template/Templates/PostListTable/ViewFilterTrash.php:23
+msgid "Corbeille"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionUntrash.php:14
+msgid "Restauration de l'élément"
+msgstr ""
+
+#: Template/Templates/ListTable/RowActionUntrash.php:16
+msgid "Restaurer"
+msgstr ""
+
+#: Template/Templates/PostListTable/ColumnPostType.php:15
+#: Wordpress/Field/Fields/Findposts/Resources/views/findposts/response.php:16
+msgid "Type"
+msgstr ""
+
+#: Template/Templates/PostListTable/Params.php:44
+msgid "Déplacer dans la corbeille"
+msgstr ""
+
+#: Template/Templates/PostListTable/ViewFilterAll.php:30
+#: Wordpress/Field/Fields/Findposts/Resources/views/findposts/modal.php:35
+msgid "Tous"
+msgstr ""
+
+#: Template/Templates/PostListTable/ViewFilterPublish.php:23
+msgid "Publié"
+msgid_plural "Publiés"
+msgstr[0] ""
+msgstr[1] ""
+
+#: User/Resources/views/signin/lostpassword-link.php:9
+msgid "Récupération de mot de passe perdu"
+msgstr ""
+
+#: User/Session/SessionManager.php:40
+msgid "Nettoyage de sessions"
+msgstr ""
+
+#: User/Session/SessionManager.php:41
+msgid "Suppression de la liste des sessions arrivée à expiration."
+msgstr ""
+
+#: User/Session/SessionManager.php:130
+msgid "La table de base de données de stockage des sessions est indisponible."
+msgstr ""
+
+#: User/Session/SessionStore.php:223
+msgid "ERREUR SYSTEME"
+msgstr ""
+
+#: User/Signin/SigninFactory.php:260 User/Signup/SignupFactory.php:50
+msgid "Identifiant"
+msgstr ""
+
+#: User/Signin/SigninFactory.php:263
+msgid "Renseignez votre identifiant"
+msgstr ""
+
+#: User/Signin/SigninFactory.php:286 User/Signup/SignupFactory.php:74
+msgid "Mot de passe"
+msgstr ""
+
+#: User/Signin/SigninFactory.php:289
+msgid "Renseignez votre mot de passe"
+msgstr ""
+
+#: User/Signin/SigninFactory.php:312
+msgid "Se souvenir de moi"
+msgstr ""
+
+#: User/Signin/SigninFactory.php:339
+msgid "Se connecter"
+msgstr ""
+
+#: User/Signin/SigninFactory.php:358
+msgid "Déconnection"
+msgstr ""
+
+#: User/Signin/SigninFactory.php:360
+msgid "se déconnecter"
+msgstr ""
+
+#: User/Signin/SigninFactory.php:365
+msgid "Mot de passe oublié"
+msgstr "Mot de passe oublié ?"
+
+#: User/Signup/SignupFactory.php:60
+msgid "Adresse e-mail"
+msgstr ""
+
+#: User/Signup/SignupFactory.php:62
+msgid "Indiquez votre e-mail"
+msgstr ""
+
+#: User/Signup/SignupFactory.php:76
+msgid "Renseignez un mot de passe"
+msgstr ""
+
+#: User/Signup/SignupFactory.php:88
+msgid "Confirmation de mot de passe"
+msgstr ""
+
+#: User/Signup/SignupFactory.php:90
+msgid "Confirmez votre mot de passe"
+msgstr ""
+
+#: User/Signup/SignupFactory.php:97
+msgid ""
+"Les champs \"Mot de passe\" et \"Confirmation de mot de passe\" doivent "
+"correspondre."
+msgstr ""
+
+#: User/Signup/SignupFactory.php:104
+msgid "Code de sécurité"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Findposts.php:85
+msgid ""
+"Une erreur s'est produite. Veuillez recharger la page et essayer à nouveau."
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Findposts.php:194
+msgid "No items found."
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Findposts.php:202
+msgid "(no title)"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Findposts.php:207
+msgid "Published"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Findposts.php:210
+msgid "Scheduled"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Findposts.php:213
+msgid "Pending Review"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Findposts.php:216
+msgid "Draft"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Findposts.php:223
+msgid "Y/m/d"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Resources/views/findposts/modal.php:13
+msgid "Attach to existing content"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Resources/views/findposts/modal.php:15
+msgid "Close media attachment panel"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Resources/views/findposts/modal.php:30
+msgid "Search"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Resources/views/findposts/modal.php:48
+msgid "Select"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Resources/views/findposts/response.php:15
+msgid "Title"
+msgstr ""
+
+#: Wordpress/Field/Fields/Findposts/Resources/views/findposts/response.php:18
+msgid "Status"
+msgstr ""
+
+#: Wordpress/Field/Fields/MediaFile/MediaFile.php:99
+msgid "Cliquez pour ajouter un fichier"
+msgstr ""
+
+#: Wordpress/Field/Fields/MediaImage/MediaImage.php:65
+msgid "Cliquez sur la zone"
+msgstr ""
+
+#: Wordpress/Field/Fields/MediaImage/MediaImage.php:107
+#, php-format
+msgid "%dpx / %dpx"
+msgstr ""
+
+#: Wordpress/Media/Upload.php:193 Wordpress/Media/Upload.php:403
+msgid "Le format du répertoire de stockage n'est pas valide"
+msgstr ""
+
+#: Wordpress/Media/Upload.php:241
+msgid "Le fichier n'est pas disponible."
+msgstr ""
+
+#: Wordpress/Media/Upload.php:254
+#, php-format
+msgid "Le serveur distant a retourné l'erreur suivante : %1$d %2$s"
+msgstr ""
+
+#: Wordpress/Media/Upload.php:271
+msgid "Impossible de récupérer le fichier source"
+msgstr ""
+
+#: Wordpress/Media/Upload.php:326
+msgid "Le fichier téléchargé est vide"
+msgstr ""
+
+#: Wordpress/Media/Upload.php:339
+#, php-format
+msgid "Le taille du fichier dépasse la limite fixée à %s"
+msgstr ""
+
+#: Wordpress/Media/Upload.php:414
+msgid "Impossible de récupérer les informations de typage du fichier"
+msgstr ""
+
+#: Wordpress/Media/Upload.php:420
+msgid "Impossible d'obtenir la date de modification du fichier"
+msgstr ""
+
+#: Wordpress/Media/Upload.php:575
+#, php-format
+msgid "Impossible de joindre le répertoire %s"
+msgstr ""
+
+#: Wordpress/Media/Upload.php:598
+#, php-format
+msgid "Impossible de créer le répertoire %s"
+msgstr ""
+
+#: Wordpress/PageHook/PageHookItem.php:60
+#, php-format
+msgid "Vous éditez actuellement : %s."
+msgstr ""
+
+#: Wordpress/PageHook/PageHookItem.php:150
+msgid "Aucune page choisie"
+msgstr ""
+
+#: Wordpress/PageHook/PageHookMetabox.php:23
+msgid "Pages d'accroche"
+msgstr ""
+
+#: Wordpress/Partial/Partials/MediaLibrary/MediaLibrary.php:40
+msgid "Ajouter un média"
+msgstr ""
+
+#: Wordpress/Partial/Partials/MediaLibrary/MediaLibrary.php:43
+msgid "Sélectionner les fichiers à associer"
+msgstr ""
+
+#: Wordpress/Routing/_Rewrite.php:75
+#, php-format
+msgid "Vous éditez actuellement la page d'affichage des %s"
+msgstr ""
+
+#: Wordpress/Routing/_Rewrite.php:90
+#, php-format
+msgid "Page d'affichage des %s"
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:30
+msgid "L'identifiant doit être renseigné."
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:31
+msgid "Le mot de passe doit être renseigné."
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:32
+msgid "L'identifiant n'est pas valide."
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:33
+msgid "Le mot de passe ne correspond pas à l’identifiant fourni."
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:34
+msgid "Les informations de connexion fournies sont invalides."
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:35
+msgid ""
+"Votre utilisateur n'est pas autorisé à se connecter depuis cette interface."
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:76
+#, php-format
+msgid ""
+"<strong>ERROR</strong>: Cookies are blocked due to unexpected output. For "
+"help, please see<a href=\"%1$s\">this documentation</a> or try the <a href="
+"\"%2$s\">support forums</a>."
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:80
+#: Wordpress/User/Signin/SigninFactory.php:88
+msgid "https://codex.wordpress.org/Cookies"
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:81
+msgid "https://wordpress.org/support/"
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:85
+#, php-format
+msgid ""
+"<strong>ERROR</strong>: Cookies are blocked or not supported by your "
+"browser. You must <a href=\"%s\">enable cookies</a> to use WordPress."
+msgstr ""
+
+#: Wordpress/User/Signin/SigninFactory.php:118
+msgid "Erreur lors de la tentative d'authentification"
+msgstr ""
+
+#~ msgid ""
+#~ "Il s'agit d'un espace réservé aux professionnels, veuillez vous "
+#~ "identifier afin de pouvoir y accèder"
+#~ msgstr ""
+#~ "Il s'agit d'un espace réservé aux professionnels, veuillez vous "
+#~ "identifier afin de pouvoir y accéder"
+
+#~ msgid ""
+#~ "La valeur du champs de sécurité doit être identique à celle de l'image"
+#~ msgstr ""
+#~ "La valeur du champ de sécurité doit être identique à celle de l'image"
+
+#~ msgid "Nombre maximum de contenu en relation atteint"
+#~ msgstr "Nombre maximum de contenus en relation atteint"
+
+#~ msgid "Options"
+#~ msgstr "Options"
+
+#~ msgid "Version %s"
+#~ msgstr "Version %s"
+
+#~ msgid "By %s"
+#~ msgstr "Par %s"
+
+#~ msgid "X"
+#~ msgstr "X"
+
+#~ msgid "Email de l'expéditeur"
+#~ msgstr "Email du destinataire"
+
+#~ msgid "Nom de l'expéditeur"
+#~ msgstr "Nom du destinataire"
+
+#~ msgid "Vous n'êtes pas habilité à administrer cette section"
+#~ msgstr "Vous n'êtes pas autorisé à administrer cette section"
+
+#~ msgid "Description"
+#~ msgstr "Description"
+
+#~ msgid "Vers la page Facebook du site %s"
+#~ msgstr "Voir la page Facebook de %s"
+
+#~ msgid "Vers la page Google+ du site %s"
+#~ msgstr "Voir la page Google+ de %s"
+
+#~ msgid "Vers le compte Linkedin du site %s"
+#~ msgstr "Voir le profil Linkedin de %s"
+
+#~ msgid "Vers le compte Twitter du site %s"
+#~ msgstr "Voir le compte Twitter de %s"
+
+#~ msgid "La saisie de la protection antispam est incorrect"
+#~ msgstr "La saisie de la protection antispam est incorrecte"
+
+#~ msgid "0 comments"
+#~ msgstr "0 commentaire"
+
+#~ msgid "1 comment"
+#~ msgstr "1 commentaire"
+
+#~ msgid "% comments"
+#~ msgstr "% commentaires"
+
+#~ msgid "Comments are Disabled"
+#~ msgstr "Les commentaires sont désactivés"
+
+#~ msgid "Sorry, no posts matched your criteria"
+#~ msgstr "Désolé, aucun article ne correspond à vos critères de recherche"
+
+#~ msgid "Eléments riche"
+#~ msgstr "Eléments riches"
+
+#~ msgid "Vous avez reçu nouvelle demande sur le site %1$s, %2$s"
+#~ msgstr "Vous avez reçu une nouvelle demande sur le site %1$s, %2$s"
+
+#~ msgid "(new)"
+#~ msgstr "(nouveau)"
+
+#~ msgid "Saisissez le texte afficher"
+#~ msgstr "Saisissez le texte affiché"
+
+#~ msgid "Recherche de \"%s\""
+#~ msgstr "Résultats de la recherche \"%s\""
+
+#~ msgid "Forums"
+#~ msgstr "Forums"
+
+#~ msgid "Bienvenue dans l'espace client Calingaert"
+#~ msgstr "Bienvenue dans l'espace pro"
+
+#~ msgid "Dupliquer de la campagne"
+#~ msgstr "Dupliquer la campagne"
+
+#~ msgid "Vers la chaîne YouTube+ du site %s"
+#~ msgstr "Voir la chaine Youtube de %s"
+
+#~ msgid ""
+#~ "Seriez vous en train de tricher ?! Impossible de déterminer l'origine de "
+#~ "soumission de votre formulaire."
+#~ msgstr ""
+#~ "Seriez-vous en train de tricher ?! Impossible de déterminer l'origine de "
+#~ "soumission de votre formulaire."
+
+#~ msgid "Admin Control Tools"
+#~ msgstr "Outils de contrôle de l'administration"
+
+#, fuzzy
+#~ msgid "Occupation"
+#~ msgstr "Options"
+
+#~ msgid "Custom"
+#~ msgstr "Personnalisé"
+
+#, fuzzy
+#~ msgid "Select list"
+#~ msgstr "Post sélectionné :"
+
+#~ msgid "Plugins options"
+#~ msgstr "Options des extensions"
+
+#~ msgid "Plugins Options | Milkcreation Plugins Pack"
+#~ msgstr "Option des extensions | Pack d'extensions Milkcreation"
+
+#~ msgid "%1$s %2$s, %3$s"
+#~ msgstr "%2$s %1$s %3$s"
+
+#~ msgid "@ %1$s : %2$s"
+#~ msgstr "à  %1$s : %2$s"
+
+#~ msgid "File not found"
+#~ msgstr "Fichier non trouvé"
+
+#, fuzzy
+#~ msgid "Wordpress plugin of access reading post"
+#~ msgstr "Extension Wordpress permettant le partage de fichier dans les post"
+
+#~ msgid "Admin User Enhanced"
+#~ msgstr "Gestion Utilisateur Amélirorée"
+
+#~ msgid "Wordpress plugin of admin user enhancement"
+#~ msgstr "Extension Wordpress d'amélioration de l'interface utilisateur"
+
+#~ msgid "Wordpress plugin of Admin control tools"
+#~ msgstr "Extension Wordpress d'outils de contrôle de l'administration"
+
+#~ msgid "Breadcrumb"
+#~ msgstr "Fil d'Arianne"
+
+#~ msgid "Wordpress plugin of Breadcrumb"
+#~ msgstr "Extension Wordpress de Fil d'Arianne"
+
+#~ msgid "Comment Attachment Files"
+#~ msgstr "Fichiers joints sur commentaires"
+
+#~ msgid ""
+#~ "Wordpress plugin that allow users to join attachment file on her comments"
+#~ msgstr ""
+#~ "Extension Wordpress permettant aux utilisateurs de joindre des fichiers à "
+#~ "leurs commentaires"
+
+#~ msgid "Contact Form"
+#~ msgstr "Formulaire de Contact"
+
+#~ msgid "Wordpress plugin of a simple contact form"
+#~ msgstr "Extension Wordpress de simple formulaire de contact"
+
+#, fuzzy
+#~ msgid "Evolved Contact Form"
+#~ msgstr "Formulaire de Contact"
+
+#, fuzzy
+#~ msgid "Wordpress plugin of an evolved contact form"
+#~ msgstr "Extension Wordpress de simple formulaire de contact"
+
+#~ msgid "Contextual Widgets"
+#~ msgstr "Widgets Contextuels"
+
+#~ msgid "Wordpress plugin of widget customization by post"
+#~ msgstr "Extension Wordpress de personnalisation de Widget par post"
+
+#~ msgid "Custom Columns"
+#~ msgstr "Colonnes personnalisées"
+
+#~ msgid "Wordpress plugin of custom columns"
+#~ msgstr "Extension Wordpress de colonnes personnalisées"
+
+#~ msgid "Custom Thumbs"
+#~ msgstr "Miniatures personnalisées"
+
+#~ msgid "Wordpress plugin of post-thumbnail customizing"
+#~ msgstr "Extension Wordpress de personnalisation des miniatures"
+
+#~ msgid "Events"
+#~ msgstr "&Eacute;vénements"
+
+#~ msgid "Wordpress plugin of post based events"
+#~ msgstr "Extension Wordpress d'événements basés sur les posts"
+
+#~ msgid "File Sharing"
+#~ msgstr "Partage de Fichier"
+
+#~ msgid "Wordpress plugin to allow file sharing in post"
+#~ msgstr "Extension Wordpress permettant le partage de fichier dans les post"
+
+#~ msgid "Forms"
+#~ msgstr "Formulaires"
+
+#~ msgid "Wordpress plugin to easily create forms"
+#~ msgstr "Extension Wordpress pour créer facilement des formulaires"
+
+#~ msgid "Wordpress plugin of forums based on comments"
+#~ msgstr "Extension Wordpress de forums basés sur les commentaires"
+
+#~ msgid "LDAP Connection"
+#~ msgstr "Connexion LDAP"
+
+#~ msgid "Wordpress plugin of LDAP connection"
+#~ msgstr "Extension Wordpress de connection LDAP"
+
+#~ msgid "Messenger"
+#~ msgstr "Messager"
+
+#~ msgid "Wordpress plugin that allow admins to edit information messages"
+#~ msgstr ""
+#~ "Extension Wordpress qui permet aux administrateurs d'éditer des messages "
+#~ "informatifs"
+
+#~ msgid "Ologons Taläntis"
+#~ msgstr "Ologons Taläntis"
+
+#~ msgid "Wordpress plugin of slideshow based on Ologons Taläntis"
+#~ msgstr "Extension Wordpress de diaporama basée sur Ologons Taläntis"
+
+#~ msgid "Pagination"
+#~ msgstr "Pagination"
+
+#~ msgid "Wordpress plugin of pagination"
+#~ msgstr "Extension Wordpress de pagination"
+
+#~ msgid "Petitions"
+#~ msgstr "Pétitions"
+
+#~ msgid "Wordpress plugin of Petitions"
+#~ msgstr "Extension Wordpress de pétitions"
+
+#~ msgid "Post Event Calendar (Deprecated)"
+#~ msgstr "Gestion d'événements (Déprecié)"
+
+#~ msgid "Wordpress plugin of Events (Deprecated)"
+#~ msgstr "Extension Wordpress de gestion d'événements"
+
+#~ msgid "Showcase"
+#~ msgstr "Vitrine"
+
+#~ msgid "Wordpress Plugin of Slideshow based on posts"
+#~ msgstr "Extension Wordpress de Diaporama basé sur les posts"
+
+#~ msgid "Slideshow"
+#~ msgstr "Diaporama"
+
+#~ msgid "Interactives SVG Maps"
+#~ msgstr "Cartes Cliquables Interactives en SVG"
+
+#~ msgid "Wordpress plugin of Interactive SVG Maps"
+#~ msgstr "Extension Wordpress pour créer des cartes cliquables interactives"
+
+#~ msgid "Thumbnail Area"
+#~ msgstr "Zone de miniatures"
+
+#~ msgid "Wordpress plugin to customize Thumbnail Area"
+#~ msgstr "Extension Wordpress pour personnaliser la zone de miniature"
+
+#~ msgid "Thumbnail Tools"
+#~ msgstr "Outils de miniatures"
+
+#, fuzzy
+#~ msgid "Wordpress plugin to customize Thumbnail Tools"
+#~ msgstr "Extension Wordpress pour personnaliser la zone de miniature"
+
+#~ msgid "TinyMCE"
+#~ msgstr "TinyMCE"
+
+#~ msgid "Wordpress plugin to activate TinyMCE Plugins"
+#~ msgstr ""
+#~ "Extension Wordpress de personnalisation de l'éditeur : Activation de "
+#~ "modules, de boutons ..."
+
+#~ msgid "Trombinoscope"
+#~ msgstr "Trombinoscope"
+
+#~ msgid "Wordpress plugin of Trombinoscope"
+#~ msgstr "Extension Wordpress de Trombinoscope"
+
+#~ msgid "Videos"
+#~ msgstr "Vidéos"
+
+#~ msgid "Wordpress plugin that allow join videos on posts"
+#~ msgstr "Extension Wordpress permettant de joindre des videos aux posts"
+
+#~ msgid "View Count"
+#~ msgstr "Compteur de vues"
+
+#~ msgid "Wordpress plugin to survey posts view"
+#~ msgstr "Extension Wordpress de contrôle de vue sur les posts"
+
+#~ msgid "Widgets Kit"
+#~ msgstr "Kit de Widgets"
+
+#~ msgid "Wordpress plugin of usual Widgets"
+#~ msgstr "Extension Wordpress de widgets utiles"
+
+#~ msgid "Milkcreation | Wordpress Extend Plugins Pack"
+#~ msgstr "Milkcreation | Wordpress Pack d'Extension &Eacute;tendu"
+
+#~ msgid "Plugins Pack"
+#~ msgstr "Pack d'extensions"
+
+#~ msgid "Plugins"
+#~ msgstr "Extensions"
+
+#~ msgid "You are not allow to change activation of this plugin"
+#~ msgstr "Vous n'êtes pas autorisé à changer l'activation de cette extension"
+
+#~ msgid "You are not allow to change activation of locked plugins"
+#~ msgstr ""
+#~ "Vous n'êtes pas autorisé à changer l'activation des extension verrouillée"
+
+#~ msgid "Plugin <strong>activated</strong>."
+#~ msgstr "Extension <strong>activée</strong>."
+
+#~ msgid "Selected plugins <strong>activated</strong>."
+#~ msgstr "Extensions sélectionnées <strong>activées</strong>."
+
+#~ msgid "Plugin <strong>deactivated</strong>."
+#~ msgstr "Extension <strong>désactivée</strong>."
+
+#~ msgid "Selected plugins <strong>deactivated</strong>."
+#~ msgstr "Extensions sélectionnées <strong>désactivées</strong>."
+
+#~ msgid "Admin Plugins | Milkcreation Plugins Pack"
+#~ msgstr "Administration des extensions | Pack d'extensions Milkcreation"
+
+#~ msgid "Plugin"
+#~ msgstr "Extension"
+
+#~ msgid "Active <span class=\"count\">(%s)</span>"
+#~ msgid_plural "Active <span class=\"count\">(%s)</span>"
+#~ msgstr[0] "Activée <span class=\"count\">(%s)</span>"
+#~ msgstr[1] "Activées <span class=\"count\">(%s)</span>"
+
+#~ msgid "Inactive <span class=\"count\">(%s)</span>"
+#~ msgid_plural "Inactive <span class=\"count\">(%s)</span>"
+#~ msgstr[0] "Inactif <span class=\"count\">(%s)</span>"
+#~ msgstr[1] "Inactifs <span class=\"count\">(%s)</span>"
+
+#~ msgid "Locked <span class=\"count\">(%s)</span>"
+#~ msgid_plural "Locked <span class=\"count\">(%s)</span>"
+#~ msgstr[0] "Verrouillée <span class=\"count\">(%s)</span>"
+#~ msgstr[1] "Verrouillées <span class=\"count\">(%s)</span>"
+
+#~ msgid "Unlocked <span class=\"count\">(%s)</span>"
+#~ msgid_plural "Unlocked <span class=\"count\">(%s)</span>"
+#~ msgstr[0] "Déverrouillée <span class=\"count\">(%s)</span>"
+#~ msgstr[1] "Déverrouillées <span class=\"count\">(%s)</span>"
+
+#~ msgid "Activated by default"
+#~ msgstr "Activée par défaut"
+
+#~ msgid "Deactivated by default"
+#~ msgstr "Désactivée par défaut"
+
+#~ msgid "Deactivate"
+#~ msgstr "Désactiver"
+
+#~ msgid "Activate"
+#~ msgstr "Activer"
+
+#~ msgid "Activated"
+#~ msgstr "Activée"
+
+#~ msgid "Deactivated"
+#~ msgstr "Désactivée"
+
+#~ msgid "(locked)"
+#~ msgstr "(Verrouiller)"
+
+#~ msgid "Visit plugin site"
+#~ msgstr "Aller sur le site de l'extension"
+
+#~ msgid "Tools"
+#~ msgstr "Outils"
+
+#~ msgid "File don't exists"
+#~ msgstr "Le fichier est introuvable"
+
+#~ msgid "Zip Files"
+#~ msgstr "Fichier zip"
+
+#~ msgid "Wordpress plugin to allow export zip archives of site files"
+#~ msgstr "Extension Wordpress permettant l'export de fichiers zip du site"
+
+#, fuzzy
+#~ msgid "Deativate"
+#~ msgstr "Désactiver"
+
+#~ msgid "Maps (Deprecated)"
+#~ msgstr "Cartes (Dépreciée)"
+
+#~ msgid "Wordpress plugins of dynamics SVG clickable maps (Deprecated)"
+#~ msgstr "Extension Wordpress de Cartes dynamique en SVG (Déprecié)"
+
+#~ msgid "Maps"
+#~ msgstr "Cartes"
+
+#~ msgid "Readmore"
+#~ msgstr "Lire la suite"
+
+#~ msgid "No item."
+#~ msgstr "Aucun élément"
+
+#~ msgid "&laquo;"
+#~ msgstr "&laquo;"
+
+#~ msgid "&raquo;"
+#~ msgstr "&raquo;"
+
+#~ msgid "View All"
+#~ msgstr "View All"
+
+#~ msgid ""
+#~ "Use this widget to display a list of posts according to its type in "
+#~ "widget's areas"
+#~ msgstr ""
+#~ "Utiliser ce widget pour afficher une liste de post selon leur type dans "
+#~ "une zone de widget."
+
+#~ msgid "List of Posts by Type"
+#~ msgstr "Liste de post par type"
+
+#~ msgid "Title : "
+#~ msgstr "Titre :"
+
+#~ msgid "Use template part : "
+#~ msgstr "Utiliser le modèle du thème :"
+
+#~ msgid "Post Type : "
+#~ msgstr "Type de post"
+
+#~ msgid "Selected posts: "
+#~ msgstr "Liste des posts sélectionnés :"
+
+#~ msgid "Showcase thumbnail"
+#~ msgstr "Image de la vitrine"
+
+#~ msgid "Display in showcase"
+#~ msgstr "Afficher dans la vitrine"
+
+#~ msgid "Add a showcase thumbnail"
+#~ msgstr "Ajout d'une image dans la vitrine"
+
+#~ msgid "Remove from showcase"
+#~ msgstr "Retirer de la vitrine"
+
+#~ msgid "Activate showcase for post types"
+#~ msgstr "Types de post pour lesquels activer la vitrine "
+
+#~ msgid "Milk Showcase - dynamic gallery by Milkcreation"
+#~ msgstr "Milk Showcase - Galerie dynamique par Milkcreation"
+
+#~ msgid "Showcase Theme Options"
+#~ msgstr "Options de la vitrine"
+
+#~ msgid "Slideshow of a Showcase"
+#~ msgstr "Diaporama d'images d'une vitrine"
+
+#~ msgid "Showcase:"
+#~ msgstr "Vitrine:"
+
+#~ msgid "Select a showcase"
+#~ msgstr "Choisir une vitrine"
