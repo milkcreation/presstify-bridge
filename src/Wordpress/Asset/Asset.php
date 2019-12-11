@@ -20,11 +20,11 @@ class Asset
 
         add_action('admin_head', function () {
             echo $this->manager->header();
-        }, 5);
+        }, 9.999999);
 
         add_action('admin_footer', function () {
             echo $this->manager->footer();
-        }, 5);
+        }, 9.999999);
 
         add_action('init', function () {
             $lib = require_once(__DIR__ . '/Resources/config/third-party.php');

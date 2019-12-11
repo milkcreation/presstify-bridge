@@ -23,11 +23,12 @@ use tiFy\Contracts\Log\LogManager;
 use tiFy\Contracts\Partial\PartialFactory;
 use tiFy\Contracts\Partial\Partial;
 use tiFy\Contracts\PostType\PostTypeFactory;
-use tiFy\Contracts\PostType\PostTypeManager;
+use tiFy\Contracts\PostType\PostType;
 use tiFy\Contracts\Routing\Redirector;
 use tiFy\Contracts\Routing\Route;
 use tiFy\Contracts\Routing\Router;
 use tiFy\Contracts\Routing\Url;
+use tiFy\Contracts\Routing\UrlFactory;
 use tiFy\Contracts\Support\ClassInfo;
 use tiFy\Contracts\Support\ParamsBag;
 use tiFy\Contracts\Taxonomy\TaxonomyFactory;
@@ -320,11 +321,11 @@ if (!function_exists('post_type')) {
      *
      * @param string|null $name Nom de qualification du type de contenu.
      *
-     * @return PostTypeManager|PostTypeFactory
+     * @return PostType|PostTypeFactory
      */
     function post_type($name = null)
     {
-        /* @var PostTypeManager $manager */
+        /* @var PostType $manager */
         $manager = app('post-type');
 
         if (is_null($name)) {

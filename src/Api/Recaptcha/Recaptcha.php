@@ -1,19 +1,24 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Api\Recaptcha;
 
-use ReCaptcha\ReCaptcha as ReCaptchaSdk;
-use ReCaptcha\RequestMethod\SocketPost;
+use ReCaptcha\{ReCaptcha as ReCaptchaSdk, Response as ReCaptchaResponse, RequestMethod\SocketPost as ReCaptchaSocket};
 use RuntimeException;
 use tiFy\Api\Recaptcha\Field\Recaptcha as RecaptchaField;
 use tiFy\Api\Recaptcha\Contracts\Recaptcha as RecaptchaContract;
-use tiFy\Support\Proxy\Asset;
+use tiFy\Support\Proxy\{Field, Request};
 
 /**
  * @see https://github.com/google/recaptcha
  */
 class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
 {
+    /**
+     * Instance déclarée.
+     * @var static
+     */
+    protected static $instance;
+
     /**
      * Liste des attributs de configuration.
      * @var array {
@@ -33,15 +38,18 @@ class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
     /**
      * CONSTRUCTEUR.
      *
+     * @param array $attrs Liste des attributs de configuration.
+     *
      * @return void
      */
-    protected function __construct($attrs = [])
+    protected function __construct(array $attrs = [])
     {
         try {
-            parent::__construct($attrs['secretkey'], (ini_get('allow_url_fopen') ? null : new SocketPost));
+            parent::__construct($attrs['secretkey'], (ini_get('allow_url_fopen') ? null : new ReCaptchaSocket()));
+
             $this->attributes = $attrs;
 
-            field()->set('recaptcha', new RecaptchaField());
+            Field::set('recaptcha', new RecaptchaField());
 
             add_action('wp_print_footer_scripts', function () {
                 if ($this->widgets) {
@@ -55,7 +63,7 @@ class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
                     $js .= "};";
                     echo '<script type="text/javascript">' . $js . '</script>';
                     echo '<script type="text/javascript"
-                                  src="https://www.google.com/recaptcha/api.js?hl=<?php echo $this->getLanguage(); ?>&onload=onloadCallback&render=explicit"
+                                  src="https://www.google.com/recaptcha/api.js?hl=' . $this->getLanguage() . '&onload=onloadCallback&render=explicit"
                                   async defer></script>';
                 }
             });
@@ -66,29 +74,18 @@ class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
     }
 
     /**
-     * Court-circuitage de l'instanciation.
-     *
-     * @return void
+     * @inheritDoc
      */
-    private function __clone()
+    public static function instance(array $attrs = []): RecaptchaContract
     {
-
+        return self::$instance = !is_null(self::$instance)
+            ? self::$instance : new static(array_merge(['secretkey' => '', 'sitekey'   => ''], $attrs));
     }
 
     /**
-     * Court-circuitage de l'instanciation.
-     *
-     * @return void
+     * @inheritDoc
      */
-    private function __wakeup()
-    {
-
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function addWidgetRender($id, $params = [])
+    public function addWidgetRender(string $id, array $params = []): RecaptchaContract
     {
         $this->widgets[$id] = $params;
 
@@ -96,20 +93,9 @@ class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public static function create($attrs = [])
-    {
-        return new static(array_merge([
-            'secretkey' => '',
-            'sitekey'   => '',
-        ], $attrs));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getLanguage()
+    public function getLanguage(): string
     {
         global $locale;
 
@@ -151,13 +137,14 @@ class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
                 $lang = 'es-419';
                 break;
         }
+
         return $lang;
     }
 
     /**
      * @inheritDoc
      */
-    public function getSiteKey()
+    public function getSiteKey(): ?string
     {
         return $this->attributes['sitekey'] ?? null;
     }
@@ -165,8 +152,16 @@ class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
     /**
      * @inheritDoc
      */
-    public function validation()
+    public function response(): ReCaptchaResponse
     {
-        return $this->verify(request()->post('g-recaptcha-response'), request()->server('REMOTE_ADDR'));
+        return $this->verify(Request::input('g-recaptcha-response'), Request::server('REMOTE_ADDR'));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validation(): bool
+    {
+        return $this->response()->isSuccess();
     }
 }

@@ -19,7 +19,7 @@ class Options extends ParamsBag implements FactoryOptions
      * }
      */
     protected $attributes = [
-        'anchor'         => true,
+        'anchor'         => false,
         'success_cb'     => ''
     ];
 

@@ -22,7 +22,6 @@ class KernelServiceProvider extends ServiceProvider
         'params.bag',
         'request',
         'response',
-        'session',
         'uri'
     ];
 
@@ -86,16 +85,6 @@ class KernelServiceProvider extends ServiceProvider
 
         $this->getContainer()->share('response', function () {
             return new Response();
-        });
-
-        $this->getContainer()->share('session', function () {
-            $session = new Session($this->getContainer());
-
-            if (session_status() == PHP_SESSION_NONE) {
-                $session->start();
-            }
-
-            return $session->setContainer($this->getContainer());
         });
 
         $this->getContainer()->share('uri', function () {

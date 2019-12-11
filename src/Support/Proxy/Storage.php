@@ -2,7 +2,7 @@
 
 namespace tiFy\Support\Proxy;
 
-use tiFy\Contracts\Filesystem\{Filesystem, LocalAdapter, LocalFilesystem};
+use tiFy\Contracts\Filesystem\{StorageManager, Filesystem, LocalAdapter, LocalFilesystem};
 
 /**
  * @method static Filesystem|null disk(string $name)
@@ -12,6 +12,19 @@ use tiFy\Contracts\Filesystem\{Filesystem, LocalAdapter, LocalFilesystem};
  */
 class Storage extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return StorageManager
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'storage';

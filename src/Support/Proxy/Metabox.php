@@ -19,6 +19,19 @@ use tiFy\Contracts\Metabox\{
  */
 class Metabox extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return Manager
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'metabox';

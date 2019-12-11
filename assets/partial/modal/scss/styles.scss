@@ -1,5 +1,9 @@
 @import '~presstify-framework/theme/scss/styles';
 
+.Modal {
+  display:none;
+}
+
 .modal-dialog.modal-full {
   width: auto;
   margin-left: 15px;
@@ -35,8 +39,8 @@
 
 .ThemeButton--close.modal-close {
   position:absolute;
-  top:20px;
-  right:20px;
+  top:15px;
+  right:15px;
   outline: none;
   z-index:1;
 }

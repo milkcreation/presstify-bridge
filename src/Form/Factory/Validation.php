@@ -67,6 +67,6 @@ class Validation implements FactoryValidation
      */
     public function compare($value, $tags, $raw = true)
     {
-        return v::equals($this->fieldTagValue($tags, $raw))->validate($value);
+        return v::equals($this->form()->fieldTagValue($tags, $raw))->validate($value);
     }
 }

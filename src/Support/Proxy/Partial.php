@@ -11,6 +11,19 @@ use tiFy\Contracts\Partial\{Partial as PartialContract, PartialFactory};
  */
 class Partial extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return PartialContract
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'partial';

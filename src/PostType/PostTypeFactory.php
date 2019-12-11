@@ -4,7 +4,7 @@ namespace tiFy\PostType;
 
 use LogicException;
 use tiFy\Contracts\PostType\PostTypeFactory as PostTypeFactoryContract;
-use tiFy\Contracts\PostType\PostTypeManager;
+use tiFy\Contracts\PostType\PostType;
 use tiFy\Support\ParamsBag;
 
 class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
@@ -13,11 +13,11 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
      * Indicateur d'instanciation.
      * @var boolean
      */
-    private $booted = false;
+    private $prepared = false;
 
     /**
      * Instance du gestionnaire de taxonomie.
-     * @var PostTypeManager
+     * @var PostType
      */
     protected $manager;
 
@@ -35,7 +35,7 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
      *
      * @return void
      */
-    public function __construct($name, $attrs = [])
+    public function __construct(string $name, array $attrs = [])
     {
         $this->name = $name;
         $this->set($attrs);
@@ -46,25 +46,7 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
      */
     public function __toString(): string
     {
-        return $this->name;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function boot(): void
-    {
-        if (!$this->booted) {
-            if (!$this->manager instanceof PostTypeManager) {
-                throw new LogicException(sprintf(
-                    __('Le gestionnaire %s devrait être défini avant de déclencher le démarrage', 'tify'),
-                    PostTypeManager::class
-                ));
-            }
-            $this->parse();
-            events()->trigger('post-type.factory.boot', [&$this]);
-            $this->booted = true;
-        }
+        return $this->getName();
     }
 
     /**
@@ -111,7 +93,7 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getName(): string
     {
@@ -119,7 +101,7 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function label(string $key, string $default = ''): string
     {
@@ -127,7 +109,7 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function meta($key, bool $single = true): PostTypeFactoryContract
     {
@@ -138,14 +120,14 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
                 $k = $v;
                 $v = $single;
             }
-            $this->manager->post_meta()->register($this->getName(), $k, $v);
+            $this->manager->meta()->register($this->getName(), $k, $v);
         }
 
         return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function parse(): PostTypeFactoryContract
     {
@@ -203,9 +185,30 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setManager(PostTypeManager $manager): PostTypeFactoryContract
+    public function prepare(): PostTypeFactoryContract
+    {
+        if (!$this->prepared) {
+            if (!$this->manager instanceof PostType) {
+                throw new LogicException(sprintf(
+                    __('Le gestionnaire %s devrait être défini avant de déclencher le démarrage', 'tify'),
+                    PostType::class
+                ));
+            }
+
+            $this->parse();
+            events()->trigger('post-type.factory.boot', [&$this]);
+            $this->prepared = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setManager(PostType $manager): PostTypeFactoryContract
     {
         $this->manager = $manager;
 

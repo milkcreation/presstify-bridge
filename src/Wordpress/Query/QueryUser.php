@@ -59,6 +59,24 @@ class QueryUser extends ParamsBag implements QueryUserContract
     /**
      * @inheritDoc
      */
+    public static function create($id = null, ...$args): ?QueryUserContract
+    {
+        if (is_numeric($id)) {
+            return static::createFromId((int)$id);
+        } elseif (is_string($id)) {
+            return (is_email($id)) ? static::createFromEmail($id) : static::createFromLogin($id);
+        } elseif ($id instanceof WP_User) {
+            return (new static($id));
+        } elseif(is_null($id)) {
+            return static::createFromGlobal();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function createFromGlobal(): QueryUserContract
     {
         return new static(wp_get_current_user());
@@ -70,6 +88,16 @@ class QueryUser extends ParamsBag implements QueryUserContract
     public static function createFromId(int $user_id): ?QueryUserContract
     {
         return (($wp_user = new WP_User($user_id)) && ($wp_user instanceof WP_User))
+            ? new static($wp_user) : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function createFromLogin(string $login): ?QueryUserContract
+    {
+        return (($userdata = WP_User::get_data_by('login', $login)) &&
+            (($wp_user = new WP_User($userdata)) instanceof WP_User))
             ? new static($wp_user) : null;
     }
 

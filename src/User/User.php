@@ -2,39 +2,36 @@
 
 namespace tiFy\User;
 
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 use tiFy\Contracts\User\User as UserContract;
 use tiFy\User\Metadata\Metadata;
 use tiFy\User\Metadata\Option;
 use tiFy\Contracts\User\RoleManager;
-use tiFy\Contracts\User\SessionManager;
-use tiFy\Contracts\User\SigninManager;
-use tiFy\Contracts\User\SignupManager;
 
 class User implements UserContract
 {
     /**
      * Instance du conteneur d'injection de dépendances.
-     * @var ContainerInterface
+     * @var Container
      */
     protected $container;
 
     /**
      * CONSTRUCTEUR.
      *
-     * @param ContainerInterface $container Conteneur d'injection de dépendances.
+     * @param Container $container Conteneur d'injection de dépendances.
      *
      * @return void
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getContainer(): ContainerInterface
+    public function getContainer(): Container
     {
         return $this->container;
     }
@@ -66,32 +63,8 @@ class User implements UserContract
     /**
      * @inheritdoc
      */
-    public function session(): SessionManager
-    {
-        return $this->resolve('session');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function signin(): SigninManager
-    {
-        return $this->resolve('signin');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function signup(): SignupManager
-    {
-        return $this->resolve('signup');
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function resolve($alias)
     {
-        return $this->container->get("user.{$alias}");
+        return $this->getContainer()->get("user.{$alias}");
     }
 }
