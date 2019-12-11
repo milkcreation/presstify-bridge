@@ -18,7 +18,7 @@ class MediaImage extends FieldFactory implements MediaImageContract
             wp_register_style(
                 'FieldMediaImage',
                 asset()->url('field/media-image/css/styles.css'),
-                ['tiFyAdmin'],
+                [],
                 180516
             );
             wp_register_script(

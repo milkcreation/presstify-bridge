@@ -15,13 +15,6 @@ interface PostTypeFactory extends ParamsBag
     public function __toString(): string;
 
     /**
-     * Initialisation du controleur.
-     *
-     * @return void
-     */
-    public function boot(): void;
-
-    /**
      * Récupération du nom de qualification du type de post.
      *
      * @return string
@@ -54,11 +47,18 @@ interface PostTypeFactory extends ParamsBag
     public function meta($key, bool $single = true): PostTypeFactory;
 
     /**
+     * Initialisation du controleur.
+     *
+     * @return void
+     */
+    public function prepare(): PostTypeFactory;
+
+    /**
      * Définition de l'instance du gestionnaire de types de post.
      *
-     * @param PostTypeManager $manager
+     * @param PostType $manager
      *
      * @return static
      */
-    public function setManager(PostTypeManager $manager): PostTypeFactory;
+    public function setManager(PostType $manager): PostTypeFactory;
 }

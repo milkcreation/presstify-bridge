@@ -21,6 +21,19 @@ use tiFy\Contracts\Routing\{Url as UrlContract, UrlFactory};
  */
 class Url extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return UrlContract
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'url';

@@ -56,18 +56,6 @@ interface FactoryResolver
     public function fields();
 
     /**
-     * Récupération de valeur(s) de champ(s) basée(s) sur leurs variables d'identifiant de qualification.
-     *
-     * @param mixed $tags Variables de qualification de champs.
-     * string ex. "%%{{slug#1}}%% %%{{slug#2}}%%"
-     * array ex ["%%{{slug#1}}%%", "%%{{slug#2}}%%"]
-     * @param boolean $raw Activation de la valeur de retour au format brut.
-     *
-     * @return string
-     */
-    public function fieldTagValue($tags, $raw = true);
-
-    /**
      * Récupération de l'instance du contrôleur de formulaire associé.
      *
      * @return FormFactory

@@ -44,13 +44,15 @@ class Routing implements RoutingContract
             RouteContract::class,
             function (string $method, string $path, callable $handler, $collection) {
                 return new Route($method, $path, $handler, $collection);
-        });
+            }
+        );
 
         $this->manager->getContainer()->add(
             RouteGroupContract::class,
             function (string $prefix, callable $handler, $collection) {
                 return new RouteGroup($prefix, $handler, $collection);
-            });
+            }
+        );
 
         add_action('parse_request', function () {
             try {

@@ -15,13 +15,23 @@ interface PostTypeStatus extends ParamsBag
     public function __toString(): string;
 
     /**
-     * Récupération ou déclaration d'une instance basé sur le nom de qualification.
+     * Récupération ou modification d'une instance.
      *
-     * @param string $name Nom de qualification du status
+     * @param string $name Nom de qualification du statut.
+     * @param array $args Liste des arguments de configuration.
      *
      * @return static
      */
-    public static function createFromName(string $name): PostTypeStatus;
+    public static function create(string $name, array $args = []): PostTypeStatus;
+
+    /**
+     * Récupération d'une instance déclarée.
+     *
+     * @param string $name Nom de qualification du statut.
+     *
+     * @return static|null
+     */
+    public static function instance(string $name): ?PostTypeStatus;
 
     /**
      * Récupération de l'intitulé de qualification.

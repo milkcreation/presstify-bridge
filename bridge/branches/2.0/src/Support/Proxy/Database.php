@@ -2,9 +2,8 @@
 
 namespace tiFy\Support\Proxy;
 
-use Illuminate\Database\Connection;
-use Illuminate\Database\Schema\Builder as Schema;
-use Illuminate\Database\Query\Builder as Query;
+use Illuminate\Database\{Connection, Schema\Builder as Schema, Query\Builder as Query};
+use tiFy\Contracts\Database\Database as DatabaseContract;
 
 /**
  * @method static void addConnection(array $config, string $name = 'default')
@@ -14,6 +13,19 @@ use Illuminate\Database\Query\Builder as Query;
  */
 class Database extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return DatabaseContract
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'database';

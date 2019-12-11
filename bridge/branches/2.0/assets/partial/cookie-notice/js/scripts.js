@@ -1,6 +1,7 @@
 'use strict';
 
 import jQuery from 'jquery';
+import 'presstify-framework/partial/notice/js/scripts';
 
 jQuery(function ($) {
   $(document).on('click', '[data-toggle="notice.trigger"]', function (e) {

@@ -3,9 +3,11 @@
 namespace tiFy\Wordpress\Contracts\Query;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use tiFy\Contracts\{PostType\PostTypeFactory, PostType\PostTypeStatus, Support\ParamsBag};
 use tiFy\Support\DateTime;
 use tiFy\Wordpress\Contracts\Database\PostBuilder;
+use tiFy\Wordpress\Contracts\Query\QueryPost as QueryPostContract;
 use WP_Post;
 use WP_Query;
 use WP_Term;
@@ -13,6 +15,23 @@ use WP_User;
 
 interface QueryPost extends ParamsBag
 {
+    /**
+     * Création d'un instance basée sur un argument de qualification.
+     *
+     * @param int|string|WP_Post $id
+     * @param array ...$args Liste des arguments de qualification complémentaires.
+     *
+     * @return static|null
+     */
+    public static function create($id = null, ...$args): ?QueryPost;
+
+    /**
+     * Récupération d'une instance basée sur un modele Laravel Eloquent
+     *
+     * @return static|null
+     */
+    public static function createFromEloquent(EloquentModel $model): ?QueryPostContract;
+
     /**
      * Récupération d'une instance basée sur le post global courant.
      *
@@ -27,7 +46,7 @@ interface QueryPost extends ParamsBag
      *
      * @return static|null
      */
-    public static function createFromId($post_id): ?QueryPost;
+    public static function createFromId(int $post_id): ?QueryPost;
 
     /**
      * Récupération d'une instance basée sur le nom de qualification d'un post.
@@ -57,14 +76,11 @@ interface QueryPost extends ParamsBag
     public static function parseQueryArgs(array $args = []): array;
 
     /**
-     * Récupération d'une liste d'instances basée sur une instance de classe WP_Query.
-     * @see https://developer.wordpress.org/reference/classes/wp_query/
+     * Récupération de l'instance de la dernière requête de récupération d'une liste d'éléments.
      *
-     * @param WP_Query $wp_query
-     *
-     * @return array
+     * @return ParamsBag
      */
-    public static function query(WP_Query $wp_query): array;
+    public static function query(): ParamsBag;
 
     /**
      * Récupération d'une liste d'instances basée sur des arguments de requête de récupération des éléments.
@@ -102,6 +118,16 @@ interface QueryPost extends ParamsBag
      * @return array
      */
     public static function queryFromIds(array $ids): array;
+
+    /**
+     * Récupération d'une liste d'instances basée sur une instance de classe WP_Query.
+     * @see https://developer.wordpress.org/reference/classes/wp_query/
+     *
+     * @param WP_Query $wp_query
+     *
+     * @return array
+     */
+    public static function queryFromWpQuery(WP_Query $wp_query): array;
 
     /**
      * Définition de la liste des arguments de requête de récupération des éléments.
@@ -198,7 +224,7 @@ interface QueryPost extends ParamsBag
      *
      * @return int
      */
-    public function getAuthorId();
+    public function getAuthorId(): int;
 
     /**
      * Récupération de la source base64 d'une image.
@@ -245,7 +271,7 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getContent(bool $raw = false);
+    public function getContent(bool $raw = false): string;
 
     /**
      * Récupération de la date de création au format datetime.
@@ -254,7 +280,7 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getDate(bool $gmt = false);
+    public function getDate(bool $gmt = false): string;
 
     /**
      * Récupération de l'objet DateTime basée sur la date création.
@@ -270,7 +296,7 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getEditLink();
+    public function getEditLink(): string;
 
     /**
      * Récupération de la valeur brute ou formatée de l'extrait.
@@ -279,23 +305,23 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getExcerpt(bool $raw = false);
+    public function getExcerpt(bool $raw = false): string;
 
     /**
      * Récupération de l'identifiant unique de qualification global.
-     * @return string
-     * @see https://developer.wordpress.org/reference/functions/the_guid/
+     * {@internal Ne devrait pas être utilisé en tant que lien.}
+     *  @see https://developer.wordpress.org/reference/functions/the_guid/
      *
-     * @internal Ne devrait pas être utilisé en tant que lien.
+     * @return string
      */
-    public function getGuid();
+    public function getGuid(): string;
 
     /**
      * Récupération de l'identifiant de qualification Wordpress du post.
      *
      * @return int
      */
-    public function getId();
+    public function getId(): int;
 
     /**
      * Récupération d'une metadonnée.
@@ -344,7 +370,7 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getModified(bool $gmt = false);
+    public function getModified(bool $gmt = false): string;
 
     /**
      * Récupération de l'objet DateTime basée sur la date de modification.
@@ -360,14 +386,14 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * Récupération de l'identifiant de qualification du post parent relatif.
      *
      * @return int
      */
-    public function getParentId();
+    public function getParentId(): int;
 
     /**
      * Récupération de l'instance tiFy du produit parent.
@@ -381,30 +407,21 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getPath();
+    public function getPath(): string;
 
     /**
      * Récupération du permalien d'affichage du post dans l'interface utilisateur.
      *
      * @return string
      */
-    public function getPermalink();
-
-    /**
-     * Récupération de l'object Post Wordpress associé.
-     *
-     * @return WP_Post
-     *
-     * @deprecated
-     */
-    public function getPost();
+    public function getPermalink(): string;
 
     /**
      * Récupération de l'identifiant de qualification Wordpress (post_name).
      *
      * @return string
      */
-    public function getSlug();
+    public function getSlug(): string;
 
     /**
      * Récupération de l'instance du statut associé.
@@ -419,9 +436,9 @@ interface QueryPost extends ParamsBag
      * @param string|array $taxonomy Liste ou Nom de qualification de la taxonomie.
      * @param array $args Liste des arguments de récupération
      *
-     * @return array|WP_Term[]
+     * @return WP_Term[]|array
      */
-    public function getTerms($taxonomy, array $args = []);
+    public function getTerms($taxonomy, array $args = []): array;
 
     /**
      * Récupération de l'image représentative.
@@ -431,7 +448,7 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getThumbnail($size = 'post-thumbnail', array $attrs = []);
+    public function getThumbnail($size = 'post-thumbnail', array $attrs = []): string;
 
     /**
      * Récupération de l'url de l'image représentative.
@@ -440,7 +457,7 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getThumbnailSrc($size = 'post-thumbnail');
+    public function getThumbnailSrc($size = 'post-thumbnail'): string;
 
     /**
      * Récupération de la valeur brute ou formatée de l'intitulé de qualification.
@@ -449,7 +466,7 @@ interface QueryPost extends ParamsBag
      *
      * @return string
      */
-    public function getTitle(bool $raw = false);
+    public function getTitle(bool $raw = false): string;
 
     /**
      * Récupération du type de post.
@@ -461,9 +478,9 @@ interface QueryPost extends ParamsBag
     /**
      * Récupération de l'instance de post Wordpress associée.
      *
-     * @return WP_Post
+     * @return WP_Post|null
      */
-    public function getWpPost();
+    public function getWpPost(): ?WP_Post;
 
     /**
      * Vérification d'existance de terme(s) de taxonomie pour le post associé.

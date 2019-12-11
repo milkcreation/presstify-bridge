@@ -35,7 +35,6 @@ interface StorageManager extends FilesystemInterface
      * @return Filesystem
      *
      * @throws FilesystemNotFoundException
-     *
      */
     public function getFilesystem($name);
 

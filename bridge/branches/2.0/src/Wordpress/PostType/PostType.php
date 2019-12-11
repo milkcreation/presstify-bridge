@@ -3,7 +3,7 @@
 namespace tiFy\Wordpress\PostType;
 
 use tiFy\Contracts\PostType\PostTypeFactory;
-use tiFy\Contracts\PostType\PostTypeManager;
+use tiFy\Contracts\PostType\PostType as PostTypeManager;
 use tiFy\Wordpress\Contracts\PostType as PostTypeContract;
 
 class PostType implements PostTypeContract
@@ -57,6 +57,6 @@ class PostType implements PostTypeContract
             }, 25);
         });
 
-        add_action('save_post', [$this->manager->post_meta(), 'save'], 10, 2);
+        add_action('save_post', [$this->manager->meta(), 'save'], 10, 2);
     }
 }

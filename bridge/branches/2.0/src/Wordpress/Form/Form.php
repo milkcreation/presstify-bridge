@@ -2,8 +2,8 @@
 
 namespace tiFy\Wordpress\Form;
 
-use tiFy\Contracts\Form\FormManager;
 use tiFy\Contracts\Form\FormFactory;
+use tiFy\Contracts\Form\FormManager;
 use tiFy\Wordpress\Contracts\Form as FormContract;
 use tiFy\Wordpress\Form\Addon\Mailer\Mailer;
 
@@ -32,6 +32,10 @@ class Form implements FormContract
 
         add_action('wp', function () {
             foreach ($this->manager->all() as $form) {
+                $form->events()->listen('field.get.value', function(&$value) {
+                    $value = wp_unslash($value);
+                });
+
                 /* @var FormFactory $form */
                 if ($form->isAuto()) {
                     $this->manager->current($form);
@@ -42,8 +46,8 @@ class Form implements FormContract
         });
 
         add_action('init', function () {
-            if (is_admin()) {
-                foreach ($this->manager->all() as $form) {
+            foreach ($this->manager->all() as $form) {
+                if (is_admin()) {
                     /* @var FormFactory $form */
                     if ($form->isAuto()) {
                         $this->manager->current($form);

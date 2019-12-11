@@ -88,6 +88,12 @@ class Field extends ParamsBag implements FactoryField
     protected $default;
 
     /**
+     * Indicateur du statut d'affichage de champ en erreur.
+     * @var boolean
+     */
+    protected $error = false;
+
+    /**
      * Identifiant de qualification du champ.
      * @var string
      */
@@ -239,7 +245,7 @@ class Field extends ParamsBag implements FactoryField
     {
         $value = $this->get('value');
 
-        $this->events('field.get.value', [&$value, $this]);
+        $this->form()->events('field.get.value', [&$value, $this]);
 
         if (!$raw) {
             $value = is_array($value) ? array_map('esc_attr', $value) : esc_attr($value);
@@ -255,21 +261,21 @@ class Field extends ParamsBag implements FactoryField
     {
         $value = Arr::wrap($this->getValue());
 
-        if ($choices = $this->get('choices', [])) :
-            foreach ($value as &$v) :
-                if (isset($choices[$v])) :
+        if ($choices = $this->get('choices', [])) {
+            foreach ($value as &$v) {
+                if (isset($choices[$v])) {
                     $v = $choices[$v];
-                endif;
-            endforeach;
-        endif;
+                }
+            }
+        }
 
-        if (!$raw) :
+        if (!$raw) {
             $value = is_array($value) ? array_map('esc_attr', $value) : esc_attr($value);
-        endif;
+        }
 
-        if (!is_null($glue)) :
+        if (!is_null($glue)) {
             $value = join($glue, $value);
-        endif;
+        }
 
         return $value;
     }
@@ -295,7 +301,8 @@ class Field extends ParamsBag implements FactoryField
      */
     public function onError()
     {
-        return $this->supports('request') && !empty($this->notices()->query('error', ['field' => $this->getSlug()]));
+        return ($this->supports('request') && !empty($this->notices()->query('error', ['field' => $this->getSlug()])))
+            || !!$this->error;
     }
 
     /**
@@ -590,6 +597,16 @@ class Field extends ParamsBag implements FactoryField
     }
 
     /**
+     * @inheritDoc
+     */
+    public function setOnError(bool $status = true): FactoryField
+    {
+       $this->error = $status;
+
+       return $this;
+    }
+
+    /**
      * @inheritdoc
      */
     public function setPosition($position = 0)
@@ -604,6 +621,8 @@ class Field extends ParamsBag implements FactoryField
      */
     public function setValue($value)
     {
+        $this->events('field.set.value', [&$value, $this]);
+
         $this->set('value', $value);
     }
 

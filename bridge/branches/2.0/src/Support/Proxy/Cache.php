@@ -2,7 +2,7 @@
 
 namespace tiFy\Support\Proxy;
 
-use tiFy\Contracts\Cache\Store;
+use tiFy\Contracts\Cache\{Cache as CacheContract, Store};
 
 /**
  * @method static boolean has(string $key)
@@ -13,6 +13,19 @@ use tiFy\Contracts\Cache\Store;
  */
 class Cache extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return CacheContract|Store
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'cache';

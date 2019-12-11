@@ -71,10 +71,12 @@ class Asset extends ParamsBag implements AssetContract
             foreach ($inlineCss as $v) {
                 $css .= $v;
             }
-            $output .= "<style type=\"text/css\">" . ((new CSS($css))->minify()) . "</style>";
+            if ($css) {
+                $output .= "<style type=\"text/css\">" . ((new CSS($css))->minify()) . "</style>";
+            }
         }
 
-        $js = "let tify={};";
+        $js = '';
         if ($datas = (new Collection($this->get('data-js', [])))->where('footer', '===', false)
             ->pluck('value', 'key')) {
             foreach ($datas as $k => $v) {
@@ -87,8 +89,12 @@ class Asset extends ParamsBag implements AssetContract
             }
         }
 
-        return $output . "<script type=\"text/javascript\">/* <![CDATA[ */" . ((new JS($js))->minify()) .
-            "/* ]]> */</script>";
+        if ($js) {
+            $js = "let tify={};{$js}";
+            $output .= "<script type=\"text/javascript\">/* <![CDATA[ */" . ((new JS($js))->minify()) . "/* ]]> */</script>";
+        }
+
+        return $output;
     }
 
     /**

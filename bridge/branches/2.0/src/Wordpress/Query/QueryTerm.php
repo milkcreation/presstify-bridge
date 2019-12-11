@@ -51,6 +51,22 @@ class QueryTerm extends ParamsBag implements QueryTermContract
     /**
      * @inheritDoc
      */
+    public static function create($id = null, ...$args): ?QueryTermContract
+    {
+        if (is_numeric($id)) {
+            return static::createFromId((int)$id);
+        } elseif (is_string($id)) {
+            return static::createFromSlug($id, ...$args);
+        } elseif ($id instanceof WP_Term) {
+            return (new static($id));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function createFromId(int $term_id): ?QueryTermContract
     {
         return (($wp_term = get_term($term_id)) && ($wp_term instanceof WP_Term))

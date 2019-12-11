@@ -44,6 +44,13 @@ interface Notices
     public function count($type);
 
     /**
+     * Vérification d'existance de message de notification.
+     *
+     * @return boolean
+     */
+    public function exists(): bool;
+
+    /**
      * Récupération de la liste d'une notification associée à un type.
      *
      * @param string $type Type de notification.
@@ -126,7 +133,7 @@ interface Notices
     /**
      * Définition des types de notification.
      *
-     * @param string $type Type de notification permis.
+     * @param array $types Type de notification permis.
      *
      * @return void
      */

@@ -14,49 +14,49 @@ class MessagesBag implements MessagesBagContract
      * Niveau de notification de débogguage.
      * @var int
      */
-    const DEBUG = 100;
+    public const DEBUG = 100;
 
     /**
      * Niveau de notification d'information.
      * @var int
      */
-    const INFO = 200;
+    public const INFO = 200;
 
     /**
      * Niveau de notification d'événement normal méritant d'être signalé.
      * @var int
      */
-    const NOTICE = 250;
+    public const NOTICE = 250;
 
     /**
      * Niveau de notification d'avertissement (une erreur peut intervenir si aucune action n'est prise).
      * @var int
      */
-    const WARNING = 300;
+    public const WARNING = 300;
 
     /**
      * Niveau de notification d'erreur de fonctionnement.
      * @var int
      */
-    const ERROR = 400;
+    public const ERROR = 400;
 
     /**
      * Niveau de notification d'erreur critique pour le système.
      * @var int
      */
-    const CRITICAL = 500;
+    public const CRITICAL = 500;
 
     /**
      * Niveau de notification d'intervention immédiate nécessaire.
      * @var int
      */
-    const ALERT = 550;
+    public const ALERT = 550;
 
     /**
      * Niveau de notification de système inutilisable.
      * @var int
      */
-    const EMERGENCY = 600;
+    public const EMERGENCY = 600;
 
     /**
      * Logging levels from syslog protocol defined in RFC 5424
@@ -64,14 +64,14 @@ class MessagesBag implements MessagesBagContract
      * @var array $levels Logging levels
      */
     protected static $levels = [
+        self::ALERT     => 'ALERT',
+        self::CRITICAL  => 'CRITICAL',
         self::DEBUG     => 'DEBUG',
+        self::EMERGENCY => 'EMERGENCY',
+        self::ERROR     => 'ERROR',
         self::INFO      => 'INFO',
         self::NOTICE    => 'NOTICE',
         self::WARNING   => 'WARNING',
-        self::ERROR     => 'ERROR',
-        self::CRITICAL  => 'CRITICAL',
-        self::ALERT     => 'ALERT',
-        self::EMERGENCY => 'EMERGENCY',
     ];
 
     /**
@@ -153,7 +153,7 @@ class MessagesBag implements MessagesBagContract
      *
      * @param int $level Niveau de notification.
      *
-     * @return boolean
+     * @return bool
      */
     public function __isset(int $level)
     {

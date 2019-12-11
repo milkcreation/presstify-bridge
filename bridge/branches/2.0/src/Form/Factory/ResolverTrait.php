@@ -113,29 +113,6 @@ trait ResolverTrait
     /**
      * {@inheritdoc}
      *
-     * @return string
-     */
-    public function fieldTagValue($tags, $raw = true)
-    {
-        if (is_string($tags)) :
-            if (preg_match_all('/([^%%]*)%%(.*?)%%([^%%]*)?/', $tags, $matches)) :
-                $tags = '';
-                foreach ($matches[2] as $i => $slug) :
-                    $tags .= $matches[1][$i] . (($field = $this->field($slug)) ? $field->getValue($raw) : $matches[2][$i]) . $matches[3][$i];
-                endforeach;
-            endif;
-        elseif (is_array($tags)) :
-            foreach ($tags as $k => &$i) :
-                $i = $this->fieldTagValue($i, $raw);
-            endforeach;
-        endif;
-
-        return $tags;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
      * @return FormFactory
      */
     public function form()
