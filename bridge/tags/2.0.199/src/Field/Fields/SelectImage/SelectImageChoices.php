@@ -24,7 +24,7 @@ class SelectImageChoices extends SelectJsChoices
                 ->in($items)
                 ->depth('== 0')
                 ->files()
-                ->name('#(\.ico$|\.gif$|\.jpe?g$|\.png$|\.svg$)#');
+                ->name('/(\.ico$|\.gif$|\.jpe?g$|\.png$|\.svg$)/');
             $items = [];
             foreach ($finder as $file) {
                 $items[$file->getRelativePathname()] = Img::getBase64Src($file->getRealPath());

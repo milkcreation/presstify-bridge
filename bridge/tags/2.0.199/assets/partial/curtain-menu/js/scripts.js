@@ -1,10 +1,12 @@
-/* global jQuery */
-"use strict";
+'use strict';
 
-!(function ($) {
+import jQuery from 'jquery';
+import 'jquery-ui/ui/core';
+import 'jquery-ui/ui/widget';
+
+jQuery(function ($) {
   $.widget('tify.tifyCurtainMenu', {
     widgetEventPrefix: 'curtain-menu:',
-    id: undefined,
     options: {},
     _create: function () {
       this.instance = this;
@@ -73,5 +75,7 @@
     }
   });
 
-  $('[data-control="curtain-menu"]').tifyCurtainMenu();
-})(jQuery, document, window);
+  $(document).ready(function() {
+    $('[data-control="curtain-menu"]').tifyCurtainMenu();
+  });
+});

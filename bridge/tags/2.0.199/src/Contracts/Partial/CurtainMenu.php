@@ -7,7 +7,7 @@ interface CurtainMenu extends PartialFactory
     /**
      * Traitement de la liste des éléments.
      *
-     * @return void
+     * @return static
      */
     public function parseItems(): PartialFactory;
 }

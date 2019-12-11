@@ -3,7 +3,8 @@
 namespace tiFy\Field;
 
 use InvalidArgumentException;
-use tiFy\Contracts\Field\{Button,
+use tiFy\Contracts\Field\{
+    Button,
     Checkbox,
     CheckboxCollection,
     Colorpicker,
@@ -29,7 +30,9 @@ use tiFy\Contracts\Field\{Button,
     Text,
     Textarea,
     TextRemaining,
-    ToggleSwitch};
+    Tinymce,
+    ToggleSwitch
+};
 use tiFy\Support\Manager;
 
 class Field extends Manager implements FieldContract
@@ -63,6 +66,7 @@ class Field extends Manager implements FieldContract
         'text'                => Text::class,
         'textarea'            => Textarea::class,
         'text-remaining'      => TextRemaining::class,
+        'tinymce'             => Tinymce::class,
         'toggle-switch'       => ToggleSwitch::class,
     ];
 

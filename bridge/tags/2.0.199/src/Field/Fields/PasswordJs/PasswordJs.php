@@ -4,8 +4,9 @@ namespace tiFy\Field\Fields\PasswordJs;
 
 use tiFy\Contracts\Field\{FieldFactory as FieldFactoryContract, PasswordJs as PasswordJsContract};
 use tiFy\Contracts\Encryption\Encrypter;
+use tiFy\Contracts\Routing\Route;
 use tiFy\Field\FieldFactory;
-use tiFy\Support\Proxy\Router as route;
+use tiFy\Support\Proxy\Router;
 
 class PasswordJs extends FieldFactory implements PasswordJsContract
 {
@@ -16,8 +17,8 @@ class PasswordJs extends FieldFactory implements PasswordJsContract
     protected $encrypter;
 
     /**
-     * Url de traitement.
-     * @var string Url de traitement
+     * Url de traitement de requête XHR.
+     * @var Route|string
      */
     protected $url = '';
 
@@ -65,11 +66,9 @@ class PasswordJs extends FieldFactory implements PasswordJsContract
     }
 
     /**
-     * Récupération du controleur d'encryptage.
-     *
-     * @return Encrypter
+     * @inheritDoc
      */
-    public function getEncrypter()
+    public function getEncrypter(): Encrypter
     {
         if (is_null($this->encrypter)) {
             $this->encrypter = app('encrypter');
@@ -81,9 +80,9 @@ class PasswordJs extends FieldFactory implements PasswordJsContract
     /**
      * @inheritDoc
      */
-    public function getUrl(): string
+    public function getUrl(...$params): string
     {
-        return $this->url;
+        return $this->url instanceof Route ? $this->url->getUrl($params) : $this->url;
     }
 
     /**
@@ -141,19 +140,17 @@ class PasswordJs extends FieldFactory implements PasswordJsContract
     /**
      * @inheritDoc
      */
-    public function setUrl(?string $url =  null): FieldFactoryContract
+    public function setUrl(?string $url =  null): PasswordJsContract
     {
-        $this->url = is_null($url) ? route::xhr(md5($this->getAlias()), [$this, 'xhrResponse'])->getUrl() : $url;
+        $this->url = is_null($url) ? Router::xhr(md5($this->getAlias()), [$this, 'xhrResponse']) : $url;
 
         return $this;
     }
 
     /**
-     * Récupération Ajax de la valeur décryptée.
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function xhrResponse(): array
+    public function xhrResponse(...$args): array
     {
         return [
             'success' => true,

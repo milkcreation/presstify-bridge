@@ -1,0 +1,37 @@
+@import '~presstify-framework/theme/scss/styles';
+@import '~presstify-framework/field/suggest/scss/styles';
+@import '~presstify-framework/field/tinymce/scss/styles';
+
+.MetaboxSlidefeed-suggestWrap {
+  display: block;
+}
+
+.MetaboxSlidefeed-itemField {
+  margin-left: 160px;
+}
+
+.MetaboxSlidefeed-itemField > input[type="text"] {
+  width:100%;
+}
+
+.MetaboxSlidefeed-itemFieldLabel {
+  margin: 3px 0;
+  font-weight: 100;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.MetaboxSlidefeed-itemField--image {
+  float: left;
+  display: block;
+  margin-left: 0;
+  width: 160px;
+  height: 160px;
+}
+
+.MetaboxSlidefeed-itemFieldCaptionInput {
+  min-height:100px;
+  padding:0 5px;
+  border:solid 1px #E4E4E4;
+}

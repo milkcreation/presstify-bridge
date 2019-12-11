@@ -1,18 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Partial;
 
-use tiFy\Contracts\View\ViewController;
-use tiFy\Contracts\Kernel\QueryCollection;
+use tiFy\Contracts\Support\Collection;
 
-interface AccordionItems extends QueryCollection
+interface AccordionItems extends Collection
 {
     /**
      * Résolution de sortie de l'affichage du contrôleur.
      *
      * @return string
      */
-    public function __toString();
+    public function __toString(): string;
 
     /**
      * Itération d'affichage la liste des éléments.
@@ -23,14 +22,14 @@ interface AccordionItems extends QueryCollection
      *
      * @return string
      */
-    public function walk($items = [], $depth = 0, $parent = null);
+    public function walker($items = [], $depth = 0, $parent = null): string;
 
     /**
      * Récupération du rendu d'affichage.
      *
-     * @return ViewController
+     * @return string
      */
-    public function render();
+    public function render(): string;
 
     /**
      * Définition du controleur d'affichage associé.
@@ -39,7 +38,7 @@ interface AccordionItems extends QueryCollection
      *
      * @return static
      */
-    public function setPartial(Accordion $partial);
+    public function setPartial(Accordion $partial): AccordionItems;
 
     /**
      * Définition de la liste des éléments ouverts à l'initialisation.
@@ -48,5 +47,5 @@ interface AccordionItems extends QueryCollection
      *
      * @return static
      */
-    public function setOpened($opened = null);
+    public function setOpened($opened = null): AccordionItems;
 }

@@ -5,23 +5,25 @@ namespace tiFy\Contracts\Field;
 interface Suggest extends FieldFactory
 {
     /**
-     * Récupération de l'url de traitement ajax de récupération des éléments associés.
+     * Récupération de l'url de traitement de la requête XHR.
+     *
+     * @param array ...$params Liste des paramètres optionnels de formatage de l'url.
      *
      * @return string
      */
-    public function getUrl(): string;
+    public function getUrl(...$params): string;
 
     /**
-     * Définition de l'url de traitement ajax de récupération des éléments associés.
+     * Définition de l'url de traitement de la requête XHR.
      *
      * @param string|null $url
      *
      * @return static
      */
-    public function setUrl(?string $url = null): FieldFactory;
+    public function setUrl(?string $url =  null): FieldFactory;
 
     /**
-     * Traitement de la réponse Xhr de récupération des éléments associés.
+     * Contrôleur de traitement de la requête XHR.
      *
      * @param array ...$args Liste dynamique de variables passés en argument dans l'url de requête
      *

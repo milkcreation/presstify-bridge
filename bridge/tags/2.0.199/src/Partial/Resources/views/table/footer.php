@@ -3,7 +3,6 @@
  * @var tiFy\Partial\PartialView $this
  */
 ?>
-
 <div class="Table-foot">
     <div class="Table-footTr Table-tr">
     <?php foreach ($this->get('columns', [])  as $name => $label) : ?>
@@ -13,4 +12,3 @@
     <?php endforeach; ?>
     </div>
 </div>
-

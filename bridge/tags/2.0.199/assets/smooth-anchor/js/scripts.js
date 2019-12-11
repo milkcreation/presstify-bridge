@@ -1,6 +1,8 @@
-"use strict";
+'use strict';
 
-jQuery(document).ready(function($) {
+import jQuery from 'jquery';
+
+jQuery(function($) {
     $(document).on('click', "[data-smooth-anchor]", function(e) {
         e.preventDefault();
 
@@ -16,12 +18,10 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        var offset = $(target).offset();
-
-        // Options
-        var addOffset = $(this).data('add-offset') ? $(this).data('add-offset') : -30;
-        var speed = $(this).data('speed') ? $(this).data('speed') : 1500;
-        var effect = $(this).data('effect') ? $(this).data('effect') : 'easeInOutExpo';
+        let offset = $(target).offset(),
+            addOffset = $(this).data('add-offset') ? $(this).data('add-offset') : -30,
+            speed = $(this).data('speed') ? $(this).data('speed') : 1500,
+            effect = $(this).data('effect') ? $(this).data('effect') : 'easeInOutExpo';
 
         $('html, body').animate({scrollTop: offset.top+addOffset}, speed, effect);
 

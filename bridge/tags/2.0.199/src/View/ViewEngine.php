@@ -26,7 +26,7 @@ class ViewEngine extends LeaguePlatesEngine implements ViewEngineContract
     ];
 
     /**
-     * Instance du controleur de gestion des paramètres
+     * Instance du gestionnaire de paramètres.
      * @var ParamsBag
      */
     protected $params;
@@ -44,44 +44,28 @@ class ViewEngine extends LeaguePlatesEngine implements ViewEngineContract
             $attrs = ['directory'=> $attrs];
         }
 
-        $this->params = ParamsBag::createFromAttrs(array_merge($this->attributes, $attrs));
+        $this->params(array_merge($this->attributes, $attrs));
 
-        $directory = $this->get('directory');
-        parent::__construct($directory && is_dir($directory) ? $directory : null, $this->get('ext'));
+        $directory = $this->params('directory');
+        parent::__construct($directory && is_dir($directory) ? $directory : null, $this->params('ext'));
 
-        if ($override_dir = $this->get('override_dir')) {
+        if ($override_dir = $this->params('override_dir')) {
             $this->setOverrideDir($override_dir);
         }
     }
 
     /**
-     * @inheritdoc
-     */
-    public function all()
-    {
-        return $this->params->all();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function get($key, $default = '')
-    {
-        return $this->params->get($key, $default);
-    }
-
-    /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getController($name)
     {
-        $controller = $this->get('controller');
+        $controller = $this->params('controller');
 
         return new $controller($this, $name);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getOverrideDir($path = '')
     {
@@ -91,15 +75,7 @@ class ViewEngine extends LeaguePlatesEngine implements ViewEngineContract
     }
 
     /**
-     * @inheritdoc
-     */
-    public function has($key)
-    {
-        return $this->params->has($key);
-    }
-
-    /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function make($name, $args = [])
     {
@@ -110,7 +86,43 @@ class ViewEngine extends LeaguePlatesEngine implements ViewEngineContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
+     */
+    public function params($key = null, $default = null)
+    {
+        if (is_null($this->params)) {
+            $this->params = new ParamsBag();
+        }
+
+        if (is_string($key)) {
+            return $this->params->get($key, $default);
+        } elseif (is_array($key)) {
+            foreach ($key as $k => $v) {
+                switch ($key) {
+                    case 'controller' :
+                        $this->setController($v);
+                        break;
+                    case 'directory' :
+                        $this->setDirectory($v);
+                        break;
+                    case 'ext' :
+                        $this->setFileExtension($v);
+                        break;
+                    case 'override_dir' :
+                        $this->setOverrideDir($v);
+                        break;
+                    default :
+                        $this->params->set([$k => $v]);
+                        break;
+                }
+            }
+        }
+
+        return $this->params;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function modifyFolder($name, $directory, $fallback = null)
     {
@@ -120,40 +132,26 @@ class ViewEngine extends LeaguePlatesEngine implements ViewEngineContract
             }
             $this->removeFolder($name)->addFolder($name, $directory, $fallback);
         }
+
         return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function set($key, $value)
+    public function share($key, $value = null): ViewEngineContract
     {
-        switch($key) {
-            case 'controller' :
-                $this->setController($value);
-                break;
-            case 'directory' :
-                $this->setDirectory($value);
-                break;
-            case 'ext' :
-                $this->setFileExtension($value);
-                break;
-            case 'override_dir' :
-                $this->setOverrideDir($value);
-                break;
-            default :
-                $this->params->set($key, $value);
-                break;
-        }
+        $this->addData(is_array($key) ? $key : [$key => $value]);
+
         return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function setController($controller)
     {
-        $this->params->set('controller', $controller);
+        $this->params(['controller' => $controller]);
 
         return $this;
     }
@@ -163,35 +161,45 @@ class ViewEngine extends LeaguePlatesEngine implements ViewEngineContract
      */
     public function setDirectory($directory)
     {
-        $this->params->set('directory', $directory);
+        $this->params(['directory' => $directory]);
 
         return parent::setDirectory($directory);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function setFileExtension($fileExtension)
     {
-        $this->params->set('ext', $fileExtension);
+        $this->params(['ext' => $fileExtension]);
 
         return parent::setFileExtension($fileExtension);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function setOverrideDir($override_dir)
     {
-        $this->params->set('override_dir', $override_dir);
+        $this->params(['override_dir' => $override_dir]);
 
         try {
             $this->addFolder('_override', $override_dir, true);
         } catch(LogicException $e) {
-            if($this->getFolders()->get('_override')->getPath() !== $override_dir) :
+            if($this->getFolders()->get('_override')->getPath() !== $override_dir) {
                 $this->modifyFolder('_override', $override_dir);
-            endif;
+            }
         }
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setParam($key, $value)
+    {
+        $this->params([$key => $value]);
+
         return $this;
     }
 }

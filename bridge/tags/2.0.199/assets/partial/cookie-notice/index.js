@@ -1,9 +1,2 @@
-// DEPS
-// tiFy - Partial > Notice
-import '../notice/index';
-
-// tiFy - Theme
-import '../../theme/index';
-
-// JS
+import './scss/styles.scss';
 import './js/scripts';

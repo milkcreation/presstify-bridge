@@ -24,7 +24,7 @@ interface FieldFactory extends ParamsBag
     /**
      * Affichage de la liste des attributs de balise.
      *
-     * @return string
+     * @return void
      */
     public function attrs(): void;
 
@@ -180,5 +180,5 @@ interface FieldFactory extends ParamsBag
      *
      * @return FieldView|ViewEngine
      */
-    public function viewer($view = null, $data = []);
+    public function viewer(?string $view = null, array $data = []);
 }

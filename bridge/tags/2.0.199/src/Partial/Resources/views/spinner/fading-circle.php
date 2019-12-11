@@ -3,7 +3,6 @@
  * @var tiFy\Partial\PartialView $this
  */
 ?>
-
 <div class="sk-circle1 sk-circle"></div>
 <div class="sk-circle2 sk-circle"></div>
 <div class="sk-circle3 sk-circle"></div>

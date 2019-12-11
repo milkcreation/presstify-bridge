@@ -4,11 +4,11 @@
  */
 ?>
 <?php $this->before(); ?>
-<div class="Table">
-    <?php if ($this->get('header')) $this->insert('header', $this->all()); ?>
+    <div class="Table">
+        <?php if ($this->get('header')) : $this->insert('header', $this->all()); endif; ?>
 
-    <?php $this->insert('body', $this->all()); ?>
+        <?php $this->insert('body', $this->all()); ?>
 
-    <?php if ($this->get('footer')) $this->insert('footer', $this->all()); ?>
-</div>
+        <?php if ($this->get('footer')) : $this->insert('footer', $this->all()); endif; ?>
+    </div>
 <?php $this->after();

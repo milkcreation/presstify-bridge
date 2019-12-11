@@ -258,10 +258,8 @@ class DatetimeJs extends FieldFactory implements DatetimeJsContract
                 case 'datetime' :
                     $this->set('fields', ['year', 'month', 'day', 'hour', 'minute', 'second']);
                     break;
-                case 'date' :
-                    $this->set('fields', ['year', 'month', 'day']);
-                    break;
                 case 'time' :
+                case 'date' :
                     $this->set('fields', ['year', 'month', 'day']);
                     break;
             }

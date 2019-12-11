@@ -3,7 +3,7 @@
 namespace tiFy\Field\Fields\RadioCollection;
 
 use tiFy\Contracts\Field\RadioChoice as RadioChoiceContract;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
 use tiFy\Field\Fields\Label\Label;
 use tiFy\Field\Fields\Radio\Radio;
 
@@ -63,7 +63,7 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
         if ($attrs instanceof Radio) {
             $this->radio = $attrs;
         } else {
-            parent::__construct($attrs);
+            $this->set($attrs)->parse();
         }
     }
 
@@ -142,9 +142,9 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
     /**
      * {@inheritdoc}
      */
-    public function parse($attrs = [])
+    public function parse()
     {
-        parent::parse($attrs);
+        parent::parse();
 
         if (!$this->get('attrs.id')) {
             $this->set('attrs.id', 'FieldRadioCollection-item--' . $this->index);
@@ -172,6 +172,8 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
 
         $this->radio = field('radio', $this->get('radio', []));
         $this->label = field('label', $this->get('label', []));
+
+        return $this;
     }
 
     /**

@@ -1,5 +1,9 @@
-/* global jQuery */
-"use strict";
+'use strict';
+
+import jQuery from 'jquery';
+import 'jquery-ui/ui/core';
+import 'jquery-ui/ui/widget';
+import 'datatables.net-dt';
 
 jQuery(function ($) {
   $.widget('tify.tifyListTable', {
@@ -16,8 +20,8 @@ jQuery(function ($) {
       this._initEvents();
       this._initDataTable();
     },
-    // INITIALISATION
-    // -------------------------------------------------------------------------------------------------------------
+    // INITIALISATIONS.
+    // -----------------------------------------------------------------------------------------------------------------
     // Initialisation des attributs de configuration.
     _initOptions: function () {
       $.extend(
@@ -36,37 +40,39 @@ jQuery(function ($) {
     },
     // Initialisation de la table de données.
     _initDataTable: function () {
-      let self = this;
+      let self = this,
+          ajax = $.extend({}, self.option('ajax') || {}, {
+            /**
+             * @param {Object} d
+             * @returns {*}
+             */
+            data: function (d) {
+              return $.extend(d, {action: 'get_items'});
+            },
+            /**
+             * @param {Object} json
+             * @param {string} json.data
+             * @param {string} json.search
+             * @param {string} json.pagination
+             *
+             * @returns {*}
+             */
+            dataSrc: function (json) {
+              $('[data-control="list-table.search"]', self.el).each(function () {
+                $(this).replaceWith(json.search);
+              });
 
-      let ajax = {
-        /**
-         * @param {object} d
-         * @returns {*}
-         */
-        data: function (d) {
-          d = $.extend(d, {action: 'get_items'});
-          return d;
-        },
-        /**
-         * @param {object} json
-         * @returns {*}
-         */
-        dataSrc: function (json) {
-          $('[data-control="list-table.search"]', self.el).each(function () {
-            $(this).replaceWith(json.search);
+              $('[data-control="list-table.pagination"]', self.el).each(function () {
+                $(this).replaceWith(json.pagination);
+              });
+
+              return json.data;
+            }
           });
-
-          $('[data-control="list-table.pagination"]', self.el).each(function () {
-            $(this).replaceWith(json.pagination);
-          });
-
-          return json.data;
-        }
-      };
 
       $.extend($.fn.dataTable.defaults, {
         // Attributs de la requête de traitement Ajax.
-        ajax: $.extend(self.option('ajax') || {}, ajax),
+        ajax: ajax,
         // Liste des colonnes.
         columns: self.option('columns') || [],
         // Désactivation du chargement Ajax à l'initialisation.
@@ -93,7 +99,7 @@ jQuery(function ($) {
          *
          * @param {node} row
          * @param {array} data
-         * @param {int} dataIndex
+         * @param {number} dataIndex
          * @param {node[]} cells
          */
         createdRow: function (row, data, dataIndex, cells) {
@@ -116,8 +122,8 @@ jQuery(function ($) {
          *
          * @param {node} tfoot
          * @param {array} data
-         * @param {int} start
-         * @param {int} end
+         * @param {number} start
+         * @param {number} end
          * @param {array} display
          */
         footerCallback: function (tfoot, data, start, end, display) {
@@ -128,7 +134,7 @@ jQuery(function ($) {
          * Au moment du formatage des nombres.
          * @see https://datatables.net/reference/option/formatNumber
          *
-         * @param {int} formatNumber
+         * @param {number} formatNumber
          */
         formatNumber: function (formatNumber) {
           let dataTable = this;
@@ -140,8 +146,8 @@ jQuery(function ($) {
          *
          * @param {node} thead
          * @param {array} data
-         * @param {int} start
-         * @param {int} end
+         * @param {number} start
+         * @param {number} end
          * @param {array} display
          */
         headerCallback: function (thead, data, start, end, display) {
@@ -153,10 +159,10 @@ jQuery(function ($) {
          * @see https://datatables.net/reference/option/infoCallback
          *
          * @param {dataTable.Settings} settings
-         * @param {int} start
-         * @param {int} end
-         * @param {int} max
-         * @param {int} total
+         * @param {number} start
+         * @param {number} end
+         * @param {number} max
+         * @param {number} total
          * @param {string} pre
          */
         infoCallback: function (settings, start, end, max, total, pre) {
@@ -192,9 +198,9 @@ jQuery(function ($) {
          *
          * @param {node} row
          * @param {array|object} data
-         * @param {int} displayNum
-         * @param {int} displayIndex
-         * @param {int} dataIndex
+         * @param {number} displayNum
+         * @param {number} displayIndex
+         * @param {number} dataIndex
          */
         rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
           let dataTable = this;
@@ -255,7 +261,8 @@ jQuery(function ($) {
 
       self.dataTable = $('[data-control="list-table.table"]', self.el).dataTable(o);
     },
-    // EVENEMENTS
+    // EVENEMENTS.
+    // -----------------------------------------------------------------------------------------------------------------
     // Création d'une ligne de la table.
     _onDatatableCreatedRow: function (e, args) {
       let i = 0;
@@ -365,14 +372,15 @@ jQuery(function ($) {
 
       let self = this,
           $link = $(e.target),
-          $tr = $link.closest('tr');
+          row = $link.closest('tr')[0],
+          table = self.dataTable.api();
 
       $.ajax({
         url: $link.attr('href'),
         method: 'POST',
         type: 'json'
       }).done(function () {
-        self.dataTable.api().row($tr[0]).draw(true);
+        table.row(row).draw(false);
       });
     },
     // Soumission d'une recherche dans le formulaire.
@@ -383,13 +391,13 @@ jQuery(function ($) {
           $button = $(e.target),
           $container = $button.closest('[data-control="list-table.search"]'),
           $input = $('[data-control="list-table.search.input"]', $container),
-          api = self.dataTable.api();
+          table = self.dataTable.api();
 
-      api.search($input.val()).draw();
+      table.search($input.val()).draw();
     }
   });
 
-  $(document).ready(function ($) {
+  $(document).ready(function () {
     $('[data-control="list-table"]').tifyListTable();
   });
 });

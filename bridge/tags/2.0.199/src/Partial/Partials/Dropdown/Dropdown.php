@@ -43,9 +43,9 @@ class Dropdown extends PartialFactory implements DropdownContract
         $this->set('attrs.data-id', $this->getId());
 
         $classes = [
-            'button'    => 'PartialDropdown-button',
-            'listItems' => 'PartialDropdown-items',
-            'item'      => 'PartialDropdown-item'
+            'button'    => 'Dropdown-button',
+            'listItems' => 'Dropdown-items',
+            'item'      => 'Dropdown-item'
         ];
         foreach($classes as $key => &$class) {
             $class = sprintf($this->get("classes.{$key}", '%s'), $class);

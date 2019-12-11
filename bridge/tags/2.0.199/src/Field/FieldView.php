@@ -43,7 +43,7 @@ class FieldView extends ViewController implements FieldViewContract
     {
         try {
             if (in_array($name, $this->mixins)) {
-                return call_user_func_array([$this->engine->get('field'), $name], $arguments);
+                return call_user_func_array([$this->engine->params('field'), $name], $arguments);
             } else {
                 throw new BadMethodCallException(
                     sprintf(

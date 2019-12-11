@@ -11,27 +11,27 @@ class Colorpicker extends FieldFactory implements ColorpickerContract
      * {@inheritDoc}
      *
      * @return array {
-     *      @var array $attrs Attributs HTML du champ.
-     *      @var string $after Contenu placé après le champ.
-     *      @var string $before Contenu placé avant le champ.
-     *      @var string $name Clé d'indice de la valeur de soumission du champ.
-     *      @var string $value Valeur courante de soumission du champ.
-     *      @var array $viewer Liste des attributs de configuration du pilote d'affichage.
-     *      @var array $options {
+     * @var array $attrs Attributs HTML du champ.
+     * @var string $after Contenu placé après le champ.
+     * @var string $before Contenu placé avant le champ.
+     * @var string $name Clé d'indice de la valeur de soumission du champ.
+     * @var string $value Valeur courante de soumission du champ.
+     * @var array $viewer Liste des attributs de configuration du pilote d'affichage.
+     * @var array $options {
      *          Liste des options du contrôleur ajax.
-     *          @see https://bgrins.github.io/spectrum/
+     * @see https://bgrins.github.io/spectrum/
      *      }
      * }
      */
     public function defaults(): array
     {
         return [
-            'attrs'  => [],
-            'after'  => '',
-            'before' => '',
-            'name'   => '',
-            'value'  => '',
-            'viewer' => [],
+            'attrs'   => [],
+            'after'   => '',
+            'before'  => '',
+            'name'    => '',
+            'value'   => '',
+            'viewer'  => [],
             'options' => [],
         ];
     }
@@ -43,12 +43,13 @@ class Colorpicker extends FieldFactory implements ColorpickerContract
     {
         parent::parse();
 
-        $options = array_merge([
-            'preferredFormat' => 'hex',
-            'showInput' => true
-        ], $this->get('options', []));
-
-        $this->set('attrs.data-options', $options);
+        $this->set([
+            'attrs.data-control' => 'colorpicker',
+            'attrs.data-options' => array_merge([
+                'preferredFormat' => 'hex',
+                'showInput'       => true,
+            ], $this->get('options', [])),
+        ]);
 
         return $this;
     }

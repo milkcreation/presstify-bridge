@@ -116,8 +116,8 @@ abstract class MetaboxController extends ParamsBag implements MetaboxControllerC
                     (($override_dir = $this->get('viewer.override_dir')) && is_dir($override_dir))
                         ? $override_dir
                         : (is_dir($default_dir) ? $default_dir : $cinfo->getDirname())
-                )
-                ->set('metabox', $this);
+                );
+            $this->viewer->params(['metabox' => $this]);
         }
 
         if (func_num_args() === 0) {
