@@ -199,6 +199,15 @@ interface FactoryField extends FactoryResolver, ParamsBag
     public function setExtra($key, $value);
 
     /**
+     * Définition du statut de l'indicateur de champ en erreur.
+     *
+     * @param boolean $status
+     *
+     * @return static
+     */
+    public function setOnError(bool $status = true): FactoryField;
+
+    /**
      * Définition de l'ordre d'affichage.
      *
      * @param int $position Valeur de la position.

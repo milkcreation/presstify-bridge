@@ -13,7 +13,7 @@ class PostTypeServiceProvider extends ServiceProvider
      */
     protected $provides = [
         'post-type',
-        'post-type.post-meta'
+        'post-type.meta'
     ];
 
     /**
@@ -33,7 +33,7 @@ class PostTypeServiceProvider extends ServiceProvider
     public function registerManager(): void
     {
         $this->getContainer()->share('post-type', function() {
-            return new PostTypeManager($this->getContainer());
+            return new PostType($this->getContainer());
         });
     }
 
@@ -44,7 +44,7 @@ class PostTypeServiceProvider extends ServiceProvider
      */
     public function registerPostMeta(): void
     {
-        $this->getContainer()->share('post-type.post-meta', function () {
+        $this->getContainer()->share('post-type.meta', function () {
             return new PostTypePostMeta();
         });
     }

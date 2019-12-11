@@ -10,6 +10,19 @@ use tiFy\Contracts\Field\{Field as FieldContract, FieldFactory};
  */
 class Field extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return FieldContract
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'field';

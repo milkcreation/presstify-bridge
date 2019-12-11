@@ -1,9 +1,10 @@
 'use strict';
 
-import 'bootstrap/js/src/modal';
 import jQuery from 'jquery';
 import 'jquery-ui/ui/core';
 import 'jquery-ui/ui/widget';
+import 'bootstrap/js/dist/util';
+import 'bootstrap/js/dist/modal';
 import 'presstify-framework/observer/js/scripts';
 
 jQuery(function ($) {

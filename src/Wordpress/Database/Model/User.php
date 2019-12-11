@@ -8,11 +8,11 @@ use tiFy\Wordpress\Contracts\Database\UserBuilder;
 use tiFy\Wordpress\Database\Concerns\{BlogAwareTrait, MetaFieldsAwareTrait};
 
 /**
- * @method static Usermeta createMeta($key, $value = null)
- * @method static mixed getMeta(string $meta_key)
- * @method static UserBuilder hasMeta(string|array $meta_key, mixed|null $value, string $operator = '=')
- * @method static UserBuilder hasMetaLike(string $key, string $value),
- * @method static boolean saveMeta($key, $value = null)
+ * @method Usermeta createMeta($key, $value = null)
+ * @method mixed getMeta(string $meta_key)
+ * @method UserBuilder hasMeta(string|array $meta_key, mixed|null $value, string $operator = '=')
+ * @method UserBuilder hasMetaLike(string $key, string $value),
+ * @method boolean saveMeta($key, $value = null)
  */
 class User extends CorcelUser implements UserBuilder
 {

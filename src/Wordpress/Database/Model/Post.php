@@ -10,11 +10,11 @@ use tiFy\Wordpress\Contracts\Database\PostBuilder;
 use tiFy\Wordpress\Database\Concerns\{BlogAwareTrait, MetaFieldsAwareTrait};
 
 /**
- * @method static Postmeta createMeta($key, $value = null)
- * @method static mixed getMeta(string $meta_key)
- * @method static PostBuilder hasMeta(string|array $meta_key, mixed|null $value, string $operator = '=')
- * @method static PostBuilder hasMetaLike(string $key, string $value),
- * @method static boolean saveMeta($key, $value = null)
+ * @method Postmeta createMeta($key, $value = null)
+ * @method mixed getMeta(string $meta_key)
+ * @method PostBuilder hasMeta(string|array $meta_key, mixed|null $value, string $operator = '=')
+ * @method PostBuilder hasMetaLike(string $key, string $value),
+ * @method boolean saveMeta($key, $value = null)
  */
 class Post extends CorcelPost implements PostBuilder
 {

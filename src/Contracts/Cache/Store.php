@@ -125,6 +125,8 @@ interface Store
     /**
      * Définition du prefixe de qualification des éléments en cache.
      *
+     * @param string $prefix
+     *
      * @return static
      */
     public function setPrefix(string $prefix): Store;

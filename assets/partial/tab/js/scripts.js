@@ -3,7 +3,8 @@
 import jQuery from 'jquery';
 import 'jquery-ui/ui/core';
 import 'jquery-ui/ui/widget';
-import 'bootstrap/js/src/tab';
+import 'bootstrap/js/dist/util';
+import 'bootstrap/js/dist/tab';
 
 jQuery(function ($) {
   $.widget('tify.tifyTab', {

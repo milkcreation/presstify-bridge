@@ -48,6 +48,12 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     protected $prepared = false;
 
     /**
+     * Indicateur de statut du formulaire en succès.
+     * @var boolean
+     */
+    protected $success = false;
+
+    /**
      * Nom de qualification du formulaire dans les attributs de balises HTML.
      * @var string|null
      */
@@ -121,6 +127,29 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function fieldTagValue($tags, $raw = true)
+    {
+        if (is_string($tags)) :
+            if (preg_match_all('/([^%%]*)%%(.*?)%%([^%%]*)?/', $tags, $matches)) :
+                $tags = '';
+                foreach ($matches[2] as $i => $slug) :
+                    $tags .= $matches[1][$i] . (($field = $this->field($slug)) ? $field->getValue($raw) : $matches[2][$i]) . $matches[3][$i];
+                endforeach;
+            endif;
+        elseif (is_array($tags)) :
+            foreach ($tags as $k => &$i) :
+                $i = $this->fieldTagValue($i, $raw);
+            endforeach;
+        endif;
+
+        return $tags;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getAction(): string
@@ -165,7 +194,7 @@ class FormFactory extends ParamsBag implements FormFactoryContract
      */
     public function isAuto(): bool
     {
-        return $this->auto;
+        return $this->auto ?? false;
     }
 
     /**
@@ -219,7 +248,7 @@ class FormFactory extends ParamsBag implements FormFactoryContract
      */
     public function onSuccess(): bool
     {
-        return request()->get('success') === $this->name();
+        return !!$this->success ||(request()->get('success') === $this->name());
     }
 
     /**
@@ -407,6 +436,16 @@ class FormFactory extends ParamsBag implements FormFactoryContract
 
             $this->events('form.init', [&$this]);
         }
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setOnSuccess(bool $status = true): FormFactoryContract
+    {
+        $this->success = $status;
+
         return $this;
     }
 

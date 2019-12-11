@@ -129,7 +129,7 @@ interface MessagesBag extends ArrayAccess, Countable, IteratorAggregate, JsonSer
      *
      * @param int|null $level Niveau de notification.
      *
-     * @return boolean
+     * @return bool
      */
     public function exists(?int $level = null): bool;
 
@@ -169,7 +169,7 @@ interface MessagesBag extends ArrayAccess, Countable, IteratorAggregate, JsonSer
      *
      * @param int $level Niveau de notification.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasLevel(int $level): bool;
 

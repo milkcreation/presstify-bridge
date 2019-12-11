@@ -2,7 +2,7 @@
 
 namespace tiFy\Support\Proxy;
 
-use tiFy\Contracts\Log\Logger;
+use tiFy\Contracts\Log\{Logger, LogManager};
 
 /**
  * @method static void emergency(string $message, array $context = [])
@@ -19,6 +19,19 @@ use tiFy\Contracts\Log\Logger;
  */
 class Log extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return LogManager|Logger
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'log';

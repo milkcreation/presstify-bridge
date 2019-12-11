@@ -6,7 +6,8 @@ use Illuminate\Database\Schema\Blueprint;
 use tiFy\Contracts\Form\FactoryRequest;
 use tiFy\Form\Addon\Record\ListTable\{Model as ListTableModel, Factory as ListTableFactory};
 use tiFy\Form\AddonFactory;
-use tiFy\Support\{DateTime, Proxy\Database, Proxy\Template, Str};
+use tiFy\Support\{DateTime, Str};
+use tiFy\Support\Proxy\{Schema, Template};
 
 /**
  * USAGE :
@@ -54,10 +55,8 @@ class Record extends AddonFactory
      */
     public function boot(): void
     {
-        $schema = Database::schema();
-
-        if (!$schema->hasTable('tify_forms_record')) {
-            $schema->create('tify_forms_record', function (Blueprint $table) {
+        if (!Schema::hasTable('tify_forms_record')) {
+            Schema::create('tify_forms_record', function (Blueprint $table) {
                 $table->bigIncrements('ID');
                 $table->string('form_id', 255);
                 $table->string('session', 32);
@@ -66,8 +65,9 @@ class Record extends AddonFactory
                 $table->index('form_id', 'form_id');
             });
         }
-        if (!$schema->hasTable('tify_forms_recordmeta')) {
-            $schema->create('tify_forms_recordmeta', function (Blueprint $table) {
+
+        if (!Schema::hasTable('tify_forms_recordmeta')) {
+            Schema::create('tify_forms_recordmeta', function (Blueprint $table) {
                 $table->bigIncrements('meta_id');
                 $table->bigInteger('tify_forms_record_id')->default(0);
                 $table->string('meta_key', 255)->nullable();

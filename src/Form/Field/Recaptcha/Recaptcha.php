@@ -31,18 +31,15 @@ class Recaptcha extends FieldController
      */
     public function onRequestValidationField(FactoryField $field)
     {
-        /** @var ApiRecaptcha $recaptcha */
-        $recaptcha = app('api.recaptcha');
-
-        if (!$recaptcha->validation()->isSuccess()) :
+        if (!ApiRecaptcha::instance()->validation()) {
             $this->notices()->add(
                 'error',
                 __('La saisie de la protection antispam est incorrecte.', 'tify'),
                 [
-                    'field'   => $field->getSlug(),
+                    'field' => $field->getSlug(),
                 ]
             );
-        endif;
+        }
     }
 
     /**

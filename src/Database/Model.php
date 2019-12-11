@@ -3,11 +3,8 @@
 namespace tiFy\Database;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
-use Illuminate\Database\Query\Builder;
-use tiFy\Database\Concerns\{
-    ColumnsAwareTrait,
-    ConnectionAwareTrait
-};
+use Illuminate\Database\Eloquent\Builder;
+use tiFy\Database\Concerns\{ColumnsAwareTrait, ConnectionAwareTrait};
 
 /**
  * @mixin Builder

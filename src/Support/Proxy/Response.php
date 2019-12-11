@@ -12,6 +12,19 @@ use tiFy\Contracts\Http\Response as ResponseContract;
  */
 class Response extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return ResponseContract
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'response';
