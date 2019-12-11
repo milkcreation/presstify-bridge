@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-use tiFy\Contracts\Kernel\Collection;
+use tiFy\Contracts\Support\Collection;
 
 interface RadioChoices extends Collection
 {

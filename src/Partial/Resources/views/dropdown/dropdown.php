@@ -4,7 +4,6 @@
  */
 ?>
 <?php $this->before(); ?>
-
     <span <?php $this->attrs(); ?>>
         <button data-control="dropdown.button">
             <?php $this->insert('button', $this->all()); ?>
@@ -16,5 +15,4 @@
             <?php endforeach; ?>
         </ul>
     </span>
-
 <?php $this->after();

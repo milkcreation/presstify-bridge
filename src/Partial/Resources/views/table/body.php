@@ -3,7 +3,6 @@
  * @var tiFy\Partial\PartialView $this
  */
 ?>
-
 <div class="Table-body">
 <?php if ($datas = $this->get('datas', [])) : ?>
     <?php $num = 0; foreach ($datas as $row => $dr) : ?>

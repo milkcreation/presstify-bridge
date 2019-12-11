@@ -1,50 +1,97 @@
 /* global wp */
+'use strict';
 
-"use strict";
+import jQuery from 'jquery';
+import 'presstify-framework/partial/media-library/js/scripts';
 
-let tify_control_media_image_frame;
+jQuery(function ($) {
+  $.widget('tify.tifyMediaImage', {
+    widgetEventPrefix: 'media-image:',
+    options: {
+      classes: {}
+    },
+    control: {
+      input: 'media-image.input',
+      opener: 'media-image.open',
+      preview: 'media-image.preview',
+      remover: 'media-image.remove'
+    },
+    // Instanciation de l'élément.
+    _create: function () {
+      this.instance = this;
 
-jQuery(document).ready(function ($) {
-    $(document).on('click', '.tiFyField-mediaImageAdd', function (e) {
-        e.preventDefault();
+      this.el = this.element;
 
-        let $this = $(this),
-            $closest = $this.closest('.tiFyField-mediaImage'),
-            title = $(this).data('media_library_title'),
-            button = $(this).data('media_library_button');
+      this._initOptions();
+      this._initControls();
+      this._initEvents();
+    },
+    // INTIALISATIONS
+    // -----------------------------------------------------------------------------------------------------------------
+    // Initialisation des attributs de configuration.
+    _initOptions: function () {
+      $.extend(
+          true,
+          this.options,
+          this.el.data('options') && $.parseJSON(decodeURIComponent(this.el.data('options'))) || {}
+      );
+    },
+    // Initialisation de la médiathèque.
+    _initControls: function () {
+      let self = this;
 
-        tify_control_media_image_frame = wp.media.frames.file_frame = wp.media({
-            title: title,
-            editing: true,
-            button: {
-                text: button,
-            },
-            multiple: false,
-            library: {
-                type: 'image'
-            }
+      if (this.library === undefined) {
+        this.library = $(this.el).tifyMediaLibrary({multiple: false, library: {type: 'image'}});
+        $(this.el).on('media-library:select', function (e, items) {
+          let item = items[0] || {};
+
+          $('[data-control="' + self.control.preview + '"]', self.el).css('background-image', 'url(' + item.url + '').show();
+          $('[data-control="' + self.control.input + '"]', self.el).val(item.id);
+          self.el.attr('aria-selected', 'true');
         });
+      }
+    },
+    // Initialisation des événements.
+    _initEvents: function () {
+      this._on(this.el, {'click [data-control="media-image.open"]': this._onClickOpen});
+      this._on(this.el, {'click [data-control="media-image.remove"]': this._onClickRemove});
+    },
+    // EVENEMENTS
+    // -----------------------------------------------------------------------------------------------------------------
+    // Au clic sur le bouton d'ouverture de la médiathèque.
+    _onClickOpen: function (e) {
+      e.preventDefault();
 
-        tify_control_media_image_frame.on('select', function () {
-            let attachment = tify_control_media_image_frame.state().get('selection').first().toJSON();
+      this.open();
+    },
+    // Au clic sur le bouton de suppression.
+    _onClickRemove: function (e) {
+      e.preventDefault();
 
-            $this.css('background-image', 'url(' + attachment.url + '');
-            $('.tiFyField-mediaImageInput', $closest).val(attachment.id);
-            $('.tiFyField-mediaImageReset:hidden', $closest).fadeIn();
-            $closest.addClass('tiFyField-mediaImage--selected');
-        });
+      this.remove();
+    },
+    // ACCESSEURS.
+    // -----------------------------------------------------------------------------------------------------------------
+    // Ouverture de la médiathèque.
+    open: function () {
+      this.library.tifyMediaLibrary('open');
+    },
+    // Suppression de l'image.
+    remove: function () {
+      let self = this;
 
-        tify_control_media_image_frame.open();
+      self.el.attr('aria-selected', 'false');
+
+      $('[data-control="' + this.control.preview + '"]', this.el).fadeOut(function () {
+        $(this).css('background-image', '');
+        $('[data-control="' + self.control.input + '"]', self.el).val('');
+      });
+    }
+  });
+
+  $(document).ready(function () {
+    $(document).on('mouseenter', '[data-control="media-image"]', function() {
+      $(this).tifyMediaImage();
     });
-
-    $(document).on('click', '.tiFyField-mediaImageRemove', function (e) {
-        e.preventDefault();
-
-        let $this = $(this),
-            $closest = $this.closest('.tiFyField-mediaImage');
-
-        $closest.removeClass('tiFyField-mediaImage--selected');
-        $('.tiFyField-mediaImageInput', $closest).val('');
-        $('.tiFyField-mediaImageAdd', $closest).css('background-image', 'url(' + $('.tiFyField-mediaImage', $closest).data('default') + ')');
-    });
+  });
 });

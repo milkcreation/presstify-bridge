@@ -59,17 +59,12 @@ class Tag extends PartialFactory implements TagContract
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @return $this
+     * @inheritDoc
      */
-    public function parseDefaults(): PartialFactoryContract
+    public function parseAttrsClass(): PartialFactoryContract
     {
-        if (!$this->get('attrs.id')) {
-            $this->forget('attrs.id');
-        }
+        $base = Str::studly($this->getAlias());
 
-        $base = Str::ucfirst($this->getAlias());
         $default_class = "{$base} {$base}--" . $this->get('tag') . " {$base}--" . $this->getIndex();
         if (!$this->has('attrs.class')) {
             $this->set('attrs.class', $default_class);
@@ -79,8 +74,6 @@ class Tag extends PartialFactory implements TagContract
         if (!$this->get('attrs.class')) {
             $this->forget('attrs.class');
         }
-
-        $this->parseViewer();
 
         return $this;
     }

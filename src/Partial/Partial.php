@@ -3,11 +3,13 @@
 namespace tiFy\Partial;
 
 use InvalidArgumentException;
-use tiFy\Contracts\Partial\{Accordion,
+use tiFy\Contracts\Partial\{
+    Accordion,
     Breadcrumb,
     CookieNotice,
     CurtainMenu,
     Dropdown,
+    Downloader,
     Holder,
     ImageLightbox,
     Modal,
@@ -15,13 +17,15 @@ use tiFy\Contracts\Partial\{Accordion,
     Pagination,
     Partial as PartialContract,
     PartialFactory,
-    PdfPreview,
+    Pdfviewer,
+    Progress,
     Sidebar,
     Slider,
     Spinner,
     Tab,
     Table,
-    Tag};
+    Tag
+};
 use tiFy\Support\Manager;
 
 class Partial extends Manager implements PartialContract
@@ -36,12 +40,14 @@ class Partial extends Manager implements PartialContract
         'cookie-notice'  => CookieNotice::class,
         'curtain-menu'   => CurtainMenu::class,
         'dropdown'       => Dropdown::class,
+        'downloader'     => Downloader::class,
         'holder'         => Holder::class,
         'image-lightbox' => ImageLightbox::class,
         'modal'          => Modal::class,
         'notice'         => Notice::class,
         'pagination'     => Pagination::class,
-        'pdf-preview'    => PdfPreview::class,
+        'pdfviewer'      => Pdfviewer::class,
+        'progress'       => Progress::class,
         'sidebar'        => Sidebar::class,
         'slider'         => Slider::class,
         'spinner'        => Spinner::class,
@@ -113,6 +119,19 @@ class Partial extends Manager implements PartialContract
     /**
      * @inheritDoc
      */
+    public function register($key, ...$args)
+    {
+        if (isset($args[0])) {
+            return $this->set([$key => $args[0]]);
+        }
+        throw new InvalidArgumentException(
+            sprintf(__('La déclaration de la portion d\'affichage [%s] n\'est pas conforme.', 'tify'), $key)
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function registerDefaults(): PartialContract
     {
         foreach ($this->defaults as $name => $alias) {
@@ -129,9 +148,7 @@ class Partial extends Manager implements PartialContract
     {
         $path = $path ? '/' . ltrim($path, '/') : '';
 
-        return (file_exists(__DIR__ . "/Resources{$path}"))
-            ? __DIR__ . "/Resources{$path}"
-            : '';
+        return (file_exists(__DIR__ . "/Resources{$path}")) ? __DIR__ . "/Resources{$path}" : '';
     }
 
     /**
@@ -142,9 +159,7 @@ class Partial extends Manager implements PartialContract
         $cinfo = class_info($this);
         $path = $path ? '/' . ltrim($path, '/') : '';
 
-        return (file_exists($cinfo->getDirname() . "/Resources{$path}"))
-            ? $cinfo->getUrl() . "/Resources{$path}"
-            : '';
+        return (file_exists($cinfo->getDirname() . "/Resources{$path}")) ? $cinfo->getUrl() . "/Resources{$path}" : '';
     }
 
     /**
@@ -162,7 +177,7 @@ class Partial extends Manager implements PartialContract
         } else {
             throw new InvalidArgumentException(
                 sprintf(
-                    __('La déclaration de la protion d\'affichage %s devrait être une instance de %s', 'tify'),
+                    __('La déclaration de la portion d\'affichage [%s] devrait être une instance de [%s]', 'tify'),
                     $key,
                     PartialFactory::class
                 )

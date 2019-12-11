@@ -24,10 +24,10 @@ class Holder extends PartialFactory implements HolderContract
     public function defaults() : array
     {
         return [
-            'attrs'         => [],
-            'after'         => '',
-            'before'        => '',
-            'viewer'        => [],
+            'attrs'            => [],
+            'after'            => '',
+            'before'           => '',
+            'viewer'           => [],
             'content'          => '',
             'width'            => 100,
             'height'           => 100,

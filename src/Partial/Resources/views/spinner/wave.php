@@ -3,7 +3,6 @@
  * @var tiFy\Partial\PartialView $this
  */
 ?>
-
 <div class="sk-rect sk-rect1"></div>
 <div class="sk-rect sk-rect2"></div>
 <div class="sk-rect sk-rect3"></div>

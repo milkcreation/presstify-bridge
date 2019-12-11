@@ -39,7 +39,7 @@ class PartialView extends ViewController implements PartialViewContract
     {
         try {
             if (in_array($name, $this->mixins)) {
-                return call_user_func_array([$this->engine->get('partial'), $name], $arguments);
+                return call_user_func_array([$this->engine->params('partial'), $name], $arguments);
             } else {
                 throw new BadMethodCallException(
                     sprintf(

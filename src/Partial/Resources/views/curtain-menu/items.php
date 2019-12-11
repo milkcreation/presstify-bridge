@@ -15,18 +15,18 @@
         <div class="CurtainMenu-panelWrapper">
             <div class="CurtainMenu-panelContainer">
                 <?php if ($parent = $this->get('parent')) : ?>
-                    <?php echo $this->insert('parent-title', compact('parent')); ?>
+                    <?php $this->insert('parent-title', compact('parent')); ?>
 
-                    <?php echo $this->insert('parent-back', compact('parent')); ?>
+                    <?php $this->insert('parent-back', compact('parent')); ?>
                 <?php endif; ?>
 
                 <ul class="CurtainMenu-items CurtainMenu-items--<?php echo $this->get('depth'); ?>"
                     data-control="curtain-menu.items">
                     <?php foreach ($items as $item) : ?>
                         <li <?php echo $item->getAttrs(); ?>>
-                            <?php echo $this->insert('item-nav', compact('item')); ?>
+                            <?php $this->insert('item-nav', compact('item')); ?>
 
-                            <?php echo $this->insert('items', [
+                            <?php $this->insert('items', [
                                 'depth'  => $item->getDepth(),
                                 'items'  => $item->getChilds(),
                                 'parent' => $item,

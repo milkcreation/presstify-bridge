@@ -7,7 +7,7 @@
 <?php $this->before(); ?>
     <div <?php $this->attrs(); ?>>
         <nav class="CurtainMenu-nav">
-            <?php echo $this->insert('items', [
+            <?php $this->insert('items', [
                 'items' => $items->getParentItems(null),
                 'depth' => 0,
                 'parent' => null

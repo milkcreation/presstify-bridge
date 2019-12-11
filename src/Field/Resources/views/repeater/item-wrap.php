@@ -3,7 +3,7 @@
  * @var tiFy\Field\FieldView $this
  */
 ?>
-<li data-index="<?php echo $this->get('index'); ?>" data-control="repeater.item">
+<li data-control="repeater.item">
     <div data-control="repeater.item.content">
         <?php $this->insert('item', [
             'index' => $this->get('index'),

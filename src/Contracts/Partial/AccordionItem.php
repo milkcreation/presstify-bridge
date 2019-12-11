@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-use tiFy\Contracts\Kernel\ParamsBag;
+use tiFy\Contracts\Support\ParamsBag;
 
 interface AccordionItem extends ParamsBag
 {

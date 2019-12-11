@@ -4,6 +4,7 @@ namespace tiFy\Field\Fields\FileJs;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use tiFy\Contracts\Field\{FieldFactory as FieldFactoryContract, FileJs as FileJsContract};
+use tiFy\Contracts\Routing\Route;
 use tiFy\Field\FieldFactory;
 use tiFy\Filesystem\StorageManager;
 use tiFy\Support\Proxy\Router;
@@ -11,10 +12,10 @@ use tiFy\Support\Proxy\Router;
 class FileJs extends FieldFactory implements FileJsContract
 {
     /**
-     * Url de traitement.
-     * @var string Url de traitement
+     * Url de traitement de requête XHR.
+     * @var Route|string
      */
-    protected $url;
+    protected $url = '';
 
     /**
      * @inheritDoc
@@ -62,9 +63,9 @@ class FileJs extends FieldFactory implements FileJsContract
     /**
      * @inheritDoc
      */
-    public function getUrl(): string
+    public function getUrl(...$params): string
     {
-        return $this->url;
+        return $this->url instanceof Route ? $this->url->getUrl($params) : $this->url;
     }
 
     /**
@@ -113,7 +114,7 @@ class FileJs extends FieldFactory implements FileJsContract
      */
     public function setUrl(?string $url = null): FieldFactoryContract
     {
-        $this->url = is_null($url) ? Router::xhr(md5($this->getAlias()), [$this, 'xhrResponse'])->getUrl() : $url;
+        $this->url = is_null($url) ? Router::xhr(md5($this->getAlias()), [$this, 'xhrResponse']) : $url;
 
         return $this;
     }
@@ -121,7 +122,7 @@ class FileJs extends FieldFactory implements FileJsContract
     /**
      * @inheritDoc
      */
-    public function xhrResponse(): array
+    public function xhrResponse(...$args): array
     {
         $filesystem = (new StorageManager())->local(request()->input('_dir'));
 

@@ -2,5 +2,4 @@
 /**
  * @var tiFy\Partial\PartialView $this
  */
-?>
-<?php echo $this->get('button'); ?>
+echo $this->get('button');

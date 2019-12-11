@@ -1,2 +1,1 @@
-// JS
 import './js/scripts';

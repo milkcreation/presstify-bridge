@@ -5,14 +5,16 @@ namespace tiFy\Contracts\Partial;
 interface CookieNotice extends PartialFactory
 {
     /**
-     * Récupération de l'url de traitement ajax.
+     * Récupération de l'url de traitement de la requête XHR.
+     *
+     * @param array ...$params Liste des paramètres optionnels de formatage de l'url.
      *
      * @return string
      */
-    public function getUrl(): string;
+    public function getUrl(...$params): string;
 
     /**
-     * Définition de l'url de traitement ajax.
+     * Définition de l'url de traitement de la requête XHR.
      *
      * @param string|null $url
      *
@@ -30,9 +32,11 @@ interface CookieNotice extends PartialFactory
     public function trigger($args = []): string;
 
     /**
-     * Génération du cookie de notification via une requête XHR.
+     * Contrôleur de traitement de la requête XHR.
+     *
+     * @param array ...$args Liste dynamique de variables passés en argument dans l'url de requête
      *
      * @return array
      */
-    public function xhrResponse(): array;
+    public function xhrResponse(...$args): array;
 }

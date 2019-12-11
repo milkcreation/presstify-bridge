@@ -2,10 +2,12 @@
 
 namespace tiFy\Partial\Partials\Dropdown;
 
-use tiFy\Contracts\Partial\Dropdown;
-use tiFy\Contracts\Partial\DropdownItem as DropdownItemContract;
-use tiFy\Contracts\Partial\DropdownItems as DropdownItemsContract;
-use tiFy\Kernel\Collection\Collection;
+use tiFy\Contracts\Partial\{
+    Dropdown,
+    DropdownItem as DropdownItemContract,
+    DropdownItems as DropdownItemsContract
+};
+use tiFy\Support\Collection;
 
 class DropdownItems extends Collection implements DropdownItemsContract
 {
@@ -17,7 +19,7 @@ class DropdownItems extends Collection implements DropdownItemsContract
 
     /**
      * Liste des éléments.
-     * @var array
+     * @var DropdownItem[]|array
      */
     protected $items = [];
 
@@ -30,7 +32,7 @@ class DropdownItems extends Collection implements DropdownItemsContract
      */
     public function __construct(array $items)
     {
-        array_walk($items, [$this, 'wrap']);
+        array_walk($items, [$this, 'walk']);
     }
 
     /**
@@ -48,14 +50,14 @@ class DropdownItems extends Collection implements DropdownItemsContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function wrap($item, $key = null)
+    public function walk($item, $key = null): DropdownItemContract
     {
-        if(!$item instanceof DropdownItemContract) :
+        if(!$item instanceof DropdownItemContract) {
             $item = new DropdownItem($key, $item);
-        endif;
+        }
 
-        $this->items[$key] = $item;
+        return $this->items[$key] = $item;
     }
 }
