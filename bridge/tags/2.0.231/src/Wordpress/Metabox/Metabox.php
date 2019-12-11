@@ -98,7 +98,7 @@ class Metabox
 
                 array_walk($boxes, function (MetaboxDriver $box) use ($post_type) {
                     if (($name = $box->name()) && ! in_array($name, $this->postKeys)) {
-                        post_type()->post_meta()->register($post_type, $name, true);
+                        post_type()->meta()->register($post_type, $name, true);
                     }
                 });
             } elseif (($screen->getHookname() === 'options')) {

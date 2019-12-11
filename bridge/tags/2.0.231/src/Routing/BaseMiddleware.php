@@ -2,8 +2,8 @@
 
 namespace tiFy\Routing;
 
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Container\ContainerInterface as Container;
+use Psr\Http\Server\MiddlewareInterface;
 
 abstract class BaseMiddleware implements MiddlewareInterface
 {
@@ -16,11 +16,11 @@ abstract class BaseMiddleware implements MiddlewareInterface
     /**
      * CONSTRUCTEUR.
      *
-     * @param Container $container Instance de conteneur d'injection de dépendances.
+     * @param Container|null $container Instance de conteneur d'injection de dépendances.
      *
      * @return void
      */
-    public function __construct(?Container $container)
+    public function __construct(?Container $container = null)
     {
         $this->container = $container;
 
@@ -32,8 +32,5 @@ abstract class BaseMiddleware implements MiddlewareInterface
      *
      * @return void
      */
-    public function boot(): void
-    {
-
-    }
+    public function boot(): void { }
 }

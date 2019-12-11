@@ -67,6 +67,14 @@ class Notices implements NoticesContract
     }
 
     /**
+     * @inheritDoc
+     */
+    public function exists(): bool
+    {
+        return !empty($this->items);
+    }
+
+    /**
      * @inheritdoc
      */
     public function get($type)

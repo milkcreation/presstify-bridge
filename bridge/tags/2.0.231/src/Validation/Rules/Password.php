@@ -50,7 +50,7 @@ class Password extends AbstractRule
         $args = array_merge($defaults = [
             'digit'   => 1,
             'lower'   => 1,
-            'max'     => 0,
+            'max'     => 16,
             'min'     => 8,
             'special' => 0,
             'upper'   => 1

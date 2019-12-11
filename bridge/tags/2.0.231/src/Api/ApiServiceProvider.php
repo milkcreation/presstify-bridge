@@ -66,7 +66,7 @@ class ApiServiceProvider extends ServiceProvider
         });
 
         $this->getContainer()->share('api.recaptcha', function () {
-            return Recaptcha::create(config('api.recaptcha', []));
+            return Recaptcha::instance(config('api.recaptcha', []));
         });
 
         $this->getContainer()->share('api.youtube', function () {

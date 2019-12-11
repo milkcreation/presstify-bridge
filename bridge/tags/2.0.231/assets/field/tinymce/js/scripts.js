@@ -1,10 +1,9 @@
-/* global tify, tinyMCE */
+/* global tify, tinymce, tinyMCE */
 'use strict';
 
 import jQuery from 'jquery';
 import 'jquery-ui/ui/core';
 import 'jquery-ui/ui/widget';
-import 'tinymce/jquery.tinymce';
 import 'presstify-framework/observer/js/scripts';
 
 jQuery(function ($) {
@@ -51,7 +50,9 @@ jQuery(function ($) {
         o.language = tify.locale.language;
       }
 
-      this.el.tinymce($.extend(o, this.option()));
+      this.el.addClass('tifyTinymce'+ this.uuid);
+
+      tinymce.init($.extend({selector: '.tifyTinymce'+ this.uuid}, o, this.option()));
     }
   });
 

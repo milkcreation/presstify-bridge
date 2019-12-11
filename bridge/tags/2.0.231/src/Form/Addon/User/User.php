@@ -166,118 +166,116 @@ class User extends AddonFactory
     {
         if ( ! $userdata = $field->getAddonOption($this->name(), 'userdata', false)) {
             return;
-        }
-
-        if ( ! in_array($userdata, ['user_login', 'user_email', 'role'])) {
+        } else if ( ! in_array($userdata, ['user_login', 'user_email', 'role'])) {
             return;
-        }
-
-        switch ($userdata) {
-            // Identifiant de connexion
-            case 'user_login' :
-                if ( ! $this->isProfile() && get_user_by('login', $field->getValue())) {
-                    $field->notices()->add(
-                        'error',
-                        __('Cet identifiant est déjà utilisé par un autre utilisateur.', 'tify'),
-                        ['field' => $field->getSlug()]
-                    );
-                }
-
-                if (is_multisite()) {
-                    // Lettres et/ou chiffres uniquement
-                    $user_name     = $field->getValue();
-                    $orig_username = $user_name;
-                    $user_name     = preg_replace('/\s+/', '', sanitize_user($user_name, true));
-
-                    if ($user_name != $orig_username || preg_match('/[^a-z0-9]/', $user_name)) {
+        } else {
+            switch ($userdata) {
+                // Identifiant de connexion
+                case 'user_login' :
+                    if (!$this->isProfile() && get_user_by('login', $field->getValue())) {
                         $field->notices()->add(
                             'error',
-                            __('L\'identifiant de connexion ne devrait contenir que des lettres minuscules (a-z)' .
-                               ' et des chiffres.',
-                                'tify'
-                            ),
+                            __('Cet identifiant est déjà utilisé par un autre utilisateur.', 'tify'),
                             ['field' => $field->getSlug()]
                         );
                     }
 
-                    // Identifiant réservés
-                    $illegal_names = get_site_option('illegal_names');
-                    if ( ! is_array($illegal_names)) {
-                        $illegal_names = ['www', 'web', 'root', 'admin', 'main', 'invite', 'administrator'];
-                        add_site_option('illegal_names', $illegal_names);
-                    }
+                    if (is_multisite()) {
+                        // Lettres et/ou chiffres uniquement
+                        $user_name = $field->getValue();
+                        $orig_username = $user_name;
+                        $user_name = preg_replace('/\s+/', '', sanitize_user($user_name, true));
 
-                    if (in_array($user_name, $illegal_names)) {
+                        if ($user_name != $orig_username || preg_match('/[^a-z0-9]/', $user_name)) {
+                            $field->notices()->add(
+                                'error',
+                                __('L\'identifiant de connexion ne devrait contenir que des lettres minuscules (a-z)' .
+                                    ' et des chiffres.',
+                                    'tify'
+                                ),
+                                ['field' => $field->getSlug()]
+                            );
+                        }
+
+                        // Identifiant réservés
+                        $illegal_names = get_site_option('illegal_names');
+                        if (!is_array($illegal_names)) {
+                            $illegal_names = ['www', 'web', 'root', 'admin', 'main', 'invite', 'administrator'];
+                            add_site_option('illegal_names', $illegal_names);
+                        }
+
+                        if (in_array($user_name, $illegal_names)) {
+                            $field->notices()->add(
+                                'error',
+                                __('Désolé, cet identifiant de connexion n\'est pas permis.', 'tify'),
+                                ['field' => $field->getSlug()]
+                            );
+                        }
+
+                        // Identifiant réservés personnalisés
+                        $illegal_logins = (array)apply_filters('illegal_user_logins', []);
+                        if (in_array(strtolower($user_name), array_map('strtolower', $illegal_logins))) {
+                            $field->notices()->add(
+                                'error',
+                                __('Désolé, cet identifiant de connexion n\'est pas permis.', 'tify'),
+                                ['field' => $field->getSlug()]
+                            );
+                        }
+
+                        // Longueur minimale
+                        if (strlen($user_name) < 4) {
+                            $field->notices()->add(
+                                'error',
+                                __('L\'identifiant de connexion doit contenir au moins 4 caractères.', 'tify'),
+                                ['field' => $field->getSlug()]
+                            );
+                        }
+
+                        // Longueur maximale
+                        if (strlen($user_name) > 60) {
+                            $field->notices()->add(
+                                'error',
+                                __('L\'identifiant de connexion ne doit pas contenir plus de 60 caractères.', 'tify'),
+                                ['field' => $field->getSlug()]
+                            );
+                        }
+
+                        // Lettres obligatoire
+                        if (preg_match('/^[0-9]*$/', $user_name)) {
+                            $field->notices()->add(
+                                'error',
+                                __('L\'identifiant de connexion doit contenir des lettres.', 'tify'),
+                                ['field' => $field->getSlug()]
+                            );
+                        }
+                    }
+                    break;
+
+                // Email
+                case 'user_email' :
+                    if (
+                        get_user_by('email', $field->getValue()) &&
+                        (!$this->isProfile() || ($field->getValue() !== $this->getUser()->user_email))
+                    ) {
                         $field->notices()->add(
                             'error',
-                            __('Désolé, cet identifiant de connexion n\'est pas permis.', 'tify'),
+                            __('Cet email est déjà utilisé par un autre utilisateur.', 'tify'),
                             ['field' => $field->getSlug()]
                         );
                     }
+                    break;
 
-                    // Identifiant réservés personnalisés
-                    $illegal_logins = (array)apply_filters('illegal_user_logins', []);
-                    if (in_array(strtolower($user_name), array_map('strtolower', $illegal_logins))) {
+                // Rôle
+                case 'role' :
+                    if (!$this->canRole($field->getValue())) {
                         $field->notices()->add(
                             'error',
-                            __('Désolé, cet identifiant de connexion n\'est pas permis.', 'tify'),
+                            __('L\'attribution de ce rôle n\'est pas permise.', 'tify'),
                             ['field' => $field->getSlug()]
                         );
                     }
-
-                    // Longueur minimale
-                    if (strlen($user_name) < 4) {
-                        $field->notices()->add(
-                            'error',
-                            __('L\'identifiant de connexion doit contenir au moins 4 caractères.', 'tify'),
-                            ['field' => $field->getSlug()]
-                        );
-                    }
-
-                    // Longueur maximale
-                    if (strlen($user_name) > 60) {
-                        $field->notices()->add(
-                            'error',
-                            __('L\'identifiant de connexion ne doit pas contenir plus de 60 caractères.', 'tify'),
-                            ['field' => $field->getSlug()]
-                        );
-                    }
-
-                    // Lettres obligatoire
-                    if (preg_match('/^[0-9]*$/', $user_name)) {
-                        $field->notices()->add(
-                            'error',
-                            __('L\'identifiant de connexion doit contenir des lettres.', 'tify'),
-                            ['field' => $field->getSlug()]
-                        );
-                    }
-                }
-                break;
-
-            // Email
-            case 'user_email' :
-                if (
-                    get_user_by('email', $field->getValue()) &&
-                    ( ! $this->isProfile() || ($field->getValue() !== $this->getUser()->user_email))
-                ) {
-                    $field->notices()->add(
-                        'error',
-                        __('Cet email est déjà utilisé par un autre utilisateur.', 'tify'),
-                        ['field' => $field->getSlug()]
-                    );
-                }
-                break;
-
-            // Rôle
-            case 'role' :
-                if ( ! $this->canRole($field->getValue())) {
-                    $field->notices()->add(
-                        'error',
-                        __('L\'attribution de ce rôle n\'est pas permise.', 'tify'),
-                        ['field' => $field->getSlug()]
-                    );
-                }
-                break;
+                    break;
+            }
         }
     }
 

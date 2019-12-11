@@ -17,6 +17,19 @@ use tiFy\Contracts\Asset\Asset as AssetContract;
  */
 class Asset extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return AssetContract
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'asset';

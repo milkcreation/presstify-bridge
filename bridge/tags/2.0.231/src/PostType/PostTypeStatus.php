@@ -8,6 +8,12 @@ use tiFy\Support\ParamsBag;
 class PostTypeStatus extends ParamsBag implements PostTypeStatusContract
 {
     /**
+     * Liste des instances déclarées.
+     * @var array
+     */
+    protected static $instances = [];
+
+    /**
      * Nom de qualification du statut.
      * @var string
      */
@@ -17,14 +23,12 @@ class PostTypeStatus extends ParamsBag implements PostTypeStatusContract
      * CONSTRUCTEUR.
      *
      * @param string $name
-     * @param object $args Liste des arguments de qualification du status
      *
      * @return void
      */
-    public function __construct(string $name, object $args)
+    protected function __construct(string $name)
     {
         $this->name = $name;
-        $this->set(get_object_vars($args))->parse();
     }
 
     /**
@@ -38,11 +42,23 @@ class PostTypeStatus extends ParamsBag implements PostTypeStatusContract
     /**
      * @inheritDoc
      */
-    public static function createFromName(string $name): PostTypeStatusContract
+    public static function create(string $name, array $args = []): PostTypeStatusContract
     {
-        $args = get_post_status_object($name) ? : register_post_status($name);
+        if ($exists = get_post_status_object($name)) {
+            $args = array_merge(get_object_vars($exists), $args);
+        }
 
-        return new static($name, $args);
+        $args = register_post_status($name, $args);
+
+        return static::$instances[$name] = (new static($name))->set(get_object_vars($args))->parse();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function instance(string $name): ?PostTypeStatusContract
+    {
+        return static::$instances[$name] ?? null;
     }
 
     /**
@@ -70,7 +86,7 @@ class PostTypeStatus extends ParamsBag implements PostTypeStatusContract
      */
     public function getLabel(): string
     {
-        return $this->get('label');
+        return (string)$this->get('label');
     }
 
     /**

@@ -38,6 +38,19 @@ use tiFy\Contracts\Routing\Router as RouterContract;
  */
 class Router extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return RouterContract
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'router';

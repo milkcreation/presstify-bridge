@@ -2,15 +2,12 @@
 
 namespace tiFy\Support\Proxy;
 
-use tiFy\Contracts\Container\Container;
-use tiFy\Contracts\Template\TemplateFactory;
-use tiFy\Contracts\Template\TemplateManager;
+use tiFy\Contracts\Template\{TemplateFactory, TemplateManager};
 
 /**
  * @method static array all()
  * @method static int count()
  * @method static TemplateFactory get(string $name)
- * @method static Container getContainer()
  * @method static TemplateManager register(string $name, array $attrs)
  * @method static TemplateManager set(string|array $key, $value = null)
  * @method static string resourcesDir(?string $path = '')
@@ -18,6 +15,19 @@ use tiFy\Contracts\Template\TemplateManager;
  */
 class Template extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return TemplateManager
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'template';

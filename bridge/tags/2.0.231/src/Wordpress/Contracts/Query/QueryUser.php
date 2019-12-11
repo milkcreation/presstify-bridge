@@ -11,6 +11,16 @@ use WP_User_Query;
 interface QueryUser extends ParamsBag
 {
     /**
+     * Création d'un instance basée sur un argument de qualification.
+     *
+     * @param int|string|WP_User $id
+     * @param array ...$args Liste des arguments de qualification complémentaires.
+     *
+     * @return static|null
+     */
+    public static function create($id = null, ...$args): ?QueryUser;
+
+    /**
      * Création d'un instance de la classe basée sur l'utilisateur courant.
      *
      * @return static
@@ -27,7 +37,16 @@ interface QueryUser extends ParamsBag
     public static function createFromId(int $user_id): ?QueryUser;
 
     /**
-     * Création d'une instance de la classe basée sur un email existant.
+     * Création d'une instance de la classe basée sur un identifiant de connexion existant.
+     *
+     * @param string $login
+     *
+     * @return static|null
+     */
+    public static function createFromLogin(string $login): ?QueryUser;
+
+    /**
+     * Création d'une instance de la classe basée sur un email utilisateur existant.
      *
      * @param string $email
      *

@@ -12,6 +12,19 @@ use tiFy\Contracts\Form\FormManager;
  */
 class Form extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return FormManager
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'form';

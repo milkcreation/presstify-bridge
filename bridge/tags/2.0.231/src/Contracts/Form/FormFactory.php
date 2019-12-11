@@ -28,6 +28,18 @@ interface FormFactory extends FactoryResolver, ParamsBag
     public function csrf(): string;
 
     /**
+     * Récupération de valeur(s) de champ(s) basée(s) sur leurs variables d'identifiant de qualification.
+     *
+     * @param mixed $tags Variables de qualification de champs.
+     * string ex. "%%{{slug#1}}%% %%{{slug#2}}%%"
+     * array ex ["%%{{slug#1}}%%", "%%{{slug#2}}%%"]
+     * @param boolean $raw Activation de la valeur de retour au format brut.
+     *
+     * @return string
+     */
+    public function fieldTagValue($tags, $raw = true);
+
+    /**
      * Récupération de l'action du formulaire (url).
      *
      * @return string
@@ -130,6 +142,15 @@ interface FormFactory extends FactoryResolver, ParamsBag
      * @return static
      */
     public function setInstance(string $name, FormManager $manager): FormFactory;
+
+    /**
+     * Définition de l'indicateur de statut de formulaire en succès.
+     *
+     * @param boolean $status
+     *
+     * @return static
+     */
+    public function setOnSuccess(bool $status = true): FormFactory;
 
     /**
      * Récupération du nom de qualification du formulaire dans les attributs de balises HTML.

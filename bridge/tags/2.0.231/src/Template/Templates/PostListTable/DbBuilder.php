@@ -108,7 +108,7 @@ class DbBuilder extends BaseDbBuilder implements DbBuilderContract
         foreach($this->get('meta', []) as $k => $v) {
             if (!is_null($v)) {
                 $this->query()->whereHas('meta', function (EloquentBuilder $query) use ($k, $v) {
-                    $query->where('meta_key', $k)->whereIn('meta_value', $v);
+                    $query->where('meta_key', $k)->whereIn('meta_value', is_array($v) ? $v : [$v]);
                 });
             }
         }

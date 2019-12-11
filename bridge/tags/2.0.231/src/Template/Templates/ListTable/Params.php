@@ -43,7 +43,7 @@ class Params extends BaseParams implements ParamsContract
 
         $base = 'ListTable';
 
-        $containerClass = "{$base} {$base}--" . Str::camel($this->factory->name());
+        $containerClass = "{$base} {$base}--" . Str::slug($this->factory->name());
         if (!$this->has('attrs.class')) {
             $this->set('attrs.class', $containerClass);
         } else {

@@ -304,7 +304,7 @@ class Mailer extends AddonFactory
         $params['to'] = $params['to']
                         ?? get_option('admin_email');
 
-        $params = array_map([$this, 'fieldTagValue'], $params);
+        $params = array_map([$this->form(), 'fieldTagValue'], $params);
 
         $fields = $this->form()->fields()->collect()->filter(function (FactoryField $item) {
             return $item->getAddonOption('mailer', 'show') && $item->supports('request');

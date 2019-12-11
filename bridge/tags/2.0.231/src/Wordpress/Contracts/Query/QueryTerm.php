@@ -10,6 +10,16 @@ use WP_Term_Query;
 interface QueryTerm extends ParamsBag
 {
     /**
+     * Création d'un instance basée sur un argument de qualification.
+     *
+     * @param int|string|WP_Term $id
+     * @param array ...$args Liste des arguments de qualification complémentaires.
+     *
+     * @return static|null
+     */
+    public static function create($id = null, ...$args): ?QueryTerm;
+
+    /**
      * Récupération d'une instance basée sur l'identifiant de qualification du terme.
      *
      * @param int $term_id

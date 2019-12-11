@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Http;
 
@@ -6,9 +6,6 @@ use Illuminate\Http\RedirectResponse as LaraRedirectResponse;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Interface RedirectResponse
- * @package tiFy\Contracts\Http
- *
  * @mixin LaraRedirectResponse
  */
 interface RedirectResponse

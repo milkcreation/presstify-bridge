@@ -8,10 +8,10 @@ use Illuminate\Database\{
     PostgresConnection,
     Query\Builder as QueryBuilder,
     Schema\Blueprint,
-    Schema\Builder as SchemaBuilder
 };
 use tiFy\Contracts\Cache\DatabaseStore as DatabaseStoreContract;
 use tiFy\Support\Str;
+use tiFy\Support\Proxy\Schema;
 
 class DatabaseStore extends AbstractStore implements DatabaseStoreContract
 {
@@ -169,11 +169,8 @@ class DatabaseStore extends AbstractStore implements DatabaseStoreContract
     {
         $table = !is_null($table) ? $table : self::$defaultTable;
 
-        /** @var SchemaBuilder $schema */
-        $schema = $this->connection->getSchemaBuilder();
-
-        if (!$schema->hasTable($table)) {
-            $schema->create($table, function (Blueprint $table) {
+        if (!Schema::hasTable($table)) {
+            Schema::create($table, function (Blueprint $table) {
                 $table->string('key')->unique();
                 $table->longText('value');
                 $table->integer('expiration');
