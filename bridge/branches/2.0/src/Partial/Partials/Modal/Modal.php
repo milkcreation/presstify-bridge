@@ -62,6 +62,7 @@ class Modal extends PartialFactory implements ModalContract
             'backdrop' => [
                 'close' => true,
             ],
+            'classes'  => [],
             'close'    => true,
             'content'  => [
                 'body'   => true,
@@ -89,13 +90,14 @@ class Modal extends PartialFactory implements ModalContract
         parent::parse();
 
         $defaultClasses = [
-            'body'    => 'modal-body',
-            'close'   => 'modal-close ThemeButton--close',
-            'content' => 'modal-content',
-            'dialog'  => 'modal-dialog',
-            'footer'  => 'modal-footer',
-            'header'  => 'modal-header',
-            'spinner' => 'modal-spinner ThemeSpinner',
+            'bkclose'        => 'modal-backdrop-close ThemeButton--close',
+            'body'           => 'modal-body',
+            'close'          => 'modal-close ThemeButton--close',
+            'content'        => 'modal-content',
+            'dialog'         => 'modal-dialog',
+            'footer'         => 'modal-footer',
+            'header'         => 'modal-header',
+            'spinner'        => 'modal-spinner ThemeSpinner',
         ];
         foreach ($defaultClasses as $k => $v) {
             $this->set(["classes.{$k}" => sprintf($this->get("classes.{$k}", '%s'), $v)]);
@@ -126,11 +128,14 @@ class Modal extends PartialFactory implements ModalContract
             $this->set("attrs.data-{$key}", $value);
         }
 
-        if ($backdrop_close = $this->get('backdrop_close')) {
-            $backdrop_close = $backdrop_close instanceof Closure
-                ? call_user_func($backdrop_close, $this->all())
-                : (is_string($backdrop_close) ? $backdrop_close : $this->viewer('backdrop_close', $this->all()));
-            $this->set('backdrop_close', $backdrop_close);
+        if ($bkClose = $this->get('backdrop.close', true)) {
+            if ($bkClose instanceof Closure) {
+                $this->set('backdrop.close', (string)$bkClose($this->all()));
+            } elseif (is_string($bkClose)) {
+                $this->set('backdrop.close', $bkClose);
+            } else {
+                $this->set('backdrop.close', (string)$this->viewer('backdrop-close', $this->all()));
+            }
         }
 
         if ($close = $this->get('close', true)) {
@@ -167,13 +172,14 @@ class Modal extends PartialFactory implements ModalContract
 
         $this->set([
             'attrs.data-options' => [
-                'animated' => $this->get('animated'),
-                'body'     => !!$this->get('content.body'),
-                'classes'  => $this->get('classes', []),
-                'close'    => !!$this->get('close'),
-                'footer'   => !!$this->get('content.footer'),
-                'header'   => !!$this->get('content.header'),
-                'size'     => $this->get('size'),
+                'animated'       => $this->get('animated'),
+                'backdrop-close' => !!$this->get('backdrop.close'),
+                'body'           => !!$this->get('content.body'),
+                'classes'        => $this->get('classes', []),
+                'close'          => !!$this->get('close'),
+                'footer'         => !!$this->get('content.footer'),
+                'header'         => !!$this->get('content.header'),
+                'size'           => $this->get('size'),
             ],
         ]);
 

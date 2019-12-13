@@ -46,8 +46,8 @@ class Postfeed extends MetaboxDriver
 
         if (is_array($this->value())) {
             foreach ($this->value() as $id) {
-                if ($item = QueryPost::createFromId($id)) {
-                    $items[] = QueryPost::createFromId((int)$id);
+                if ($item = QueryPost::createFromId((int)$id)) {
+                    $items[] = $item;
                 }
             }
         }
@@ -197,7 +197,7 @@ class Postfeed extends MetaboxDriver
                 'success' => false,
                 'data'    => __('Nombre maximum de fichiers partagés atteint.', 'tify'),
             ];
-        } elseif ($item = QueryPost::createFromId(Request::input('post_id'))) {
+        } elseif ($item = QueryPost::createFromId((int)Request::input('post_id'))) {
             $this->set([
                 'name'   => Request::input('name', []),
                 'params' => [

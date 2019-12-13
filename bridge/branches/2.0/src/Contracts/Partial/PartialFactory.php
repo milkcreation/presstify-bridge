@@ -79,6 +79,13 @@ interface PartialFactory extends ParamsBag
     public function getIndex(): int;
 
     /**
+     * Récupération du gestionnaire de champs.
+     *
+     * @return Partial|null
+     */
+    public function manager(): ?Partial;
+
+    /**
      * {@inheritDoc}
      *
      * @return static

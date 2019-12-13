@@ -98,7 +98,7 @@ class SelectJsChoices extends SelectChoices
      */
     public function setItem(SelectChoice $item)
     {
-        $item->set('picker',  (string)$this->field->viewer()->make('_override::picker-item', compact('item')));
+        $item->set('picker', (string)$this->field->viewer()->make('_override::picker-item', compact('item')));
         $item->set('selection', (string)$this->field->viewer()->make('_override::selection-item', compact('item')));
 
         return $this;

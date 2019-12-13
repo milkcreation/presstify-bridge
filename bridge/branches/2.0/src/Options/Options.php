@@ -31,13 +31,18 @@ class Options
         $this->container = $container;
 
         add_action('init', function () {
-            foreach(config('options', []) as $name => $attrs) {
+            $config = config('options', []);
+
+            foreach($config as $name => $attrs) {
                 if ($attrs !== false) {
                     $this->items[$name] = new OptionsPage($name, $attrs);
                 }
             }
-            if (!isset($this->items['tify_options']) && !empty($config['tify_options'])) {
-                $this->items['tify_options'] = new OptionsPage('tify_options', []);
+
+            if (!isset($this->items['tify_options'])) {
+                if (!isset($config['tify_options']) || ($config['tify_options'] !== false)) {
+                    $this->items['tify_options'] = new OptionsPage('tify_options', $config['tify_options'] ?? []);
+                }
             }
         });
     }

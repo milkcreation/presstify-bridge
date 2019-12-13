@@ -81,10 +81,7 @@ abstract class PartialFactory extends ParamsBag implements PartialFactoryContrac
     /**
      * @inheritDoc
      */
-    public function boot(): void
-    {
-
-    }
+    public function boot(): void {}
 
     /**
      * @inheritDoc
@@ -109,7 +106,7 @@ abstract class PartialFactory extends ParamsBag implements PartialFactoryContrac
      */
     public function display(): string
     {
-        return (string)$this->viewer($this->getAlias(), $this->all());
+        return (string)$this->viewer('index', $this->all());
     }
 
     /**
@@ -137,13 +134,23 @@ abstract class PartialFactory extends ParamsBag implements PartialFactoryContrac
     }
 
     /**
+     * @inheritDoc
+     */
+    public function manager(): ?Manager
+    {
+        return $this->manager;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @return $this
      */
     public function parse(): PartialFactoryContract
     {
-        parent::parse();
+        $this->attributes = array_merge(
+            $this->defaults(), config("partial.driver.{$this->alias}", []), $this->attributes
+        );
 
         $this->parseDefaults();
 

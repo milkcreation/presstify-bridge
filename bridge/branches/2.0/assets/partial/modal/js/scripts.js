@@ -12,6 +12,7 @@ jQuery(function ($) {
     widgetEventPrefix: 'modal:',
     options: {
       classes: {
+        bkclose: 'modal-backdrop-close',
         body: 'modal-body',
         close: 'modal-close',
         content: 'modal-content',
@@ -22,6 +23,7 @@ jQuery(function ($) {
       }
     },
     control: {
+      bkclose: 'modal.backdrop.close',
       body: 'modal.content.body',
       close: 'modal.close',
       content: 'modal.content',
@@ -37,6 +39,7 @@ jQuery(function ($) {
       this.el = this.element;
 
       this.flags = {
+        hasBkclose: true,
         hasBody: true,
         hasClose: true,
         hasFooter: true,
@@ -62,6 +65,7 @@ jQuery(function ($) {
     },
     // Initialisation des indicateurs d'état.
     _initFlags: function () {
+      this.flags.hasBkclose = !!this.option('backdrop-close');
       this.flags.hasBody = !!this.option('body');
       this.flags.hasClose = !!this.option('close');
       this.flags.hasFooter = !!this.option('footer');
@@ -86,6 +90,14 @@ jQuery(function ($) {
       this.dialog.addClass(this.option('classes.dialog')).attr('role', 'document');
       if (this.option('size')) {
         this.dialog.addClass(this.option('size'));
+      }
+
+      if (this.flags.hasBkclose) {
+        let $bkClose = $('> [data-control="' + this.control.bkclose + '"]', this.el);
+        if (!$bkClose.length) {
+          $bkClose = $('<button type="button" data-control="' + this.control.bkclose + '"/>').appendTo(this.el);
+        }
+        $bkClose.addClass(this.option('classes.bkclose'));
       }
 
       if (this.flags.hasClose) {
@@ -181,6 +193,7 @@ jQuery(function ($) {
     _initEvents: function () {
       this._on(this.el, {'click [data-control="modal.open"]': this._onClickOpen});
       this._on(this.el, {'click [data-control="modal.close"]': this._onClickClose});
+      this._on(this.el, {'click [data-control="modal.backdrop.close"]': this._onClickClose});
     },
     // EVENENEMENTS.
     // -----------------------------------------------------------------------------------------------------------------

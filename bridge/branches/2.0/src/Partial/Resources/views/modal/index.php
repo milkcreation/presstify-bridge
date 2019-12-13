@@ -5,7 +5,9 @@
 ?>
 <?php $this->before(); ?>
     <div <?php $this->attrs(); ?>>
-        <?php echo $this->get('backdrop_close', ''); ?>
+        <?php if ($bkclose = $this->get('backdrop.close', '')): ?>
+            <button type="button" data-control="modal.backdrop.close"><?php echo $bkclose; ?></button>
+        <?php endif; ?>
 
         <div data-control="modal.dialog" class="<?php echo $this->get('size'); ?>">
             <?php if ($close = $this->get('close', '')): ?>

@@ -2,8 +2,9 @@
 
 namespace tiFy\Partial\Partials\Pdfviewer;
 
-use tiFy\Contracts\Partial\{PartialFactory as PartialFactoryContract, Pdfviewer as PdfviewerContract};
+use tiFy\Contracts\Partial\{PartialFactory as PartialFactoryContract, Modal, Pdfviewer as PdfviewerContract};
 use tiFy\Partial\PartialFactory;
+use tiFy\Support\Proxy\Partial;
 
 class Pdfviewer extends PartialFactory implements PdfviewerContract
 {
@@ -39,6 +40,27 @@ class Pdfviewer extends PartialFactory implements PdfviewerContract
             'spinner' => true,
             'src'     => 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/examples/learning/helloworld.pdf',
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function modal(array $args = []): Modal
+    {
+        if (!isset($args['content'])) {
+            $args['content'] = [];
+        }
+        $args['content']['body'] = $this->display();
+
+        if (!isset($args['attrs'])) {
+            $args['attrs'] = [];
+        }
+        $args['attrs']['data-modal-pdf'] = $this->get('defer') ? 'true' : 'false';
+
+        /** @var Modal $modal */
+        $modal = Partial::get('modal', $args);
+
+        return $modal;
     }
 
     /**
