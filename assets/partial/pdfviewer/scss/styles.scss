@@ -1,0 +1,56 @@
+.Pdfviewer {
+  position:relative;
+}
+
+.Pdfviewer-spinner {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  display:none;
+}
+
+.Pdfviewer-spinner[aria-hide="false"] {
+  display:inherit;
+}
+
+.Pdfviewer-canvas {
+  width: 100%;
+}
+
+.Pdfviewer-nav {
+  text-align: center;
+  color:#333;
+  display:none;
+}
+
+.Pdfviewer-nav[aria-hide="false"] {
+  display:inherit;
+}
+
+.Pdfviewer-navLink {
+  display:inline-block;
+  padding:5px 10px;
+  margin: 0 2px;
+
+  line-height:1;
+  background-color:#FFF;
+  border:solid 1px #333;
+  cursor:pointer;
+  user-select: none;
+}
+
+.Pdfviewer-navLink[aria-disabled="true"] {
+  opacity:0.4;
+  cursor:default;
+}
+
+.Pdfviewer-navLink:not([aria-disabled="true"]):hover {
+  opacity:0.6;
+}
+
+.Pdfviewer-navStatus {
+  display:inline-block;
+  font-size:13px;
+  min-width:6em;
+}
