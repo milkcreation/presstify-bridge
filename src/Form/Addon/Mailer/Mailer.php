@@ -10,42 +10,6 @@ use tiFy\Support\Proxy\Metabox;
 class Mailer extends AddonFactory
 {
     /**
-     * Définition des options de formulaire par défaut
-     *
-     * @var array {
-     * @var bool|array $admin {
-     *      Affichage de l'intitulé et de la valeur de saisie du champ dans le corps du mail
-     *
-     * @var bool $confirmation Activation de l'interface d'administration de l'email de confirmation de
-     *      reception à destination des utilisateurs.
-     * @var bool $notification Activation de l'interface d'administration de l'email de notification à
-     *      destination des administrateurs de site
-     * }
-     *
-     * @var bool|array $confirmation Attributs de configuration d'expédition de l'email de confirmation de
-     *      reception à destination des utilisateurs.
-     *
-     * @var bool|array $notification Attributs de configuration d'expédition de l'email de notification à
-     *      destination des administrateurs de site.
-     *
-     * @var string $option_name_prefix Prefixe du nom d'enregistrement des options d'expédition de mail (usage
-     *      avancé).
-     * @var array $option_names (usage avancé) Cartographie nom d'enregistrement des options en base.
-     *
-     * @var bool|string $debug Affichage du mail au lieu de l'expédition
-     *      (false|'confirmation'|'notification')
-     * }
-     */
-    public $attributes = [
-        'admin'              => true,
-        'confirmation'       => [],
-        'notification'       => [],
-        'option_name_prefix' => '',
-        'option_names'       => [],
-        'debug'              => false,
-    ];
-
-    /**
      * @inheritDoc
      */
     public function boot(): void
@@ -62,7 +26,8 @@ class Mailer extends AddonFactory
         $this->params(['option_names' => $option_names]);
 
         if ($this->params('confirmation') && get_option($option_names['confirmation'])) {
-            $from = get_option($option_names['sender']) ? ! '' : ['email' => '', 'name' => ''];
+            $from = get_option($option_names['sender']);
+            $from = is_array($from) ? $from : ['email' => '', 'name' => ''];
 
             $this->params(['confirmation.from' => [$from['email'], $from['name']]]);
         }
@@ -176,17 +141,42 @@ class Mailer extends AddonFactory
                         });
                         break;
                 }
-
             }
         }
     }
 
     /**
      * @inheritDoc
+     *
+     * @var array {
+     * @var bool|array $admin {
+     *      Affichage de l'intitulé et de la valeur de saisie du champ dans le corps du mail
+     *
+     * @var bool $confirmation Activation de l'interface d'administration de l'email de confirmation de
+     *      reception à destination des utilisateurs.
+     * @var bool $notification Activation de l'interface d'administration de l'email de notification à
+     *      destination des administrateurs de site
+     * }
+     *
+     * @var bool|array $confirmation Attributs de configuration d'expédition de l'email de confirmation de
+     *      reception à destination des utilisateurs.
+     *
+     * @var bool|array $notification Attributs de configuration d'expédition de l'email de notification à
+     *      destination des administrateurs de site.
+     *
+     * @var string $option_name_prefix Prefixe du nom d'enregistrement des options d'expédition de mail (usage
+     *      avancé).
+     * @var array $option_names (usage avancé) Cartographie nom d'enregistrement des options en base.
+     *
+     * @var bool|string $debug Affichage du mail au lieu de l'expédition
+     *      (false|'confirmation'|'notification')
+     * }
      */
     public function defaultsParams(): array
     {
         return [
+            'admin'              => true,
+            'debug'              => false,
             'notification' => [
                 'subject' => sprintf(
                     __('Vous avez une nouvelle demande de contact sur le site %s', 'tify'),
@@ -200,6 +190,8 @@ class Mailer extends AddonFactory
                 ),
                 'to'      => '%%email%%',
             ],
+            'option_name_prefix' => '',
+            'option_names'       => [],
         ];
     }
 

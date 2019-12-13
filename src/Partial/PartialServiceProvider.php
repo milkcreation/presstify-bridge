@@ -185,12 +185,17 @@ class PartialServiceProvider extends ServiceProvider
         $this->getContainer()->add('partial.viewer', function (PartialFactory $factory) {
             /** @var PartialContract $manager */
             $manager = $this->getContainer()->get('partial');
+            $alias = $factory->getAlias();
 
             $directory = $factory->get(
                 'viewer.directory',
-                $manager->resourcesDir("/views/{$factory->getAlias()}")
+                config('partial.viewer.directory', $manager->resourcesDir('/views')) . "/{$alias}"
             );
-            $override_dir = $factory->get('viewer.override_dir');
+
+            $override_dir = $factory->get(
+                'viewer.override_dir',
+                ($dir = config('partial.viewer.override_dir')) ? "{$dir}/{$alias}" : ''
+            );
 
             return view()
                 ->setDirectory(is_dir($directory) ? $directory : null)

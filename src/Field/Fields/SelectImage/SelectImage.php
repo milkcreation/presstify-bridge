@@ -21,6 +21,7 @@ class SelectImage extends FieldFactory implements SelectImageContract
      *      @var string|string[]|array|SelectChoice[]|SelectImageChoices $choices Chemin absolu vers les éléments de la
      *                                                                            liste de selection|Liste de selection
      *                                                                            d'éléments.
+     *      @var bool $none Activation de la valeur d'affichage si aucun élément n'est sélectionné.
      * }
      */
     public function defaults(): array
@@ -32,7 +33,8 @@ class SelectImage extends FieldFactory implements SelectImageContract
             'name'    => '',
             'value'   => null,
             'viewer'  => [],
-            'choices' => []
+            'choices' => [],
+            'none'    => true,
         ];
     }
 
@@ -47,8 +49,9 @@ class SelectImage extends FieldFactory implements SelectImageContract
 
         $choices = $this->get('choices', []);
         if (!$choices instanceof SelectImageChoices) {
-            $choices = new SelectImageChoices($choices, $this->getValue());
+            $choices = new SelectImageChoices($choices, $this->getValue(), $this);
         }
+
         $this->set('choices', $choices->setField($this));
 
         return $this;

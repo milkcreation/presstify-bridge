@@ -14,7 +14,9 @@ abstract class PartialFactory extends BasePartialFactory
      */
     public function parse(): BasePartialFactoryContract
     {
-        $this->set('viewer.directory', __DIR__ . '/Resources/views/' . $this->getAlias());
+        if (file_exists(__DIR__ . '/Resources/views/' . $this->getAlias())) {
+            $this->set('viewer.directory', __DIR__ . '/Resources/views/' . $this->getAlias());
+        }
 
         parent::parse();
 

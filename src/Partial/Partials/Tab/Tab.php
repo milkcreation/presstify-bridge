@@ -48,7 +48,7 @@ class Tab extends PartialFactory implements TabContract
         /* @var TabItemsContract $items */
         $items = $this->get('items');
 
-        return (string)$this->viewer('tab', ['attrs' => $this->get('attrs', []), 'items' => $items->getGrouped()]);
+        return (string)$this->viewer('index', ['attrs' => $this->get('attrs', []), 'items' => $items->getGrouped()]);
     }
 
     /**

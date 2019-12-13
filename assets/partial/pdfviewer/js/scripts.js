@@ -1,3 +1,4 @@
+/* global tify */
 'use strict';
 
 import jQuery from 'jquery';
@@ -11,7 +12,7 @@ import 'presstify-framework/observer/js/scripts';
  * @typedef {Object} pdfjs.GlobalWorkerOptions
  * @property {string} pdfjs.GlobalWorkerOptions.workerSrc
  */
-pdfjs.GlobalWorkerOptions.workerSrc = './node_modules/pdfjs-dist/build/pdf.worker.js';
+pdfjs.GlobalWorkerOptions.workerSrc = '/./'+ tify.rewrite_base +'/node_modules/pdfjs-dist/build/pdf.worker.js';
 
 jQuery(function ($) {
   $.widget('tify.tifyPdfviewer', {
@@ -402,6 +403,10 @@ jQuery(function ($) {
 
     $.tify.observe('[data-control="pdfviewer"]', function (i, target) {
       $(target).tifyPdfviewer();
+    });
+
+    $('[data-modal-pdf="true"]').on('modal:show', function () {
+      $('[data-control="pdfviewer"]', $(this)).tifyPdfviewer('load');
     });
   });
 });

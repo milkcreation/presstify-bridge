@@ -10,9 +10,9 @@
     'attrs'   => $this->get('attrs', []),
     'choices' => $this->get('choices', []),
     'classes' => [
-        'picker'     => '%s FieldSelectImage-picker',
-        'pickerItem' => '%s FieldSelectImage-pickerItem',
-        'selectionItem'       => '%s FieldSelectImage-selectionItem',
-    ]
+        'picker'        => '%s FieldSelectImage-picker',
+        'pickerItem'    => '%s FieldSelectImage-pickerItem',
+        'selectionItem' => '%s FieldSelectImage-selectionItem',
+    ],
 ]); ?>
 <?php $this->after();

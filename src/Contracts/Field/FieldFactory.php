@@ -99,6 +99,13 @@ interface FieldFactory extends ParamsBag
     public function isChecked();
 
     /**
+     * Récupération du gestionnaire de champs.
+     *
+     * @return Field|null
+     */
+    public function manager(): ?Field;
+
+    /**
      * {@inheritDoc}
      *
      * @return static

@@ -14,11 +14,11 @@ class Img
     public static function getBase64Src(string $filename): ?string
     {
         if (file_exists($filename)) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime_type = mime_content_type($filename);
 
             return sprintf(
                 'data:%s;base64,%s',
-                finfo_file($finfo, $filename),
+                $mime_type !== 'image/svg' ? $mime_type : 'image/svg+xml',
                 base64_encode(file_get_contents($filename))
             );
         }

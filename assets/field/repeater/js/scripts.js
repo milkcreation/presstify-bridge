@@ -233,7 +233,7 @@ jQuery(function ($) {
 
         if (!$order.length) {
           $order = $('<input type="text" value="' + ($item.index() + 1) + '" ' +
-              'size="1" readonly data-control="' + this.control.order + '"/>').appendTo($item);
+              'size="2" readonly data-control="' + this.control.order + '"/>').appendTo($item);
         }
         $order.addClass(this.option('classes.order'));
 

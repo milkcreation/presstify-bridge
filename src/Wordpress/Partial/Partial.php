@@ -14,6 +14,7 @@ use tiFy\Contracts\Partial\{
     Notice as NoticeContract,
     Pagination as PaginationContract,
     Partial as Manager,
+    Pdfviewer as PdfviewerContract,
     Sidebar as SidebarContract,
     Slider as SliderContract,
     Spinner as SpinnerContract,
@@ -33,6 +34,7 @@ use tiFy\Wordpress\Partial\Partials\{
     MediaLibrary\MediaLibrary,
     Notice\Notice,
     Pagination\Pagination,
+    Pdfviewer\Pdfviewer,
     Sidebar\Sidebar,
     Slider\Slider,
     Spinner\Spinner,
@@ -114,6 +116,10 @@ class Partial
 
         app()->add(PaginationContract::class, function () {
             return new Pagination();
+        });
+
+        app()->add(PdfviewerContract::class, function () {
+            return new Pdfviewer();
         });
 
         app()->add(SidebarContract::class, function () {

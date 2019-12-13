@@ -25,7 +25,8 @@
   }
 }
 
-.modal-close {
+.modal-close,
+.modal-backdrop-close {
   position:absolute;
   top:20px;
   right:20px;
@@ -34,9 +35,16 @@
   border:none;
   background-color: transparent;
   cursor:pointer;
+  outline: none;
   pointer-events: auto;
 }
 
+.ThemeButton--close.modal-backdrop-close::after,
+.ThemeButton--close.modal-backdrop-close::before {
+  background-color: #FFF;
+}
+
+.ThemeButton--close.modal-backdrop-close,
 .ThemeButton--close.modal-close {
   position:absolute;
   top:15px;

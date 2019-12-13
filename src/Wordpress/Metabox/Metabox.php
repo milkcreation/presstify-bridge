@@ -5,7 +5,7 @@ namespace tiFy\Wordpress\Metabox;
 use tiFy\Contracts\Metabox\{MetaboxDriver, MetaboxManager, MetaboxScreen as MetaboxScreenContract};
 use tiFy\Wordpress\Metabox\Drivers\{Filefeed\Filefeed, Imagefeed\Imagefeed, Videofeed\Videofeed};
 use tiFy\Wordpress\Routing\WpScreen;
-use tiFy\Support\Proxy\Request;
+use tiFy\Support\Proxy\{PostType, Request};
 use WP_Post;
 use WP_Screen;
 use WP_Term;
@@ -98,7 +98,7 @@ class Metabox
 
                 array_walk($boxes, function (MetaboxDriver $box) use ($post_type) {
                     if (($name = $box->name()) && ! in_array($name, $this->postKeys)) {
-                        post_type()->meta()->register($post_type, $name, true);
+                        PostType::meta()->register($post_type, $name, true);
                     }
                 });
             } elseif (($screen->getHookname() === 'options')) {
@@ -160,17 +160,21 @@ class Metabox
                          * 'edit_page_form',
                          * 'edit_form_advanced',
                          * 'dbx_post_sidebar' */
-                        add_action($screen->getObjectName() === 'page' ? 'edit_page_form' : 'edit_form_advanced',
-                            $tabRdr);
+                        add_action(
+                            $screen->getObjectName() === 'page' ? 'edit_page_form' : 'edit_form_advanced',
+                            $tabRdr
+                        );
 
                         array_walk($boxes, function (MetaboxDriver $box) {
-                            $box->setHandler(function (MetaboxDriver $box, WP_Post $post) {
+                            $box->setHandler(function (MetaboxDriver $box, WP_Post $wp_post) {
+                                $box->set('wp_post', $wp_post);
+
                                 if (is_null($box['value'])) {
                                     if ($name = $box->name()) {
                                         if (in_array($name, $this->postKeys)) {
-                                            $box['value'] = $post->{$name};
+                                            $box['value'] = $wp_post->{$name};
                                         } else {
-                                            $box['value'] = get_post_meta($post->ID, $box->name(), true);
+                                            $box['value'] = get_post_meta($wp_post->ID, $box->name(), true);
                                         }
                                     }
                                 }
@@ -192,12 +196,14 @@ class Metabox
                         add_action($screen->getObjectName() . '_edit_form', $tabRdr, 10, 2);
 
                         array_walk($boxes, function (MetaboxDriver $box) {
-                            $box->setHandler(function (MetaboxDriver $box, WP_Term $term) {
+                            $box->setHandler(function (MetaboxDriver $box, WP_Term $wp_term) {
+                                $box->set('wp_term', $wp_term);
+
                                 if ($name = $box->name()) {
                                     if (in_array($name, $this->termKeys)) {
-                                        $box['value'] = $term->{$name};
+                                        $box['value'] = $wp_term->{$name};
                                     } else {
-                                        $box['value'] = get_term_meta($term->term_id, $box->name(), true);
+                                        $box['value'] = get_term_meta($wp_term->term_id, $box->name(), true);
                                     }
                                 }
                             });
@@ -208,12 +214,14 @@ class Metabox
                         add_action('edit_user_profile', $tabRdr);
 
                         array_walk($boxes, function (MetaboxDriver $box) {
-                            $box->setHandler(function (MetaboxDriver $box, WP_User $user) {
+                            $box->setHandler(function (MetaboxDriver $box, WP_User $wp_user) {
+                                $box->set('wp_user', $wp_user);
+
                                 if ($name = $box->name()) {
                                     if (in_array($name, $this->userKeys)) {
-                                        $box['value'] = $user->{$name};
+                                        $box['value'] = $wp_user->{$name};
                                     } else {
-                                        $box['value'] = get_user_meta($user->ID, $box->name(), true);
+                                        $box['value'] = get_user_meta($wp_user->ID, $box->name(), true);
                                     }
                                 }
                             });

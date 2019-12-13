@@ -83,10 +83,7 @@ abstract class FieldFactory extends ParamsBag implements FieldFactoryContract
     /**
      * @inheritDoc
      */
-    public function boot(): void
-    {
-
-    }
+    public function boot(): void {}
 
     /**
      * @inheritDoc
@@ -168,6 +165,14 @@ abstract class FieldFactory extends ParamsBag implements FieldFactoryContract
         }
 
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function manager(): ?Manager
+    {
+        return $this->manager;
     }
 
     /**
