@@ -2,7 +2,7 @@
 
 namespace tiFy\Form\Field\Recaptcha;
 
-use tiFy\Api\Recaptcha\Contracts\Recaptcha as ApiRecaptcha;
+use tiFy\Api\Recaptcha\Recaptcha as ApiRecaptcha;
 use tiFy\Contracts\Form\FactoryField;
 use tiFy\Form\FieldController;
 
