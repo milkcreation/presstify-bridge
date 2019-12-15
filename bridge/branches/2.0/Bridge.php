@@ -10,7 +10,7 @@ use tiFy\Kernel\KernelServiceProvider;
  * @desc Bridge PresstifyFramework.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy
- * @version 2.0.233
+ * @version 2.0.234
  * @copyright Milkcreation
  */
 class Bridge extends Container
