@@ -164,7 +164,7 @@ abstract class PartialFactory extends ParamsBag implements PartialFactoryContrac
      */
     public function parseAttrsClass(): PartialFactoryContract
     {
-        $base = Str::studly($this->getAlias());
+        $base = ucfirst(preg_replace('/\./', '-', $this->getAlias()));
 
         $default_class = "{$base} {$base}--" . $this->getIndex();
         if (!$this->has('attrs.class')) {
