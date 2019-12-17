@@ -4,6 +4,7 @@ namespace tiFy\Partial\Partials\CookieNotice;
 
 use Closure;
 use Exception;
+use tiFy\Contracts\Cookie\Cookie as CookieContract;
 use tiFy\Contracts\Partial\{CookieNotice as CookieNoticeContract, PartialFactory as PartialFactoryContract};
 use tiFy\Contracts\Routing\Route;
 use tiFy\Partial\PartialFactory;
@@ -18,11 +19,29 @@ class CookieNotice extends PartialFactory implements CookieNoticeContract
     protected $url = '';
 
     /**
+     * Instance du cookie associé.
+     * @var CookieContract|null
+     */
+    protected $cookie;
+    
+    /**
      * @inheritDoc
      */
     public function boot(): void
     {
         $this->setUrl();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function cookie(): CookieContract
+    {
+        if (is_null($this->cookie)) {
+            $this->cookie = Cookie::instance($this->getId(), array_merge(['value' => '1'], $this->get('cookie', [])));
+        }
+
+        return $this->cookie;
     }
 
     /**
@@ -73,9 +92,7 @@ class CookieNotice extends PartialFactory implements CookieNoticeContract
         $content = $this->get('content', '');
         $this->set('content', $content instanceof Closure ? call_user_func($content) : $content);
 
-        $cookie = Cookie::instance($this->getId(), array_merge(['value' => '1'], $this->get('cookie', [])));
-
-        if ($cookie->get()) {
+        if ($this->cookie()->get()) {
             $this->set('attrs.aria-hide', 'true');
         }
 

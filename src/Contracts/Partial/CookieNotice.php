@@ -2,8 +2,17 @@
 
 namespace tiFy\Contracts\Partial;
 
+use tiFy\Contracts\Cookie\Cookie;
+
 interface CookieNotice extends PartialFactory
 {
+    /**
+     * Récupération de l'instance du cookie associé.
+     * 
+     * @return Cookie
+     */
+    public function cookie(): Cookie;
+
     /**
      * Récupération de l'url de traitement de la requête XHR.
      *
