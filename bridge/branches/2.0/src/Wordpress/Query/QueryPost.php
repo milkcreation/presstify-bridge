@@ -140,6 +140,22 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
+    public static function fetch($query = null): array
+    {
+        if (is_array($query)) {
+            return static::queryFromArgs($query);
+        } elseif ($query instanceof WP_Query) {
+            return static::queryFromWpQuery($query);
+        } elseif (is_null($query)) {
+            return static::queryFromGlobals();
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function parseQueryArgs(array $args = []): array
     {
         if (!isset($args['post_type'])) {

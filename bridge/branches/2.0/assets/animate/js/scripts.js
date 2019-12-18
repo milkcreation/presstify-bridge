@@ -60,6 +60,7 @@ jQuery(function ($) {
         $(this).addClass('tiFy-isAnimated');
       }
     });
+
     // Animations Animate.css
     $('.animateCSS-scroll:not(.animated)').each(function () {
       var $target = getScrollTarget($(this)),
