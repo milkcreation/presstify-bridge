@@ -67,6 +67,15 @@ interface QueryPost extends ParamsBag
     public static function createFromPostdata(array $postdata): ?QueryPost;
 
     /**
+     * Récupération d'une liste des instances de posts courants|selon une requête WP_Query|selon une liste d'arguments.
+     *
+     * @param WP_Query|array|null $query
+     *
+     * @return QueryPost[]|array
+     */
+    public static function fetch($query = null): array;
+
+    /**
      * Traitement d'arguments de requête de récupération des éléments.
      *
      * @param array $args Liste des arguments de la requête récupération des éléments.
