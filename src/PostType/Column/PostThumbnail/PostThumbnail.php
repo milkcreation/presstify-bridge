@@ -23,8 +23,6 @@ class PostThumbnail extends AbstractColumnDisplayPostTypeController
      */
     public function admin_enqueue_scripts()
     {
-        Partial::get('holder')->enqueue();
-
         $column_name = "column-{$this->item->getName()}";
         asset()->setInlineCss(
             ".wp-list-table th.{$column_name},.wp-list-table td.{$column_name}{width:80px;text-align:center;}" .
