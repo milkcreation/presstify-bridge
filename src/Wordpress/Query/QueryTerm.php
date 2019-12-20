@@ -2,6 +2,7 @@
 
 namespace tiFy\Wordpress\Query;
 
+use tiFy\Contracts\Support\ParamsBag as ParamsBagContract;
 use tiFy\Support\ParamsBag;
 use tiFy\Wordpress\Contracts\{Database\TaxonomyBuilder, Query\QueryTerm as QueryTermContract};
 use tiFy\Wordpress\Database\Model\Term as Model;
@@ -11,16 +12,22 @@ use WP_Term_Query;
 class QueryTerm extends ParamsBag implements QueryTermContract
 {
     /**
+     * Liste des arguments de requête de récupération des éléments par défaut.
+     * @var array
+     */
+    protected static $defaultArgs = [];
+
+    /**
      * Nom de qualification de la taxonomie associée.
      * @var string
      */
     protected static $taxonomy = '';
 
     /**
-     * Liste des arguments de requête de récupération des éléments par défaut.
-     * @var array
+     * Instance de la dernière requête de récupération d'une liste d'éléments.
+     * @var ParamsBag|null
      */
-    protected static $defaultArgs = [];
+    protected static $query;
 
     /**
      * Instance du modèle de base de données associé.
@@ -32,7 +39,7 @@ class QueryTerm extends ParamsBag implements QueryTermContract
      * Instance de terme de taxonomie Wordpress.
      * @var WP_Term
      */
-    protected $wp_term;
+    protected $wpTerm;
 
     /**
      * CONSTRUCTEUR.
@@ -43,8 +50,8 @@ class QueryTerm extends ParamsBag implements QueryTermContract
      */
     public function __construct(?WP_Term $wp_term = null)
     {
-        if ($this->wp_term = $wp_term instanceof WP_Term ? $wp_term : null) {
-            $this->set($this->wp_term->to_array())->parse();
+        if ($this->wpTerm = $wp_term instanceof WP_Term ? $wp_term : null) {
+            $this->set($this->wpTerm->to_array())->parse();
         }
     }
 
@@ -76,12 +83,36 @@ class QueryTerm extends ParamsBag implements QueryTermContract
     /**
      * @inheritDoc
      */
+    public static function createFromGlobal(): ?QueryTermContract
+    {
+        global $wp_query;
+
+        return $wp_query->is_tax() ? self::createFromId($wp_query->queried_object_id) : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function createFromSlug(string $term_slug, ?string $taxonomy = null): ?QueryTermContract
     {
         $taxonomy = $taxonomy ?? static::$taxonomy;
 
         return (($wp_term = get_term_by('slug', $term_slug, $taxonomy)) && ($wp_term instanceof WP_Term))
             ? new static($wp_term) : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetch($query): array
+    {
+        if (is_array($query)) {
+            return static::queryFromArgs($query);
+        } elseif ($query instanceof WP_Term_Query) {
+            return static::queryFromWpTermQuery($query);
+        } else {
+            return [];
+        }
     }
 
     /**
@@ -99,16 +130,13 @@ class QueryTerm extends ParamsBag implements QueryTermContract
     /**
      * @inheritDoc
      */
-    public static function query(WP_Term_Query $wp_term_query): array
+    public static function query(): ParamsBagContract
     {
-        if ($terms = $wp_term_query->terms) {
-            array_walk($terms, function (WP_Term &$wp_term) {
-                $wp_term = new static($wp_term);
-            });
-            return $terms;
-        } else {
-            return [];
+        if (is_null(static::$query)) {
+            static::$query = new ParamsBag();
         }
+
+        return static::$query;
     }
 
     /**
@@ -116,7 +144,7 @@ class QueryTerm extends ParamsBag implements QueryTermContract
      */
     public static function queryFromArgs(array $args = []): array
     {
-        return static::query(new WP_Term_Query(static::parseQueryArgs($args)));
+        return static::queryFromWpTermQuery(new WP_Term_Query(static::parseQueryArgs($args)));
     }
 
     /**
@@ -124,7 +152,54 @@ class QueryTerm extends ParamsBag implements QueryTermContract
      */
     public static function queryFromIds(array $ids): array
     {
-        return static::query(new WP_Term_Query(static::parseQueryArgs(['include' => $ids])));
+        return static::queryFromWpTermQuery(new WP_Term_Query(static::parseQueryArgs(['include' => $ids])));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function queryFromWpTermQuery(WP_Term_Query $wp_term_query): array
+    {
+        $per_page = $wp_term_query->query_vars['number'] ?: -1;
+        $count = count($wp_term_query->terms);
+        $offset = $wp_term_query->query_vars['offset'] ?: 1;
+
+        if ($per_page > 0) {
+            $args = $wp_term_query->query_vars;
+            $args['count'] = false;
+            $args['number'] = 0;
+            $args['offset'] = 1;
+            $args['fields'] = 'count';
+
+            $wp_term_query_count = new WP_Term_Query($args);
+
+            $total = (int)$wp_term_query_count->get_terms();
+            $pages = (int)ceil($total / $count);
+            $page = (int)ceil($offset / $per_page);
+        } else {
+            $pages = 1;
+            $page = 1;
+            $total = (int)count($wp_term_query->terms);
+        }
+
+        static::query()->clear()->set([
+            'args'     => $wp_term_query->query_vars,
+            'count'    => $count,
+            'pages'    => $pages,
+            'page'     => $page,
+            'per_page' => $per_page,
+            'total'    => $total,
+        ]);
+
+        $data = $wp_term_query->terms;
+
+        array_walk($data, function (WP_Term &$wp_term) {
+            $wp_term = new static($wp_term);
+        });
+
+        static::query()->set(compact('data'));
+
+        return $data;
     }
 
     /**
@@ -232,7 +307,7 @@ class QueryTerm extends ParamsBag implements QueryTermContract
      */
     public function getWpTerm(): WP_Term
     {
-        return $this->wp_term;
+        return $this->wpTerm;
     }
 
     /**

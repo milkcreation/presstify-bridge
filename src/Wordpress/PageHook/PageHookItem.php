@@ -9,6 +9,7 @@ use tiFy\Wordpress\Contracts\{PageHookItem as PageHookItemContract, Query\QueryP
 use tiFy\Wordpress\Query\QueryPost;
 use WP_Post;
 use WP_Query;
+use WP_Term;
 
 class PageHookItem extends ParamsBag implements PageHookItemContract
 {
@@ -94,11 +95,11 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
                         );
                     }
 
-                    add_filter('post_type_link', function (string $post_link, WP_Post $post) use ($post_type) {
+                    add_filter('post_type_link', function (string $link, WP_Post $post) use ($post_type) {
                         if ($post->post_type === $post_type) {
                             return rtrim($this->post()->getPermalink(), '/') . '/' . $post->post_name;
                         }
-                        return $post_link;
+                        return $link;
                     }, 999999, 2);
 
                     add_action('save_post', function (int $post_id) {
@@ -107,6 +108,25 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
                             flush_rewrite_rules();
                         }
                     }, 999999);
+                } elseif (preg_match('/(.*)@taxonomy/', $rewrite, $matches) && taxonomy_exists($matches[1])) {
+                    global $wp_taxonomies;
+
+                    $taxonomy = $matches[1];
+
+                    $wp_taxonomies[$taxonomy]->rewrite = false;
+
+                    add_rewrite_rule(
+                        $this->post()->getName() . '/([^/]+)/?$',
+                        'index.php?taxonomy=' . $taxonomy . '&term=$matches[1]',
+                        'top'
+                    );
+
+                    add_filter('term_link', function (string $link, WP_Term $term, string $tax) use ($taxonomy) {
+                        if ($tax === $taxonomy) {
+                            return rtrim($this->post()->getPermalink(), '/') . '/' . $term->slug;
+                        }
+                        return $link;
+                    }, 999999, 3);
                 }
             }
         }, 999999);

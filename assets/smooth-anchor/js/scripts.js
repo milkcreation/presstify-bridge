@@ -1,6 +1,7 @@
 'use strict';
 
 import jQuery from 'jquery';
+import 'jquery.easing';
 
 jQuery(function($) {
     $(document).on('click', "[data-smooth-anchor]", function(e) {
