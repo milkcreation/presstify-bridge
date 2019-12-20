@@ -10,12 +10,13 @@ jQuery(function ($) {
   if (typeof (tinyMCE) === 'undefined') {
     require('tinymce/tinymce');
     require('tinymce/themes/silver/index');
-    if (tify.locale.language !== undefined) {
-      try {
-        require('tinymce-i18n/langs5/' + tify.locale.language);
-      } catch (e) {
-        console.log('Unavailable tinyMCE language ' + tify.locale.language);
-      }
+  }
+
+  if (tify.locale.language !== undefined) {
+    try {
+      require('tinymce-i18n/langs5/' + tify.locale.language);
+    } catch (e) {
+      console.log('Unavailable tinyMCE language ' + tify.locale.language);
     }
   }
 
