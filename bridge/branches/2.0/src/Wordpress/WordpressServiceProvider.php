@@ -83,6 +83,7 @@ class WordpressServiceProvider extends ServiceProvider
         require_once __DIR__ . '/helpers.php';
 
         add_action('after_setup_theme', function () {
+
             /* @var Wordpress $wp */
             $wp = $this->getContainer()->get('wp');
 

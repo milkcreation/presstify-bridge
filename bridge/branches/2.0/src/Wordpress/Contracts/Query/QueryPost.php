@@ -116,7 +116,7 @@ interface QueryPost extends ParamsBag
      *
      * @return array
      */
-    public static function queryFromGlobals(): array;
+    public static function queryFromGlobal(): array;
 
     /**
      * Récupération d'une liste d'instances basée sur des identifiants de qualification de posts.

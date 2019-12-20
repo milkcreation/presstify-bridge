@@ -32,7 +32,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     protected static $postType = 'any';
 
     /**
-     * Instance de la dernière requête de récupération d'une liste d'éléments?
+     * Instance de la dernière requête de récupération d'une liste d'éléments.
      * @var ParamsBag|null
      */
     protected static $query;
@@ -147,7 +147,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
         } elseif ($query instanceof WP_Query) {
             return static::queryFromWpQuery($query);
         } elseif (is_null($query)) {
-            return static::queryFromGlobals();
+            return static::queryFromGlobal();
         } else {
             return [];
         }
@@ -201,7 +201,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public static function queryFromGlobals(): array
+    public static function queryFromGlobal(): array
     {
         global $wp_query;
 

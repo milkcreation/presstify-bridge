@@ -29,6 +29,13 @@ interface QueryTerm extends ParamsBag
     public static function createFromId(int $term_id): ?QueryTerm;
 
     /**
+     * Récupération d'une instance basée sur le terme global courant.
+     *
+     * @return static|null
+     */
+    public static function createFromGlobal(): ?QueryTerm;
+
+    /**
      * Récupération d'une instance basée sur le nom de qualification du terme.
      *
      * @param string $term_slug
@@ -37,6 +44,15 @@ interface QueryTerm extends ParamsBag
      * @return static|null
      */
     public static function createFromSlug(string $term_slug, ?string $taxonomy = null): ?QueryTerm;
+
+    /**
+     * Récupération d'une liste des instances des termes courants|selon une requête WP_Term_Query|selon une liste d'arguments.
+     *
+     * @param WP_Term_Query|array $query
+     *
+     * @return QueryPost[]|array
+     */
+    public static function fetch($query): array;
 
     /**
      * Traitement d'arguments de requête de récupération des éléments.
@@ -48,14 +64,11 @@ interface QueryTerm extends ParamsBag
     public static function parseQueryArgs(array $args = []) : array;
 
     /**
-     * Récupération d'une liste d'instances basée sur une instance de classe WP_Term_Query.
-     * @see https://developer.wordpress.org/reference/classes/wp_term_query/
+     * Récupération de l'instance de la dernière requête de récupération d'une liste d'éléments.
      *
-     * @param WP_Term_Query $wp_term_query
-     *
-     * @return array
+     * @return ParamsBag
      */
-    public static function query(WP_Term_Query $wp_term_query): array;
+    public static function query(): ParamsBag;
 
     /**
      * Récupération d'une liste d'instances basée sur des arguments de requête de récupération des éléments.
@@ -76,6 +89,16 @@ interface QueryTerm extends ParamsBag
      * @return array
      */
     public static function queryFromIds(array $ids): array;
+
+    /**
+     * Récupération d'une liste d'instances basée sur une instance de classe WP_Term_Query.
+     * @see https://developer.wordpress.org/reference/classes/wp_term_query/
+     *
+     * @param WP_Term_Query $wp_term_query
+     *
+     * @return array
+     */
+    public static function queryFromWpTermQuery(WP_Term_Query $wp_term_query): array;
 
     /**
      * Définition de la liste des arguments de requête de récupération des éléments.
