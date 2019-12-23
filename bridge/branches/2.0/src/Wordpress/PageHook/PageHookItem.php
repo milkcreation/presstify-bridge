@@ -71,62 +71,72 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
 
                     $post_type = $matches[1];
 
-                    $wp_post_types[$post_type]->has_archive = true;
-                    $wp_post_types[$post_type]->rewrite = false;
+                    if (isset($wp_post_types[$post_type])) {
+                        $wp_post_types[$post_type]->has_archive = true;
+                        $wp_post_types[$post_type]->rewrite = false;
 
-                    add_rewrite_rule(
-                        $this->post()->getName() . '/([^/]+)/?$',
-                        'index.php?post_type=' . $post_type . '&name=$matches[1]',
-                        'top'
-                    );
-
-                    if ($this->post()->typeIn(['page'])) {
                         add_rewrite_rule(
-                            $this->post()->getName() . '/' . $wp_rewrite->pagination_base . '/([0-9]{1,})/?$',
-                            'index.php?page_id=' . $this->post()->getId() . '&paged=$matches[1]',
+                            $this->post()->getName() . '/([^/]+)/?$',
+                            'index.php?post_type=' . $post_type . '&name=$matches[1]',
                             'top'
                         );
-                    } else {
-                        add_rewrite_rule(
-                            $this->post()->getName() . '/' . $wp_rewrite->pagination_base . '/([0-9]{1,})/?$',
-                            'index.php?p=' . $this->post()->getId() . '&post_type=' . $this->post()->getType() .
-                            '&paged=$matches[1]',
-                            'top'
-                        );
+
+                        if ($this->post()->typeIn(['page'])) {
+                            add_rewrite_rule(
+                                $this->post()->getName() . '/' . $wp_rewrite->pagination_base . '/([0-9]{1,})/?$',
+                                'index.php?page_id=' . $this->post()->getId() . '&paged=$matches[1]',
+                                'top'
+                            );
+                        } else {
+                            add_rewrite_rule(
+                                $this->post()->getName() . '/' . $wp_rewrite->pagination_base . '/([0-9]{1,})/?$',
+                                'index.php?p=' . $this->post()->getId() . '&post_type=' . $this->post()->getType() .
+                                '&paged=$matches[1]',
+                                'top'
+                            );
+                        }
+
+                        add_filter('post_type_link', function (string $link, WP_Post $post) use ($post_type) {
+                            if ($post->post_type === $post_type) {
+                                return rtrim($this->post()->getPermalink(), '/') . '/' . $post->post_name;
+                            }
+                            return $link;
+                        }, 999999, 2);
+
+                        add_action('save_post', function (int $post_id) {
+                            $post = get_post($post_id);
+                            if ($this->is($post)) {
+                                flush_rewrite_rules();
+                            }
+                        }, 999999);
                     }
-
-                    add_filter('post_type_link', function (string $link, WP_Post $post) use ($post_type) {
-                        if ($post->post_type === $post_type) {
-                            return rtrim($this->post()->getPermalink(), '/') . '/' . $post->post_name;
-                        }
-                        return $link;
-                    }, 999999, 2);
-
-                    add_action('save_post', function (int $post_id) {
-                        $post = get_post($post_id);
-                        if ($this->is($post)) {
-                            flush_rewrite_rules();
-                        }
-                    }, 999999);
                 } elseif (preg_match('/(.*)@taxonomy/', $rewrite, $matches) && taxonomy_exists($matches[1])) {
-                    global $wp_taxonomies;
+                    global $wp_rewrite, $wp_taxonomies;
 
                     $taxonomy = $matches[1];
 
-                    $wp_taxonomies[$taxonomy]->rewrite = false;
+                    if (isset($wp_taxonomies[$taxonomy])) {
+                        $wp_taxonomies[$taxonomy]->rewrite = false;
 
-                    add_rewrite_rule(
-                        $this->post()->getName() . '/([^/]+)/?$',
-                        'index.php?taxonomy=' . $taxonomy . '&term=$matches[1]',
-                        'top'
-                    );
+                        add_rewrite_rule(
+                            $this->post()->getName() . '/([^/]+)/?$',
+                            'index.php?taxonomy=' . $taxonomy . '&term=$matches[1]',
+                            'top'
+                        );
 
-                    add_filter('term_link', function (string $link, WP_Term $term, string $tax) use ($taxonomy) {
-                        if ($tax === $taxonomy) {
-                            return rtrim($this->post()->getPermalink(), '/') . '/' . $term->slug;
-                        }
-                        return $link;
-                    }, 999999, 3);
+                        add_rewrite_rule(
+                            $this->post()->getName() . '/([^/]+)/' . $wp_rewrite->pagination_base . '/([0-9]{1,})/?$',
+                            'index.php?taxonomy=' . $taxonomy . '&term=$matches[1]&paged=$matches[2]',
+                            'top'
+                        );
+
+                        add_filter('term_link', function (string $link, WP_Term $term, string $tax) use ($taxonomy) {
+                            if ($tax === $taxonomy) {
+                                return rtrim($this->post()->getPermalink(), '/') . '/' . $term->slug;
+                            }
+                            return $link;
+                        }, 999999, 3);
+                    }
                 }
             }
         }, 999999);
@@ -141,6 +151,10 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
             if ($wp_query->is_main_query() && ($query_args = $this->get('wp_query'))) {
                 if ($this->is()) {
                     if (is_array($query_args)) {
+                        if ($paged = $wp_query->get('paged')) {
+                            $query_args = array_merge(['paged' => $paged], $query_args);
+                        }
+
                         $wp_query->parse_query($query_args);
                     } else {
                         $wp_query->parse_query($wp_query->query);
