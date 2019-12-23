@@ -1,3 +1,278 @@
+/**
+ * @see node_modules/animate-sass/animations
+ * @see https://github.com/tgdev/animate-sass
+ */
+
+// attention-seekers
+$use-bounce: false !default;
+$use-flash: false !default;
+$use-pulse: false !default;
+$use-shake: false !default;
+$use-swing: false !default;
+$use-tada: false !default;
+$use-wiggle: false !default;
+$use-wobble: false !default;
+
+// bounce-enter
+$use-bounceIn: false !default;
+$use-bounceInDown: false !default;
+$use-bounceInLeft: false !default;
+$use-bounceInRight: false !default;
+$use-bounceInUp: false !default;
+
+// bounce-exit
+$use-bounceOut: false !default;
+$use-bounceOutDown: false !default;
+$use-bounceOutLeft: false !default;
+$use-bounceOutRight: false !default;
+$use-bounceOutUp: false !default;
+
+//fade-enter
+$use-fadeIn: true !default;
+$use-fadeInDown: true !default;
+$use-fadeInDownBig: true !default;
+$use-fadeInLeft: true !default;
+$use-fadeInLeftBig: true !default;
+$use-fadeInRight: true !default;
+$use-fadeInRightBig: true !default;
+$use-fadeInUp: true !default;
+$use-fadeInUpBig: true !default;
+
+// fade-exit
+$use-fadeOut: true;
+$use-fadeOutDown: true;
+$use-fadeOutDownBig: true;
+$use-fadeOutLeft: true;
+$use-fadeOutLeftBig: true;
+$use-fadeOutRight: true;
+$use-fadeOutRightBig: true;
+$use-fadeOutUp: true;
+$use-fadeOutUpBig: true;
+/**
+ *flippers
+ */
+$use-flip: true;
+$use-flipInX: true;
+$use-flipInY: true;
+$use-flipOutX: true;
+$use-flipOutY: true;
+/**
+ * lightspeed
+ */
+$use-lightSpeedIn: true;
+$use-lightSpeedOut: true;
+/**
+ * rotate-enter
+ */
+$use-rotateIn: true;
+$use-rotateInDownLeft: true;
+$use-rotateInDownRight: true;
+$use-rotateInUpLeft: true;
+$use-rotateInUpRight: true;
+/**
+ * rotate-exit
+ */
+$use-rotateOut: true;
+$use-rotateOutDownLeft: true;
+$use-rotateOutDownRight: true;
+$use-rotateOutUpLeft: true;
+$use-rotateOutUpRight: true;
+/**
+ * slide-enter
+ */
+$use-slideInDown: true;
+$use-slideInLeft: true;
+$use-slideInRight: true;
+$use-slideInUp: true;
+/**
+ * slide-exit
+ */
+$use-slideOutDown: true;
+$use-slideOutLeft: true;
+$use-slideOutRight: true;
+$use-slideOutUp: true;
+/**
+ * special
+ */
+$use-hinge: true;
+$use-rollIn: true;
+$use-rollOut: true;
+/**
+ * zoom-enter
+ */
+$use-zoomIn: true;
+$use-zoomInDown: true;
+$use-zoomInLeft: true;
+$use-zoomInRight: true;
+$use-zoomInUp: true;
+/**
+ * zoom-exit
+ */
+$use-zoomOut: true;
+$use-zoomOutDown: true;
+$use-zoomOutLeft: true;
+$use-zoomOutRight: true;
+$use-zoomOutUp: true;
+
+@import "~animate-sass/animate";
+
+[data-animate] {
+  transition: all 1s;
+}
+
+[data-animate="off"] {
+  transition: opacity 1ms;
+  opacity: 0;
+}
+
+[data-animate="on"] {
+  opacity: 1;
+}
+
+.animate-fx--ease {
+  animation-timing-function: ease;
+  transition-timing-function: ease;
+}
+
+.animate-fx--easeOut {
+  animation-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+
+.animate-fx--easeIn {
+  animation-timing-function: ease-in;
+  transition-timing-function: ease-in;
+}
+
+.animate-fx--easeInOut {
+  animation-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+
+/** Complexes */
+.animate-fx--easeInSine {
+  animation-timing-function: cubic-bezier(0.47, 0, 0.745, 0.715);
+  transition-timing-function: cubic-bezier(0.47, 0, 0.745, 0.715);
+}
+
+.animate-fx--easeOutSine {
+  animation-timing-function: cubic-bezier(0.39, 0.575, 0.565, 1);
+  transition-timing-function: cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+.animate-fx--easeInOutSine {
+  animation-timing-function: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  transition-timing-function: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.animate-fx--easeInQuad {
+  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  transition-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+
+.animate-fx--easeOutQuad {
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.animate-fx--easeInOutQuad {
+  animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  transition-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+.animate-fx--easeInCubic {
+  animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+
+.animate-fx--easeOutCubic {
+  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.animate-fx--easeInOutCubic {
+  animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.animate-fx--easeInQuart {
+  animation-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+  transition-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+}
+
+.animate-fx--easeOutQuart {
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.animate-fx--easeInOutQuart {
+  animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.animate-fx--easeInQuint {
+  animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+  transition-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+}
+
+.animate-fx--easeOutQuint {
+  animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.animate-fx--easeInOutQuint {
+  animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+  transition-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+}
+
+.animate-fx--easeInExpo {
+  animation-timing-function: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  transition-timing-function: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+}
+
+.animate-fx--easeOutExpo {
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.animate-fx--easeInOutExpo {
+  animation-timing-function: cubic-bezier(1, 0, 0, 1);
+  transition-timing-function: cubic-bezier(1, 0, 0, 1);
+}
+
+.animate-fx--easeInCirc {
+  animation-timing-function: cubic-bezier(0.6, 0.04, 0.98, 0.335);
+  transition-timing-function: cubic-bezier(0.6, 0.04, 0.98, 0.335);
+}
+
+.animate-fx--easeOutCirc {
+  animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.animate-fx--easeInOutCirc {
+  animation-timing-function: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  transition-timing-function: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+.animate-fx--easeInBack {
+  animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+  transition-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+}
+
+.animate-fx--easeOutBack {
+  animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.animate-fx--easeInOutBack {
+  animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+
+
+// OLD
 .tiFy-animate {
   transition: all 1s;
 }
@@ -6,6 +281,11 @@
 .tiFy-animate--off {
   transition: opacity 1ms;
   opacity: 0;
+}
+
+.tiFy-animate--off.tiFy-isAnimated,
+.tiFy-animate--off.animated {
+  opacity: 1;
 }
 
 /** Easings */
