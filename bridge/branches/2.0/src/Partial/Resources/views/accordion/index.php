@@ -1,7 +1,7 @@
 <?php
 /**
  * @var tiFy\Partial\PartialView $this
- * @var tiFy\Partial\Partials\Accordion\AccordionItems $items
+ * @var tiFy\Partial\Partials\Accordion\AccordionWalkerItems $items
  */
 ?>
 <?php $this->before(); ?>

@@ -2,17 +2,22 @@
 
 namespace tiFy\Partial\Partials\Accordion;
 
-use Illuminate\Support\Arr;
+use Illuminate\Support\{Arr, Collection};
 use tiFy\Contracts\Partial\{
     Accordion,
     AccordionItem as AccordionItemContract,
-    AccordionItems as AccordionItemsContract
+    AccordionWalkerItems as AccordionWalkerItemsContract
 };
-use tiFy\Support\Collection;
 use tiFy\Support\HtmlAttrs;
 
-class AccordionItems extends Collection implements AccordionItemsContract
+class AccordionWalkerItems implements AccordionWalkerItemsContract
 {
+    /**
+     * Liste des éléments.
+     * @var AccordionItemContract[]|array
+     */
+    protected $items = [];
+
     /**
      * Instance du controleur d'affichage.
      * @var Accordion
@@ -29,7 +34,13 @@ class AccordionItems extends Collection implements AccordionItemsContract
      */
     public function __construct($items, $opened = null)
     {
-        array_walk($items, [$this, 'walk']);
+        array_walk($items, function ($item, $key) {
+            if (!$item instanceof AccordionItem) {
+                $item = new AccordionItem($key, $item);
+            }
+
+            return $this->items[$key] = $item;
+        });
 
         $this->setOpened($opened);
     }
@@ -45,6 +56,14 @@ class AccordionItems extends Collection implements AccordionItemsContract
     /**
      * @inheritDoc
      */
+    public function exists(): bool
+    {
+        return !!$this->items;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function render(): string
     {
         return $this->walker($this->items, 0, null);
@@ -53,12 +72,12 @@ class AccordionItems extends Collection implements AccordionItemsContract
     /**
      * @inheritDoc
      */
-    public function setOpened($opened = null): AccordionItemsContract
+    public function setOpened($opened = null): AccordionWalkerItemsContract
     {
         if (!is_null($opened)) {
             $opened = Arr::wrap($opened);
 
-            $this->collect()->each(function (AccordionItem $item) use ($opened) {
+            (new Collection($this->items))->each(function (AccordionItem $item) use ($opened) {
                 if (in_array($item->getName(), $opened)) {
                     $item->set('open', true);
                 }
@@ -71,7 +90,7 @@ class AccordionItems extends Collection implements AccordionItemsContract
     /**
      * @inheritDoc
      */
-    public function setPartial(Accordion $partial): AccordionItemsContract
+    public function setPartial(Accordion $partial): AccordionWalkerItemsContract
     {
         $this->partial = $partial;
 
@@ -115,17 +134,5 @@ class AccordionItems extends Collection implements AccordionItemsContract
         }
 
         return $output;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function walk($item, $key = null): AccordionItemContract
-    {
-        if (!$item instanceof AccordionItem) {
-            $item = new AccordionItem($key, $item);
-        }
-
-        return $this->items[$key] = $item;
     }
 }
