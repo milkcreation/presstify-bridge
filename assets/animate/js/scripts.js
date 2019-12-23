@@ -3,9 +3,8 @@
 import jQuery from 'jquery';
 
 jQuery(function ($) {
-  // Détection de l'élément dans la zone visible
-  function inViewport($ele) {
-    let offset = $ele.offset();
+  function inViewport($target, threshold = 0) {
+    let offset = $target.offset();
 
     if (!offset) {
       return false;
@@ -13,8 +12,8 @@ jQuery(function ($) {
 
     let lBound = $(window).scrollTop(),
         uBound = lBound + $(window).height(),
-        top = $ele.offset().top,
-        bottom = top + $ele.outerHeight(true);
+        top = offset.top + threshold,
+        bottom = top + $target.outerHeight(true);
 
     return (top > lBound && top < uBound) ||
         (bottom > lBound && bottom < uBound) ||
@@ -22,27 +21,27 @@ jQuery(function ($) {
         (uBound >= top && uBound <= bottom);
   }
 
-  // Récupération de la cible
-  function getScrollTarget($ele) {
-    if (typeof $ele.data('animate-scroll-target') === 'string' && $($ele.data('animate-scroll-target'))) {
-      return $($ele.data('animate-scroll-target'));
-    } else if (typeof $ele.data('animate-scroll-position') === 'number') {
-      return $ele.data('animate-scroll-position');
+  function getScrollTarget($el) {
+    if (typeof $el.data('anim-target') === 'string') {
+      if ($($el.data('anim-target')).length()) {
+        return $($el.data('anim-target'));
+      }
+    } else if (typeof $el.data('anim-target') === 'number') {
+      return $el.data('anim-target');
     } else {
-      return $ele;
+      return $el;
     }
   }
 
-  // Vérifie si la cible est atteinte au scroll
-  function isScrollTargetReached($ele) {
+  function isScrollTarget($el) {
     let value;
 
-    switch (typeof $ele) {
+    switch (typeof $el) {
       case 'object':
-        value = inViewport($ele);
+        value = inViewport($el);
         break;
       case 'number' :
-        value = ($(window).scrollTop() >= $ele);
+        value = ($(window).scrollTop() >= $el);
         break;
       default:
         value = false;
@@ -53,23 +52,23 @@ jQuery(function ($) {
 
   /** Lancement des animations au scroll */
   $(window).scroll(function () {
-    // Animations tiFy
-    $('.tiFy-animate--scroll:not(.tiFy-isAnimated)').each(function () {
-      var $target = getScrollTarget($(this));
-      if (isScrollTargetReached($target)) {
-        $(this).addClass('tiFy-isAnimated');
+    $('[data-anim].anim-scroll:not(.animated)').each(function () {
+      let $target = getScrollTarget($(this));
+
+      if (isScrollTarget($target)) {
+        $(this).addClass('animated' + ' ' + $(this).data('anim'));
       }
     });
+  });
 
-    // Animations Animate.css
-    $('.animateCSS-scroll:not(.animated)').each(function () {
-      var $target = getScrollTarget($(this)),
-          animation = (typeof $(this).data('scroll-animation') === 'string') ? $(this).data('scroll-animation') : '';
-
-      if (isScrollTargetReached($target)) {
-        $(this).addClass('animated' + ' ' + animation);
-      }
+  $(window).load(function () {
+    $('[data-anim]:not(.anim-scroll)').each(function () {
+        $(this).addClass('animated' + ' ' + $(this).data('anim'));
     });
+  });
+
+  $('[data-anim]').on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+    $(this).removeClass($(this).data('anim'));
   });
 
   /* Initialisation du lancement des animations au scroll */
