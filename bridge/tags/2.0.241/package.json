@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "presstify-framework",
+  "name": "presstify-bridge",
   "version": "2.0.241",
   "dependencies": {
     "animate-sass": "^0.8.2",
