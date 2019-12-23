@@ -2,9 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-use tiFy\Contracts\Support\Collection;
-
-interface AccordionItems extends Collection
+interface AccordionWalkerItems
 {
     /**
      * Résolution de sortie de l'affichage du contrôleur.
@@ -14,15 +12,11 @@ interface AccordionItems extends Collection
     public function __toString(): string;
 
     /**
-     * Itération d'affichage la liste des éléments.
+     * Vérification d'existance des éléments.
      *
-     * @param AccordionItem[] $items Liste des éléments.
-     * @param int $depth Niveau de profondeur courant de l'itération.
-     * @param mixed $parent Parent courant de l'itération.
-     *
-     * @return string
+     * @return bool
      */
-    public function walker($items = [], $depth = 0, $parent = null): string;
+    public function exists(): bool;
 
     /**
      * Récupération du rendu d'affichage.
@@ -38,7 +32,7 @@ interface AccordionItems extends Collection
      *
      * @return static
      */
-    public function setPartial(Accordion $partial): AccordionItems;
+    public function setPartial(Accordion $partial): AccordionWalkerItems;
 
     /**
      * Définition de la liste des éléments ouverts à l'initialisation.
@@ -47,5 +41,16 @@ interface AccordionItems extends Collection
      *
      * @return static
      */
-    public function setOpened($opened = null): AccordionItems;
+    public function setOpened($opened = null): AccordionWalkerItems;
+
+    /**
+     * Itération d'affichage la liste des éléments.
+     *
+     * @param AccordionItem[] $items Liste des éléments.
+     * @param int $depth Niveau de profondeur courant de l'itération.
+     * @param mixed $parent Parent courant de l'itération.
+     *
+     * @return string
+     */
+    public function walker($items = [], $depth = 0, $parent = null): string;
 }

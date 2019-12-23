@@ -16,7 +16,7 @@ class Accordion extends PartialFactory implements AccordionContract
      *      @var string $before Contenu placé avant le champ.
      *      @var array $viewer Liste des attributs de configuration du pilote d'affichage.
      *      @var string $theme Theme d'affichage. light|dark.
-     *      @var array|AccordionItem[]|AccordionItems Liste des éléments.
+     *      @var array|AccordionItem[]|AccordionWalkerItems Liste des éléments.
      *      @var mixed $opened Définition de la liste des éléments ouverts à l'initialisation.
      *      @var boolean $multiple Activation de l'ouverture multiple d'éléments.
      *      @var boolean $triggered Activation de la limite d'ouverture et de fermeture par le déclencheur de l'élement.
@@ -59,8 +59,8 @@ class Accordion extends PartialFactory implements AccordionContract
         ]);
 
         $items = $this->get('items', []);
-        if (!$items instanceof AccordionItems) {
-            $items = new AccordionItems($items, $this->get('opened'));
+        if (!$items instanceof AccordionWalkerItems) {
+            $items = new AccordionWalkerItems($items, $this->get('opened'));
         }
 
         $items->setPartial($this);

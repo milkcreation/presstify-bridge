@@ -1,11 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Wordpress\Partial\Partials\Accordion;
 
 use tiFy\Partial\Partials\Accordion\AccordionItem;
+use tiFy\Wordpress\Contracts\Partial\AccordionWpTerm as AccordionWpTermContract;
+use tiFy\Support\Proxy\Partial;
 use WP_Term;
 
-class AccordionWpTerm extends AccordionItem
+class AccordionWpTerm extends AccordionItem implements AccordionWpTermContract
 {
     /**
      * Terme de taxonomie associé
@@ -17,7 +19,7 @@ class AccordionWpTerm extends AccordionItem
      * CONSTRUCTEUR.
      *
      * @param string $name Nom de qualification de l'élément.
-     * @param WP_Term $attrs Liste des attributs de configuration.
+     * @param WP_Term $term Liste des attributs de configuration.
      *
      * @return void
      */
@@ -25,43 +27,39 @@ class AccordionWpTerm extends AccordionItem
     {
         $this->term = $term;
 
-        $attrs = get_object_vars($term);
-
-        parent::__construct($name, $attrs);
+        parent::__construct($name, get_object_vars($this->term));
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function defaults()
+    public function defaults(): array
     {
         return [
-            'parent'     => null,
-            'content'    => $this->term->name,
-            'attrs'      => [],
-            'depth'      => 0
+            'attrs'   => [],
+            'content' => $this->term->name,
+            'depth'   => 0,
+            'parent'  => null,
         ];
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getContent()
+    public function getContent(): string
     {
-        return (string) partial(
-            'tag',
-            [
-                'tag' => 'a',
-                'attrs' => [
-                    'href' => get_term_link($this->term)
-                ],
-                'content' => $this->term->name
-            ]
-        );
+        return (string)Partial::get('tag', [
+            'tag'     => 'a',
+            'attrs'   => [
+                'class' => "AccordionItem-link",
+                'href'  => get_term_link($this->term),
+            ],
+            'content' => $this->term->name,
+        ]);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getName()
     {
@@ -69,21 +67,28 @@ class AccordionWpTerm extends AccordionItem
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getParent()
     {
-        return $this->get('parent');
+        return $this->get('parent') ?: null;
     }
 
-
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function setDepth($depth)
     {
         $this->set('depth', $depth);
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function wpTerm(): ?WP_Term
+    {
+        return $this->term;
     }
 }
