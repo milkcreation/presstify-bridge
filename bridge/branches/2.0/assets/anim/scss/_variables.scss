@@ -1,49 +1,52 @@
 /**
  * Générateur de délais et durée de déclenchement.
  */
-$anim-delay-start:0 !default;
-$anim-delay-end:10 !default;
-$anim-delay-pad:100 !default;
-$anim-delay-unity:ms !default;
-$anim-duration-start:0 !default;
-$anim-duration-end:10 !default;
-$anim-duration-pad:100 !default;
-$anim-duration-unity:ms !default;
+$anim-delay-start: 0 !default;
+$anim-delay-end: 10 !default;
+$anim-delay-pad: 100 !default;
+$anim-delay-unity: ms !default;
+$anim-duration-start: 0 !default;
+$anim-duration-end: 10 !default;
+$anim-duration-pad: 100 !default;
+$anim-duration-unity: ms !default;
 
 /**
  * Activation des effets.
  */
-$ease: true !default;
-$ease-in: true !default;
-$ease-out: true !default;
-$ease-in-out: true !default;
-$ease-in-sine: false !default;
-$ease-out-sine: false !default;
-$ease-in-out-sine: false !default;
-$ease-in-quad: false !default;
-$ease-out-quad: false !default;
-$ease-in-out-quad: false !default;
-$ease-in-cubic: false !default;
-$ease-out-cubic: false !default;
-$ease-in-out-cubic: false !default;
-$ease-in-quart: false !default;
-$ease-out-quart: false !default;
-$ease-in-out-quart: false !default;
-$ease-in-quint: false !default;
-$ease-out-quint: false !default;
-$ease-in-out-quint: false !default;
-$ease-in-expo: false !default;
-$ease-out-expo: false !default;
-$ease-in-out-expo: false !default;
-$ease-in-circ: false !default;
-$ease-out-circ: false !default;
-$ease-in-out-circ: false !default;
-$ease-in-back: false !default;
-$ease-out-back: false !default;
-$ease-in-out-back: false !default;
+$anim-linear: true !default;
+$anim-ease: true !default;
+$anim-ease-in: true !default;
+$anim-ease-out: true !default;
+$anim-ease-in-out: true !default;
+$anim-ease-in-sine: false !default;
+$anim-ease-out-sine: false !default;
+$anim-ease-in-out-sine: false !default;
+$anim-ease-in-quad: false !default;
+$anim-ease-out-quad: false !default;
+$anim-ease-in-out-quad: false !default;
+$anim-ease-in-cubic: false !default;
+$anim-ease-out-cubic: false !default;
+$anim-ease-in-out-cubic: false !default;
+$anim-ease-in-quart: false !default;
+$anim-ease-out-quart: false !default;
+$anim-ease-in-out-quart: false !default;
+$anim-ease-in-quint: false !default;
+$anim-ease-out-quint: false !default;
+$anim-ease-in-out-quint: false !default;
+$anim-ease-in-expo: false !default;
+$anim-ease-out-expo: false !default;
+$anim-ease-in-out-expo: false !default;
+$anim-ease-in-circ: false !default;
+$anim-ease-out-circ: false !default;
+$anim-ease-in-out-circ: false !default;
+$anim-ease-in-back: false !default;
+$anim-ease-out-back: false !default;
+$anim-ease-in-out-back: false !default;
 
 /**
- * Activation des animations.
+ * ANIMATE
+ * @see https://github.com/daneden/animate.css
+ * @see https://daneden.github.io/animate.css/
  * @see https://github.com/tgdev/animate-sass
  */
 // attention-seekers
@@ -147,3 +150,50 @@ $use-zoomOutDown: false !default;
 $use-zoomOutLeft: false !default;
 $use-zoomOutRight: false !default;
 $use-zoomOutUp: false !default;
+
+/**
+ * HOVER
+ * @see https://github.com/IanLunn/Hover
+ * @see http://ianlunn.github.io/Hover/
+ */
+// Prefix for Hover class names
+$nameSpace: 'hvr' !default;
+
+// Durations
+$fastDuration: .1s !default;
+$mediumDuration: .3s !default;
+$slowDuration: .5s !default;
+
+// Colors
+$primaryColor: #e1e1e1 !default;
+$secondaryColor: #666 !default;
+$highlightColor: #ccc !default;
+$activeColor: #2098D1 !default;
+$shadowColor: rgba(0, 0, 0, .6) !default;
+
+// Speech bubbles options
+$tipWidth: 10px !default; //the width of the speech bubble tip
+$tipHeight: 10px !default; //the height of the speech bubble tip
+$tipColor: $primaryColor !default;
+
+// Arrows options
+$spaceBetweenTextAndArrows: 2.2em !default;
+
+// Curl dimensions
+$curlWidth: 25px !default;
+$curlHeight: 25px !default;
+
+// Curl colors
+$revealAreaColor: white !default; // reveal area behind the curl
+$curlLineColor: #aaa !default; // crease line
+$curlTransitionColor: #ccc !default; // color transitioning from crease line to final color
+$curlLastColor: white !default; // final color of the back of the curl
+
+// Browser Prefixes - Which CSS prefixes should be used?
+$webkit: true !default;
+$moz: false !default;
+$ms: false !default;
+$o: false !default;
+
+// Compile with or without classes
+$includeClasses: false !default;
