@@ -1,19 +1,16 @@
 @import "variables";
 @import "ease";
-@import "~animate-sass/animate";
 
-[data-anim] {
-  transition: all 1s;
-  animation-timing-function: linear;
-  transition-timing-function: linear;
-}
+// Librairies
+@import "~animate-sass/animate";
+@import "~hover.css/scss/hover.scss";
 
 .anim-hidden {
   visibility: hidden;
-}
 
-.anim-hidden.animated {
-  visibility: inherit;
+  &.animated {
+    visibility: inherit;
+  }
 }
 
 .anim-infinite {
