@@ -1,0 +1,81 @@
+@import '~presstify-framework/theme/scss/styles';
+
+.Modal {
+  display:none;
+}
+
+.modal-dialog.modal-full {
+  width: auto;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.modal-dialog.modal-flex {
+  width: auto;
+  max-width:none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 992px) {
+  .modal-dialog.modal-full {
+    width: auto;
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+}
+
+.modal-close,
+.modal-backdrop-close {
+  position:absolute;
+  top:20px;
+  right:20px;
+  margin:0;
+  padding:0;
+  border:none;
+  background-color: transparent;
+  cursor:pointer;
+  outline: none;
+  pointer-events: auto;
+}
+
+.ThemeButton--close.modal-backdrop-close::after,
+.ThemeButton--close.modal-backdrop-close::before {
+  background-color: #FFF;
+}
+
+.ThemeButton--close.modal-backdrop-close,
+.ThemeButton--close.modal-close {
+  position:absolute;
+  top:15px;
+  right:15px;
+  outline: none;
+  z-index:1;
+}
+
+.modal-spinner {
+  position:absolute;
+  bottom:20px;
+  right:20px;
+  transform: translate(-50%,-50%);
+  opacity: 0.5;
+}
+
+.modal-spinner[aria-hide="true"] {
+  display:none;
+}
+
+.modal-spinner[aria-hide="false"] {
+  display:inherit;
+}
+
+.modal-backdropClose {
+  position:fixed;
+  top:10px;
+  right:10px;
+  background-color:transparent;
+  border:none;
+  font-size:30px;
+  font-weight:100;
+  outline: none;
+}
