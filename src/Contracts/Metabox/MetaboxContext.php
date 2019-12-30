@@ -2,11 +2,7 @@
 
 namespace tiFy\Contracts\Metabox;
 
-use tiFy\Contracts\{
-    Support\ParamsBag,
-    View\ViewController,
-    View\ViewEngine
-};
+use tiFy\Contracts\{Support\ParamsBag, View\PlatesEngine};
 
 interface MetaboxContext extends ParamsBag
 {
@@ -64,7 +60,7 @@ interface MetaboxContext extends ParamsBag
      * @param string|null view Nom de qualification du gabarit.
      * @param array $data Liste des variables passées en argument.
      *
-     * @return ViewController|ViewEngine
+     * @return PlatesEngine|string
      */
     public function viewer(?string $view = null, array $data = []);
 }

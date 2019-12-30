@@ -2,7 +2,7 @@
 /**
  * Table.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\ListTable\Viewer $this
+ * @var tiFy\Template\Templates\ListTable\View $this
  */
 ?>
 <?php $this->insert('tablenav', ['which' => 'top']); ?>

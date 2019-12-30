@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface FileJs extends FieldFactory
+interface FileJs extends FieldDriver
 {
     /**
      * Récupération de l'url de traitement de la requête XHR.
@@ -19,7 +19,7 @@ interface FileJs extends FieldFactory
      *
      * @return $this
      */
-    public function parseDropzone(): FieldFactory;
+    public function parseDropzone(): FieldDriver;
 
     /**
      * Définition de l'url de traitement de la requête XHR.
@@ -28,7 +28,7 @@ interface FileJs extends FieldFactory
      *
      * @return static
      */
-    public function setUrl(?string $url = null): FieldFactory;
+    public function setUrl(?string $url = null): FieldDriver;
 
     /**
      * Contrôleur de traitement de la requête XHR.

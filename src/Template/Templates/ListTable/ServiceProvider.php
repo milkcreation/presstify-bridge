@@ -25,7 +25,8 @@ use tiFy\Template\Templates\ListTable\Contracts\{
     ViewFilter,
     ViewFilters
 };
-use tiFy\View\ViewEngine;
+use tiFy\Contracts\View\Engine as ViewEngine;
+use tiFy\Support\Proxy\View as ProxyView;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -467,19 +468,15 @@ class ServiceProvider extends BaseServiceProvider
             $params = $this->factory->get('viewer', []);
 
             if ( ! $params instanceof ViewEngine) {
-                $viewer = new ViewEngine(array_merge([
+                $viewer = ProxyView::getPlatesEngine(array_merge([
                     'directory' => template()->resourcesDir('/views/list-table'),
+                    'factory'   => View::class
                 ], $params));
-                $viewer->setController(Viewer::class);
-
-                if ( ! $viewer->getOverrideDir()) {
-                    $viewer->setOverrideDir(template()->resourcesDir('/views/list-table'));
-                }
             } else {
                 $viewer = $params;
             }
 
-            $viewer->params(['factory' => $this->factory]);
+            $viewer->params(['template' => $this->factory]);
 
             return $viewer;
         });

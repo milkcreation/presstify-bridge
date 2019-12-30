@@ -2,7 +2,7 @@
 /**
  * Vue ListTable.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\ListTable\Viewer $this
+ * @var tiFy\Template\Templates\ListTable\View $this
  */
 ?>
 <div class="wrap">

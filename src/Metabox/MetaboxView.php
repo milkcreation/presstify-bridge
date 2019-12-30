@@ -5,14 +5,14 @@ namespace tiFy\Metabox;
 use BadMethodCallException;
 use Exception;
 use tiFy\Contracts\Metabox\MetaboxView as MetaboxViewContract;
-use tiFy\View\ViewController;
+use tiFy\View\Factory\PlatesFactory;
 
 /**
  * @method string name()
  * @method mixed params(string|array|null $key = null, mixed $default = null)
  * @method mixed value(string|null $key = null, mixed $default = null)
  */
-class MetaboxView extends ViewController implements MetaboxViewContract
+class MetaboxView extends PlatesFactory implements MetaboxViewContract
 {
     /**
      * Liste des méthodes de délégation permises.
@@ -25,27 +25,23 @@ class MetaboxView extends ViewController implements MetaboxViewContract
     ];
 
     /**
-     * Délégation d'appel des méthodes de l'application associée.
-     *
-     * @param string $name Nom de la méthode à appeler.
-     * @param array $arguments Liste des variables passées en argument.
-     *
-     * @return mixed
+     * @inheritDoc
      */
-    public function __call($name, $arguments)
+    public function __call($method, $parameters)
     {
-        try {
-            $metabox = $this->engine->params('metabox');
-            if (!in_array($name, $this->mixins)) {
-                throw new BadMethodCallException(sprintf(__(
-                    'La méthode [%s] de boîte de saisie ne peut être appelée dans un gabarit d\'affichage.', 'tify'
-                ), $name));
+        if (in_array($method, $this->mixins)) {
+            try {
+                return call_user_func_array([$this->engine->params('metabox'), $method], $parameters);
+            } catch (Exception $e) {
+                throw new BadMethodCallException(
+                    sprintf(
+                        __('La méthode [%s] de la boîte de saisie n\'est pas disponible.', 'tify'),
+                        $method
+                    )
+                );
             }
-            return $metabox->{$name}(...$arguments);
-        } catch (Exception $e) {
-            throw new BadMethodCallException(
-                sprintf(__('La méthode [%s] de metabox n\'est pas disponible.', 'tify'), $name)
-            );
+        } else {
+            return parent::__call($method, $parameters);
         }
     }
 }

@@ -333,6 +333,7 @@ class TemplateFactory extends ParamsBag implements TemplateFactoryContract
         if (func_num_args() === 0) {
             return $viewer;
         }
-        return $viewer->make("_override::{$view}", $data);
+
+        return $viewer->render($view, $data);
     }
 }

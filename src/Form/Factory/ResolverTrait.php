@@ -16,10 +16,8 @@ use tiFy\Contracts\Form\FactoryOptions;
 use tiFy\Contracts\Form\FactoryRequest;
 use tiFy\Contracts\Form\FactorySession;
 use tiFy\Contracts\Form\FactoryValidation;
-use tiFy\Contracts\Form\FactoryView;
 use tiFy\Contracts\Form\FormFactory;
-use tiFy\Contracts\View\ViewController;
-use tiFy\Contracts\View\ViewEngine;
+use tiFy\Contracts\View\Engine as ViewEngine;
 use tiFy\Contracts\Form\FactoryResolver;
 
 /**
@@ -50,7 +48,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactoryAddons|AddonFactory[]
      */
@@ -60,7 +58,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactoryButtons|ButtonController[]
      */
@@ -70,7 +68,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return mixed|FactoryEvents
      */
@@ -87,7 +85,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactoryField
      */
@@ -101,7 +99,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactoryFields|FactoryField[]
      */
@@ -111,7 +109,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FormFactory
      */
@@ -121,7 +119,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactoryGroup|null
      */
@@ -132,7 +130,7 @@ trait ResolverTrait
 
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactoryGroups|FactoryGroup[]
      */
@@ -142,7 +140,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactoryNotices
      */
@@ -152,7 +150,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return mixed
      */
@@ -166,7 +164,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactoryOptions
      */
@@ -176,7 +174,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactoryRequest
      */
@@ -186,7 +184,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return mixed
      */
@@ -196,7 +194,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactorySession
      */
@@ -206,7 +204,7 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @return FactoryValidation
      */
@@ -216,19 +214,19 @@ trait ResolverTrait
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @return FactoryView|ViewController|ViewEngine
+     * @return ViewEngine|string
      */
-    public function viewer($view = null, $data = [])
+    public function viewer(?string $view = null, array $data = [])
     {
         /** @var ViewEngine $viewer */
         $viewer = $this->resolve("factory.viewer.{$this->form()->name()}");
 
-        if (is_null($view)) :
+        if (is_null($view)) {
             return $viewer;
-        endif;
+        }
 
-        return $viewer->make("_override::{$view}", $data);
+        return $viewer->render($view, $data);
     }
 }

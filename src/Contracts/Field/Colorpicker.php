@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface Colorpicker extends FieldFactory
+interface Colorpicker extends FieldDriver
 {
 
 }

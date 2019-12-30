@@ -2,7 +2,7 @@
 /**
  * Champ de recherche.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\ListTable\Viewer $this
+ * @var tiFy\Template\Templates\ListTable\View $this
  */
 ?>
 <p <?php echo $this->htmlAttrs($this->search()->get('attrs', [])); ?>>

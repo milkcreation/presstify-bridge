@@ -2,7 +2,7 @@
 
 namespace tiFy\Wordpress\Contracts\Field;
 
-interface MediaFile extends FieldFactory
+interface MediaFile extends FieldDriver
 {
 
 }

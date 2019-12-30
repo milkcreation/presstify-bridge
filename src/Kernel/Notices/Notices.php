@@ -1,11 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Kernel\Notices;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+use Illuminate\Support\{Arr, Str};
 use tiFy\Contracts\Kernel\Notices as NoticesContract;
-use tiFy\Contracts\View\ViewEngine;
+use tiFy\Support\Proxy\View;
 
 class Notices implements NoticesContract
 {
@@ -22,7 +21,7 @@ class Notices implements NoticesContract
     protected $items = [];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function add($type, $message = '', $datas = [])
     {
@@ -41,7 +40,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function all()
     {
@@ -49,7 +48,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function clear($type = null)
     {
@@ -57,7 +56,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function count($type)
     {
@@ -75,7 +74,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function get($type)
     {
@@ -83,7 +82,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function has($type)
     {
@@ -91,7 +90,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getDatas($type = null)
     {
@@ -110,7 +109,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getMessages($type = null)
     {
@@ -129,7 +128,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getTypes()
     {
@@ -137,7 +136,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function hasType($type)
     {
@@ -145,7 +144,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function query($type, $query_args = [])
     {
@@ -168,7 +167,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function render($type)
     {
@@ -183,7 +182,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function setType($type)
     {
@@ -193,7 +192,7 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function setTypes($types = ['error', 'warning', 'info', 'success'])
     {
@@ -201,33 +200,30 @@ class Notices implements NoticesContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function viewer($view = null, $data = [])
+    public function viewer(?string $view = null, array $data = [])
     {
         $alias = 'notices.viewer' . spl_object_hash($this);
 
-        /** @var ViewEngine $viewer */
-        if (!app()->has($alias)) :
+        if (!app()->has($alias)) {
             /** @var Notices $notices */
             $notices = app('notices');
 
-            $directory = class_info($notices)->getDirname() . '/views';
-            $override_dir = (($override_dir = class_info($this)->getDirname() . '/views') && is_dir($override_dir))
-                ? $override_dir
-                : $directory;
+            $viewer = View::getPlatesEngine([
+                'directory' => class_info($notices)->getDirname() . '/views',
+                'override_dir' => ($override_dir = class_info($this)->getDirname() . '/views') && is_dir($override_dir)
+                    ? $override_dir
+                    : null
+            ]);
+        } else {
+            $viewer = app()->get($alias);
+        }
 
-            $viewer = view()
-                ->setDirectory($directory)
-                ->setOverrideDir($override_dir);
-        else :
-           $viewer =  app()->get($alias);
-        endif;
-
-        if (is_null($view)) :
+        if (is_null($view)) {
             return $viewer;
-        endif;
+        }
 
-        return $viewer->make("_override::{$view}", $data);
+        return $viewer->render($view, $data);
     }
 }

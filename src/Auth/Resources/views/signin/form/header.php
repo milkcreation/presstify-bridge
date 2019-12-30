@@ -2,7 +2,7 @@
 /**
  * Formulaire d'authentification | Entête.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Auth\Signin\Viewer $this
+ * @var tiFy\Auth\Signin\SigninView $this
  */
 ?>
 <?php /* if ($infos = $this->getMessages('info')) :

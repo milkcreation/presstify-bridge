@@ -4,11 +4,9 @@ namespace tiFy\Routing\Strategy;
 
 use League\Route\Strategy\ApplicationStrategy;
 use League\Route\Route;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\{ResponseInterface as PsrResponse, ServerRequestInterface as PsrRequest};
 use Symfony\Component\HttpFoundation\Response as SfResponse;
 use tiFy\Contracts\Routing\Route as RouteContract;
-use tiFy\Contracts\View\ViewController;
 use tiFy\Http\Response;
 
 class App extends ApplicationStrategy
@@ -26,7 +24,7 @@ class App extends ApplicationStrategy
     /**
      * @inheritDoc
      */
-    public function invokeRouteCallable(Route $route, ServerRequestInterface $request): ResponseInterface
+    public function invokeRouteCallable(Route $route, PsrRequest $request): PsrResponse
     {
         /** @var RouteContract $route */
         $route->setCurrent();
@@ -37,9 +35,7 @@ class App extends ApplicationStrategy
         array_push($args, $request);
         $resolved = $controller(...$args);
 
-        if ($resolved instanceof ViewController) {
-            $response = Response::create((string)$resolved);
-        } elseif ($resolved instanceof ResponseInterface) {
+        if ($resolved instanceof PsrResponse) {
             $response = Response::createFromPsr($resolved);
         } elseif ($resolved instanceof SfResponse) {
             $response = $resolved;

@@ -2,7 +2,7 @@
 /**
  * Formulaire d'authentification | Gabarit.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Auth\Signin\Viewer $this
+ * @var tiFy\Auth\Signin\SigninView $this
  */
 ?>
 <?php $this->insert('form/header', $this->all()); ?>

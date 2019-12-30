@@ -5,6 +5,7 @@ namespace tiFy\Form;
 use LogicException;
 use tiFy\Contracts\{Form\FormFactory, Form\AddonFactory};
 use tiFy\Metabox\{MetaboxDriver, MetaboxView};
+use tiFy\Support\Proxy\View;
 
 abstract class AddonMetaboxDriver extends MetaboxDriver
 {
@@ -66,20 +67,17 @@ abstract class AddonMetaboxDriver extends MetaboxDriver
     public function viewer(?string $view = null, array $data = [])
     {
         if (!$this->viewer) {
-            $defaultDir = "{$this->form()->viewer()->getDirectory()}/addon/{$this->addon()->name()}/metabox";
-            $fallbackDir = $this->get('viewer.override_dir') ?: $defaultDir;
-
-            $this->viewer = view()
-                ->setDirectory($defaultDir)
-                ->setOverrideDir($fallbackDir)
-                ->setController(MetaboxView::class)
-                ->setParam('metabox', $this);
+            $this->viewer = View::getPlatesEngine(array_merge([
+                'directory' => "{$this->form()->viewer()->getDirectory()}/addon/{$this->addon()->name()}/metabox",
+                'factory'   => MetaboxView::class,
+                'metabox'   => $this
+            ], $this->get('viewer', [])));
         }
 
         if (func_num_args() === 0) {
             return $this->viewer;
         }
 
-        return $this->viewer->make("_override::{$view}", $data);
+        return $this->viewer->render($view, $data);
     }
 }

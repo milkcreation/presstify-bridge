@@ -2,8 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-use BadMethodCallException;
-use tiFy\Contracts\View\ViewController;
+use tiFy\Contracts\View\PlatesFactory;
 
 /**
  * @method string after()
@@ -14,17 +13,7 @@ use tiFy\Contracts\View\ViewController;
  * @method string getId()
  * @method string getIndex()
  */
-interface PartialView extends ViewController
+interface PartialView extends PlatesFactory
 {
-    /**
-     * Délégation d'appel des méthodes permises du controleur de portion d'affichage.
-     *
-     * @param string $name Nom de la méthode à appeler.
-     * @param array $arguments Liste des variables passées en argument.
-     *
-     * @return mixed
-     *
-     * @throws BadMethodCallException
-     */
-    public function __call($name, $arguments);
+
 }

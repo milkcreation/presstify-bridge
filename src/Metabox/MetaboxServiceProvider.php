@@ -7,8 +7,8 @@ use tiFy\Contracts\Metabox\{MetaboxContext as MetaboxContextContract,
     MetaboxDriver as MetaboxDriverContract,
     MetaboxScreen as MetaboxScreenContract,
     MetaboxView as MetaboxViewContract};
-use tiFy\Metabox\Contexts\{TabContext};
-use tiFy\Metabox\Drivers\{
+use tiFy\Metabox\Context\TabContext;
+use tiFy\Metabox\Driver\{
     Color\Color as ColorDriver,
     CustomHeader\CustomHeader as CustomHeaderDriver,
     Excerpt\Excerpt as ExcerptDriver,
@@ -59,15 +59,15 @@ class MetaboxServiceProvider extends ServiceProvider
             return new MetaboxScreen();
         });
 
-        $this->registerContexts();
+        $this->registerContext();
 
-        $this->registerDrivers();
+        $this->registerDriver();
     }
 
     /**
      * @inheritDoc
      */
-    public function registerContexts(): void
+    public function registerContext(): void
     {
         $this->getContainer()->add("metabox.context.tab", function () {
             return new TabContext();
@@ -77,7 +77,7 @@ class MetaboxServiceProvider extends ServiceProvider
     /**
      * @inheritDoc
      */
-    public function registerDrivers(): void
+    public function registerDriver(): void
     {
         $this->getContainer()->add('metabox.driver.color', function () {
             return new ColorDriver();

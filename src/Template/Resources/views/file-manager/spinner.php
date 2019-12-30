@@ -2,7 +2,7 @@
 /**
  * Gestionnaire de fichiers > Indicateur de chargement.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\FileManager\Viewer $this
+ * @var tiFy\Template\Templates\FileManager\View $this
  */
 ?>
 <span class="FileManager-spinner">

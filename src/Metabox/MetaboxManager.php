@@ -125,9 +125,11 @@ class MetaboxManager implements MetaboxManagerContract
             $screens = [$screen];
         }
 
-        return (new Collection($this->metaboxes))->filter(function (MetaboxDriver $box) use ($context, $screens) {
+        $collection = (new Collection($this->metaboxes))->filter(function (MetaboxDriver $box) use ($context, $screens) {
             return ($box->context() === $context) && in_array($box->screen(), array_values($screens));
         })->all();
+
+        return $collection;
     }
 
     /**

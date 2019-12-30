@@ -22,7 +22,7 @@ use tiFy\Contracts\Partial\{
     Table as TableContract
 };
 use tiFy\Wordpress\Contracts\Partial\MediaLibrary as MediaLibraryContract;
-use tiFy\Wordpress\Partial\Partials\{
+use tiFy\Wordpress\Partial\Driver\{
     Accordion\Accordion,
     Breadcrumb\Breadcrumb,
     CookieNotice\CookieNotice,

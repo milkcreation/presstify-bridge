@@ -2,7 +2,7 @@
 /**
  * Authentification | Lien vers l'interface de mot de passe oublié.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Auth\Signin\Viewer $this
+ * @var tiFy\Auth\Signin\SigninView $this
  */
 ?>
 <a  href="<?php echo wp_lostpassword_url($this->get('lost_password_link.redirect', '')); ?>\"

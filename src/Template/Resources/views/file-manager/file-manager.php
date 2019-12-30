@@ -2,7 +2,7 @@
 /**
  * Gestionnaire de fichiers.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\FileManager\Viewer $this
+ * @var tiFy\Template\Templates\FileManager\View $this
  */
 ?>
 <div class="wrap">

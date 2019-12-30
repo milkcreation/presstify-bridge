@@ -5,6 +5,7 @@ namespace tiFy\Mail;
 use tiFy\Container\ServiceProvider;
 use tiFy\Mail\Adapter\PhpMailer as AdapterPhpMailer;
 use PHPMailer\PHPMailer\PHPMailer;
+use tiFy\Support\Proxy\View;
 
 class MailServiceProvider extends ServiceProvider
 {
@@ -13,10 +14,10 @@ class MailServiceProvider extends ServiceProvider
      * @var string[]
      */
     protected $provides = [
-        'mail.queue',
         'mailer',
+        'mail.queue',
         'mailer.library',
-        'mailer.message.viewer',
+        'mailer.viewer',
     ];
 
     /**
@@ -42,14 +43,11 @@ class MailServiceProvider extends ServiceProvider
             return new MailQueue();
         });
 
-        $this->getContainer()->add('mailer.message.viewer', function($attrs = []) {
-            $default_dir = __DIR__ . '/Resources/views';
-            $override_dir = $attrs['override_dir'] ?? '';
-
-            return view()
-                ->setDirectory($default_dir)
-                ->setController(MailerMessageView::class)
-                ->setOverrideDir(($override_dir && is_dir($override_dir)) ? $override_dir : $default_dir);
+        $this->getContainer()->add('mailer.viewer', function(array $attrs = []) {
+            return View::getPlatesEngine(array_merge([
+                'directory' => __DIR__ . '/Resources/views',
+                'factory'   => MailerView::class
+            ], $attrs));
         });
     }
 }

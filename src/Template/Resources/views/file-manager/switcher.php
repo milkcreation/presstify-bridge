@@ -2,7 +2,7 @@
 /**
  * Gestionnaire de fichiers > Bouton de bascule du type de vue.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\FileManager\Viewer $this
+ * @var tiFy\Template\Templates\FileManager\View $this
  */
 ?>
 <ul class="FileManager-switcher" data-control="file-manager.switcher">

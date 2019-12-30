@@ -16,25 +16,6 @@ class MailerConfirmationMetabox extends AddonMetaboxDriver
     /**
      * @inheritDoc
      */
-    public function content(): string
-    {
-        $this->set([
-            'option_names'  => $this->optionNames,
-            'option_values' => [
-                'confirmation' => get_option($this->optionNames['confirmation'], 'off') ?: 'off',
-                'sender'       => array_merge([
-                    'email' => get_option('admin_email'),
-                    'name'  => '',
-                ], get_option($this->optionNames['sender']) ?: []),
-            ],
-        ]);
-
-        return (string)$this->viewer('confirmation', $this->all());
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function defaults(): array
     {
         return array_merge(parent::defaults(), [
@@ -52,5 +33,24 @@ class MailerConfirmationMetabox extends AddonMetaboxDriver
         $this->optionNames = $this->addon()->params('option_names', []);
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function render(): string
+    {
+        $this->set([
+            'option_names'  => $this->optionNames,
+            'option_values' => [
+                'confirmation' => get_option($this->optionNames['confirmation'], 'off') ?: 'off',
+                'sender'       => array_merge([
+                    'email' => get_option('admin_email'),
+                    'name'  => '',
+                ], get_option($this->optionNames['sender']) ?: []),
+            ],
+        ]);
+
+        return (string)$this->viewer('confirmation', $this->all());
     }
 }

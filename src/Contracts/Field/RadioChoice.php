@@ -3,7 +3,7 @@
 namespace tiFy\Contracts\Field;
 
 use tiFy\Contracts\Support\ParamsBag;
-use tiFy\Field\Fields\{
+use tiFy\Field\Driver\{
     Label\Label,
     Radio\Radio
 };

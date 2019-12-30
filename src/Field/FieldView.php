@@ -5,7 +5,7 @@ namespace tiFy\Field;
 use Exception;
 use BadMethodCallException;
 use tiFy\Contracts\Field\FieldView as FieldViewContract;
-use tiFy\View\ViewController;
+use tiFy\View\Factory\PlatesFactory;
 
 /**
  * @method string after()
@@ -18,7 +18,7 @@ use tiFy\View\ViewController;
  * @method string getName()
  * @method string getValue()
  */
-class FieldView extends ViewController implements FieldViewContract
+class FieldView extends PlatesFactory implements FieldViewContract
 {
     /**
      * Liste des méthodes héritées.
@@ -39,26 +39,21 @@ class FieldView extends ViewController implements FieldViewContract
     /**
      * @inheritDoc
      */
-    public function __call($name, $arguments)
+    public function __call($method, $parameters)
     {
-        try {
-            if (in_array($name, $this->mixins)) {
-                return call_user_func_array([$this->engine->params('field'), $name], $arguments);
-            } else {
+        if (in_array($method, $this->mixins)) {
+            try {
+                return call_user_func_array([$this->engine->params('field'), $method], $parameters);
+            } catch (Exception $e) {
                 throw new BadMethodCallException(
                     sprintf(
-                        __('La méthode %s du controleur de champs n\'est pas permise.', 'tify'),
-                        $name
+                        __('La méthode [%s] du champ n\'est pas disponible.', 'tify'),
+                        $method
                     )
                 );
             }
-        } catch (Exception $e) {
-            throw new BadMethodCallException(
-                sprintf(
-                    __('La méthode %s du controleur de champs n\'est pas disponible.', 'tify'),
-                    $name
-                )
-            );
+        } else {
+            return parent::__call($method, $parameters);
         }
     }
 }

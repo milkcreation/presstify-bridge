@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Form;
 
-use tiFy\Contracts\View\ViewEngine;
+use tiFy\Contracts\View\Engine as ViewEngine;
 
 interface FactoryResolver
 {
@@ -127,7 +127,7 @@ interface FactoryResolver
      * @param null|string $view Nom de qualification du gabarit.
      * @param array $data Liste des variables passées en argument.
      *
-     * @return FactoryView|ViewEngine
+     * @return ViewEngine|string
      */
-    public function viewer($view = null, $data = []);
+    public function viewer(?string $view = null, array $data = []);
 }

@@ -1,70 +1,85 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Form\Factory;
 
-use tiFy\Contracts\Form\FactoryView as FactoryViewContract;
-use tiFy\View\ViewController;
+use BadMethodCallException;
+use Exception;
+use tiFy\Contracts\Form\{FormFactory, FactoryView as FactoryViewContract};
+use tiFy\View\Factory\PlatesFactory;
 use Closure;
 
-class View extends ViewController implements FactoryViewContract
+/**
+ * @method string csrf()
+ * @method string tagName()
+ */
+class View extends PlatesFactory implements FactoryViewContract
 {
     /**
      * Liste des méthodes héritées.
      * @var array
      */
-    protected $mixins = [];
+    protected $mixins = [
+        'csrf',
+        'tagName'
+    ];
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function __call($name, $arguments)
+    public function __call($method, $parameters)
     {
-        if (in_array($name, $this->mixins)) :
-            return call_user_func_array(
-                [$this->engine->params('form'), $name],
-                $arguments
-            );
-        endif;
-
-        return null;
+        if (in_array($method, $this->mixins)) {
+            try {
+                return call_user_func_array([$this->engine->params('form'), $method], $parameters);
+            } catch (Exception $e) {
+                throw new BadMethodCallException(
+                    sprintf(
+                        __('La méthode [%s] du formulaire n\'est pas disponible.', 'tify'),
+                        $method
+                    )
+                );
+            }
+        } else {
+            return parent::__call($method, $parameters);
+        }
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function after()
+    public function after(): string
     {
-        if ($content = $this->form()->get('after')) :
-            if ($content instanceof Closure) :
+        if ($content = $this->form()->get('after')) {
+            if ($content instanceof Closure) {
                 return call_user_func($content);
-            elseif (is_string($content)) :
+            } elseif (is_string($content)) {
                 return $content;
-            endif;
-        endif;
+            }
+        }
 
         return '';
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function before()
+    public function before(): string
     {
-        if ($content = $this->form()->get('before')) :
-            if ($content instanceof Closure) :
+        if ($content = $this->form()->get('before')) {
+            if ($content instanceof Closure) {
                 return call_user_func($content);
-            elseif (is_string($content)) :
+            } elseif (is_string($content)) {
                 return $content;
-            endif;
-        endif;
+            }
+        }
 
         return '';
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function form()
+    public function form(): FormFactory
     {
         return $this->engine->params('form');
     }

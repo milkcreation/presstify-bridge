@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface DatetimeJs extends FieldFactory
+interface DatetimeJs extends FieldDriver
 {
 
 }

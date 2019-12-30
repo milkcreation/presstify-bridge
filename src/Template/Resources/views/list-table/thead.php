@@ -2,7 +2,7 @@
 /**
  * Entête de la table.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\ListTable\Viewer $this
+ * @var tiFy\Template\Templates\ListTable\View $this
  * @var tiFy\Template\Templates\ListTable\Contracts\Column $column
  */
 ?>

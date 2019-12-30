@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface Repeater extends FieldFactory
+interface Repeater extends FieldDriver
 {
     /**
      * Récupération de l'url de traitement de la requête XHR.

@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Modal extends PartialFactory
+interface Modal extends PartialDriver
 {
     /**
      * Récupération de l'url de traitement de la requête XHR.

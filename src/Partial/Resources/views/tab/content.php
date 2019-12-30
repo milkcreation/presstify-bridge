@@ -2,7 +2,7 @@
 /**
  * Tab - Liste des contenus.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Partial\Partials\Tab\TabView $this
+ * @var tiFy\Partial\Driver\Tab\TabView $this
  * @var tiFy\Contracts\Partial\TabItem[] $items
  * @var tiFy\Contracts\Partial\TabItem $item
  * @var int $depth

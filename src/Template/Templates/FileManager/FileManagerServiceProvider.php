@@ -19,7 +19,8 @@ use tiFy\Template\Templates\FileManager\Contracts\{
     FileTag,
     Params,
     Sidebar};
-use tiFy\View\ViewEngine;
+use tiFy\Contracts\View\Engine as ViewEngine;
+use tiFy\Support\Proxy\View as ProxyView;
 
 class FileManagerServiceProvider extends BaseServiceProvider
 {
@@ -283,19 +284,15 @@ class FileManagerServiceProvider extends BaseServiceProvider
             $params = $this->factory->get('viewer', []);
 
             if (!$params instanceof ViewEngine) {
-                $viewer = new ViewEngine(array_merge([
-                    'directory' => template()->resourcesDir('/views/file-manager')
-                ], $params));
-                $viewer->setController(Viewer::class);
-
-                if (!$viewer->getOverrideDir()) {
-                    $viewer->setOverrideDir(template()->resourcesDir('/views/file-manager'));
-                }
+                $viewer = ProxyView::getPlatesEngine(array_merge([
+                    'directory' => template()->resourcesDir('/views/file-manager'),
+                    'factory'   => View::class
+                ], (array) $params));
             } else {
                 $viewer = $params;
             }
 
-            $viewer->set('factory', $this->factory);
+            $viewer->params(['template' => $this->factory]);
 
             return $viewer;
         });

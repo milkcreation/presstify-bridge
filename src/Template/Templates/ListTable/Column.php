@@ -53,7 +53,7 @@ class Column extends ParamsBag implements ColumnContract
      */
     public function getTemplate(string $default = 'tbody-col'): string
     {
-        return $this->factory->viewer()->exists('_override::tbody-col_' . $this->getName())
+        return $this->factory->viewer()->exists('tbody-col_' . $this->getName())
             ? 'tbody-col_' . $this->getName() : $default;
     }
 

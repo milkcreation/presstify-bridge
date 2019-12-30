@@ -3,15 +3,14 @@
 namespace tiFy\Wordpress\Routing\Strategy;
 
 use League\Route\Route;
-use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
+use Psr\Http\Message\{ResponseInterface as PsrResponse, ServerRequestInterface as PsrRequest};
 use Symfony\Component\HttpFoundation\Response as SfResponse;
-use tiFy\Contracts\View\ViewController;
 use tiFy\Http\Response;
 use tiFy\Support\Proxy\Router;
 use tiFy\Routing\Strategy\App as AppStrategy;
 use tiFy\Wordpress\Contracts\Routing\Route as RouteContract;
 use Wp_Query;
-use Zend\Diactoros\Response as PsrResponse;
+use Zend\Diactoros\Response as ZendResponse;
 
 class Template extends AppStrategy
 {
@@ -52,7 +51,7 @@ class Template extends AppStrategy
     /**
      * @inheritDoc
      */
-    public function invokeRouteCallable(Route $route, ServerRequestInterface $request): ResponseInterface
+    public function invokeRouteCallable(Route $route, PsrRequest $request): PsrResponse
     {
         /** @var RouteContract $route */
         $route->setCurrent();
@@ -83,9 +82,7 @@ class Template extends AppStrategy
         add_action('template_redirect', function () use ($controller, $args) {
             $resolved = $controller(...$args);
 
-            if ($resolved instanceof ViewController) {
-                $response = Response::create((string)$resolved);
-            } elseif ($resolved instanceof ResponseInterface) {
+            if ($resolved instanceof PsrResponse) {
                 $response = Response::createFromPsr($resolved);
             } elseif ($resolved instanceof SfResponse) {
                 $response = $resolved;
@@ -101,6 +98,6 @@ class Template extends AppStrategy
             exit;
         }, 50);
 
-        return $this->applyDefaultResponseHeaders((new PsrResponse())->withStatus(100));
+        return $this->applyDefaultResponseHeaders((new ZendResponse())->withStatus(100));
     }
 }

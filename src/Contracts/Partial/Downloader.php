@@ -5,7 +5,7 @@ namespace tiFy\Contracts\Partial;
 use Exception;
 use Symfony\Component\HttpFoundation\Response as Response;
 
-interface Downloader extends PartialFactory
+interface Downloader extends PartialDriver
 {
     /**
      * Récupération de l'url de requête HTTP.

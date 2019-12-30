@@ -16,11 +16,11 @@ interface Field extends Manager
      * @param array $attrs Liste des attributs de configuration personnalisés lorsque l'identifiant de qualification
      *                     est défini.
      *
-     * @return FieldFactory|null
+     * @return FieldDriver|null
      *
      * @throws InvalidArgumentException
      */
-    public function get(...$args): ?FieldFactory;
+    public function get(...$args): ?FieldDriver;
 
     /**
      * Déclaration des instance de portions d'affichage par défaut.

@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface Suggest extends FieldFactory
+interface Suggest extends FieldDriver
 {
     /**
      * Récupération de l'url de traitement de la requête XHR.
@@ -20,7 +20,7 @@ interface Suggest extends FieldFactory
      *
      * @return static
      */
-    public function setUrl(?string $url =  null): FieldFactory;
+    public function setUrl(?string $url =  null): FieldDriver;
 
     /**
      * Contrôleur de traitement de la requête XHR.

@@ -4,7 +4,7 @@ namespace tiFy\Wordpress\Contracts\Partial;
 
 use tiFy\Contracts\Partial\CookieNotice as BaseCookieNotice;
 
-interface CookieNotice extends BaseCookieNotice, PartialFactory
+interface CookieNotice extends BaseCookieNotice, PartialDriver
 {
 
 }

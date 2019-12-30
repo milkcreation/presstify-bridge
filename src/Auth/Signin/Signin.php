@@ -2,9 +2,9 @@
 
 namespace tiFy\Auth\Signin;
 
-use tiFy\Contracts\{Form\FormFactory, View\ViewController, View\ViewEngine};
+use tiFy\Contracts\{Form\FormFactory, View\PlatesEngine};
 use tiFy\Contracts\Auth\{Auth, Signin as SigninContract};
-use tiFy\Support\{Arr, ParamsBag, Proxy\Form, Proxy\Request};
+use tiFy\Support\{Arr, ParamsBag, Proxy\Form, Proxy\Request, Proxy\View};
 
 class Signin extends ParamsBag implements SigninContract
 {
@@ -34,7 +34,7 @@ class Signin extends ParamsBag implements SigninContract
 
     /**
      * Instance du gestionnaire de gabarits d'affichage.
-     * @var ViewEngine
+     * @var PlatesEngine
      */
     protected $viewer;
 
@@ -347,21 +347,22 @@ class Signin extends ParamsBag implements SigninContract
      * @param string|null view Nom de qualification du gabarit.
      * @param array $data Liste des variables passées en argument.
      *
-     * @return ViewController|ViewEngine
+     * @return PlatesEngine|string
      */
     public function viewer(?string $view = null, array $data = [])
     {
         if (!$this->viewer) {
-            $this->viewer = view()->setDirectory($this->manager()->resourcesDir('/views/signin'))
-                ->setController(Viewer::class);
-
-            $this->viewer->params(['signin' => $this]);
+            $this->viewer = View::getPlatesEngine([
+                'directory' => $this->manager()->resourcesDir('/views/signin'),
+                'factory'   => SigninView::class,
+                'signin' => $this
+            ]);
         }
 
         if (func_num_args() === 0) {
             return $this->viewer;
         }
 
-        return $this->viewer->make($view, $data);
+        return $this->viewer->render($view, $data);
     }
 }

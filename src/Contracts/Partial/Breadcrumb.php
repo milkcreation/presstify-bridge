@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Breadcrumb extends PartialFactory
+interface Breadcrumb extends PartialDriver
 {
     /**
      * Ajout d'un élément de contenu au fil d'arianne.

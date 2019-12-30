@@ -2,7 +2,7 @@
 /**
  * Interface de bascule d'affichage des colonnes de la table.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\ListTable\Viewer $this
+ * @var tiFy\Template\Templates\ListTable\View $this
  * @var tiFy\Template\Templates\ListTable\Contracts\Columns $cols
  * @var tiFy\Template\Templates\ListTable\Contracts\Column $col
  */

@@ -2,7 +2,7 @@
 /**
  * Pagination - Liste des numéros de page.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Partial\Partials\Pagination\PaginationView $this
+ * @var tiFy\Partial\Driver\Pagination\PaginationView $this
  */
 ?>
 <?php foreach ($this->get('numbers', []) as $number) : ?>

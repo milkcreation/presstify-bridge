@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Column;
 
-use tiFy\Contracts\View\ViewController;
-use tiFy\Contracts\View\ViewEngine;
+use tiFy\Contracts\View\PlatesEngine;
 
 interface ColumnDisplayInterface
 {
@@ -49,7 +48,7 @@ interface ColumnDisplayInterface
      * @param null|string view Nom de qualification du gabarit.
      * @param array $data Liste des variables passées en argument.
      *
-     * @return ViewEngine|ViewController
+     * @return PlatesEngine|string
      */
     public function viewer($view = null, $data = []);
 }

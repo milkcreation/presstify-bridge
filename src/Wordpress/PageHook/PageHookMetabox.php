@@ -51,6 +51,8 @@ class PageHookMetabox extends MetaboxDriver
     /**
      * Définition du gestionnaire de pages d'accroche.
      *
+     * @param PageHook $pageHook
+     *
      * @return $this
      */
     public function setPageHook(PageHook $pageHook): self

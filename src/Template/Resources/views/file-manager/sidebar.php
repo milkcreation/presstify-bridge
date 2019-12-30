@@ -2,7 +2,7 @@
 /**
  * Gestionnaire de fichiers > Barre latérale.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\FileManager\Viewer $this
+ * @var tiFy\Template\Templates\FileManager\View $this
  * @var tiFy\Template\Templates\FileManager\Contracts\FileInfo $file
  */
 ?>

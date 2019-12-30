@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Mail;
 
@@ -8,7 +8,7 @@ use tiFy\Contracts\Mail\LibraryAdapter;
 use tiFy\Contracts\Mail\Mailer as MailerContract;
 use tiFy\Contracts\Mail\MailQueue;
 use tiFy\Support\ParamsBag;
-use tiFy\View\ViewEngine;
+use tiFy\View\Engine\Engine as ViewEngine;
 
 class Mailer extends ParamsBag implements MailerContract
 {
@@ -372,14 +372,16 @@ class Mailer extends ParamsBag implements MailerContract
     /**
      * @inheritdoc
      */
-    public function viewer($view = null, $data = [])
+    public function viewer(?string $view = null, array $data = [])
     {
         if (is_null($this->viewer)) {
-            $this->viewer = app()->get('mailer.message.viewer', $this->pull('viewer', []));
+            $this->viewer = app()->get('mailer.viewer', $this->pull('viewer', []));
         }
+
         if (func_num_args() === 0) {
             return $this->viewer;
         }
-        return $this->viewer->make("_override::{$view}", $data);
+
+        return $this->viewer->render($view, $data);
     }
 }

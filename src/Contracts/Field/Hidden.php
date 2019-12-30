@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface Hidden extends FieldFactory
+interface Hidden extends FieldDriver
 {
 
 }

@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Progress extends PartialFactory
+interface Progress extends PartialDriver
 {
 
 }

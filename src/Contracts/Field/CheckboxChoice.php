@@ -3,10 +3,7 @@
 namespace tiFy\Contracts\Field;
 
 use tiFy\Contracts\Support\ParamsBag;
-use tiFy\Field\Fields\{
-    Label\Label,
-    Checkbox\Checkbox
-};
+use tiFy\Field\Driver\{Label\Label, Checkbox\Checkbox};
 
 interface CheckboxChoice extends ParamsBag
 {

@@ -3,7 +3,7 @@
 namespace tiFy\Wordpress\Metabox;
 
 use tiFy\Contracts\Metabox\{MetaboxDriver, MetaboxManager, MetaboxScreen as MetaboxScreenContract};
-use tiFy\Wordpress\Metabox\Drivers\{Filefeed\Filefeed, Imagefeed\Imagefeed, Videofeed\Videofeed};
+use tiFy\Wordpress\Metabox\Driver\{Filefeed\Filefeed, Imagefeed\Imagefeed, Videofeed\Videofeed};
 use tiFy\Wordpress\Routing\WpScreen;
 use tiFy\Support\Proxy\{PostType, Request};
 use WP_Post;

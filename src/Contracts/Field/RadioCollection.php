@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface RadioCollection extends FieldFactory
+interface RadioCollection extends FieldDriver
 {
 
 }

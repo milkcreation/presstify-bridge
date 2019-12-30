@@ -16,7 +16,7 @@ use tiFy\Contracts\Partial\{
     Notice,
     Pagination,
     Partial as PartialContract,
-    PartialFactory,
+    PartialDriver,
     Pdfviewer,
     Progress,
     Sidebar,
@@ -58,7 +58,7 @@ class Partial extends Manager implements PartialContract
 
     /**
      * Liste des éléments déclarées.
-     * @var PartialFactory[]
+     * @var PartialDriver[]
      */
     protected $items = [];
 
@@ -70,14 +70,14 @@ class Partial extends Manager implements PartialContract
 
     /**
      * Instances des éléments par alias de qualification et indexés par identifiant de qualification.
-     * @var PartialFactory[][]
+     * @var PartialDriver[][]
      */
     protected $instances = [];
 
     /**
      * @inheritDoc
      */
-    public function get(...$args): ?PartialFactory
+    public function get(...$args): ?PartialDriver
     {
         $alias = $args[0] ?? null;
         if (!$alias || !isset($this->items[$alias])) {
@@ -169,7 +169,7 @@ class Partial extends Manager implements PartialContract
      */
     public function walk(&$item, $key = null): void
     {
-        if ($item instanceof PartialFactory) {
+        if ($item instanceof PartialDriver) {
             $item->prepare((string)$key, $this);
 
             $this->instances[$key] = [$item];
@@ -179,7 +179,7 @@ class Partial extends Manager implements PartialContract
                 sprintf(
                     __('La déclaration de la portion d\'affichage [%s] devrait être une instance de [%s]', 'tify'),
                     $key,
-                    PartialFactory::class
+                    PartialDriver::class
                 )
             );
         }

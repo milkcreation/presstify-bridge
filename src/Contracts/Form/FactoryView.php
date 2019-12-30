@@ -1,39 +1,29 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Form;
 
-use tiFy\Contracts\View\ViewController;
+use tiFy\Contracts\View\PlatesFactory;
 
-interface FactoryView extends ViewController
+interface FactoryView extends PlatesFactory
 {
-    /**
-     * Translation d'appel des méthodes de l'application associée.
-     *
-     * @param string $name Nom de la méthode à appeler.
-     * @param array $arguments Liste des variables passées en argument.
-     *
-     * @return mixed
-     */
-    public function __call($name, $arguments);
-
     /**
      * Post-affichage.
      *
      * @return string
      */
-    public function after();
+    public function after(): string;
 
     /**
      * Pré-affichage.
      *
      * @return string
      */
-    public function before();
+    public function before(): string;
 
     /**
      * Récupération de l'instance du contrôleur de formulaire.
      *
      * @return FormFactory
      */
-    public function form();
+    public function form(): FormFactory;
 }

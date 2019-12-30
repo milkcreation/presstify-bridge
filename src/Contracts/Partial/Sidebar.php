@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Sidebar extends PartialFactory
+interface Sidebar extends PartialDriver
 {
     /**
      * Lien de bascule d'affichage de la sidebar.

@@ -5,28 +5,36 @@ namespace tiFy\Wordpress\Routing;
 use Exception;
 use FastRoute\Dispatcher as FastRoute;
 use League\Route\Dispatcher;
-use tiFy\Contracts\Routing\{Route as RouteContract, RouteGroup as RouteGroupContract, Router as RouterManager};
+use tiFy\Contracts\Routing\{
+    Route as BaseRouteContract,
+    RouteGroup as BaseRouteGroupContract,
+    Router as BaseRouterContract
+};
 use tiFy\Http\{Request, RedirectResponse};
 use tiFy\Support\Proxy\Request as req;
-use tiFy\Wordpress\Contracts\Routing\Routing as RoutingContract;
+use tiFy\Wordpress\Contracts\Routing\{
+    Route as RouteContract,
+    Routing as RoutingContract
+};
+use tiFy\Wordpress\Routing\Controller\WordpressController;
 use tiFy\Wordpress\Routing\Strategy\Template as TemplateStrategy;
 
 class Routing implements RoutingContract
 {
     /**
      * Instance du gestionnaire de routage.
-     * @var RouterManager
+     * @var BaseRouterContract
      */
     protected $manager;
 
     /**
      * CONSTRUCTEUR.
      *
-     * @param RouterManager $manager Instance du gestionnaire de routage.
+     * @param BaseRouterContract $manager Instance du gestionnaire de routage.
      *
      * @return void
      */
-    public function __construct(RouterManager $manager)
+    public function __construct(BaseRouterContract $manager)
     {
         $this->manager = $manager;
 
@@ -36,25 +44,14 @@ class Routing implements RoutingContract
 
         $this->manager->getContainer()->get('wp.wp_query');
 
-        $this->manager->getContainer()->add('router.strategy.default', function () {
-            return new TemplateStrategy();
-        });
-
-        $this->manager->getContainer()->add(
-            RouteContract::class,
-            function (string $method, string $path, callable $handler, $collection) {
-                return new Route($method, $path, $handler, $collection);
-            }
-        );
-
-        $this->manager->getContainer()->add(
-            RouteGroupContract::class,
-            function (string $prefix, callable $handler, $collection) {
-                return new RouteGroup($prefix, $handler, $collection);
-            }
-        );
+        $this->registerOverride();
 
         add_action('parse_request', function () {
+            /** @var RouteContract $default */
+            /*$default = $this->manager->get('/{path:.*}', [new WordpressController(), 'index'])
+                ->setName('wordpress');
+            $default->setWpQuery(true);*/
+
             try {
                 $response = $this->manager->dispatch(Request::convertToPsr());
 
@@ -93,5 +90,31 @@ class Routing implements RoutingContract
                 }
             }
         }, 0);
+    }
+
+    /**
+     * Déclaration des controleurs de surchage.
+     *
+     * @return void
+     */
+    public function registerOverride(): void
+    {
+        $this->manager->getContainer()->add('router.strategy.default', function () {
+            return new TemplateStrategy();
+        });
+
+        $this->manager->getContainer()->add(
+            BaseRouteContract::class,
+            function (string $method, string $path, callable $handler, $collection) {
+                return new Route($method, $path, $handler, $collection);
+            }
+        );
+
+        $this->manager->getContainer()->add(
+            BaseRouteGroupContract::class,
+            function (string $prefix, callable $handler, $collection) {
+                return new RouteGroup($prefix, $handler, $collection);
+            }
+        );
     }
 }

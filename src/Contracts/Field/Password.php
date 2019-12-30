@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface Password extends FieldFactory
+interface Password extends FieldDriver
 {
 
 }
