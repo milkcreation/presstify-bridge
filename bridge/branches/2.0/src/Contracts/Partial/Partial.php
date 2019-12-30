@@ -16,11 +16,11 @@ interface Partial extends Manager
      * @param array $attrs Liste des attributs de configuration personnalisés lorsque l'identifiant de qualification
      *                     est défini.
      *
-     * @return PartialFactory|null
+     * @return PartialDriver|null
      *
      * @throws InvalidArgumentException
      */
-    public function get(...$args): ?PartialFactory;
+    public function get(...$args): ?PartialDriver;
 
     /**
      * Déclaration des instance de portions d'affichage par défaut.

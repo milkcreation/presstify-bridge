@@ -2,7 +2,7 @@
 
 namespace tiFy\Wordpress\Contracts\Partial;
 
-interface MediaLibrary extends PartialFactory
+interface MediaLibrary extends PartialDriver
 {
 
 }

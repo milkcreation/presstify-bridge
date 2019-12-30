@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Notice extends PartialFactory
+interface Notice extends PartialDriver
 {
 
 }

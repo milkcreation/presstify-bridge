@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface ToggleSwitch extends FieldFactory
+interface ToggleSwitch extends FieldDriver
 {
 
 }

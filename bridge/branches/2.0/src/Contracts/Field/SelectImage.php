@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface SelectImage extends FieldFactory, Select
+interface SelectImage extends FieldDriver, Select
 {
 
 }

@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface TextRemaining extends FieldFactory
+interface TextRemaining extends FieldDriver
 {
 
 }

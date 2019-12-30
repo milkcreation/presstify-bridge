@@ -16,7 +16,7 @@ use tiFy\Contracts\Partial\{
     Notice as NoticeContract,
     Pagination as PaginationContract,
     Partial as PartialContract,
-    PartialFactory,
+    PartialDriver,
     Pdfviewer as PdfviewerContract,
     Progress as ProgressContract,
     Sidebar as SidebarContract,
@@ -26,7 +26,7 @@ use tiFy\Contracts\Partial\{
     Table as TableContract,
     Tag as TagContract
 };
-use tiFy\Partial\Partials\{
+use tiFy\Partial\Driver\{
     Accordion\Accordion,
     Breadcrumb\Breadcrumb,
     CookieNotice\CookieNotice,
@@ -45,7 +45,9 @@ use tiFy\Partial\Partials\{
     Spinner\Spinner,
     Tab\Tab,
     Table\Table,
-    Tag\Tag};
+    Tag\Tag
+};
+use tiFy\Support\Proxy\View;
 
 class PartialServiceProvider extends ServiceProvider
 {
@@ -74,7 +76,7 @@ class PartialServiceProvider extends ServiceProvider
         SpinnerContract::class,
         TabContract::class,
         TableContract::class,
-        TagContract::class
+        TagContract::class,
     ];
 
     /**
@@ -182,29 +184,16 @@ class PartialServiceProvider extends ServiceProvider
      */
     public function registerViewer(): void
     {
-        $this->getContainer()->add('partial.viewer', function (PartialFactory $factory) {
+        $this->getContainer()->add('partial.viewer', function (PartialDriver $driver) {
             /** @var PartialContract $manager */
             $manager = $this->getContainer()->get('partial');
-            $alias = $factory->getAlias();
 
-            $directory = $factory->get(
-                'viewer.directory',
-                config('partial.viewer.directory', $manager->resourcesDir('/views')) . "/{$alias}"
-            );
-
-            $override_dir = $factory->get(
-                'viewer.override_dir',
-                ($dir = config('partial.viewer.override_dir')) ? "{$dir}/{$alias}" : ''
-            );
-
-            return view()
-                ->setDirectory(is_dir($directory) ? $directory : null)
-                ->setController(PartialView::class)
-                ->setOverrideDir((($override_dir) && is_dir($override_dir))
-                    ? $override_dir
-                    : (is_dir($directory) ? $directory : __DIR__)
-                )
-                ->setParam('partial', $factory);
+            return View::getPlatesEngine(array_merge([
+                'directory'    => $manager->resourcesDir("/views/{$driver->getAlias()}"),
+                'engine'       => 'plates',
+                'factory'      => PartialView::class,
+                'partial'      => $driver,
+            ], config('partial.viewer', []), $driver->get('viewer', [])));
         });
     }
 }

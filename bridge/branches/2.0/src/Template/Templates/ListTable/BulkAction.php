@@ -2,7 +2,7 @@
 
 namespace tiFy\Template\Templates\ListTable;
 
-use tiFy\Field\Fields\Select\SelectChoice;
+use tiFy\Field\Driver\Select\SelectChoice;
 use tiFy\Template\Factory\FactoryAwareTrait;
 use tiFy\Template\Templates\ListTable\Contracts\BulkAction as BulkActionContract;
 

@@ -4,7 +4,7 @@ namespace tiFy\Contracts\Template;
 
 use Psr\Http\Message\ServerRequestInterface;
 use tiFy\Contracts\Support\ParamsBag;
-use tiFy\Contracts\View\ViewEngine;
+use tiFy\Contracts\View\Engine as ViewEngine;
 
 interface TemplateFactory extends ParamsBag
 {
@@ -228,7 +228,7 @@ interface TemplateFactory extends ParamsBag
      * @param string|null $view Nom de qualification du gabarit d'affichage.
      * @param array $data Liste des variables passées en argument au gabarit.
      *
-     * @return FactoryViewer|ViewEngine
+     * @return ViewEngine|string
      */
     public function viewer(?string $view = null, array $data = []);
 }

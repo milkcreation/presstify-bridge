@@ -2,7 +2,7 @@
 /**
  * Vue filtrées.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\ListTable\Viewer $this
+ * @var tiFy\Template\Templates\ListTable\View $this
  */
 ?>
 <?php if ($this->viewFilters()->exists()) : ?>

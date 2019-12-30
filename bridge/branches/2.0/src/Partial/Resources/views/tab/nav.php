@@ -2,7 +2,7 @@
 /**
  * Tab - Liste des onglets de navigation.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Partial\Partials\Tab\TabView $this
+ * @var tiFy\Partial\Driver\Tab\TabView $this
  * @var tiFy\Contracts\Partial\TabItem[] $items
  * @var int $depth
  */

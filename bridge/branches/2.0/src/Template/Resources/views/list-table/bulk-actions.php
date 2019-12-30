@@ -2,7 +2,7 @@
 /**
  * Liste des actions groupés.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\ListTable\Viewer $this
+ * @var tiFy\Template\Templates\ListTable\View $this
  * @var string $which top|bottom.
  */
 ?>

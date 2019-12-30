@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface File extends FieldFactory
+interface File extends FieldDriver
 {
 
 }

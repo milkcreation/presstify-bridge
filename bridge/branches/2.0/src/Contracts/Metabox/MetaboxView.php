@@ -2,14 +2,14 @@
 
 namespace tiFy\Contracts\Metabox;
 
-use tiFy\Contracts\View\ViewController;
+use tiFy\Contracts\View\PlatesFactory;
 
 /**
  * @method string name()
  * @method mixed params(string|array|null $key = null, mixed $default = null)
  * @method mixed value(string|null $key = null, mixed $default = null)
  */
-interface MetaboxView extends ViewController
+interface MetaboxView extends PlatesFactory
 {
 
 }

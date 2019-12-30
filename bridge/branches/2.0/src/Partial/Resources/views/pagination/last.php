@@ -2,7 +2,7 @@
 /**
  * Pagination - Lien vers la dernière page.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Partial\Partials\Pagination\PaginationView $this
+ * @var tiFy\Partial\Driver\Pagination\PaginationView $this
  */
 ?>
 <?php if ($this->getPage() < $this->getTotalPage()) : ?>

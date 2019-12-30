@@ -17,7 +17,7 @@ interface FactoryHttpController extends FactoryAwareTrait
 
     /**
      * Message de notification.
-     * @see \tiFy\Partial\Partials\Notice\Notice
+     * @see \tiFy\Partial\Driver\Notice\Notice
      *
      * @param string $message Message de notification
      * @param string $type Type de message. error|info|success|warning.

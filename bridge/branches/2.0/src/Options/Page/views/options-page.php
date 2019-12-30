@@ -1,6 +1,6 @@
 <?php
 /**
- * @var tiFy\Options\Page\OptionsPageView $this.
+ * @var tiFy\Contracts\View\PlatesFactory $this
  */
 ?>
 <div class="wrap">

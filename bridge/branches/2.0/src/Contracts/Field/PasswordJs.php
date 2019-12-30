@@ -4,7 +4,7 @@ namespace tiFy\Contracts\Field;
 
 use tiFy\Contracts\Encryption\Encrypter;
 
-interface PasswordJs extends FieldFactory
+interface PasswordJs extends FieldDriver
 {
     /**
      * Récupération du controleur d'encryptage.

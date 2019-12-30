@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface Label extends FieldFactory
+interface Label extends FieldDriver
 {
 
 }

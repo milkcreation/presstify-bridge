@@ -3,7 +3,7 @@
  * Sidebar
  * ---------------------------------------------------------------------------------------------------------------------
  * @var tiFy\Partial\PartialView $this
- * @var tiFy\Partial\Partials\Sidebar\SidebarItem[] $items
+ * @var tiFy\Partial\Driver\Sidebar\SidebarItem[] $items
  */
 ?>
 <?php $this->before(); ?>

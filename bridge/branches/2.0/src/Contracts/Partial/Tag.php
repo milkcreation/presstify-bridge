@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Tag extends PartialFactory
+interface Tag extends PartialDriver
 {
 
 }

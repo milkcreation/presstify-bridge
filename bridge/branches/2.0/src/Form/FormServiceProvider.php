@@ -27,6 +27,7 @@ use tiFy\Form\Factory\View as FactoryView;
 use tiFy\Form\Field\Html\Html as FieldHtml;
 use tiFy\Form\Field\Recaptcha\Recaptcha as FieldRecaptcha;
 use tiFy\Form\Field\Tag\Tag as FieldTag;
+use tiFy\Support\Proxy\View;
 
 class FormServiceProvider extends ServiceProvider
 {
@@ -169,16 +170,11 @@ class FormServiceProvider extends ServiceProvider
         });
 
         $this->getContainer()->add('form.factory.viewer', function (FormFactoryContract $form) {
-            $directory    = form()->resourcesDir('/views');
-            $override_dir = (($override_dir = $form->get('viewer.override_dir')) && is_dir($override_dir))
-                ? $override_dir
-                : $directory;
-
-            return view()
-                ->setDirectory($directory)
-                ->setController(FactoryView::class)
-                ->setOverrideDir($override_dir)
-                ->setParam('form', $form);
+            return View::getPlatesEngine(array_merge([
+                'directory' => form()->resourcesDir('/views'),
+                'factory' => FactoryView::class,
+                'form' => $form
+            ], $form->get('viewer', [])));
         });
     }
 
@@ -192,10 +188,6 @@ class FormServiceProvider extends ServiceProvider
         $this->getContainer()->add('form.field', function ($name, FactoryFieldContract $field) {
             return new FieldController($name, $field);
         });
-
-        /* $this->getContainer()->add('form.field.captcha', function (FactoryFieldContract $field) {
-                return new FieldCaptcha($field);
-        });*/
 
         $this->getContainer()->add('form.field.html', function ($name, FactoryFieldContract $field) {
             return new FieldHtml($name, $field);

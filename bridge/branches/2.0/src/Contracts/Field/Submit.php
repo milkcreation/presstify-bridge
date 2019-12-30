@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface Submit extends FieldFactory
+interface Submit extends FieldDriver
 {
 
 }

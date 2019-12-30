@@ -50,7 +50,6 @@ jQuery(function ($) {
     return value;
   }
 
-  /** Lancement des animations au scroll */
   $(window).scroll(function () {
     $('[data-anim].anim-scroll:not(.animated)').each(function () {
       let $target = getScrollTarget($(this));
@@ -61,7 +60,7 @@ jQuery(function ($) {
     });
   });
 
-  $(window).load(function () {
+  $(window).on('load', function () {
     $('[data-anim]:not(.anim-scroll)').each(function () {
         $(this).addClass('animated' + ' ' + $(this).data('anim'));
     });
@@ -72,7 +71,7 @@ jQuery(function ($) {
   });
 
   /* Initialisation du lancement des animations au scroll */
-  /*$(window).load( function(){
+  /*$(window).on('load', function(){
       $(this).trigger( 'scroll' );
   });*/
 });

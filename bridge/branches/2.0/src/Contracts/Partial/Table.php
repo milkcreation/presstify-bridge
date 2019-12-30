@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Table extends PartialFactory
+interface Table extends PartialDriver
 {
 
 }

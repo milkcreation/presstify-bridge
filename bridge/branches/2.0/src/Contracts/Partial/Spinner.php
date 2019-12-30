@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Spinner extends PartialFactory
+interface Spinner extends PartialDriver
 {
 
 }

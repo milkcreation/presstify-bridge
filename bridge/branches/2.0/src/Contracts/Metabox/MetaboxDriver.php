@@ -2,27 +2,23 @@
 
 namespace tiFy\Contracts\Metabox;
 
-use tiFy\Contracts\{
-    Support\ParamsBag,
-    View\ViewController,
-    View\ViewEngine
-};
+use tiFy\Contracts\{Support\ParamsBag, View\PlatesEngine};
 
 interface MetaboxDriver extends ParamsBag
 {
+    /**
+     * Résolution de sortie de la classe sous forme d'une chîane de caractères.
+     *
+     * @return string
+     */
+    public function __toString(): string;
+
     /**
      * Initialisation de la boîte de saisie.
      *
      * @return void
      */
     public function boot(): void;
-
-    /**
-     * Récupération de l'affichage du contenu de la boîte de saisie.
-     *
-     * @return string
-     */
-    public function content(): string;
 
     /**
      * Récupération de l'instance du contexte d'affichage associé.
@@ -61,6 +57,13 @@ interface MetaboxDriver extends ParamsBag
      * @return mixed
      */
     public function params($key = null, $default = null);
+
+    /**
+     * Récupération de l'affichage du contenu de la boîte de saisie.
+     *
+     * @return string
+     */
+    public function render(): string;
 
     /**
      * Récupération de l'instance de l'écran d'affichage associé.
@@ -121,7 +124,7 @@ interface MetaboxDriver extends ParamsBag
      * @param string|null view Nom de qualification du gabarit.
      * @param array $data Liste des variables passées en argument.
      *
-     * @return ViewController|ViewEngine
+     * @return PlatesEngine|string
      */
     public function viewer(?string $view = null, array $data = []);
 }

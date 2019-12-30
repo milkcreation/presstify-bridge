@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Pagination extends PartialFactory
+interface Pagination extends PartialDriver
 {
 
 }

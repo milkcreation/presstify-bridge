@@ -3,10 +3,11 @@
 namespace tiFy\Api\Recaptcha\Field;
 
 use tiFy\Api\Recaptcha\Contracts\{FieldRecaptcha, Recaptcha as RecaptchaContract};
-use tiFy\Contracts\Field\FieldFactory as FieldFactoryContract;
-use tiFy\Field\{FieldFactory, FieldView};
+use tiFy\Contracts\Field\FieldDriver as FieldDriverContract;
+use tiFy\Field\{FieldDriver, FieldView};
+use tiFy\Support\Proxy\View;
 
-class Recaptcha extends FieldFactory implements FieldRecaptcha
+class Recaptcha extends FieldDriver implements FieldRecaptcha
 {
     /**
      * Instance du controleur de champ reCaptcha.
@@ -63,7 +64,7 @@ class Recaptcha extends FieldFactory implements FieldRecaptcha
     /**
      * @inheritDoc
      */
-    public function parse(): FieldFactoryContract
+    public function parse(): FieldDriverContract
     {
         parent::parse();
 
@@ -88,23 +89,13 @@ class Recaptcha extends FieldFactory implements FieldRecaptcha
     public function viewer(?string $view = null, array $data = [])
     {
         if (!$this->viewer) {
-            $cinfo = class_info(Recaptcha::class);
-            $default_dir = $cinfo->getDirname() . '/views/';
-            $this->viewer = view()
-                ->setDirectory(is_dir($default_dir) ? $default_dir : null)
-                ->setController(FieldView::class)
-                ->setOverrideDir(
-                    (($override_dir = $this->get('viewer.override_dir')) && is_dir($override_dir))
-                        ? $override_dir
-                        : (is_dir($default_dir) ? $default_dir : $cinfo->getDirname())
-                )
-                ->setParam('field', $this);
+            $this->viewer = View::getPlatesEngine([
+                'directory' => class_info($this)->getDirname() . '/views/',
+                'factory' => FieldView::class,
+                'field'   => $this
+            ]);
         }
 
-        if (func_num_args() === 0) {
-            return $this->viewer;
-        }
-
-        return $this->viewer->make("_override::{$view}", $data);
+        return parent::viewer($view, $data);
     }
 }

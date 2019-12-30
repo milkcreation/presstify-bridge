@@ -10,7 +10,7 @@ use tiFy\Contracts\Field\{
     Colorpicker,
     DatetimeJs,
     Field as FieldContract,
-    FieldFactory,
+    FieldDriver,
     File,
     FileJs,
     Hidden,
@@ -72,7 +72,7 @@ class Field extends Manager implements FieldContract
 
     /**
      * Liste des éléments déclarées.
-     * @var FieldFactory[]
+     * @var FieldDriver[]
      */
     protected $items = [];
 
@@ -84,14 +84,14 @@ class Field extends Manager implements FieldContract
 
     /**
      * Instances des éléments par alias de qualification et indexés par identifiant de qualification.
-     * @var FieldFactory[][]
+     * @var FieldDriver[][]
      */
     protected $instances = [];
 
     /**
      * @inheritDoc
      */
-    public function get(...$args): ?FieldFactory
+    public function get(...$args): ?FieldDriver
     {
         $alias = $args[0] ?? null;
         if (!$alias || !isset($this->items[$alias])) {
@@ -137,7 +137,7 @@ class Field extends Manager implements FieldContract
      */
     public function walk(&$item, $key = null): void
     {
-        if ($item instanceof FieldFactory) {
+        if ($item instanceof FieldDriver) {
             $item->prepare((string)$key, $this);
 
             $this->instances[$key] = [$item];
@@ -147,7 +147,7 @@ class Field extends Manager implements FieldContract
                 sprintf(
                     __('La déclaration du champ %s devrait être une instance de %s', 'tify'),
                     $key,
-                    FieldFactory::class
+                    FieldDriver::class
                 )
             );
         }

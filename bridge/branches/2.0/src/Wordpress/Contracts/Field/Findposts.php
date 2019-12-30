@@ -2,7 +2,7 @@
 
 namespace tiFy\Wordpress\Contracts\Field;
 
-interface Findposts extends FieldFactory
+interface Findposts extends FieldDriver
 {
 
 }

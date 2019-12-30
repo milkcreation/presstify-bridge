@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface Textarea extends FieldFactory
+interface Textarea extends FieldDriver
 {
 
 }

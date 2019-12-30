@@ -2,7 +2,7 @@
 /**
  * Interface de pagination de la table.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\ListTable\Viewer $this
+ * @var tiFy\Template\Templates\ListTable\View $this
  * @var string $which top|bottom.
  */
 ?>

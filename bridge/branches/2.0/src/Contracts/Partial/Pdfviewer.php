@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Pdfviewer extends PartialFactory
+interface Pdfviewer extends PartialDriver
 {
     /**
      * Récupération de l'instance de la modale associée au PDF.

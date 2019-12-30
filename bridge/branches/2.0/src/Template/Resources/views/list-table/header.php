@@ -2,7 +2,7 @@
 /**
  * Entête.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\ListTable\Viewer $this
+ * @var tiFy\Template\Templates\ListTable\View $this
  */
 ?>
 <?php if($page_title = $this->label('page_title')) : ?>

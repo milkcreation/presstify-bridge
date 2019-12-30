@@ -8,7 +8,7 @@ use tiFy\Contracts\Cron\{
     CronManager as CronManagerContract,
     CronJob as CronJobContract
 };
-use tiFy\Support\Manager;
+use tiFy\Support\{Manager, Proxy\View};
 
 /**
  * USAGE
@@ -67,9 +67,8 @@ class CronManager extends Manager implements CronManagerContract
                     'content'    => function () {
                         $jobs = $this->all();
 
-                        return view()
-                            ->setDirectory(__DIR__ . '/views')
-                            ->make('job-list', compact('jobs'));
+                        return View::getPlatesEngine(['directory' => __DIR__ . '/views'])
+                            ->render('job-list', compact('jobs'));
                     }
                 ]);
             }

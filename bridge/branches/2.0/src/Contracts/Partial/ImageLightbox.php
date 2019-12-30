@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface ImageLightbox extends PartialFactory
+interface ImageLightbox extends PartialDriver
 {
 
 }

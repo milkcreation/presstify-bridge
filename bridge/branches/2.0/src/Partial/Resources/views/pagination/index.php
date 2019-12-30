@@ -2,7 +2,7 @@
 /**
  * Pagination - Interface.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Partial\Partials\Pagination\PaginationView $this
+ * @var tiFy\Partial\Driver\Pagination\PaginationView $this
  */
 ?>
 <?php if ($this->getTotalPage() > 1) : ?>

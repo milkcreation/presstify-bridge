@@ -1,6 +1,6 @@
 <?php
 /**
- * @var tiFy\Contracts\View\ViewController $this
+ * @var tiFy\Contracts\View\PlatesFactory $this
  */
 ?>
 <div style="position:relative;width:100%;height:0;padding-bottom:<?php echo $this->get('ratio'); ?>%;">

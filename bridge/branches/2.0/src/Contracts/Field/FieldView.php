@@ -2,8 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-use BadMethodCallException;
-use tiFy\Contracts\View\ViewController;
+use tiFy\Contracts\View\PlatesFactory;
 
 /**
  * @method string after()
@@ -16,17 +15,7 @@ use tiFy\Contracts\View\ViewController;
  * @method string getName()
  * @method string getValue()
  */
-interface FieldView extends ViewController
+interface FieldView extends PlatesFactory
 {
-    /**
-     * Délégation d'appel des méthodes permises du controleur de champ.
-     *
-     * @param string $name Nom de la méthode à appeler.
-     * @param array $arguments Liste des variables passées en argument.
-     *
-     * @return mixed
-     *
-     * @throws BadMethodCallException
-     */
-    public function __call($name, $arguments);
+
 }

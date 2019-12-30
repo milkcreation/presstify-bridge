@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface Tab extends PartialFactory
+interface Tab extends PartialDriver
 {
     /**
      * Mise à jour de l'onglet courant via une requête XHR.

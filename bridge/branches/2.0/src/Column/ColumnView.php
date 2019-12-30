@@ -1,34 +1,37 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Column;
 
-use tiFy\View\ViewController;
+use BadMethodCallException;
+use Exception;
+use tiFy\View\Factory\PlatesFactory;
 
-class ColumnView extends ViewController
+class ColumnView extends PlatesFactory
 {
     /**
      * Liste des méthodes héritées.
      * @var array
      */
-    protected $mixins = [
-
-    ];
+    protected $mixins = [];
 
     /**
-     * Translation d'appel des méthodes de l'application associée.
-     *
-     * @param string $name Nom de la méthode à appeler.
-     * @param array $arguments Liste des variables passées en argument.
-     *
-     * @return mixed
+     * @inheritDoc
      */
-    public function __call($name, $arguments)
+    public function __call($method, $parameters)
     {
-        if (in_array($name, $this->mixins)) :
-            return call_user_func_array(
-                [$this->engine->params('column'), $name],
-                $arguments
-            );
-        endif;
+        if (in_array($method, $this->mixins)) {
+            try {
+                return call_user_func_array([$this->engine->params('column'), $method], $parameters);
+            } catch (Exception $e) {
+                throw new BadMethodCallException(
+                    sprintf(
+                        __('La méthode [%s] de la colonne n\'est pas disponible.', 'tify'),
+                        $method
+                    )
+                );
+            }
+        } else {
+            return parent::__call($method, $parameters);
+        }
     }
 }

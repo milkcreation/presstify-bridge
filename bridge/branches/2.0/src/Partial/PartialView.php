@@ -5,7 +5,8 @@ namespace tiFy\Partial;
 use BadMethodCallException;
 use Exception;
 use tiFy\Contracts\Partial\PartialView as PartialViewContract;
-use tiFy\View\ViewController;
+use tiFy\View\Factory\PlatesFactory;
+
 
 /**
  * @method string after()
@@ -16,7 +17,7 @@ use tiFy\View\ViewController;
  * @method string getId()
  * @method string getIndex()
  */
-class PartialView extends ViewController implements PartialViewContract
+class PartialView extends PlatesFactory implements PartialViewContract
 {
     /**
      * Liste des méthodes héritées.
@@ -29,32 +30,27 @@ class PartialView extends ViewController implements PartialViewContract
         'content',
         'getAlias',
         'getId',
-        'getIndex'
+        'getIndex',
     ];
 
     /**
      * @inheritDoc
      */
-    public function __call($name, $arguments)
+    public function __call($method, $parameters)
     {
-        try {
-            if (in_array($name, $this->mixins)) {
-                return call_user_func_array([$this->engine->params('partial'), $name], $arguments);
-            } else {
+        if (in_array($method, $this->mixins)) {
+            try {
+                return call_user_func_array([$this->engine->params('partial'), $method], $parameters);
+            } catch (Exception $e) {
                 throw new BadMethodCallException(
                     sprintf(
-                        __('La méthode %s du controleur de portion d\'affichage n\'est pas permise.', 'tify'),
-                        $name
+                        __('La méthode [%s] de la portion d\'affichage n\'est pas disponible.', 'tify'),
+                        $method
                     )
                 );
             }
-        } catch (Exception $e) {
-            throw new BadMethodCallException(
-                sprintf(
-                    __('La méthode %s du controleur de portion d\'affichage n\'est pas disponible.', 'tify'),
-                    $name
-                )
-            );
+        } else {
+            return parent::__call($method, $parameters);
         }
     }
 }

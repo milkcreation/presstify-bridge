@@ -2,7 +2,7 @@
 /**
  * Gestionnaire de fichiers > Explorateur de fichiers | Liste des éléments.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Template\Templates\FileManager\Viewer $this
+ * @var tiFy\Template\Templates\FileManager\View $this
  * @var tiFy\Template\Templates\FileManager\Contracts\FileCollection $files
  * @var tiFy\Template\Templates\FileManager\Contracts\FileInfo $file
  */

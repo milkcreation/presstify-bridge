@@ -2,9 +2,9 @@
 
 namespace tiFy\Contracts\Template;
 
-use tiFy\Contracts\View\ViewController;
+use tiFy\Contracts\View\PlatesFactory;
 
-interface FactoryViewer extends ViewController
+interface FactoryViewer extends PlatesFactory
 {
 
 }

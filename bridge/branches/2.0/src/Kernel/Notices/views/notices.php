@@ -1,6 +1,6 @@
 <?php
 /**
- * @var tiFy\Contracts\View\ViewController $this
+ * @var tiFy\Contracts\View\PlatesFactory $this
  */
 ?>
 <ol class="Notices-items Notices-items--<?php echo $this->get('code'); ?>">

@@ -1,6 +1,6 @@
 <?php
 /**
- * @var tiFy\Options\Page\OptionsPageView $this.
+ * @var tiFy\Contracts\View\PlatesFactory $this
  */
 ?>
 <div style="margin-right:300px; margin-top:20px;">

@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface Tinymce extends FieldFactory
+interface Tinymce extends FieldDriver
 {
 
 }

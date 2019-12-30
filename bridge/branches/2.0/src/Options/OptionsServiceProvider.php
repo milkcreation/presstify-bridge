@@ -13,6 +13,8 @@ class OptionsServiceProvider extends ServiceProvider
      */
     protected $provides = [
         'options',
+        'options.page',
+        'options.page.viewer',
     ];
 
     /**

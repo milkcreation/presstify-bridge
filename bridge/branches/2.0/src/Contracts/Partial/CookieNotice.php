@@ -4,7 +4,7 @@ namespace tiFy\Contracts\Partial;
 
 use tiFy\Contracts\Cookie\Cookie;
 
-interface CookieNotice extends PartialFactory
+interface CookieNotice extends PartialDriver
 {
     /**
      * Récupération de l'instance du cookie associé.
@@ -29,7 +29,7 @@ interface CookieNotice extends PartialFactory
      *
      * @return static
      */
-    public function setUrl(?string $url = null): PartialFactory;
+    public function setUrl(?string $url = null): PartialDriver;
 
     /**
      * Élement de validation du cookie.

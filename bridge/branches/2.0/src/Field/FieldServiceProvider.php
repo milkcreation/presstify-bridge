@@ -9,7 +9,7 @@ use tiFy\Contracts\Field\{
     CheckboxCollection as CheckboxCollectionContract,
     Colorpicker as ColorpickerContract,
     Field as FieldContract,
-    FieldFactory,
+    FieldDriver,
     File as FileContract,
     FileJs as FileJsContract,
     DatetimeJs as DatetimeJsContract,
@@ -33,7 +33,7 @@ use tiFy\Contracts\Field\{
     Tinymce as TinymceContract,
     ToggleSwitch as ToggleSwitchContract
 };
-use tiFy\Field\Fields\{
+use tiFy\Field\Driver\{
     Button\Button,
     Checkbox\Checkbox,
     CheckboxCollection\CheckboxCollection,
@@ -61,6 +61,7 @@ use tiFy\Field\Fields\{
     Tinymce\Tinymce,
     ToggleSwitch\ToggleSwitch
 };
+use tiFy\Support\Proxy\View;
 
 class FieldServiceProvider extends ServiceProvider
 {
@@ -97,7 +98,7 @@ class FieldServiceProvider extends ServiceProvider
         TextareaContract::class,
         TextRemainingContract::class,
         TinymceContract::class,
-        ToggleSwitchContract::class
+        ToggleSwitchContract::class,
     ];
 
     /**
@@ -233,24 +234,16 @@ class FieldServiceProvider extends ServiceProvider
      */
     public function registerViewer(): void
     {
-        $this->getContainer()->add('field.viewer', function (FieldFactory $factory) {
+        $this->getContainer()->add('field.viewer', function (FieldDriver $driver) {
             /** @var FieldContract $manager */
             $manager = $this->getContainer()->get('field');
 
-            $directory = $factory->get(
-                'viewer.directory',
-                $manager->resourcesDir("/views/{$factory->getAlias()}")
-            );
-            $override_dir = $factory->get('viewer.override_dir');
-
-            return view()
-                ->setDirectory(is_dir($directory) ? $directory : null)
-                ->setController(FieldView::class)
-                ->setOverrideDir((($override_dir) && is_dir($override_dir))
-                    ? $override_dir
-                    : (is_dir($directory) ? $directory : __DIR__)
-                )
-                ->setParam('field', $factory);
+            return View::getPlatesEngine(array_merge([
+                'directory' => $manager->resourcesDir("/views/{$driver->getAlias()}"),
+                'engine'    => 'plates',
+                'factory'   => FieldView::class,
+                'field'     => $driver,
+            ], config('field.viewer', []), $driver->get('viewer', [])));
         });
     }
 }

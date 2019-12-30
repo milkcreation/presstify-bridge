@@ -4,6 +4,7 @@ namespace tiFy\Wordpress;
 
 use tiFy\Container\ServiceProvider;
 use tiFy\Support\Locale;
+use tiFy\View\View as BaseView;
 use tiFy\Wordpress\Asset\Asset;
 use tiFy\Wordpress\Auth\Auth;
 use tiFy\Wordpress\Column\Column;
@@ -32,6 +33,7 @@ use tiFy\Wordpress\Taxonomy\Taxonomy;
 use tiFy\Wordpress\Template\Template;
 use tiFy\Wordpress\User\User;
 use tiFy\Wordpress\User\Role\RoleFactory;
+use tiFy\Wordpress\View\View;
 use WP_Post;
 use WP_Screen;
 use WP_Term;
@@ -73,6 +75,7 @@ class WordpressServiceProvider extends ServiceProvider
         'wp.user',
         'wp.wp_query',
         'wp.wp_screen',
+        'wp.view',
     ];
 
     /**
@@ -178,6 +181,10 @@ class WordpressServiceProvider extends ServiceProvider
                         return new RoleFactory();
                     });
                 }
+
+                if ($this->getContainer()->has('view')) {
+                    $this->getContainer()->get('wp.view');
+                }
             }
         }, 1);
     }
@@ -209,6 +216,7 @@ class WordpressServiceProvider extends ServiceProvider
         $this->registerTaxonomy();
         $this->registerTemplate();
         $this->registerUser();
+        $this->registerView();
     }
 
     /**
@@ -499,6 +507,20 @@ class WordpressServiceProvider extends ServiceProvider
     {
         $this->getContainer()->share('wp.user', function () {
             return new User($this->getContainer()->get('user'));
+        });
+    }
+
+    /**
+     * Déclaration du controleur de ganarit d'affichage.
+     *
+     * @return void
+     */
+    public function registerView(): void
+    {
+        $this->getContainer()->share('wp.view', function () {
+            BaseView::setDefaultDirectory(get_template_directory());
+
+            return new View($this->getContainer()->get('view'));
         });
     }
 }

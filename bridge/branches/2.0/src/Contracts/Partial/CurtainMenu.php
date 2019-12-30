@@ -2,12 +2,12 @@
 
 namespace tiFy\Contracts\Partial;
 
-interface CurtainMenu extends PartialFactory
+interface CurtainMenu extends PartialDriver
 {
     /**
      * Traitement de la liste des éléments.
      *
      * @return static
      */
-    public function parseItems(): PartialFactory;
+    public function parseItems(): PartialDriver;
 }

@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Field;
 
-interface CheckboxCollection extends FieldFactory
+interface CheckboxCollection extends FieldDriver
 {
 
 }

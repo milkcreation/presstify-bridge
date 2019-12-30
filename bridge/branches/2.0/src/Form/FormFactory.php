@@ -70,10 +70,7 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     /**
      * @inheritDoc
      */
-    public function boot(): void
-    {
-
-    }
+    public function boot(): void {}
 
     /**
      * @inheritDoc

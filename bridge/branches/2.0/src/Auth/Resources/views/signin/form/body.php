@@ -2,6 +2,6 @@
 /**
  * Formulaire d'authentification | Corps.
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Auth\Signin\Viewer $this
+ * @var tiFy\Auth\Signin\SigninView $this
  */
 echo $this->get('form');

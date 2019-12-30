@@ -20,7 +20,7 @@ use tiFy\Wordpress\Contracts\Field\{
     Findposts as FindpostsContract,
     MediaFile as MediaFileContract,
     MediaImage as MediaImageContract};
-use tiFy\Wordpress\Field\Fields\{
+use tiFy\Wordpress\Field\Driver\{
     Colorpicker\Colorpicker,
     DatetimeJs\DatetimeJs,
     FileJs\FileJs,

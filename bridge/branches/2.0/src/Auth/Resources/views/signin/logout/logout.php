@@ -2,7 +2,7 @@
 /**
  * Déconnexion | .
  * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Auth\Signin\Viewer $this
+ * @var tiFy\Auth\Signin\SigninView $this
  */
 echo partial('tag', [
     'tag'     => $this->get('tag', 'a'),

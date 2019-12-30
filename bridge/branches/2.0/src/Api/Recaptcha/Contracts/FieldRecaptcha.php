@@ -2,9 +2,9 @@
 
 namespace tiFy\Api\Recaptcha\Contracts;
 
-use tiFy\Contracts\Field\FieldFactory;
+use tiFy\Contracts\Field\FieldDriver;
 
-interface FieldRecaptcha extends FieldFactory
+interface FieldRecaptcha extends FieldDriver
 {
 
 }

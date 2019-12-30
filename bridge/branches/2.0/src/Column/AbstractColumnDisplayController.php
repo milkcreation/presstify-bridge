@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Column;
 
 use tiFy\Contracts\Column\ColumnDisplayInterface;
-use tiFy\Contracts\View\ViewEngine;
+use tiFy\Contracts\View\PlatesEngine;
+use tiFy\Support\Proxy\View;
 
 abstract class AbstractColumnDisplayController implements ColumnDisplayInterface
 {
@@ -15,12 +16,14 @@ abstract class AbstractColumnDisplayController implements ColumnDisplayInterface
 
     /**
      * Instance du moteur de gabarits d'affichage.
-     * @return ViewEngine
+     * @return PlatesEngine
      */
     protected $viewer;
 
     /**
      * CONSTRUCTEUR.
+     *
+     * @param ColumnItemController $item
      *
      * @return void
      */
@@ -28,14 +31,11 @@ abstract class AbstractColumnDisplayController implements ColumnDisplayInterface
     {
         $this->item = $item;
 
-        add_action(
-            'current_screen',
-            function ($wp_current_screen) {
-                if ($wp_current_screen->id === $this->item->getScreen()->getHookname()) :
-                    $this->load($wp_current_screen);
-                endif;
+        add_action('current_screen', function ($wp_current_screen) {
+            if ($wp_current_screen->id === $this->item->getScreen()->getHookname()) {
+                $this->load($wp_current_screen);
             }
-        );
+        });
 
         $this->boot();
     }
@@ -87,24 +87,18 @@ abstract class AbstractColumnDisplayController implements ColumnDisplayInterface
      */
     public function viewer($view = null, $data = [])
     {
-        if (!$this->viewer) :
-            $cinfo = class_info($this);
-            $default_dir = $cinfo->getDirname() . '/views';
-            $this->viewer = view()
-                ->setDirectory(is_dir($default_dir) ? $default_dir : null)
-                ->setController(ColumnView::class)
-                ->setOverrideDir(
-                    (($override_dir = $this->get('viewer.override_dir')) && is_dir($override_dir))
-                        ? $override_dir
-                        : (is_dir($default_dir) ? $default_dir : $cinfo->getDirname())
-                )
-                ->setParam('column', $this);
-        endif;
+        if (!$this->viewer) {
+            $this->viewer = View::getPlatesEngine([
+                'directory' => class_info($this)->getDirname() . '/views',
+                'factory'   => ColumnView::class,
+                'column'    => $this
+            ]);
+        }
 
-        if (func_num_args() === 0) :
+        if (func_num_args() === 0) {
             return $this->viewer;
-        endif;
+        }
 
-        return $this->viewer->make("_override::{$view}", $data);
+        return $this->viewer->render($view, $data);
     }
 }
