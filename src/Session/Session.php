@@ -55,6 +55,7 @@ class Session extends BaseSession implements SessionContract
             foreach($key as $k => $v) {
                 $flash->add($k, $v);
             }
+
             return $this;
         } elseif (is_string($key)) {
             return $flash->get($key, is_array($value) ? $value : (array)$value);

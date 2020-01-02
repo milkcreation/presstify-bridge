@@ -97,7 +97,10 @@ class View implements ViewContract
     public function getEngine(?string $name = null): ?EngineContract
     {
         if (is_null($name)) {
-            return $this->default = $this->default ? : $this->getDefaultEngine()->setParams(config('view', []));
+            return $this->default = $this->default
+                ? : $this->getDefaultEngine()
+                    ->setParams(config('view', []))
+                    ->setDirectory($this->getDefaultDirectory());
         }
 
         return $this->engines[$name] ?? null;

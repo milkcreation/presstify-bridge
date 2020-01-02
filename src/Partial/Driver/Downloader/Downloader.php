@@ -152,7 +152,7 @@ class Downloader extends PartialDriver implements DownloaderContract
             $types = array_map('trim', explode(',', $var->get('types')));
         }
 
-        if (!MimeTypes::isAllowed($filename, $types ?: null)) {
+        if (!MimeTypes::inAllowedType($filename, $types)) {
             throw new Exception(
                 __('Téléchargement impossible, ce type de fichier n\'est pas autorisé.', 'tify')
             );

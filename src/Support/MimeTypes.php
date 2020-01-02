@@ -8,10 +8,16 @@ use Mimey\MimeTypes as BaseMimeTypes;
 class MimeTypes extends BaseMimeTypes
 {
     /**
-     * Cartographie des mime-types et extensions utilisé par défaut.
+     * Cartographie des mime-types et extensions utilisées par défaut.
      * @var array|Closure|null
      */
     private static $defaultMapping;
+
+    /**
+     * Cartographie des mime-types et exentions autorisées.
+     * @var array|Closure|null
+     */
+    private static $allowedMapping;
 
     /**
      * CONSTRUCTEUR.
@@ -30,43 +36,40 @@ class MimeTypes extends BaseMimeTypes
     }
 
     /**
-     * Récupération de la liste des mime-types et extensions relatives associée à un type.
+     * Récupération de la cartographie extensions et mime-types autorisés.
      *
-     * @param string $type ex. application|image|multipart|text|video|...
-     *
-     * @return array[]
+     * @return array|null
      */
-    public static function getTypeMimesExtensions(string $type): array
+    public static function getAllowedMapping(): ?array
     {
-        $mimes = [];
-        foreach((new self())->getMapping('extensions') as $mimeType => $exts) {
-            if (preg_match('/^' . $type .  '\//', $mimeType)) {
-                $mimes[$mimeType] = $exts;
-            }
+        if (self::$allowedMapping instanceof Closure) {
+            return call_user_func(self::$allowedMapping);
         }
 
-        return $mimes;
+        return self::$allowedMapping;
     }
 
     /**
      * Récupération de la cartographie associée à une liste de termes (extensions|mime-types|types).
      *
      * @param string[] $terms Liste des extensions|mime-types|types.
+     * @param bool $allowed Cartgographie basée sur les types autorisées uniquement.
      *
      * @return array[]
      */
-    public static function getBuiltInMapping(array $terms)
+    public static function getBuiltInMapping(array $terms, bool $allowed = false)
     {
         $extensions = [];
         $mimes = [];
 
-        foreach($terms as $term) {
-            if ($mimeTypes = (new self())->getMapping('mimes')[$term] ?? null) {
+        foreach ($terms as $term) {
+            if ($mimeTypes = (new self($allowed ? self::getAllowedMapping() : null))
+                    ->getMapping('mimes')[$term] ?? null) {
                 $exts = [$term];
-                foreach($mimeTypes as $mimeType) {
+                foreach ($mimeTypes as $mimeType) {
                     if (!isset($extensions[$mimeType])) {
                         $extensions[$mimeType] = $exts;
-                        foreach($exts as $ext) {
+                        foreach ($exts as $ext) {
                             if (!isset($mimes[$ext])) {
                                 $mimes[$term] = [];
                             }
@@ -79,8 +82,9 @@ class MimeTypes extends BaseMimeTypes
             } elseif (preg_match('/^(.*)\/(.*)$/', $term)) {
                 $mimeType = $term;
                 if (!isset($extensions[$mimeType])) {
-                    $extensions[$mimeType] = $exts = (new self())->getMapping('extensions')[$mimeType] ?? [];
-                    foreach($exts as $ext) {
+                    $extensions[$mimeType] = $exts = (new self($allowed ? self::getAllowedMapping() : null))
+                            ->getMapping('extensions')[$mimeType] ?? [];
+                    foreach ($exts as $ext) {
                         if (!isset($mimes[$ext])) {
                             $mimes[$ext] = [];
                         }
@@ -89,11 +93,11 @@ class MimeTypes extends BaseMimeTypes
                         }
                     }
                 }
-            } elseif ($types = self::getTypeMimesExtensions($term)) {
+            } elseif ($types = self::getTypeMimesExtensions($term, $allowed)) {
                 array_walk($types, function ($exts, $mimeType) use (&$mimes, &$extensions) {
                     if (!isset($extensions[$mimeType])) {
                         $extensions[$mimeType] = $exts;
-                        foreach($exts as $ext) {
+                        foreach ($exts as $ext) {
                             if (!isset($mimes[$ext])) {
                                 $mimes[$ext] = [];
                             }
@@ -124,23 +128,77 @@ class MimeTypes extends BaseMimeTypes
     }
 
     /**
-     * Vérifie si un fichier
+     * Récupération de la liste des mime-types et extensions relatives associée à un type.
      *
-     * @param string Nom|Chemin relatif|Chemin absolu du fichier.
-     * @param string[]|null $terms Liste des types|mimeTypes|extensions. Natifs par défaut.
+     * @param string $type ex. application|image|multipart|text|video|...
+     * @param bool $allowed Cartgographie basée sur les types autorisées uniquement.
+     *
+     * @return array[]
+     */
+    public static function getTypeMimesExtensions(string $type, bool $allowed = false): array
+    {
+        $mimes = [];
+        $extensions = (new self($allowed ? self::getAllowedMapping() : null))->getMapping('extensions');
+
+        foreach ($extensions as $mimeType => $exts) {
+            if (preg_match('/^' . $type . '\//', $mimeType)) {
+                $mimes[$mimeType] = $exts;
+            }
+        }
+
+        return $mimes;
+    }
+
+    /**
+     * Vérifie si un fichier répond à un type-mime fichier ou une extension déclarée.
+     *
+     * @param string $filename Nom|Chemin relatif|Chemin absolu du fichier.
+     * @param string[]|string|null $type Liste des types|mimeTypes|extensions à vérifier.
      *
      * @return bool
      */
-    public static function isAllowed(string $filename, ?array $terms = null): bool
+    public static function inType(string $filename, $type = null): bool
     {
+        $mapping = is_null($type) ? null : self::getBuiltInMapping(is_string($type) ? (array)$type : $type);
+
         if ($ext = pathinfo($filename, PATHINFO_EXTENSION)) {
-            if ($terms) {
-                $terms = self::getBuiltInMapping($terms);
-            }
-            return !!(new self($terms))->getMimeType($ext);
+            return !!(new self($mapping))->getMimeType($ext);
         }
 
         return false;
+    }
+
+
+    /**
+     * Vérifie si un fichier
+     *
+     * @param string $filename Nom|Chemin relatif|Chemin absolu du fichier.
+     * @param string[]|string|null $type Liste des types|mimeTypes|extensions à vérifier.
+     *
+     * @return bool
+     */
+    public static function inAllowedType(string $filename, $type = null): bool
+    {
+        $mapping = is_null($type)
+            ? self::getAllowedMapping() : self::getBuiltInMapping(is_string($type) ? (array)$type : $type, true);
+
+        if ($ext = pathinfo($filename, PATHINFO_EXTENSION)) {
+            return !!(new self($mapping))->getMimeType($ext);
+        }
+
+        return false;
+    }
+
+    /**
+     * Définition de la cartographie extensions et mime-types autorisées.
+     *
+     * @param array|Closure|null $allowed
+     *
+     * @return void
+     */
+    public static function setAllowedMapping($allowed): void
+    {
+        self::$allowedMapping = $allowed instanceof Closure || is_array($allowed) ? $allowed : null;
     }
 
     /**
@@ -150,9 +208,9 @@ class MimeTypes extends BaseMimeTypes
      *
      * @return void
      */
-    public static function setDefaultMapping($default)
+    public static function setDefaultMapping($default): void
     {
-        self::$defaultMapping = $default instanceof Closure||is_array($default) ? $default : null;
+        self::$defaultMapping = $default instanceof Closure || is_array($default) ? $default : null;
     }
 
     /**

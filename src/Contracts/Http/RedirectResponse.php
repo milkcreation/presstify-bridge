@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * @mixin LaraRedirectResponse
  */
-interface RedirectResponse
+interface RedirectResponse extends Response
 {
     /**
      * Création d'une instance de reponse de redirection PSR.

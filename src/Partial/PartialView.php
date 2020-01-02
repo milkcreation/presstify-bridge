@@ -7,7 +7,6 @@ use Exception;
 use tiFy\Contracts\Partial\PartialView as PartialViewContract;
 use tiFy\View\Factory\PlatesFactory;
 
-
 /**
  * @method string after()
  * @method string attrs()

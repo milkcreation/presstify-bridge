@@ -10,13 +10,9 @@ use tiFy\Contracts\Routing\{
     RouteGroup as BaseRouteGroupContract,
     Router as BaseRouterContract
 };
-use tiFy\Http\{Request, RedirectResponse};
-use tiFy\Support\Proxy\Request as req;
-use tiFy\Wordpress\Contracts\Routing\{
-    Route as RouteContract,
-    Routing as RoutingContract
-};
-use tiFy\Wordpress\Routing\Controller\WordpressController;
+use tiFy\Http\{Request as HttpRequest, RedirectResponse as HttpRedirect};
+use tiFy\Support\Proxy\Request;
+use tiFy\Wordpress\Contracts\Routing\Routing as RoutingContract;
 use tiFy\Wordpress\Routing\Strategy\Template as TemplateStrategy;
 
 class Routing implements RoutingContract
@@ -47,13 +43,8 @@ class Routing implements RoutingContract
         $this->registerOverride();
 
         add_action('parse_request', function () {
-            /** @var RouteContract $default */
-            /*$default = $this->manager->get('/{path:.*}', [new WordpressController(), 'index'])
-                ->setName('wordpress');
-            $default->setWpQuery(true);*/
-
             try {
-                $response = $this->manager->dispatch(Request::convertToPsr());
+                $response = $this->manager->dispatch(HttpRequest::convertToPsr());
 
                 if ($response->getStatusCode() !== 100) {
                     $this->manager->emit($response);
@@ -71,8 +62,8 @@ class Routing implements RoutingContract
                         update_option('permalink_structure',  rtrim($permalinks, '/'));
                     }
 
-                    $path = req::getBaseUrl() . req::getPathInfo();
-                    $method = req::getMethod();
+                    $path = Request::getBaseUrl() . Request::getPathInfo();
+                    $method = Request::getMethod();
 
                     if (($path != '/') && (substr($path, -1) == '/') && ($method === 'GET')) {
                         $dispatcher = new Dispatcher($this->manager->getData());
@@ -80,9 +71,9 @@ class Routing implements RoutingContract
 
                         if ($match[0] === FastRoute::FOUND) {
                             $redirect_url = rtrim($path, '/');
-                            $redirect_url .= ($qs = req::getQueryString()) ? "?{$qs}" : '';
+                            $redirect_url .= ($qs = Request::getQueryString()) ? "?{$qs}" : '';
 
-                            $response = RedirectResponse::createPsr($redirect_url);
+                            $response = HttpRedirect::createPsr($redirect_url);
                             $this->manager->emit($response);
                             exit;
                         }
