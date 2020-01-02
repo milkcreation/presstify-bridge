@@ -104,7 +104,6 @@ class OptionsPage extends ParamsBag implements OptionsPageContract
     {
         return [
             'admin_bar'             => [],
-            'admin_enqueue_scripts' => true,
             'admin_menu'            => [],
             'cap'                   => 'manage_options',
             'hookname'              => 'settings_page_' . $this->getName(),

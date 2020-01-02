@@ -15,7 +15,7 @@ class Media
     {
         app()->get('wp.media.upload');
 
-        MimeTypes::setDefaultMapping(function () {
+        MimeTypes::setAllowedMapping(function () {
             $mapping = [
                 'extensions' => [],
                 'mimes'      => [],
@@ -105,7 +105,7 @@ class Media
     /**
      * Récupération de la source d'une image de la médiathèque au format base64.
      *
-     * @param int $attachment_id Identifiant de qualification du média.
+     * @param int $id Identifiant de qualification du média.
      *
      * @return string|null
      */

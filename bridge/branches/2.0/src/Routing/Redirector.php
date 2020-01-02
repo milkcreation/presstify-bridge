@@ -2,10 +2,9 @@
 
 namespace tiFy\Routing;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use tiFy\Http\RedirectResponse;
-use tiFy\Contracts\Routing\Redirector as RedirectorContract;
-use tiFy\Contracts\Routing\Router;
+use tiFy\Http\RedirectResponse as HttpRedirect;
+use tiFy\Contracts\Http\Response as HttpResponse;
+use tiFy\Contracts\Routing\{Redirector as RedirectorContract, Router};
 
 class Redirector implements RedirectorContract
 {
@@ -30,15 +29,15 @@ class Redirector implements RedirectorContract
     /**
      * @inheritDoc
      */
-    public function to(string $path, int $status = 302, array $headers = []): ?Response
+    public function to(string $path, int $status = 302, array $headers = []): HttpResponse
     {
-        return RedirectResponse::createPsr($path, $status, $headers);
+        return new HttpRedirect($path, $status, $headers);
     }
 
     /**
      * @inheritDoc
      */
-    public function route(string $name, array $parameters = [], int $status = 302, array $headers = []): ?Response
+    public function route(string $name, array $parameters = [], int $status = 302, array $headers = []): HttpResponse
     {
         return $this->to($this->manager->url($name, $parameters), $status, $headers);
     }

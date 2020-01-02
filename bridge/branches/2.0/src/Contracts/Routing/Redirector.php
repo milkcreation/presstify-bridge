@@ -2,7 +2,7 @@
 
 namespace tiFy\Contracts\Routing;
 
-use Psr\Http\Message\ResponseInterface as Response;
+use tiFy\Contracts\Http\Response;
 
 interface Redirector
 {
@@ -14,9 +14,9 @@ interface Redirector
      * @param int $status Code du statut de redirection.
      * @param array $headers Liste des entêtes complémentaires.
      *
-     * @return Response|null
+     * @return Response
      */
-    public function to(string $path, int $status = 302, array $headers = []): ?Response;
+    public function to(string $path, int $status = 302, array $headers = []): Response;
 
     /**
      * Création d'une instance de reponse de redirection PSR basé sur le nom de qualification d'une route nommée.
@@ -26,7 +26,7 @@ interface Redirector
      * @param int $status Code du statut de redirection.
      * @param array $headers Liste des entêtes complémentaires.
      *
-     * @return Response|null
+     * @return Response
      */
-    public function route(string $name, array $parameters = [], int $status = 302, array $headers = []): ?Response;
+    public function route(string $name, array $parameters = [], int $status = 302, array $headers = []): Response;
 }
