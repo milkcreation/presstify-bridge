@@ -1,0 +1,60 @@
+/** STYLES DE CONTROLE (recommandé) */
+[data-control="text-remaining.wrapper"],
+[data-control="text-remaining.wrapper"] > * {
+    box-sizing: border-box;
+}
+
+[data-control="text-remaining.wrapper"] {
+    position: relative;
+}
+
+[data-control="text-remaining.infos"] {
+    display: none;
+}
+
+[data-control="text-remaining.wrapper"] [data-control="text-remaining"]:focus + [data-control="text-remaining.infos"],
+[data-control="text-remaining.wrapper"] [data-control="text-remaining"]:hover + [data-control="text-remaining.infos"] {
+    display: inline-block;
+}
+
+/** STYLES GENERAUX */
+.FieldTextRemaining {
+    width: 100%;
+    padding-bottom: 8px;
+}
+
+.FieldTextRemaining--textarea {
+    min-height: 5.6em;
+    resize: none;
+    padding-bottom: 0;
+    padding-top: 8px;
+}
+
+.FieldTextRemaining-wrapper .FieldTextRemaining--input + .FieldTextRemaining-infos {
+    bottom: 2px;
+}
+
+.FieldTextRemaining-wrapper .FieldTextRemaining--textarea + .FieldTextRemaining-infos {
+    top: 2px;
+}
+
+.FieldTextRemaining-infos {
+    position: absolute;
+    right: 0;
+    display: none;
+    font-size: 9px;
+    padding: 0 5px;
+    line-height: 1;
+}
+
+.FieldTextRemaining-infos[aria-reached='less'] {
+    color: #27AE60;
+}
+
+.FieldTextRemaining-infos[aria-reached='exact'] {
+    color: #2980B9;
+}
+
+.FieldTextRemaining-infos[aria-reached='more'] {
+    color: #C0392B;
+}
