@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Column;
-
-use Illuminate\Support\Collection;
 
 interface Column
 {
@@ -32,4 +30,14 @@ interface Column
      * @return string
      */
     public function parseColumnContents();
+
+    /**
+     * Déclaration d'un jeu de colonnes associé à un écran.
+     *
+     * @param string $screen Nom de qualification de l'écran d'affichage.
+     * @param string[][]|array[][]$columns Liste des boîtes de saisie.
+     *
+     * @return static
+     */
+    public function stack(string $screen, array $columns): Column;
 }

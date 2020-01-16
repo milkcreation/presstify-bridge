@@ -49,7 +49,7 @@ interface PostTypeFactory extends ParamsBag
     /**
      * Initialisation du controleur.
      *
-     * @return void
+     * @return static
      */
     public function prepare(): PostTypeFactory;
 

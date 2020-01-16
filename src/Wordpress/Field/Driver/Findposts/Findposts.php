@@ -142,9 +142,6 @@ class Findposts extends FieldDriver implements FindpostsContract
     {
         check_ajax_referer('FieldFindposts' . request()->input('id'));
 
-        /** @todo Rendre dynamique (la variable doit passer en arguments par la requête Xhr) */
-        $this->set('viewer.directory', __DIR__ . '/Resources/views/findposts');
-
         $post_types = get_post_types(['public' => true], 'objects');
 
         $s = wp_unslash(request()->input('ps', ''));
@@ -196,7 +193,7 @@ class Findposts extends FieldDriver implements FindpostsContract
                 $post['_post_date'] = ('0000-00-00 00:00:00' == $post['post_date']) ? '' : mysql2date(__('Y/m/d'),
                     $post['post_date']);
             }
-            wp_send_json_success((string)$this->viewer('response', compact('post_types', 'posts', 'alt')));
+            wp_send_json_success($this->viewer('response', compact('post_types', 'posts', 'alt')));
         }
     }
 }

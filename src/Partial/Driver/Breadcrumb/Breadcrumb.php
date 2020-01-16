@@ -2,42 +2,74 @@
 
 namespace tiFy\Partial\Driver\Breadcrumb;
 
-use tiFy\Contracts\Partial\Breadcrumb as BreadcrumbContract;
+use tiFy\Contracts\Partial\{Breadcrumb as BreadcrumbContract, BreadcrumbCollection as BreadcrumbCollectionContract};
 use tiFy\Partial\PartialDriver;
 
 class Breadcrumb extends PartialDriver implements BreadcrumbContract
 {
     /**
-     * Liste des éléments contenus dans le fil d'ariane
-     * @var array
-     */
-    protected $parts = [];
-
-    /**
-     * Indicateur de désactivation d'affichage du fil d'ariane
+     * Indicateur de d'activation d'affichage du fil d'ariane.
      * @var bool
      */
-    private $disabled = false;
+    private $enabled = true;
+
+    /**
+     * Instance du gestionnaire de collection d'éléments.
+     * @var BreadcrumbCollectionContract
+     */
+    protected $collection;
 
     /**
      * @inheritDoc
      */
-    public function addPart($part)
+    public function add($item): ?int
     {
-        array_push($this->parts, $part);
+        if ($item = $this->parseItem($item)) {
+            return $this->collection()->add(...$item);
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function append($item): ?int
+    {
+        return $this->add($item);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function flush(): BreadcrumbContract
+    {
+        $this->collection()->clear();
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function collection(): BreadcrumbCollectionContract
+    {
+        if (is_null($this->collection)) {
+            $this->collection = new BreadcrumbCollection($this);
+        }
+
+        return $this->collection;
     }
 
     /**
      * {@inheritDoc}
      *
      * @return array {
-     *      @var array $attrs Attributs HTML du champ.
-     *      @var string $after Contenu placé après le champ.
-     *      @var string $before Contenu placé avant le champ.
-     *      @var array $viewer Liste des attributs de configuration du pilote d'affichage.
-     *      @var string[]|array[]|object[]|callable[] $parts Liste des élements du fil d'ariane.
+     * @var array $attrs Attributs HTML du champ.
+     * @var string $after Contenu placé après le champ.
+     * @var string $before Contenu placé avant le champ.
+     * @var array $viewer Liste des attributs de configuration du pilote d'affichage.
+     * @var string[]|array[]|object[]|callable[] $items Liste des élements du fil d'ariane.
      * }
      */
     public function defaults(): array
@@ -47,16 +79,16 @@ class Breadcrumb extends PartialDriver implements BreadcrumbContract
             'after'  => '',
             'before' => '',
             'viewer' => [],
-            'parts'  => [],
+            'items'  => [],
         ];
     }
 
     /**
      * @inheritDoc
      */
-    public function disable()
+    public function disable(): BreadcrumbContract
     {
-        $this->disabled = true;
+        $this->enabled = false;
 
         return $this;
     }
@@ -64,9 +96,9 @@ class Breadcrumb extends PartialDriver implements BreadcrumbContract
     /**
      * @inheritDoc
      */
-    public function enable()
+    public function enable(): BreadcrumbContract
     {
-        $this->disabled = false;
+        $this->enabled = true;
 
         return $this;
     }
@@ -74,48 +106,69 @@ class Breadcrumb extends PartialDriver implements BreadcrumbContract
     /**
      * @inheritDoc
      */
-    public function parsePartList()
+    public function isEnabled(): bool
     {
-        if (!$this->parts) {
-            $this->parts = (new WpQueryPart())->getList();
-        }
-
-        $parts = [];
-        foreach($this->parts as $part) {
-            $parts[] = $this->parsePart($part);
-        }
-
-        return $parts;
+        return !!$this->enabled;
     }
 
     /**
      * @inheritDoc
      */
-    public function parsePart($part)
+    public function insert(int $position, $item): ?int
     {
-        if (is_string($part)) {
-            return $part;
-        } elseif (is_object($part) && is_string((string) $part)) {
-            return (string)$part;
-        } elseif (is_array($part)) {
-            $defaults = [
-                'class'   => 'Breadcrumb-item',
-                'content' => ''
+        if ($item = $this->parseItem($item)) {
+            $item[1] = $position;
+
+            return $this->collection()->add(...$item);
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function move(int $from, int $to): ?int
+    {
+        return $this->collection()->move($from, $to);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseItem($item): ?array
+    {
+        if (is_string($item)) {
+            return [$item, null, []];
+        } elseif (is_object($item)) {
+            return [(string)$item, null, []];
+        } elseif (is_array($item)) {
+            return [
+                $this->collection()->getRender(
+                    $item['content'] ?? '', $item['url'] ?? null, $item['attrs'] ?? []
+                ),
+                $item['position'] ?? null,
+                $item['wrapper'] ?? [],
             ];
-            $part = array_merge($defaults, $part);
-
-            return "<li class=\"{$part['class']}\">{$part['content']}</li>";
         }
 
-        return '';
+        return null;
     }
 
     /**
      * @inheritDoc
      */
-    public function prependPart($part)
+    public function prepend($item): ?int
     {
-        array_unshift($this->parts, $part);
+        return $this->insert(0, $item);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function remove(int $position): BreadcrumbContract
+    {
+        $this->collection()->clear($position);
 
         return $this;
     }
@@ -125,11 +178,7 @@ class Breadcrumb extends PartialDriver implements BreadcrumbContract
      */
     public function render(): string
     {
-        if ($this->disabled) {
-            return '';
-        }
-
-        $this->set('items', $this->parsePartList());
+        $this->set('parts', $this->isEnabled() ? $this->collection()->fetch() : []);
 
         return parent::render();
     }
@@ -137,10 +186,14 @@ class Breadcrumb extends PartialDriver implements BreadcrumbContract
     /**
      * @inheritDoc
      */
-    public function reset()
+    public function replace(int $position, $item): ?int
     {
-        $this->parts = [];
+        if ($item = $this->parseItem($item)) {
+            $item[1] = $position;
 
-        return $this;
+            return $this->collection()->clear($position)->add(...$item);
+        }
+
+        return null;
     }
 }

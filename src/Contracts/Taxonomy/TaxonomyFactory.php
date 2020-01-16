@@ -7,11 +7,12 @@ use tiFy\Contracts\Support\ParamsBag;
 interface TaxonomyFactory extends ParamsBag
 {
     /**
-     * Initialisation du controleur.
+     * Résolution de sortie de la classe sous forme de chaîne de caractère.
+     * {@internal Retourne le nom de qualification de la taxonomie.}
      *
-     * @return void
+     * @return string
      */
-    public function boot(): void;
+    public function __toString(): string;
 
     /**
      * Récupération du nom de qualification du type de post.
@@ -45,11 +46,18 @@ interface TaxonomyFactory extends ParamsBag
     public function meta($key, bool $single = true): TaxonomyFactory;
 
     /**
-     * Définition de l'instance du gestionnaire de taxonomies.
-     *
-     * @param TaxonomyManager $manager
+     * Initialisation du controleur.
      *
      * @return static
      */
-    public function setManager(TaxonomyManager $manager): TaxonomyFactory;
+    public function prepare(): TaxonomyFactory;
+
+    /**
+     * Définition de l'instance du gestionnaire de taxonomies.
+     *
+     * @param Taxonomy $manager
+     *
+     * @return static
+     */
+    public function setManager(Taxonomy $manager): TaxonomyFactory;
 }

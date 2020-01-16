@@ -5,58 +5,105 @@ namespace tiFy\Contracts\Partial;
 interface Breadcrumb extends PartialDriver
 {
     /**
-     * Ajout d'un élément de contenu au fil d'arianne.
+     * Ajout de la déclaration d'un élément.
      *
-     * @param string|array|object|callable $part Element du fil d'ariane.
+     * @param string|array|object $item
+     *
+     * @return int|null
+     */
+    public function add($item): ?int;
+
+    /**
+     * Ajout de la déclaration d'un élément (alias).
+     * @see static::add()
+     *
+     * @param string|array|object $item
+     *
+     * @return int|null
+     */
+    public function append($item): ?int;
+
+    /**
+     * Réinitialisation de la liste des éléments déclarés.
      *
      * @return static
      */
-    public function addPart($part);
+    public function flush(): Breadcrumb;
+
+    /**
+     * Récupération de l'instance du gestion de collection d'éléments.
+     *
+     * @return BreadcrumbCollection
+     */
+    public function collection(): BreadcrumbCollection;
 
     /**
      * Désactivation de l'affichage.
      *
      * @return static
      */
-    public function disable();
+    public function disable(): Breadcrumb;
 
     /**
      * Activation de l'affichage.
      *
      * @return static
      */
-    public function enable();
-
-
-    /**
-     * Récupération de la liste des éléments contenus dans le fil d'ariane.
-     *
-     * @return string[]
-     */
-    public function parsePartList();
+    public function enable(): Breadcrumb;
 
     /**
-     * Traitement d'un élément de contenu du fil d'arianne.
+     * Ajout de la déclaration d'un élément au début de la liste.
      *
-     * @param string|array|object|callable $part Element du fil d'ariane.
+     * @param string|array|object $item
      *
-     * @return string
+     * @return int|null
      */
-    public function parsePart($part);
+    public function prepend($item): ?int;
 
     /**
-     * Ajout d'un élément de contenu en début de chaîne du fil d'arianne.
+     * Vérification d'activation.
      *
-     * @param string|array|object|callable $part Element du fil d'ariane.
-     *
-     * @return static
+     * @return bool
      */
-    public function prependPart($part);
+    public function isEnabled(): bool;
 
     /**
-     * Supprime l'ensemble des éléments de contenu prédéfinis.
+     * Insertion d'un élément déclaré à une position déterminée.
      *
-     * @return static
+     * @param int $position
+     * @param string|array|object $item
+     *
+     * @return int|null
      */
-    public function reset();
+    public function insert(int $position, $item): ?int;
+
+    /**
+     * Déplace un élément déclaré vers une position déterminée.
+     *
+     * @param int $from Position actuelle de l'élément à déplacer.
+     * @param int $to Position attendue de l'élément.
+     *
+     * @return int|null
+     */
+    public function move(int $from, int $to): ?int;
+
+    /**
+     * Supprime un élément déclaré selon sa position.
+     *
+     * @param int $position
+     * @param string|array|object $item
+     *
+     * @return Breadcrumb
+     */
+    public function remove(int $position): Breadcrumb;
+
+    /**
+     * Remplace un élément déclaré par un autre selon une position déterminée.
+     *
+     * @param int $position
+     * @param string|array|object $item
+     *
+     * @return int|null
+     */
+    public function replace(int $position, $item): ?int;
 }

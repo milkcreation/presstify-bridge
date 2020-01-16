@@ -14,6 +14,13 @@ interface PageHook
     public function all(): array;
 
     /**
+     * Récupération de l'instance d'accroche courante.
+     *
+     * @return PageHookItem|null
+     */
+    public function current(): ?PageHookItem;
+
+    /**
      * Récupération de la collection des instances des pages d'accroche déclarées.
      *
      * @return Collection

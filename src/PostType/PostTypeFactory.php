@@ -3,8 +3,7 @@
 namespace tiFy\PostType;
 
 use LogicException;
-use tiFy\Contracts\PostType\PostTypeFactory as PostTypeFactoryContract;
-use tiFy\Contracts\PostType\PostType;
+use tiFy\Contracts\PostType\{PostType, PostTypeFactory as PostTypeFactoryContract};
 use tiFy\Support\ParamsBag;
 
 class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
@@ -140,13 +139,9 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
 
         $this->set('label', $this->get('label', _x($this->getName(), 'post type general name', 'tify')));
 
-        $this->set('plural', $this->get('plural',
-            $this->get('labels.name', $this->get('label'))
-        ));
+        $this->set('plural', $this->get('plural', $this->get('labels.name', $this->get('label'))));
 
-        $this->set('singular', $this->get('singular',
-            $this->get('labels.singular_name', $this->get('label'))
-        ));
+        $this->set('singular', $this->get('singular', $this->get('labels.singular_name', $this->get('label'))));
 
         $this->set('gender', $this->get('gender', false));
 
@@ -192,7 +187,7 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
         if (!$this->prepared) {
             if (!$this->manager instanceof PostType) {
                 throw new LogicException(sprintf(
-                    __('Le gestionnaire %s devrait être défini avant de déclencher le démarrage', 'tify'),
+                    __('Le gestionnaire [%s] devrait être défini avant de déclencher le démarrage', 'tify'),
                     PostType::class
                 ));
             }

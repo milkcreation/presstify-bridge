@@ -117,9 +117,6 @@ final class Column implements ColumnContract
                 add_action("manage_{$object_name}_posts_custom_column", [$this, 'parseColumnContents'], 25, 2);
                 break;
             case 'taxonomy' :
-                add_filter("manage_edit-{$object_name}_columns", [$this, 'parseColumnHeaders']);
-                add_filter("manage_{$object_name}_custom_column", [$this, 'parseColumnContents'], 25, 3);
-                break;
             case 'user' :
                 add_filter("manage_edit-{$object_name}_columns", [$this, 'parseColumnHeaders']);
                 add_filter("manage_{$object_name}_custom_column", [$this, 'parseColumnContents'], 25, 3);
@@ -211,16 +208,8 @@ final class Column implements ColumnContract
                         continue 2;
                     endif;
                     break;
-
-                case 'taxonomy' :
-                    $output = func_get_arg(0);
-                    $column_name = func_get_arg(1);
-
-                    if ($column_name !== $c->getName()) :
-                        continue 2;
-                    endif;
-                    break;
                 default:
+                case 'taxonomy' :
                 case 'custom' :
                     $output = func_get_arg(0);
                     $column_name = func_get_arg(1);
@@ -243,5 +232,17 @@ final class Column implements ColumnContract
         endforeach;
 
         return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function stack(string $screen, array $columns): ColumnContract
+    {
+        foreach ($columns as $name => $attrs) {
+            $this->add($screen, $name, $attrs);
+        }
+
+        return $this;
     }
 }

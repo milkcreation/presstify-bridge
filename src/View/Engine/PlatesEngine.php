@@ -192,7 +192,7 @@ class PlatesEngine extends BasePlatesEngine implements PlatesEngineContract
     /**
      * @inheritDoc
      */
-    public function share($key, $value = null): PlatesEngineContract
+    public function share($key, $value = null): BaseEngineContract
     {
         $this->addData(is_array($key) ? $key : [$key => $value]);
 

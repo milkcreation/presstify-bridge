@@ -2,13 +2,14 @@
 
 namespace tiFy\Partial\Driver\Pagination;
 
+use tiFy\Contracts\Partial\PaginationUrl as PaginationUrlContract;
 use tiFy\Contracts\Routing\UrlFactory;
 use tiFy\Support\Proxy\Url;
 
-class PaginationUrl
+class PaginationUrl implements PaginationUrlContract
 {
     /**
-     * Url de base.
+     * Instance de l'url de base.
      * @var UrlFactory
      */
     protected $baseurl;
@@ -30,13 +31,9 @@ class PaginationUrl
     }
 
     /**
-     * Récupération du lien vers une page via son numéro.
-     *
-     * @param int $num Numéro de la page.
-     *
-     * @return string
+     * @inheritDoc
      */
-    public function page($num): string
+    public function page(int $num): string
     {
         $url = clone $this->baseurl;
         $decoded = $url->decoded();

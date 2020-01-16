@@ -5,13 +5,14 @@ namespace tiFy\Wordpress\Query;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use tiFy\Contracts\{PostType\PostTypeFactory, PostType\PostTypeStatus, Support\ParamsBag as ParamsBagContract};
-use tiFy\Support\{DateTime, ParamsBag};
+use tiFy\Support\{DateTime, ParamsBag, Str};
 use tiFy\Support\Proxy\{Cache, PostType};
 use tiFy\Wordpress\{Contracts\Database\PostBuilder,
     Contracts\Query\QueryComment as QueryCommentContract,
     Contracts\Query\QueryPost as QueryPostContract,
     Database\Model\Post as ModelPost,
-    Proxy\Media};
+    Proxy\Media
+};
 use WP_Post;
 use WP_Query;
 use WP_Term_Query;
@@ -82,7 +83,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
         } elseif ($id instanceof WP_Post) {
             return (new static($id));
         } elseif (is_null($id) && ($instance = static::createFromGlobal())) {
-            if (($postType = static::$postType) && ($postType!== 'any')) {
+            if (($postType = static::$postType) && ($postType !== 'any')) {
                 return $instance->typeIn($postType) ? $instance : null;
             } else {
                 return $instance;
@@ -230,7 +231,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     {
         $total = (int)$wp_query->found_posts;
         $per_page = (int)$wp_query->get('posts_per_page');
-        $current = $wp_query->get('paged') ? : 1;
+        $current = $wp_query->get('paged') ?: 1;
 
         static::query()->clear()->set([
             'args'     => $wp_query->query,
@@ -366,6 +367,23 @@ class QueryPost extends ParamsBag implements QueryPostContract
     public function getAuthorId(): int
     {
         return (int)$this->get('post_author', 0);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getChilds(?int $per_page = -1, int $page = 1, array $args = []): array
+    {
+        if (is_null($per_page)) {
+            $per_page = get_option('posts_per_page');
+        }
+
+        return static::queryFromArgs(array_merge($args, [
+            'paged'         => $page,
+            'post_parent'   => $this->getId(),
+            'post_status'   => 'publish',
+            'posts_per_page'=> $per_page
+        ]));
     }
 
     /**
@@ -557,7 +575,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public function getPath(): string
     {
-        return rtrim(str_replace(home_url(), '', $this->getPermalink()), '/');
+        return rtrim(str_replace(home_url('/'), '', $this->getPermalink()), '/');
     }
 
     /**
@@ -592,6 +610,18 @@ class QueryPost extends ParamsBag implements QueryPostContract
     public function getStatus(): PostTypeStatus
     {
         return PostType::status($this->get('post_status', ''));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTeaser(
+        int $length = 255,
+        string $teaser = ' [&hellip;]',
+        bool $use_tag = true,
+        bool $uncut = true
+    ): string {
+        return Str::teaser($this->getExcerpt(true), $length, $teaser, $use_tag, $uncut);
     }
 
     /**

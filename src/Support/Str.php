@@ -8,17 +8,30 @@ use tiFy\Validation\Validator as v;
 class Str extends BaseStr
 {
     /**
+     * @deprecated
+     */
+    public static function excerpt(
+        string $string,
+        int $length = 255,
+        string $teaser = ' [&hellip;]',
+        bool $use_tag = true,
+        bool $uncut = true
+    ) {
+        return static::teaser($string, $length, $teaser, $use_tag, $uncut);
+    }
+
+    /**
      * Création d'un extrait de texte basé sur les nombre de caractères.
      *
      * @param string $string Chaîne de caractère à traiter.
      * @param int $length Nombre maximum de caractères de la chaîne.
-     * @param string $teaser Délimiteur de fin de chaîne réduite (ex : [...]).
+     * @param string $teaser Délimiteur de fin de chaîne réduite (defaut : [...]).
      * @param boolean $use_tag Détection d'une balise d'arrêt du type <!--more-->.
      * @param boolean $uncut Préservation de la découpe de mots en fin de chaîne.
      *
      * @return string
      */
-    public static function excerpt(
+    public static function teaser(
         string $string,
         int $length = 255,
         string $teaser = ' [&hellip;]',

@@ -245,6 +245,17 @@ interface QueryPost extends ParamsBag
     public function getThumbnailBase64Src($size = 'thumbnail'): ?string;
 
     /**
+     * Récupération de la liste des instance des enfants
+     *
+     * @param int|null $per_page Nombre d'élément par page. défaut -1. Si null utilise lé réglage posts_per_page.
+     * @param int $page Page courante.
+     * @param array $args Liste des arguments de requête complémentaires.
+     *
+     * @return static[]
+     */
+    public function getChilds(?int $per_page = -1, int $page = 1, array $args = []): array;
+
+    /**
      * Récupération de la liste des classes associées.
      *
      * @param string[] $classes Liste de classes complémentaires.
@@ -358,7 +369,7 @@ interface QueryPost extends ParamsBag
      * @param string $meta_key Clé d'indexe de la metadonnée à récupérer
      * @param mixed $default Valeur de retour par défaut.
      *
-     * @return mixed
+     * @return string|array|mixed
      */
     public function getMetaMulti(string $meta_key, $default = null);
 
@@ -368,7 +379,7 @@ interface QueryPost extends ParamsBag
      * @param string $meta_key Clé d'indexe de la metadonnée à récupérer
      * @param mixed $default Valeur de retour par défaut.
      *
-     * @return mixed
+     * @return string|array|mixed
      */
     public function getMetaSingle(string $meta_key, $default = null);
 
@@ -439,6 +450,23 @@ interface QueryPost extends ParamsBag
      */
     public function getStatus(): PostTypeStatus;
 
+    /**
+     * Récupération d'un contenu d'accroche basé sur l'extrait.
+     *
+     * @param int $length Nombre maximum de caractères de la chaîne.
+     * @param string $teaser Délimiteur de fin de chaîne réduite (defaut : [...]).
+     * @param boolean $use_tag Détection d'une balise d'arrêt du type <!--more-->.
+     * @param boolean $uncut Préservation de la découpe de mots en fin de chaîne.
+     *
+     * @return string
+     */
+    public function getTeaser(
+        int $length = 255,
+        string $teaser = ' [&hellip;]',
+        bool $use_tag = true,
+        bool $uncut = true
+    ): string;
+    
     /**
      * Récupération de la liste des termes de taxonomie.
      *

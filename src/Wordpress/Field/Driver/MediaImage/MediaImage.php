@@ -32,6 +32,7 @@ class MediaImage extends FieldDriver implements MediaImageContract
      * @var array $attrs Attributs HTML du champ.
      * @var array $viewer Liste des attributs de configuration du controleur de gabarit d'affichage.
      * @var string $content Contenu HTML d'enrichissement de l'affichage de l'interface de saisie.
+     * @var string|int $default Image par défaut. Affiché lorsqu'aucune image n'est séléctionnée.
      * @var int $height Hauteur de l'image en pixel. 100 par defaut.
      * @var bool|string $infos Etiquette d'information complémentaires. {{largeur}} x {{hauteur}} par défaut
      * @var bool $removable Activation de la suppression de l'image active.
@@ -49,6 +50,7 @@ class MediaImage extends FieldDriver implements MediaImageContract
             'value'     => '',
             'viewer'    => [],
             'content'   => __('Cliquez sur la zone', 'tify'),
+            'default'   => null,
             'height'    => 100,
             'infos'     => true,
             'removable' => true,
@@ -77,19 +79,36 @@ class MediaImage extends FieldDriver implements MediaImageContract
             $this->set('infos', '');
         }
 
-        $value = $this->getValue();
-        if (is_numeric($value)) {
-            if ($img = wp_get_attachment_image_src($value, $this->get('size'))) {
+        if ($default = $this->get('default')) {
+            if (is_numeric($default)) {
+                if ($img = wp_get_attachment_image_src($default, $this->get('size'))) {
+                    $this->set([
+                        'preview.attrs.data-default' => $img[0],
+                        'preview.attrs.style' => "background-image:url({$img[0]})",
+                    ]);
+                }
+            } elseif (is_string($default)) {
                 $this->set([
-                    'attrs.aria-selected' => 'true',
-                    'preview.attrs.style' => "background-image:url({$img[0]})",
+                    'preview.attrs.data-default' => $default,
+                    'preview.attrs.style' => "background-image:url({$default})",
                 ]);
             }
-        } elseif (is_string($value) && !empty($value)) {
-            $this->set([
-                'attrs.aria-selected' => 'true',
-                'preview.attrs.style' => "background-image:url({$value})",
-            ]);
+        }
+
+        if ($value = $this->getValue()) {
+            if (is_numeric($value)) {
+                if ($img = wp_get_attachment_image_src($value, $this->get('size'))) {
+                    $this->set([
+                        'attrs.aria-selected' => 'true',
+                        'preview.attrs.style' => "background-image:url({$img[0]})",
+                    ]);
+                }
+            } elseif (is_string($value)) {
+                $this->set([
+                    'attrs.aria-selected' => 'true',
+                    'preview.attrs.style' => "background-image:url({$value})",
+                ]);
+            }
         }
 
         $this->set([

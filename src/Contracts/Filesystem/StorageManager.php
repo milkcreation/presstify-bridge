@@ -39,6 +39,26 @@ interface StorageManager extends FilesystemInterface
     public function getFilesystem($name);
 
     /**
+     * Création d'une instance de système de fichiers locaux de type image.
+     *
+     * @param  string $root Chemin absolu vers le répertoire du stockage de fichiers.
+     * @param  array $config Liste des paramètres de configuration.
+     *
+     * @return ImgFilesystem
+     */
+    public function img(string $root, array $config = []): ImgFilesystem;
+
+    /**
+     * Création d'une instance de système de fichier locaux de type image.
+     *
+     * @param  string $root Chemin absolu vers le répertoire du stockage de fichiers.
+     * @param  array $config Liste des paramètres de configuration.
+     *
+     * @return ImgAdapter
+     */
+    public function imgAdapter(string $root, array $config = []): AdapterInterface;
+
+    /**
      * Création d'une instance de système de fichiers locaux.
      *
      * @param  string $root Chemin absolu vers le répertoire du stockage de fichiers.
@@ -79,6 +99,26 @@ interface StorageManager extends FilesystemInterface
      * @return Filesystem|null
      */
     public function register(string $name, $attrs): ?Filesystem;
+
+    /**
+     * Déclaration d'un disque image.
+     *
+     * @param string $name Nom de qualification.
+     * @param array|ImgFilesystem $attrs Liste des attributs de configuration|Instance du gestionnaire de fichiers.
+     *
+     * @return ImgFilesystem|null
+     */
+    public function registerImg(string $name, $attrs): ?Filesystem;
+
+    /**
+     * Déclaration d'un disque local.
+     *
+     * @param string $name Nom de qualification.
+     * @param array|LocalFilesystem $attrs Liste des attributs de configuration|Instance du gestionnaire de fichiers.
+     *
+     * @return LocalFilesystem|null
+     */
+    public function registerLocal(string $name, $attrs): ?Filesystem;
 
     /**
      * Définition d'un disque.

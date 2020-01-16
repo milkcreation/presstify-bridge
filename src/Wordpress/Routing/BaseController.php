@@ -5,6 +5,7 @@ namespace tiFy\Wordpress\Routing;
 use tiFy\Contracts\Http\Response as ResponseContract;
 use tiFy\Http\Response;
 use tiFy\Routing\BaseController as ParentBaseController;
+use tiFy\Support\Proxy\Request;
 use tiFy\Support\Str;
 
 class BaseController extends ParentBaseController
@@ -39,8 +40,14 @@ class BaseController extends ParentBaseController
      *
      * @return ResponseContract
      */
-    public function handle(): ResponseContract
+    public function handle($path): ResponseContract
     {
+        if (config('routing.remove_trailing_slash', true)) {
+            if (($path != '/') && (substr($path, -1) == '/') && (Request::isMethod('get'))) {
+                return $this->redirect(rtrim($path, '/'));
+            }
+        }
+
         foreach (array_keys($this->tagTemplates) as $tag) {
             if (call_user_func($tag)) {
                 if ($response = $this->handleTag($tag, func_get_args())) {

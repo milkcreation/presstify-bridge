@@ -83,7 +83,9 @@ jQuery(function ($) {
       self.el.attr('aria-selected', 'false');
 
       $('[data-control="' + this.control.preview + '"]', this.el).fadeOut(function () {
-        $(this).css('background-image', '');
+        let def = $('[data-control="' + self.control.preview + '"]', self.el).data('default');
+
+        $(this).css('background-image', def ? 'url('+def+')' : '').fadeIn();
         $('[data-control="' + self.control.input + '"]', self.el).val('');
       });
     }

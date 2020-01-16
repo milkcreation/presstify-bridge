@@ -1,27 +1,26 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Wordpress\PostType;
 
-use tiFy\Contracts\PostType\PostTypeFactory;
-use tiFy\Contracts\PostType\PostType as PostTypeManager;
+use tiFy\Contracts\PostType\{PostType as Manager, PostTypeFactory};
 use tiFy\Wordpress\Contracts\PostType as PostTypeContract;
 
 class PostType implements PostTypeContract
 {
     /**
-     * Instance du controleur de gestion des types de contenu.
-     * @var PostTypeManager
+     * Instance du gestionnaire de types de post.
+     * @var Manager
      */
     protected $manager;
 
     /**
      * CONSTRUCTEUR.
      *
-     * @param PostTypeManager $manager Instance du controleur de gestion des types de contenu.
+     * @param Manager $manager
      *
      * @return void
      */
-    public function __construct(PostTypeManager $manager)
+    public function __construct(Manager $manager)
     {
         $this->manager = $manager;
 
@@ -44,7 +43,7 @@ class PostType implements PostTypeContract
         events()->listen('post-type.factory.boot', function (PostTypeFactory $factory) {
             global $wp_post_types;
 
-            if(!isset($wp_post_types[$factory->getName()])) {
+            if (!isset($wp_post_types[$factory->getName()])) {
                 register_post_type($factory->getName(), $factory->all());
             }
 

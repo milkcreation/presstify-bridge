@@ -3,8 +3,7 @@
 namespace tiFy\Taxonomy;
 
 use LogicException;
-use tiFy\Contracts\Taxonomy\TaxonomyFactory as TaxonomyFactoryContract;
-use tiFy\Contracts\Taxonomy\TaxonomyManager;
+use tiFy\Contracts\Taxonomy\{Taxonomy, TaxonomyFactory as TaxonomyFactoryContract};
 use tiFy\Support\ParamsBag;
 
 class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
@@ -13,11 +12,11 @@ class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
      * Indicateur d'instanciation.
      * @var boolean
      */
-    private $booted = false;
+    private $prepared = false;
 
     /**
      * Instance du gestionnaire de taxonomie.
-     * @var TaxonomyManager
+     * @var Taxonomy
      */
     protected $manager;
 
@@ -35,32 +34,22 @@ class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
      *
      * @return void
      */
-    public function __construct($name, $attrs = [])
+    public function __construct(string $name, array $attrs = [])
     {
         $this->name = $name;
         $this->set($attrs);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function boot(): void
+    public function __toString(): string
     {
-        if (!$this->booted) {
-            if (!$this->manager instanceof TaxonomyManager) {
-                throw new LogicException(sprintf(
-                    __('Le gestionnaire %s devrait être défini avant de déclencher le démarrage', 'tify'),
-                    TaxonomyManager::class
-                ));
-            }
-            $this->parse();
-            events()->trigger('taxonomy.factory.boot', [&$this]);
-            $this->booted = true;
-        }
+        return $this->getName();
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function defaults(): array
     {
@@ -90,7 +79,7 @@ class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getName(): string
     {
@@ -117,7 +106,7 @@ class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
                 $k = $v;
                 $v = $single;
             }
-            $this->manager->term_meta()->register($this->getName(), $k, $v);
+            $this->manager->meta()->register($this->getName(), $k, $v);
         }
 
         return $this;
@@ -130,11 +119,16 @@ class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
     {
         parent::parse();
 
+        $labels = $this->get('labels', []);
+        if (is_object($labels)) {
+            $this->set('labels', get_object_vars($labels));
+        }
+
         $this->set('label', $this->get('label', _x($this->getName(), 'taxonomy general name', 'tify')));
 
-        $this->set('plural', $this->get('plural', $this->get('label')));
+        $this->set('plural', $this->get('plural', $this->get('labels.name', $this->get('label'))));
 
-        $this->set('singular', $this->get('singular', $this->get('label')));
+        $this->set('singular', $this->get('singular', $this->get('labels.singular_name', $this->get('label'))));
 
         $this->set('gender', $this->get('gender', false));
 
@@ -175,9 +169,29 @@ class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setManager(TaxonomyManager $manager): TaxonomyFactoryContract
+    public function prepare(): TaxonomyFactoryContract
+    {
+        if (!$this->prepared) {
+            if (!$this->manager instanceof Taxonomy) {
+                throw new LogicException(sprintf(
+                    __('Le gestionnaire [%s] devrait être défini avant de déclencher le démarrage', 'tify'),
+                    Taxonomy::class
+                ));
+            }
+            $this->parse();
+            events()->trigger('taxonomy.factory.boot', [&$this]);
+            $this->prepared = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setManager(Taxonomy $manager): TaxonomyFactoryContract
     {
         $this->manager = $manager;
 

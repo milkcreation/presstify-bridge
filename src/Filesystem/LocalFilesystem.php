@@ -13,7 +13,7 @@ class LocalFilesystem extends Filesystem implements LocalFilesystemContract
     /**
      * @inheritDoc
      */
-    public function __invoke(string $path): string
+    public function __invoke(string $path): ?string
     {
         if ($this->has($path)) {
             try {
@@ -24,7 +24,8 @@ class LocalFilesystem extends Filesystem implements LocalFilesystemContract
                 return '';
             }
         }
-        return '';
+
+        return null;
     }
 
     /**

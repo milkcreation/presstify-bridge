@@ -1,28 +1,27 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Wordpress\Taxonomy;
 
-use tiFy\Contracts\Taxonomy\TaxonomyFactory;
-use tiFy\Contracts\Taxonomy\TaxonomyManager;
+use tiFy\Contracts\Taxonomy\{Taxonomy as Manager, TaxonomyFactory};
 use tiFy\Wordpress\Contracts\Taxonomy as TaxonomyContract;
 use WP_Term_Query;
 
 class Taxonomy implements TaxonomyContract
 {
     /**
-     * Instance du controleur de gestion des taxonomies.
-     * @var TaxonomyManager
+     * Instance gestionnaire de taxonomies.
+     * @var Manager
      */
     protected $manager;
 
     /**
      * CONSTRUCTEUR.
      *
-     * @param TaxonomyManager $manager Instance du controleur de gestion des taxonomies.
+     * @param Manager $manager
      *
      * @return void
      */
-    public function __construct(TaxonomyManager $manager)
+    public function __construct(Manager $manager)
     {
         $this->manager = $manager;
 
@@ -66,6 +65,7 @@ class Taxonomy implements TaxonomyContract
                 } elseif (!$initial_terms = $factory->get('initial_terms')) {
                     return;
                 }
+
                 foreach ($initial_terms as $slug => $name) {
                     if (!$term = get_term_by('slug', $slug, $factory->getName())) {
                         wp_insert_term($name, $factory->getName(), ['slug' => $slug]);
@@ -80,12 +80,12 @@ class Taxonomy implements TaxonomyContract
             } elseif (defined('DOING_AJAX') && DOING_AJAX) {
                 return;
             }
-            $this->manager->term_meta()->save($term_id, $tt_id, $taxonomy);
+            $this->manager->meta()->save($term_id, $tt_id, $taxonomy);
         }, 10, 3);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getTermsByOrder($taxonomy, $args = [], $order_meta_key = '_order')
     {

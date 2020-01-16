@@ -2,6 +2,7 @@
 
 namespace tiFy\Contracts\Metabox;
 
+use Closure;
 use tiFy\Contracts\{Support\ParamsBag, View\PlatesEngine};
 
 interface MetaboxDriver extends ParamsBag
@@ -80,6 +81,15 @@ interface MetaboxDriver extends ParamsBag
      * @return static
      */
     public function setContext(string $context): MetaboxDriver;
+
+    /**
+     * Définition d'une fonction de traitement.
+     *
+     * @param Closure $func
+     *
+     * @return static
+     */
+    public function setHandler(Closure $func): MetaboxDriver;
 
     /**
      * Définition de l'instance du gestionnaire.

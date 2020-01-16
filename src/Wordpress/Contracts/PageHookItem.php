@@ -65,13 +65,20 @@ interface PageHookItem extends ParamsBag
     public function getTitle(): string;
 
     /**
-     * Vérifie si la page d'affichage courante correspond à la page d'accroche associée.
+     * Vérifie si une page est associée à la page d'accroche.
      *
      * @param WP_Post|null $post Page d'affichage courante|Identifiant de qualification|Objet post Wordpress à vérifier.
      *
      * @return bool
      */
-    public function is(?WP_Post $post = null);
+    public function is(?WP_Post $post = null): bool;
+
+    /**
+     * Vérifie si la page courante hérite de la page d'accroche.
+     *
+     * @return bool
+     */
+    public function isAncestor(): bool;
 
     /**
      * Récupération de l'instance du post associé.
@@ -81,7 +88,7 @@ interface PageHookItem extends ParamsBag
     public function post(): ?QueryPost;
 
     /**
-     * Récupération de l'intance de la route associée.
+     * Récupération de l'instance de la route associée.
      *
      * @return Route|null
      */
