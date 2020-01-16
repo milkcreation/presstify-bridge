@@ -2,11 +2,11 @@
 
 namespace tiFy\Support\Proxy;
 
-use tiFy\Contracts\Field\{Field as FieldContract, FieldFactory};
+use tiFy\Contracts\Field\{Field as FieldContract, FieldDriver};
 
 /**
- * @method static FieldFactory|null get(string $name, array|string|null $id = null, array $attrs = [])
- * @method static FieldContract set(string $name, FieldFactory $field)
+ * @method static FieldDriver|null get(string $name, array|string|null $id = null, array $attrs = [])
+ * @method static FieldContract set(string $name, FieldDriver $field)
  */
 class Field extends AbstractProxy
 {

@@ -2,18 +2,18 @@
 
 namespace tiFy\Support\Proxy;
 
-use tiFy\Contracts\Http\RedirectResponse as RedirectContract;
+use tiFy\Contracts\{Http\RedirectResponse, Routing\Redirector};
 
 /**
- * @method static RedirectContract to(string $path, int $status = 302, array $headers = [])
- * @method static RedirectContract route(string $name, array $parameters = [], int $status = 302, array $headers = [])
+ * @method static RedirectResponse to(string $path, int $status = 302, array $headers = [])
+ * @method static RedirectResponse route(string $name, array $parameters = [], int $status = 302, array $headers = [])
  */
 class Redirect extends AbstractProxy
 {
     /**
      * {@inheritDoc}
      *
-     * @return RedirectContract
+     * @return Redirector
      */
     public static function getInstance()
     {

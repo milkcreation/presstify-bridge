@@ -13,6 +13,7 @@ use tiFy\Contracts\View\{Engine, PlatesEngine, View as ViewContract, PlatesFacto
  * @method static PlatesFactory make(string $view, array $args = [])
  * @method static Engine register(string $name, string|array|Engine|null $attrs = null)
  * @method static string render(string $view, array $args = [])
+ * @method static string share(string|array $view, mixed $value = null)
  * @method static ViewContract setEngine(string $name, Engine $engine)
  */
 class View extends AbstractProxy

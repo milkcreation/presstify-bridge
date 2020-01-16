@@ -82,3 +82,17 @@ $colors: (
   @warn "Unknown `#{$color}` - `#{$type}` in $colors.";
   @return null;
 }
+
+// Grid
+$grid-container-center: false !default;
+$grid-container-prefix: 'ThemeContainer' !default;
+$grid-container-width: '1024px' !default;
+$grid-row: 'ThemeRow' !default;
+$grid-col-prefix: 'ThemeCol' !default;
+$grid-no-gutters: 'ThemeNoGutters' !default;
+$grid-width: 96% !default;
+$grid-gutter: 15px !default;
+$grid-columns: 12 !default;
+$grid-breakpoint-small: 33.75em !default; // 540px
+$grid-breakpoint-med: 45em !default; // 720px
+$grid-breakpoint-large: 60em !default; // 960px

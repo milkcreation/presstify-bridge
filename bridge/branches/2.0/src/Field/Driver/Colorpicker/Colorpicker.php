@@ -17,10 +17,7 @@ class Colorpicker extends FieldDriver implements ColorpickerContract
      * @var string $name Clé d'indice de la valeur de soumission du champ.
      * @var string $value Valeur courante de soumission du champ.
      * @var array $viewer Liste des attributs de configuration du pilote d'affichage.
-     * @var array $options {
-     *          Liste des options du contrôleur ajax.
-     * @see https://bgrins.github.io/spectrum/
-     *      }
+     * @var array $options Liste des options du contrôleur ajax. @see https://bgrins.github.io/spectrum/
      * }
      */
     public function defaults(): array

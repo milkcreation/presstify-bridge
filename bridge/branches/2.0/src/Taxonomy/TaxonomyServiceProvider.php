@@ -33,7 +33,7 @@ class TaxonomyServiceProvider extends ServiceProvider
     public function registerManager(): void
     {
         $this->getContainer()->share('taxonomy', function () {
-            return new TaxonomyManager($this->getContainer());
+            return new Taxonomy($this->getContainer());
         });
     }
 

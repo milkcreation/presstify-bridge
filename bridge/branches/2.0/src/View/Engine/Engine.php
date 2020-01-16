@@ -58,6 +58,14 @@ abstract class Engine implements EngineContract
     /**
      * @inheritDoc
      */
+    public function share($key, $value = null): EngineContract
+    {
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function setManager(ViewContract $manager): EngineContract
     {
         $this->manager = $manager;

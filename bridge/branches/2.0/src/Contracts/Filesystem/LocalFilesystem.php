@@ -12,9 +12,9 @@ interface LocalFilesystem extends Filesystem
      *
      * @param string $path Chemin relatif vers le fichier.
      *
-     * @return string
+     * @return string|null
      */
-    public function __invoke(string $path): string;
+    public function __invoke(string $path): ?string;
 
     /**
      * Génération de la réponse statique d'un fichier.

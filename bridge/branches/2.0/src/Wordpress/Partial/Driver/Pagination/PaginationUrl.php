@@ -3,10 +3,10 @@
 namespace tiFy\Wordpress\Partial\Driver\Pagination;
 
 use tiFy\Contracts\Routing\UrlFactory;
-use tiFy\Partial\Driver\Pagination\PaginationUrl;
+use tiFy\Partial\Driver\Pagination\PaginationUrl as BasePaginationUrl;
 use tiFy\Support\Proxy\Url;
 
-class WpPaginationUrl extends PaginationUrl
+class PaginationUrl extends BasePaginationUrl
 {
     /**
      * CONSTRUCTEUR.
@@ -23,13 +23,9 @@ class WpPaginationUrl extends PaginationUrl
     }
 
     /**
-     * Récupération du lien vers une page via son numéro.
-     *
-     * @param int $num Numéro de la page.
-     *
-     * @return string
+     * @inheritDoc
      */
-    public function page($num): string
+    public function page(int $num): string
     {
         $url = clone $this->baseurl;
 

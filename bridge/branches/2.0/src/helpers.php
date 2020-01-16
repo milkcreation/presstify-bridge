@@ -31,7 +31,7 @@ use tiFy\Contracts\Routing\Url;
 use tiFy\Contracts\Support\ClassInfo;
 use tiFy\Contracts\Support\ParamsBag;
 use tiFy\Contracts\Taxonomy\TaxonomyFactory;
-use tiFy\Contracts\Taxonomy\TaxonomyManager;
+use tiFy\Contracts\Taxonomy\Taxonomy;
 use tiFy\Contracts\Template\TemplateFactory;
 use tiFy\Contracts\Template\TemplateManager;
 use tiFy\Contracts\User\User;
@@ -440,11 +440,11 @@ if (!function_exists('taxonomy')) {
      *
      * @param string|null $name Nom de qualification de la taxonomie déclarée.
      *
-     * @return TaxonomyManager|TaxonomyFactory
+     * @return Taxonomy|TaxonomyFactory
      */
     function taxonomy(?string $name = null)
     {
-        /* @var TaxonomyManager $manager */
+        /* @var Taxonomy $manager */
         $manager = app('taxonomy');
 
         if (is_null($name)) {
@@ -529,12 +529,11 @@ if (!function_exists('view')) {
     function view($view = null, $data = [])
     {
         /* @var ViewEngine $factory */
-        $factory = app('view');
+        $factory = app('viewer');
 
         if (func_num_args() === 0) {
             return $factory;
         }
-
         return $factory->render($view, $data);
     }
 }

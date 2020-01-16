@@ -1,4 +1,4 @@
-/* globals tify, attachMediaBoxL10n */
+/* globals tify */
 'use strict';
 
 import jQuery from 'jquery';
@@ -53,10 +53,9 @@ jQuery(function ($) {
             $('#find-posts-input').focus().keyup(function (event) {
                 if (event.which === 27) {
                     scripts.close();
-                } // close on Escape
+                }
             });
 
-            // Pull some results up by default
             scripts.send();
 
             return false;
@@ -156,7 +155,9 @@ jQuery(function ($) {
         });
 
         $(document).on('click', '[data-control="findposts"] > button', function() {
-            scripts.open('target', '#' + $('.tiFyField-findposts', $(this).closest('[data-control="findposts"]')).attr('id'));
+            scripts
+                .open('target', '#' + $('> input[type="text"]', $(this).closest('[data-control="findposts"]'))
+                .attr('id'));
         });
     });
 });

@@ -2,10 +2,10 @@
 
 namespace tiFy\Partial\Driver\Pagination;
 
+use tiFy\Contracts\Partial\PaginationQuery as PaginationQueryContract;
 use tiFy\Support\Collection;
-use WP_Query;
 
-class PaginationQuery extends Collection
+class PaginationQuery extends Collection implements PaginationQueryContract
 {
     /**
      * Nombre de résultats trouvés.
@@ -38,31 +38,26 @@ class PaginationQuery extends Collection
     protected $total_page = 0;
 
     /**
-     * CONSTRUCTEUR.
-     *
-     * @param array|WP_Query $args Liste des arguments de requête|Requête de récupération des éléments.
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function __construct($args)
+    public function getPage(): int
     {
-        if (empty($args)) {
-            /** @var WP_Query $wp_query */
-            global $wp_query;
-        } elseif ($args instanceof WP_Query) {
-            $wp_query = $args;
-        } else {
-            $wp_query = new WP_Query($args);
-        }
+        return $this->page ? : 1;
+    }
 
-        $this->page = intval($wp_query->get('paged', 1));
+    /**
+     * @inheritDoc
+     */
+    public function getTotalPage(): int
+    {
+        return (int)$this->total_page;
+    }
 
-        $this->per_page = intval($wp_query->get('posts_per_page', get_option('posts_per_page')));
-
-        $this->offset = intval($wp_query->get('offset', 0));
-
-        $this->founds = intval($wp_query->found_posts);
-
+    /**
+     * @inheritDoc
+     */
+    public function setPagination(): PaginationQueryContract
+    {
         if ($this->founds) {
             $this->total_page = $this->offset
                 ? ceil(
@@ -72,21 +67,7 @@ class PaginationQuery extends Collection
         } else {
             $this->total_page = 0;
         }
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public function getPage()
-    {
-        return $this->page ? : 1;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getTotalPage()
-    {
-        return $this->total_page;
+        return $this;
     }
 }

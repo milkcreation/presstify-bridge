@@ -7,8 +7,9 @@ use tiFy\Wordpress\Contracts\{PageHook as PageHookContract, PageHookItem};
 
 /**
  * @method static array all()
+ * @method static PageHookItem|null current()
  * @method static PageHookItem|null get(string $name)
- * @method static PageHookContract set(array|string $key, mixed $value = null)
+ * @method static PageHookContract set(array|string $name, mixed $value = null)
  */
 class PageHook extends AbstractProxy
 {

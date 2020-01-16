@@ -5,7 +5,7 @@ namespace tiFy\Wordpress\Metabox;
 use tiFy\Contracts\Metabox\{MetaboxDriver, MetaboxManager, MetaboxScreen as MetaboxScreenContract};
 use tiFy\Wordpress\Metabox\Driver\{Filefeed\Filefeed, Imagefeed\Imagefeed, Videofeed\Videofeed};
 use tiFy\Wordpress\Routing\WpScreen;
-use tiFy\Support\Proxy\{PostType, Request};
+use tiFy\Support\Proxy\{PostType, Request, Taxonomy};
 use WP_Post;
 use WP_Screen;
 use WP_Term;
@@ -124,7 +124,7 @@ class Metabox
 
                 array_walk($boxes, function (MetaboxDriver $box) use ($taxonomy) {
                     if (($name = $box->name()) && ! in_array($name, $this->termKeys)) {
-                        taxonomy()->term_meta()->register($taxonomy, $name, true);
+                        Taxonomy::meta()->register($taxonomy, $name, true);
                     }
                 });
             } elseif ($screen->getObjectType() === 'user') {

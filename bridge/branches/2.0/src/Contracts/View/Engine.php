@@ -34,6 +34,11 @@ interface Engine
     public function render($name, array $args = []);
 
     /**
+     * @inheritDoc
+     */
+    public function share($key, $value = null): Engine;
+
+    /**
      * Définition de l'instance du gestionnaire de vue.
      *
      * @param View $manager
