@@ -75,7 +75,7 @@ class BaseController extends ParentBaseController
         if (method_exists($this, $method)) {
             return $this->{$method}(...$args);
         } elseif (file_exists(get_template_directory() . "/views/app/{$view}/index.php")) {
-            return $this->viewer("app::{$view}/index", $this->all());
+            return $this->view("app::{$view}/index", $this->all());
         } else {
             if ($template = call_user_func($this->tagTemplates[$tag])) {
                 if ('attachment' === $tag) {
@@ -90,7 +90,7 @@ class BaseController extends ParentBaseController
                     '#' . preg_quote(get_template_directory(), DIRECTORY_SEPARATOR) . '#', '', $template
                 );
 
-                return $this->viewer(pathinfo($template, PATHINFO_FILENAME), $this->all());
+                return $this->view(pathinfo($template, PATHINFO_FILENAME), $this->all());
             }
 
             return null;
