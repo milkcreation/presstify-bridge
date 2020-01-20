@@ -215,6 +215,14 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getTermRender(int $id, bool $url = true, array $attrs = []): string
+    {
+        return (($t = get_term($id)) instanceof WP_Term) ? $this->getRender($t->name, $url ? get_term_link($t) : null, $attrs) : '';
+    }
+
+    /**
      * Récupération de l'élèment lors de l'affichage d'une page liste de contenus relatifs à une catégorie
      *
      * @return array

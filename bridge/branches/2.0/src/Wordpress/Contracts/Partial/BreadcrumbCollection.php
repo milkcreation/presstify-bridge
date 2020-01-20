@@ -84,7 +84,7 @@ interface BreadcrumbCollection extends BaseBreadcrumbCollectionContract
     public function getAncestorsRender(int $id, bool $url = true, array $attrs = []): array;
 
     /**
-     * Ajout d'un élément de contenu.
+     * Ajout d'un élément associé à un post.
      *
      * @param int $id Identifiant de qualification du post enfant.
      * @param bool $url Activation de l'url.
@@ -102,4 +102,15 @@ interface BreadcrumbCollection extends BaseBreadcrumbCollectionContract
      * @return string
      */
     public function getPostTitle($post): string;
+
+    /**
+     * Ajout d'un élément associé à un terme de taxonomie.
+     *
+     * @param int $id Identifiant de qualification du post enfant.
+     * @param bool $url Activation de l'url.
+     * @param array $attrs Liste des attributs HTML de l'élément.
+     *
+     * @return string
+     */
+    public function getTermRender(int $id, bool $url = true, array $attrs = []): string;
 }

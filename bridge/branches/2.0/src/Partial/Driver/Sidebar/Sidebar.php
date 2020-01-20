@@ -104,13 +104,15 @@ class Sidebar extends PartialDriver implements SidebarContract
             }
         }
 
-        $header = $this->get('header');
-        $this->set('header', $header instanceof Closure
-            ? call_user_func($header) : (is_string($header) ? $header : '&nbsp;'));
+        if ($header = $this->get('header')) {
+            $this->set('header', $header instanceof Closure
+                ? call_user_func($header) : (is_string($header) ? $header : '&nbsp;'));
+        }
 
-        $footer = $this->get('footer');
-        $this->set('footer', $footer instanceof Closure
-            ? call_user_func($footer) : (is_string($footer) ? $footer : '&nbsp;'));
+        if ($footer = $this->get('footer')) {
+            $this->set('footer', $footer instanceof Closure
+                ? call_user_func($footer) : (is_string($footer) ? $footer : '&nbsp;'));
+        }
 
         $this->set('items', (new Collection($items))->sortBy('position')->all());
 
@@ -164,6 +166,6 @@ class Sidebar extends PartialDriver implements SidebarContract
             Arr::set($attrs, 'attrs.data-target', "#{$id}");
         }
 
-        return (string)$this->viewer('toggle', compact('attrs'));
+        return $this->viewer('toggle', compact('attrs'));
     }
 }
