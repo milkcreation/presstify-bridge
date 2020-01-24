@@ -225,7 +225,7 @@ class Modal extends PartialDriver implements ModalContract
         Arr::set($attrs, 'attrs.data-control', 'modal.trigger');
         Arr::set($attrs, 'attrs.data-target', "{$this->get('attrs.data-id')}");
 
-        return (string)$this->viewer('trigger', $attrs);
+        return $this->viewer('trigger', $attrs);
     }
 
     /**
@@ -237,7 +237,7 @@ class Modal extends PartialDriver implements ModalContract
 
         return [
             'success' => true,
-            'data'    => (string)$this->viewer('ajax-content'),
+            'data'    => $this->viewer('ajax-content'),
         ];
     }
 }

@@ -32,6 +32,7 @@ jQuery(function ($) {
       header: 'modal.content.header',
       spinner: 'modal.spinner'
     },
+
     // Instanciation de l'élément.
     _create: function () {
       this.instance = this;
@@ -144,8 +145,6 @@ jQuery(function ($) {
       }
       this.spin.addClass(this.option('classes.spinner')).attr('aria-hide', 'true');
 
-      this.el.modal();
-
       // Délégation d'appel des événements de la modal.
       // @see https://getbootstrap.com/docs/4.0/components/modal/#events
       // ex. $('[data-control="modal"]').on('modal:show', function (event) {
@@ -173,7 +172,7 @@ jQuery(function ($) {
                       if (typeof resp === 'string') {
                         self.ajaxHtml = resp;
                       } else if (typeof resp === 'object') {
-                        self.ajaxHtml = resp.data || undefined
+                        self.ajaxHtml = resp.data || undefined;
                       }
                       self.content.html(self.ajaxHtml);
                     })
@@ -209,6 +208,20 @@ jQuery(function ($) {
     },
     // ACCESSEURS.
     // -----------------------------------------------------------------------------------------------------------------
+    // Modification du contenu du corps.
+    body: function (html) {
+      let $body = $('> [data-control="' + this.control.body + '"]', this.content);
+
+      return html === undefined ? $body.html() : $body.html(html);
+    },
+    // Modification du contenu du corps.
+    header: function (html) {
+      $('> [data-control="' + this.control.header + '"]', this.content).html(html);
+    },
+    // Modification du contenu du corps.
+    footer: function (html) {
+      $('> [data-control="' + this.control.footer + '"]', this.content).html(html);
+    },
     // Fermeture de la modale.
     close: function () {
       this.el.modal('hide');
@@ -252,20 +265,43 @@ jQuery(function ($) {
     }
   });
 
+  $.widget('tify.tifyModalTrigger', {
+    widgetEventPrefix: 'modal-trigger:',
+
+    // Instanciation de l'élément.
+    _create: function () {
+      this.el = this.element;
+
+      this._on(this.el, { 'click': function (e) {
+          e.preventDefault();
+
+          let self = this,
+              $el = $(self.el),
+              $target = $('[data-id="' + self.el.data('target') + '"]');
+
+          if (!$el.hasClass('show')) {
+            $el.addClass('show');
+
+            if ($target.length) {
+              $target.on('modal:hide', function () {
+                $el.removeClass('show');
+              }).tifyModal('open');
+            }
+          }
+        }
+      });
+    }
+  });
+
   $(document).ready(function () {
     $('[data-control="modal"]').tifyModal();
-
     $.tify.observe('[data-control="modal"]', function (i, target) {
       $(target).tifyModal();
     });
 
-    $(document).on('click', '[data-control="modal.trigger"]', function (e) {
-      e.preventDefault();
-
-      let $target = $('[data-id="' + $(this).data('target') + '"]');
-      if ($target.length) {
-        $target.tifyModal('open');
-      }
+    $('[data-control="modal.trigger"]').tifyModalTrigger();
+    $.tify.observe('[data-control="modal.trigger"]', function (i, target) {
+      $(target).tifyModalTrigger();
     });
   });
 });

@@ -37,6 +37,17 @@ abstract class BaseController extends ParamsBag
      */
     public function boot(): void { }
 
+
+    /**
+     * Récupération de l'instance du conteneur d'injection de dépendances.
+     *
+     * @return Container|null
+     */
+    public function getContainer(): ?Container
+    {
+        return $this->container;
+    }
+
     /**
      * Récupération de l'instance du gestionnaire de redirection|Redirection vers un chemin.
      *

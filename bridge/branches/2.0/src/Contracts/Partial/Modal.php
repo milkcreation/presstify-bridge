@@ -29,7 +29,7 @@ interface Modal extends PartialDriver
      *
      * @return string
      */
-    public function trigger(array $attrs = []);
+    public function trigger(array $attrs = []): string;
 
     /**
      * Contrôleur de traitement de la requête XHR.
