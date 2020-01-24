@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Collection;
 use tiFy\Contracts\Partial\{PartialDriver as PartialDriverContract, Sidebar as SidebarContract};
 use tiFy\Partial\PartialDriver;
-use tiFy\Support\Arr;
+use tiFy\Support\{Arr, ParamsBag};
 
 /**
  * RESSOURCES POUR EVOLUTION :
@@ -145,15 +145,16 @@ class Sidebar extends PartialDriver implements SidebarContract
     public function toggle(array $attrs = []): string
     {
         $id = $this->get('attrs.id');
-        $fill =$this->get('theme') === 'light' ? '#2B2B2B' : '#FFF';
-
         $attrs = array_merge([
+            'attrs'   => [
+                'class' => 'Sidebar-toggle'
+            ],
             'tag'     => 'a',
             'content' => "<svg xmlns=\"http://www.w3.org/2000/svg\"" .
-                "viewBox=\"0 0 50 50\" xml:space=\"preserve\" fill=\"{$fill}\" class=\"Sidebar-toggleSvg\">" .
-                "<g><rect width=\"50\" height=\"5\" x=\"0\" y=\"5\" ry=\"0\"/>" .
+                "viewBox=\"0 0 50 50\" xml:space=\"preserve\" class=\"Sidebar-toggleSvg\">" .
+                "<rect width=\"50\" height=\"5\" x=\"0\" y=\"5\" ry=\"0\"/>" .
                 "<rect width=\"50\" height=\"5\" x=\"0\" y=\"22.5\" ry=\"0\"/>" .
-                "<rect width=\"50\" height=\"5\" x=\"0\" y=\"40\" ry=\"0\"/></g></svg>"
+                "<rect width=\"50\" height=\"5\" x=\"0\" y=\"40\" ry=\"0\"/></svg>"
         ], $attrs);
 
         if ((Arr::get($attrs, 'tag') === 'a') && !Arr::has($attrs, 'attrs.href')) {

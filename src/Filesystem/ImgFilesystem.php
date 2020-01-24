@@ -52,14 +52,15 @@ class ImgFilesystem extends LocalFilesystem implements ImgFilesystemContract
 
                 if (MimeTypes::inType($filename, 'svg')) {
                     return Partial::get('tag', [
-                        'attrs'   => $attrs,
+                        'attrs'   => array_merge(['class' => ''], $attrs),
                         'content' => $content,
                         'tag'     => 'div',
                     ])->render();
                 } elseif ($src = $this->src($path)) {
                     return Partial::get('tag', [
                         'attrs' => array_merge([
-                            'alt' => basename($filename),
+                            'alt'   => basename($filename),
+                            'class' => ''
                         ], $attrs, ['src' => $src]),
                         'tag'   => 'img',
                     ])->render();

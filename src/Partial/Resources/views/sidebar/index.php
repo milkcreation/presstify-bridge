@@ -9,10 +9,11 @@
 <?php $this->before(); ?>
     <div <?php echo $this->attrs(); ?>>
 
-        <?php echo $this->get('toggle'); ?>
+        <?php if ($toggle = $this->get('toggle')) : ?>
+            <div class="Sidebar-sideToggle"><?php echo $toggle; ?></div>
+        <?php endif; ?>
 
         <div class="Sidebar-panel">
-
             <?php !$this->get('header') ?: $this->insert('header', $this->all()); ?>
 
             <div class="Sidebar-body" data-control="sidebar.body">
