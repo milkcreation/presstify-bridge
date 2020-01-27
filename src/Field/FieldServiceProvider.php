@@ -240,7 +240,6 @@ class FieldServiceProvider extends ServiceProvider
 
             return View::getPlatesEngine(array_merge([
                 'directory' => $manager->resourcesDir("/views/{$driver->getAlias()}"),
-                'engine'    => 'plates',
                 'factory'   => FieldView::class,
                 'field'     => $driver,
             ], config('field.viewer', []), $driver->get('viewer', [])));

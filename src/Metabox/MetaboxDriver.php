@@ -264,7 +264,6 @@ class MetaboxDriver extends ParamsBag implements MetaboxDriverContract
         if (!$this->viewer) {
             $this->viewer = View::getPlatesEngine(array_merge([
                 'directory' => $this->manager()->resourcesDir("/views/driver/{$this->alias()}"),
-                'engine'    => 'plates',
                 'factory'   => MetaboxView::class,
                 'metabox'   => $this
             ], config('metabox.viewer', []), $this->get('viewer', [])));

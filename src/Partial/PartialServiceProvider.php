@@ -190,7 +190,6 @@ class PartialServiceProvider extends ServiceProvider
 
             return View::getPlatesEngine(array_merge([
                 'directory'    => $manager->resourcesDir("/views/{$driver->getAlias()}"),
-                'engine'       => 'plates',
                 'factory'      => PartialView::class,
                 'partial'      => $driver,
             ], config('partial.viewer', []), $driver->get('viewer', [])));
