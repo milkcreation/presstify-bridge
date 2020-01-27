@@ -178,11 +178,9 @@ interface FieldDriver extends ParamsBag
     public function setViewer(ViewEngine $viewer): FieldDriver;
 
     /**
-     * Récupération d'un instance du controleur de liste des gabarits d'affichage ou d'un gabarit d'affichage.
-     * {@internal Si aucun argument n'est passé à la méthode, retourne l'instance du controleur de liste.}
-     * {@internal Sinon récupére l'instance du gabarit d'affichage et passe les variables en argument.}
+     * Instance du gestionnaire de gabarits d'affichage ou rendu du gabarit d'affichage.
      *
-     * @param null|string view Nom de qualification du gabarit.
+     * @param string|null view Nom de qualification du gabarit.
      * @param array $data Liste des variables passées en argument.
      *
      * @return ViewEngine|string
