@@ -8,9 +8,6 @@ use tiFy\Api\Recaptcha\Field\Recaptcha as RecaptchaField;
 use tiFy\Api\Recaptcha\Contracts\Recaptcha as RecaptchaContract;
 use tiFy\Support\Proxy\{Field, Request};
 
-/**
- * @see https://github.com/google/recaptcha
- */
 class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
 {
     /**

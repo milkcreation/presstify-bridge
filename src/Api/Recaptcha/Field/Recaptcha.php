@@ -51,14 +51,14 @@ class Recaptcha extends FieldDriver implements FieldRecaptcha
     /**
      * @inheritDoc
      */
-    public function display(): string
+    public function render(): string
     {
         $this->recaptcha->addWidgetRender($this->get('attrs.id'), [
             'sitekey' => $this->get('sitekey'),
             'theme'   => $this->get('theme')
         ]);
 
-        return parent::display();
+        return parent::render();
     }
 
     /**
