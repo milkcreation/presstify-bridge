@@ -21,46 +21,33 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
 
         events()->listen('partial.breadcrumb.fetch', function (BaseBreadcrumbCollectionContract $bc) {
             if (!$this->all()) {
+                $this->addRoot(null, true);
+
                 if (is_embed()) {
                     /** @todo */
-                    $this->addRoot(null, true);
                 } elseif (is_404()) {
-                    $this->addRoot(null, true);
-
                     $this->add404();
                 } elseif (is_search()) {
-                    $this->addRoot(null, true);
-
                     $this->addSearch();
                 } elseif (is_front_page()) {
-                    $this->addRoot(null, true);
                 } elseif (is_home()) {
                     if ($id = (int)get_option('page_for_posts')) {
-                        $this->addRoot(null, true);
                         if ($acs = $this->getAncestorsRender($id)) {
                             array_walk($acs, function ($render) {
                                 $this->add($render);
                             });
                         }
                         $this->addHome();
-                    } else {
-                        $this->addRoot();
                     }
                 } elseif (is_privacy_policy()) {
                     /** @todo */
-                    $this->addRoot(null, true);
                 } elseif (is_post_type_archive()) {
                     /** @todo */
-                    $this->addRoot(null, true);
                 } elseif (is_tax()) {
-                    $this->addRoot(null, true);
                     $this->addTax();
                 } elseif (is_attachment()) {
                     /** @todo */
-                    $this->addRoot(null, true);
                 } elseif (is_single()) {
-                    $this->addRoot(null, true);
-
                     if (get_post_type() === 'post') {
                         if (($id = (int)get_option('page_for_posts')) && ($pr = $this->getPostRender($id))) {
                             $this->add($pr);
@@ -77,8 +64,6 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
                         $this->add($pr);
                     }
                 } elseif (is_page()) {
-                    $this->addRoot(null, true);
-
                     if ($acsr = $this->getAncestorsRender(get_the_ID())) {
                         array_walk($acsr, function ($render) {
                             $this->add($render);
@@ -89,8 +74,6 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
                         $this->add($pr);
                     }
                 } elseif (is_singular()) {
-                    $this->addRoot(null, true);
-
                     if ($acsr = $this->getAncestorsRender(get_the_ID())) {
                         array_walk($acsr, function ($render) {
                             $this->add($render);
@@ -102,19 +85,14 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
                     }
                 } elseif (is_category()) {
                     /** @todo */
-                    $this->addRoot(null, true);
                 } elseif (is_tag()) {
                     /** @todo */
-                    $this->addRoot(null, true);
                 } elseif (is_author()) {
                     /** @todo */
-                    $this->addRoot(null, true);
                 } elseif (is_date()) {
                     /** @todo */
-                    $this->addRoot(null, true);
                 } elseif (is_archive()) {
                     /** @todo */
-                    $this->addRoot(null, true);
                 }
             }
         });
@@ -158,7 +136,7 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
      */
     public function addRoot(?string $c = null, $u = false, array $a = [], ?int $p = null, array $w = []): int
     {
-        $c = $c ? : __('Accueil');
+        $c = $c ? : __('Accueil', 'tify');
         $u = $this->getUrl($u, (string)Url::root());
         $a = $u ? array_merge([
             'title' => ($id = get_option('page_on_front'))
