@@ -208,6 +208,7 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
             if ($bc instanceof BreadcrumbCollection) {
                 if ($this->is() || $this->isAncestor()) {
                     $hookid = $this->post()->getId();
+                    $paged = is_paged();
 
                     $bc->addRoot(null, true);
 
@@ -218,7 +219,7 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
                     }
 
                     if ($this->is()) {
-                        if ($pr = $bc->getPostRender($hookid, false)) {
+                        if ($pr = $bc->getPostRender($hookid, $paged)) {
                             $bc->add($pr);
                         }
                     } else {
@@ -227,7 +228,7 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
                         }
 
                         if (is_tax()) {
-                            if ($tr = $bc->getTermRender(get_queried_object_id(), false)) {
+                            if ($tr = $bc->getTermRender(get_queried_object_id(), $paged)) {
                                 $bc->add($tr);
                             }
                         } elseif (is_single()) {
@@ -238,10 +239,14 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
                                 });
                             }
 
-                            if ($pr = $bc->getPostRender($id, false)) {
+                            if ($pr = $bc->getPostRender($id, $paged)) {
                                 $bc->add($pr);
                             }
                         }
+                    }
+
+                    if ($paged) {
+                        $bc->add($bc->getRender(sprintf(__('Page %d', 'tify'), get_query_var('paged'))));
                     }
                 }
             }
