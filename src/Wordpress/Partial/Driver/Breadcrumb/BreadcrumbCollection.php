@@ -84,13 +84,29 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
                         $this->add($pr);
                     }
                 } elseif (is_category()) {
-                    /** @todo */
+                    if ($tr = $this->getTermRender(get_queried_object_id(), false)) {
+                        $this->add(sprintf(__('Catégorie : %s', 'tify'), $tr));
+                    }
                 } elseif (is_tag()) {
-                    /** @todo */
+                    if ($tr = $this->getTermRender(get_queried_object_id(), false)) {
+                        $this->add(sprintf(__('Mot-clef : %s', 'tify'), $tr));
+                    }
                 } elseif (is_author()) {
                     /** @todo */
                 } elseif (is_date()) {
-                    /** @todo */
+                    if (is_day()) {
+                        $this->add(sprintf(__('Archives du jour : %s', 'tify'),
+                            $this->getRender(get_the_date()))
+                        );
+                    } elseif (is_month()) {
+                        $this->add(sprintf(__('Archives du mois : %s', 'tify'),
+                            $this->getRender(get_the_date('F Y')))
+                        );
+                    } elseif (is_year()) {
+                        $this->add(sprintf(__('Archives de l\'année : %s', 'tify'),
+                            $this->getRender(get_the_date('Y')))
+                        );
+                    }
                 } elseif (is_archive()) {
                     /** @todo */
                 }
@@ -204,53 +220,6 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
      * Récupération de l'élèment lors de l'affichage d'une page liste de contenus relatifs à une catégorie
      *
      * @return array
-
-    public function currentCategory()
-    {
-        $category = get_category(get_query_var('cat'), false);
-
-        $part = [
-            'class'   => $this->getItemWrapperClass(),
-            'content' => partial(
-                'tag',
-                [
-                    'tag'     => 'span',
-                    'attrs'   => [
-                        'class' => $this->getItemContentClass(),
-                    ],
-                    'content' => sprintf('Catégorie : %s', $category->name),
-                ]
-            ),
-        ];
-
-        return $part;
-    }   */
-
-    /**
-     * Récupération de l'élèment lors de l'affichage d'une page liste de contenus seul relatifs à un mot-clef
-     *
-     * @return array
-
-    public function currentTag()
-    {
-        $tag = get_tag(get_query_var('tag'), false);
-
-        $part = [
-            'class'   => $this->getItemWrapperClass(),
-            'content' => partial(
-                'tag',
-                [
-                    'tag'     => 'span',
-                    'attrs'   => [
-                        'class' => $this->getItemContentClass(),
-                    ],
-                    'content' => sprintf('Mot-Clef : %s', $tag->name),
-                ]
-            ),
-        ];
-
-        return $part;
-    } */
 
     /**
      * Récupération de l'élèment lors de l'affichage d'une page liste de contenus relatifs à un auteur
