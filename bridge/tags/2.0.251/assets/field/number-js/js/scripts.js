@@ -59,6 +59,9 @@ jQuery(function ($) {
         this.uispinner
             .on('spin', function (event, ui) {
               self.el.data('value', ui.value);
+            })
+            .on('spinchange', function (event) {
+              self.el.data('value', $(event.target).val());
             });
       }
     },

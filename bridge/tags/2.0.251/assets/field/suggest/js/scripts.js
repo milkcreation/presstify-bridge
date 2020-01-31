@@ -165,9 +165,13 @@ jQuery(function ($) {
         };
 
         this.uiautocomplete
+            .on('autocompletesearch', function () {
+              self.resetted = false;
+            })
             .on('autocompleteselect', function (event, ui) {
-              self.el.prop('value', ui.item.value);
-              self.value(self.flags.isAlt ? ui.item.alt || ui.item.value : ui.item.value);
+              if (self.resetted === false) {
+                self.value(self.flags.isAlt ? ui.item.alt || ui.item.value : ui.item.value);
+              }
             })
             .on('autocompletefocus', function (event) {
               event.preventDefault();
@@ -195,24 +199,25 @@ jQuery(function ($) {
     // -----------------------------------------------------------------------------------------------------------------
     // Suppression de la valeur.
     reset: function () {
-      this.el.prop('value', '').data('value', '');
+      this.resetted = true;
 
-      if (this.flags.isAlt) {
-        this.alt.val('');
-      }
-
-      this.wrap.attr('aria-selected', 'false');
+      this.value('');
     },
     // Définition ou récupération de la valeur.
     value: function (value) {
       if (value !== undefined) {
+        this.el.prop('value', value);
         this.el.data('value', value);
 
         if (this.flags.isAlt) {
           this.alt.val(value);
         }
 
-        this.wrap.attr('aria-selected', 'true');
+        if (value) {
+          this.wrap.attr('aria-selected', 'true');
+        } else {
+          this.wrap.attr('aria-selected', 'false');
+        }
       }
       return this.el.data('value');
     }
