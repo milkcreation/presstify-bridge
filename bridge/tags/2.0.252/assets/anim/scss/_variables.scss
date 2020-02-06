@@ -1,0 +1,199 @@
+/**
+ * Générateur de délais et durée de déclenchement.
+ */
+$anim-delay-start: 0 !default;
+$anim-delay-end: 10 !default;
+$anim-delay-pad: 100 !default;
+$anim-delay-unity: ms !default;
+$anim-duration-start: 0 !default;
+$anim-duration-end: 10 !default;
+$anim-duration-pad: 100 !default;
+$anim-duration-unity: ms !default;
+
+/**
+ * Activation des effets.
+ */
+$anim-linear: true !default;
+$anim-ease: true !default;
+$anim-ease-in: true !default;
+$anim-ease-out: true !default;
+$anim-ease-in-out: true !default;
+$anim-ease-in-sine: false !default;
+$anim-ease-out-sine: false !default;
+$anim-ease-in-out-sine: false !default;
+$anim-ease-in-quad: false !default;
+$anim-ease-out-quad: false !default;
+$anim-ease-in-out-quad: false !default;
+$anim-ease-in-cubic: false !default;
+$anim-ease-out-cubic: false !default;
+$anim-ease-in-out-cubic: false !default;
+$anim-ease-in-quart: false !default;
+$anim-ease-out-quart: false !default;
+$anim-ease-in-out-quart: false !default;
+$anim-ease-in-quint: false !default;
+$anim-ease-out-quint: false !default;
+$anim-ease-in-out-quint: false !default;
+$anim-ease-in-expo: false !default;
+$anim-ease-out-expo: false !default;
+$anim-ease-in-out-expo: false !default;
+$anim-ease-in-circ: false !default;
+$anim-ease-out-circ: false !default;
+$anim-ease-in-out-circ: false !default;
+$anim-ease-in-back: false !default;
+$anim-ease-out-back: false !default;
+$anim-ease-in-out-back: false !default;
+
+/**
+ * ANIMATE
+ * @see https://github.com/daneden/animate.css
+ * @see https://daneden.github.io/animate.css/
+ * @see https://github.com/tgdev/animate-sass
+ */
+// attention-seekers
+$use-bounce: false !default;
+$use-flash: false !default;
+$use-pulse: false !default;
+$use-shake: false !default;
+$use-swing: false !default;
+$use-tada: false !default;
+$use-wiggle: false !default;
+$use-wobble: false !default;
+
+// bounce-enter
+$use-bounceIn: false !default;
+$use-bounceInDown: false !default;
+$use-bounceInLeft: false !default;
+$use-bounceInRight: false !default;
+$use-bounceInUp: false !default;
+
+// bounce-exit
+$use-bounceOut: false !default;
+$use-bounceOutDown: false !default;
+$use-bounceOutLeft: false !default;
+$use-bounceOutRight: false !default;
+$use-bounceOutUp: false !default;
+
+//fade-enter
+$use-fadeIn: true !default;
+$use-fadeInDown: true !default;
+$use-fadeInDownBig: false !default;
+$use-fadeInLeft: true !default;
+$use-fadeInLeftBig: false !default;
+$use-fadeInRight: true !default;
+$use-fadeInRightBig: false !default;
+$use-fadeInUp: true !default;
+$use-fadeInUpBig: false !default;
+
+// fade-exit
+$use-fadeOut: false !default;
+$use-fadeOutDown: false !default;
+$use-fadeOutDownBig: false !default;
+$use-fadeOutLeft: false !default;
+$use-fadeOutLeftBig: false !default;
+$use-fadeOutRight: false !default;
+$use-fadeOutRightBig: false !default;
+$use-fadeOutUp: false !default;
+$use-fadeOutUpBig: false !default;
+
+// flippers
+$use-flip: false !default;
+$use-flipInX: false !default;
+$use-flipInY: false !default;
+$use-flipOutX: false !default;
+$use-flipOutY: false !default;
+
+// lightspeed
+$use-lightSpeedIn: false !default;
+$use-lightSpeedOut: false !default;
+
+// rotate-enter
+$use-rotateIn: false !default;
+$use-rotateInDownLeft: false !default;
+$use-rotateInDownRight: false !default;
+$use-rotateInUpLeft: false !default;
+$use-rotateInUpRight: false !default;
+
+// rotate-exit
+$use-rotateOut: false !default;
+$use-rotateOutDownLeft: false !default;
+$use-rotateOutDownRight: false !default;
+$use-rotateOutUpLeft: false !default;
+$use-rotateOutUpRight: false !default;
+
+// slide-enter
+$use-slideInDown: false !default;
+$use-slideInLeft: false !default;
+$use-slideInRight: false !default;
+$use-slideInUp: false !default;
+
+// slide-exit
+$use-slideOutDown: false !default;
+$use-slideOutLeft: false !default;
+$use-slideOutRight: false !default;
+$use-slideOutUp: false !default;
+
+// special
+$use-hinge: false !default;
+$use-rollIn: false !default;
+$use-rollOut: false !default;
+
+// zoom-enter
+$use-zoomIn: false !default;
+$use-zoomInDown: false !default;
+$use-zoomInLeft: false !default;
+$use-zoomInRight: false !default;
+$use-zoomInUp: false !default;
+
+// zoom-exit
+$use-zoomOut: false !default;
+$use-zoomOutDown: false !default;
+$use-zoomOutLeft: false !default;
+$use-zoomOutRight: false !default;
+$use-zoomOutUp: false !default;
+
+/**
+ * HOVER
+ * @see https://github.com/IanLunn/Hover
+ * @see http://ianlunn.github.io/Hover/
+ */
+// Prefix for Hover class names
+$nameSpace: 'hvr' !default;
+
+// Durations
+$fastDuration: .1s !default;
+$mediumDuration: .3s !default;
+$slowDuration: .5s !default;
+
+// Colors
+$primaryColor: #e1e1e1 !default;
+$secondaryColor: #666 !default;
+$highlightColor: #ccc !default;
+$activeColor: #2098D1 !default;
+$shadowColor: rgba(0, 0, 0, .6) !default;
+
+// Speech bubbles options
+$tipWidth: 10px !default; //the width of the speech bubble tip
+$tipHeight: 10px !default; //the height of the speech bubble tip
+$tipColor: $primaryColor !default;
+
+// Arrows options
+$spaceBetweenTextAndArrows: 2.2em !default;
+
+// Curl dimensions
+$curlWidth: 25px !default;
+$curlHeight: 25px !default;
+
+// Curl colors
+$revealAreaColor: white !default; // reveal area behind the curl
+$curlLineColor: #aaa !default; // crease line
+$curlTransitionColor: #ccc !default; // color transitioning from crease line to final color
+$curlLastColor: white !default; // final color of the back of the curl
+
+// Browser Prefixes - Which CSS prefixes should be used?
+$webkit: true !default;
+$moz: false !default;
+$ms: false !default;
+$o: false !default;
+
+// Compile with or without classes
+$includeClasses: false !default;
