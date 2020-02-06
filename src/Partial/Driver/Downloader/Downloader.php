@@ -118,7 +118,7 @@ class Downloader extends PartialDriver implements DownloaderContract
      */
     public function getFilename(...$args): string
     {
-        if ($decrypt = Crypt::decrypt($args[0])) {
+        if ($decrypt = Crypt::decrypt((string)$args[0])) {
             $var = (new ParamsBag())->set(json_decode(base64_decode($decrypt), true));
         } else {
             throw new Exception(

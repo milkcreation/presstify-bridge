@@ -24,21 +24,19 @@ class Database implements DatabaseContract
     {
         $this->manager = $manager;
 
-        if (is_multisite()) {
-            global $wpdb;
+        global $wpdb;
 
-            $this->manager->addConnection([
-                'driver'    => 'mysql',
-                'host'      => getenv('DB_HOST'),
-                'database'  => getenv('DB_DATABASE'),
-                'username'  => getenv('DB_USERNAME'),
-                'password'  => getenv('DB_PASSWORD'),
-                'charset'   => $wpdb->charset,
-                'collation' => $wpdb->collate,
-                'prefix'    => $wpdb->base_prefix
-            ], 'wp');
+        $this->manager->addConnection([
+            'driver'    => 'mysql',
+            'host'      => getenv('DB_HOST'),
+            'database'  => getenv('DB_DATABASE'),
+            'username'  => getenv('DB_USERNAME'),
+            'password'  => getenv('DB_PASSWORD'),
+            'charset'   => $wpdb->charset,
+            'collation' => $wpdb->collate,
+            'prefix'    => $wpdb->base_prefix
+        ], 'wp_user');
 
-            $this->manager->getConnection()->setTablePrefix($wpdb->prefix);
-        }
+        //$this->manager->getConnection()->setTablePrefix($wpdb->prefix);
     }
 }

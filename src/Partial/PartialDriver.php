@@ -154,7 +154,7 @@ abstract class PartialDriver extends ParamsBag implements PartialDriverContract
      *
      * @return $this
      */
-    public function parseAttrsClass(): PartialDriverContract
+    public function parseAttrClass(): PartialDriverContract
     {
         $base = ucfirst(preg_replace('/\./', '-', $this->getAlias()));
 
@@ -177,7 +177,7 @@ abstract class PartialDriver extends ParamsBag implements PartialDriverContract
      *
      * @return $this
      */
-    public function parseAttrsId(): PartialDriverContract
+    public function parseAttrId(): PartialDriverContract
     {
         if (!$this->get('attrs.id')) {
             $this->forget('attrs.id');
@@ -193,7 +193,7 @@ abstract class PartialDriver extends ParamsBag implements PartialDriverContract
      */
     public function parseDefaults(): PartialDriverContract
     {
-        return $this->parseAttrsId()->parseAttrsClass()->parseViewer();
+        return $this->parseAttrId()->parseAttrClass()->parseViewer();
     }
 
     /**

@@ -17,14 +17,11 @@ class Tag extends FieldController
      */
     public function render()
     {
-        $args = array_merge(
-            [
-                'tag'  => 'div',
-                'attrs' => $this->field()->get('attrs', []),
-                'content' => $this->field()->getValue()
-            ],
-            $this->field()->getExtras()
-        );
+        $args = array_merge([
+            'tag'     => 'div',
+            'attrs'   => $this->field()->get('attrs', []),
+            'content' => $this->field()->getValue(),
+        ], $this->field()->getExtras());
 
         return partial('tag', $args);
     }

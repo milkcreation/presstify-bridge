@@ -165,7 +165,7 @@ class SelectJs extends FieldDriver implements SelectJsContract
                         [
                             'attrs'   => [
                                 'id'    => '',
-                                'class' => 'tiFyField-selectJsPickerSpinkit',
+                                'class' => 'FieldSelectJs-pickerSpinkit',
                             ],
                             'spinner' => 'three-bounce',
                         ]

@@ -42,4 +42,12 @@ class Textarea extends FieldDriver implements TextareaContract
 
         return $this;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseDefaults(): FieldDriverContract
+    {
+        return $this->parseAttrId()->parseAttrClass()->parseAttrName()->parseViewer();
+    }
 }

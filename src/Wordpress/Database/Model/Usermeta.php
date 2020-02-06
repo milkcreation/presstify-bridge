@@ -17,7 +17,7 @@ class Usermeta extends CorcelUsermeta
      * Nom de qualification de la connexion associé.
      * @var string
      */
-    protected $connection = 'wp';
+    protected $connection = 'wp_user';
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

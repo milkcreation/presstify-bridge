@@ -85,18 +85,18 @@ interface PartialDriver extends ParamsBag
     public function parse(): PartialDriver;
 
     /**
-     * Traitement de l'attribut de balise HTML "id".
+     * Traitement de l'attribut "class" de la balise HTML du champ.
      *
      * @return static
      */
-    public function parseAttrsId(): PartialDriver;
+    public function parseAttrClass(): PartialDriver;
 
     /**
-     * Traitement de l'attribut de balise HTML "class".
+     * Traitement de l'attribut "id" de la balise HTML du champ.
      *
      * @return static
      */
-    public function parseAttrsClass(): PartialDriver;
+    public function parseAttrId(): PartialDriver;
 
     /**
      * Traitement de la liste des attributs par défaut.

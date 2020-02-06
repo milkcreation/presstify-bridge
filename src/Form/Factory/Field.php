@@ -128,6 +128,18 @@ class Field extends ParamsBag implements FactoryField
     }
 
     /**
+     * @inheritDoc
+     */
+    public function addError(string $message, array $data = []): FactoryField
+    {
+        $this->notices()->add('error', $message, array_merge($data, [
+            'field' => $this->getSlug()
+        ]));
+
+        return $this;
+    }
+
+    /**
      * @inheritdoc
      */
     public function after(): string

@@ -1,9 +1,9 @@
-.tiFyField-datetimeJs * {
+.FieldDatetimeJs * {
     vertical-align: middle;
 }
 
-input.tiFyField-datetimeJsField,
-select.tiFyField-datetimeJsField {
+input.FieldDatetimeJs-field,
+select.FieldDatetimeJs-field {
     width: 3.6em;
     line-height: 100%;
     height: 2em;
@@ -12,11 +12,11 @@ select.tiFyField-datetimeJsField {
     box-shadow: none;
 }
 
-input.tiFyField-datetimeJsField--year,
-select.tiFyField-datetimeJsField--month {
+input.FieldDatetimeJs-field--year,
+select.FieldDatetimeJs-field--month {
     width: 5em;
 }
 
-.tiFyField-datetimeJs.invalid .tiFyField-datetimeJsField {
+.FieldDatetimeJs.invalid .FieldDatetimeJs-field {
     border-color: red;
 }

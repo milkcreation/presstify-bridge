@@ -7,6 +7,13 @@ use tiFy\Contracts\Support\ParamsBag;
 interface FactoryRequest extends FactoryResolver, ParamsBag
 {
     /**
+     * Récupération de l'url de redirection.
+     *
+     * @return string
+     */
+    public function getRedirectUrl(): string;
+
+    /**
      * Traitement de la requête de soumission du formulaire.
      *
      * @return void
@@ -26,13 +33,6 @@ interface FactoryRequest extends FactoryResolver, ParamsBag
      * @return FactoryRequest
      */
     public function validate(): FactoryRequest;
-
-    /**
-     * Redirection à l'issue de la soumission du formulaire.
-     *
-     * @return void
-     */
-    public function redirect(): void;
 
     /**
      * Réinitialisation des champs.

@@ -149,25 +149,6 @@ class Suggest extends FieldDriver implements SuggestContract
     /**
      * @inheritDoc
      */
-    public function parseDefaults(): FieldDriverContract
-    {
-        $default_class = 'FieldSuggest-input FieldSuggest-input' . '--' . $this->getIndex();
-        if (!$this->has('attrs.class')) {
-            $this->set('attrs.class', $default_class);
-        } else {
-            $this->set('attrs.class', sprintf($this->get('attrs.class', ''), $default_class));
-        }
-
-        $this->parseName();
-        $this->parseValue();
-        $this->parseViewer();
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function setUrl(?string $url = null): FieldDriverContract
     {
         $this->url = is_null($url) ? Router::xhr(md5($this->getAlias()), [$this, 'xhrResponse']) : $url;

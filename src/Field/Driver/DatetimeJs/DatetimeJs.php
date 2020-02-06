@@ -124,7 +124,7 @@ class DatetimeJs extends FieldDriver implements DatetimeJsContract
                         [
                             'attrs' => [
                                 'id'           => $this->getId() . "-handler-yyyy",
-                                'class'        => 'tiFyField-datetimeJsField tiFyField-datetimeJsField--year',
+                                'class'        => 'FieldDatetimeJs-field FieldDatetimeJs-field--year',
                                 'size'         => 4,
                                 'maxlength'    => 4,
                                 'min'          => 0,
@@ -153,7 +153,7 @@ class DatetimeJs extends FieldDriver implements DatetimeJsContract
                         [
                             'attrs'   => [
                                 'id'           => $this->getId() . "-handler-mm",
-                                'class'        => 'tiFyField-datetimeJsField tiFyField-datetimeJsField--month',
+                                'class'        => 'FieldDatetimeJs-field FieldDatetimeJs-field--month',
                                 'autocomplete' => 'off'
                             ],
                             'choices' => $choices,
@@ -170,7 +170,7 @@ class DatetimeJs extends FieldDriver implements DatetimeJsContract
                         [
                             'attrs' => [
                                 'id'           => $this->getId() . "-handler-dd",
-                                'class'        => 'tiFyField-datetimeJsField tiFyField-datetimeJsField--day',
+                                'class'        => 'FieldDatetimeJs-field FieldDatetimeJs-field--day',
                                 'size'         => 2,
                                 'maxlength'    => 2,
                                 'min'          => $this->get('none_allowed') ? 0 : 1,
@@ -190,7 +190,7 @@ class DatetimeJs extends FieldDriver implements DatetimeJsContract
                         [
                             'attrs' => [
                                 'id'           => $this->getId() . "-handler-hh",
-                                'class'        => 'tiFyField-datetimeJsField tiFyField-datetimeJsField--hour',
+                                'class'        => 'FieldDatetimeJs-field FieldDatetimeJs-field--hour',
                                 'size'         => 2,
                                 'maxlength'    => 2,
                                 'min'          => 0,
@@ -210,7 +210,7 @@ class DatetimeJs extends FieldDriver implements DatetimeJsContract
                         [
                             'attrs' => [
                                 'id'           => $this->getId() . "-handler-ii",
-                                'class'        => 'tiFyField-datetimeJsField tiFyField-datetimeJsField--minute',
+                                'class'        => 'FieldDatetimeJs-field FieldDatetimeJs-field--minute',
                                 'size'         => 2,
                                 'maxlength'    => 2,
                                 'min'          => 0,
@@ -230,7 +230,7 @@ class DatetimeJs extends FieldDriver implements DatetimeJsContract
                         [
                             'attrs' => [
                                 'id'           => $this->getId() . "-handler-ss",
-                                'class'        => 'tiFyField-datetimeJsField tiFyField-datetimeJsField--second',
+                                'class'        => 'FieldDatetimeJs-field FieldDatetimeJs-field--second',
                                 'size'         => 2,
                                 'maxlength'    => 2,
                                 'min'          => 0,
@@ -257,8 +257,8 @@ class DatetimeJs extends FieldDriver implements DatetimeJsContract
                 'hidden',
                 [
                     'attrs' => [
-                        'id'           => 'tiFyField-datetimeJsInput--' . $this->getIndex(),
-                        'class'        => 'tiFyField-datetimeJsField tiFyField-datetimeJsField--value',
+                        'id'           => 'FieldDatetimeJs-input--' . $this->getIndex(),
+                        'class'        => 'FieldDatetimeJs-field FieldDatetimeJs-field--value',
                         'name'         => $this->getName(),
                         'value'        => $value
                     ]

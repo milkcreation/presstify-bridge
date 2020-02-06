@@ -7,7 +7,7 @@
 ?>
 <div id="ajax-response"></div>
 
-<div id="find-posts" class="find-box tiFyFindPosts-box" style="display: none;">
+<div id="find-posts" class="find-box FieldFindPosts-box" style="display: none;">
     <div id="find-posts-head" class="find-box-head">
         <?php _e('Attach to existing content'); ?>
         <button type="button" id="find-posts-close">

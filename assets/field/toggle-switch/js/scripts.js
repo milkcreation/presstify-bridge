@@ -3,9 +3,9 @@
 import jQuery from 'jquery';
 
 jQuery(function ($) {
-  $(document).on('change', '.tiFyField-toggleSwitchRadio', function () {
+  $(document).on('change', '.FieldToggleSwitch-radio', function () {
     $(this)
-        .closest('.tiFyField-toggleSwitch')
-        .trigger('tify_field.toggleSwitch.change', $(this).val());
+        .closest('.FieldToggleSwitch')
+        .trigger('toggle-switch:change', $(this).val());
   });
 });

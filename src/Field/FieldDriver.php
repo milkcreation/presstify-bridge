@@ -5,9 +5,7 @@ namespace tiFy\Field;
 use Closure;
 use tiFy\Contracts\Field\{Field as Manager, FieldDriver as FieldDriverContract};
 use tiFy\Contracts\View\Engine as ViewEngine;
-use tiFy\Support\HtmlAttrs;
-use tiFy\Support\Str;
-use tiFy\Support\ParamsBag;
+use tiFy\Support\{HtmlAttrs, ParamsBag, Str};
 
 abstract class FieldDriver extends ParamsBag implements FieldDriverContract
 {
@@ -146,22 +144,6 @@ abstract class FieldDriver extends ParamsBag implements FieldDriverContract
     /**
      * @inheritDoc
      */
-    public function isChecked(): bool
-    {
-        $checked = $this->get('checked', false);
-
-        if (is_bool($checked)) {
-            return $checked;
-        } elseif ($this->has('attrs.value')) {
-            return in_array($checked, (array)$this->getValue());
-        }
-
-        return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function manager(): ?Manager
     {
         return $this->manager;
@@ -186,19 +168,30 @@ abstract class FieldDriver extends ParamsBag implements FieldDriverContract
     /**
      * @inheritDoc
      */
-    public function parseDefaults(): FieldDriverContract
+    public function parseAttrClass(): FieldDriverContract
     {
-        $default_class = 'tiFyField-' . Str::camel($this->getAlias()) .
-            ' tiFyField-' . Str::camel($this->getAlias()) . '--' . $this->getIndex();
+        $base = 'Field' . ucfirst(preg_replace('/\./', '-', Str::camel($this->getAlias())));
+
+        $default_class = "{$base} {$base}--" . $this->getIndex();
         if (!$this->has('attrs.class')) {
             $this->set('attrs.class', $default_class);
         } else {
             $this->set('attrs.class', sprintf($this->get('attrs.class', ''), $default_class));
         }
 
-        $this->parseName();
-        $this->parseValue();
-        $this->parseViewer();
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return $this
+     */
+    public function parseAttrId(): FieldDriverContract
+    {
+        if (!$this->get('attrs.id')) {
+            $this->forget('attrs.id');
+        }
 
         return $this;
     }
@@ -206,7 +199,7 @@ abstract class FieldDriver extends ParamsBag implements FieldDriverContract
     /**
      * @inheritDoc
      */
-    public function parseName(): FieldDriverContract
+    public function parseAttrName(): FieldDriverContract
     {
         if ($name = $this->get('name')) {
             $this->set('attrs.name', $name);
@@ -218,13 +211,21 @@ abstract class FieldDriver extends ParamsBag implements FieldDriverContract
     /**
      * @inheritDoc
      */
-    public function parseValue(): FieldDriverContract
+    public function parseAttrValue(): FieldDriverContract
     {
         if ($value = $this->get('value')) {
             $this->set('attrs.value', $value);
         }
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseDefaults(): FieldDriverContract
+    {
+        return $this->parseAttrId()->parseAttrClass()->parseAttrName()->parseAttrValue()->parseViewer();
     }
 
     /**
