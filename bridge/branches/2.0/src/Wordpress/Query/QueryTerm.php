@@ -66,6 +66,8 @@ class QueryTerm extends ParamsBag implements QueryTermContract
             return static::createFromSlug($id, ...$args);
         } elseif ($id instanceof WP_Term) {
             return (new static($id));
+        } elseif ($id instanceof QueryTermContract) {
+            return static::createFromId($id->getId());
         } elseif (is_null($id)&& ($instance = static::createFromGlobal())) {
             if (($taxonomy = static::$taxonomy)) {
                 return $instance->getTaxonomy() === $taxonomy ? $instance : null;

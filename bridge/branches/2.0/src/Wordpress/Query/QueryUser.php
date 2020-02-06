@@ -67,6 +67,8 @@ class QueryUser extends ParamsBag implements QueryUserContract
             return (is_email($id)) ? static::createFromEmail($id) : static::createFromLogin($id);
         } elseif ($id instanceof WP_User) {
             return (new static($id));
+        } elseif ($id instanceof QueryUserContract) {
+            return static::createFromId($id->getId());
         } elseif(is_null($id)) {
             return static::createFromGlobal();
         } else {
