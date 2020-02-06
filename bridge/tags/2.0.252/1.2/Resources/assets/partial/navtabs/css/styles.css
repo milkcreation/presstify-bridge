@@ -1,0 +1,20 @@
+.tiFyPartial-Navtabs::before,
+.tiFyPartial-Navtabs::after {
+    display: table;
+    content: "";
+}
+
+.tiFyPartial-Navtabs::after {
+    clear: both;
+}
+
+.tiFyPartial-NavtabsNavItems--depth0 {
+    float: left;
+    width: 150px;
+    margin-top: 52px;
+}
+
+.tiFyPartial-NavtabsContentItems--depth0 {
+    float: left;
+    width: calc(100% - 150px);
+}

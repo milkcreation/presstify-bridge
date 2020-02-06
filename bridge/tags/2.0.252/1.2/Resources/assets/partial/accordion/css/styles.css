@@ -1,0 +1,121 @@
+/** STYLES DE CONTROLES (ne pas modifier) */
+[data-control="accordion"], [data-control="accordion.item"] {
+    overflow: hidden;
+}
+
+[data-control="accordion.item.content"] {
+    position: relative;
+}
+
+[data-control="accordion.items"] {
+    -moz-transition-property: max-height;
+    -ms-transition-property: max-height;
+    -o-transition-property: max-height;
+    -webkit-transition-property: max-height;
+    transition-property: max-height;
+}
+
+[data-control="accordion.items"] [data-control="accordion.items"] {
+    max-height: 0;
+}
+
+/** STYLES GENERAUX */
+.PartialAccordion-itemContentInner {
+    position: relative;
+    margin-right: 40px;
+    padding: 10px;
+}
+
+.PartialAccordion-itemTrigger {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    content: "";
+    cursor: pointer;
+}
+
+.PartialAccordion-itemTrigger::before,
+.PartialAccordion-itemTrigger::after {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    content: " ";
+    width: 16px;
+    height: 0;
+    transform: translateY(-50%);
+}
+
+.PartialAccordion-itemTrigger::after {
+    transform: translateY(-50%) rotate(90deg);
+}
+
+.PartialAccordion-item[aria-open="true"] > .PartialAccordion-itemContent > .PartialAccordion-itemTrigger::after {
+    display: none;
+}
+
+/** THEMES */
+/** Light */
+.PartialAccordion--light .PartialAccordion-itemContent {
+    background-color: #FFF;
+    border-bottom: solid 1px #E4E4E4;
+    color: #333;
+}
+
+.PartialAccordion--light .PartialAccordion-itemTrigger {
+    color: #333;
+}
+
+.PartialAccordion--light .PartialAccordion-itemTrigger::before,
+.PartialAccordion--light .PartialAccordion-itemTrigger::after {
+    border-bottom: solid 1px #333;
+}
+
+.PartialAccordion--light .PartialAccordion-item.active > .PartialAccordion-itemContent {
+    background-color: #E4E4E4;
+}
+
+/**
+ * Dark
+ */
+.PartialAccordion--dark .PartialAccordion-itemContent {
+    background-color: #23282D;
+    border-bottom: solid 1px #2C333A;
+    color: #EEE;
+}
+
+.PartialAccordion--dark .PartialAccordion-itemTrigger {
+    color: #EEE;
+}
+
+.PartialAccordion--dark .PartialAccordion-itemTrigger::before,
+.PartialAccordion--dark .PartialAccordion-itemTrigger::after {
+    background-color: #EEE;
+}
+
+.PartialAccordion--dark .PartialAccordion-item.active > .PartialAccordion-itemContent {
+    background-color: #2C333A;
+}
+
+/**
+ * ANIMATIONS
+ */
+.PartialAccordion-items {
+    -moz-transition-duration: 400ms;
+    -ms-transition-duration: 400ms;
+    -o-transition-duration: 400ms;
+    -webkit-transition-duration: 400ms;
+    transition-duration: 400ms;
+
+    -moz-transition-timing-function: cubic-bezier(0.42, 0, 1.0, 1.0);
+    -ms-transition-timing-function: cubic-bezier(0.42, 0, 1.0, 1.0);
+    -o-transition-timing-function: cubic-bezier(0.42, 0, 1.0, 1.0);
+    -webkit-transition-timing-function: cubic-bezier(0.42, 0, 1.0, 1.0);
+    transition-timing-function: cubic-bezier(0.42, 0, 1.0, 1.0);
+}
+
+.PartialAccordion-itemTrigger:hover {
+    opacity: 0.8;
+}

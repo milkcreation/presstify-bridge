@@ -1,0 +1,61 @@
+{
+  "name": "presstify-plugins/bridge",
+  "description": "Extension de Presstify de compatibilité avec les évolutions du framework.",
+  "type": "presstify-plugin",
+  "keywords": [
+    "presstify",
+    "plugins",
+    "compatibility"
+  ],
+  "homepage": "https://svn.tigreblanc.fr/presstify-plugins/bridge",
+  "time": "2019-01-17",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Jordy Manner",
+      "email": "jordy.manner@milkcreation.fr",
+      "role": "Lead Developper"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://composer.tigreblanc.fr/presstify/"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "composer/composer": "^1.6",
+    "composer/installers": "~1.0",
+    "http-interop/http-factory-diactoros": "^1.0",
+    "illuminate/http": "^5.7",
+    "illuminate/support": "^5.7",
+    "league/container": "^2.4",
+    "league/event": "^2.1",
+    "league/plates": "^3.3",
+    "league/route": "^4.2",
+    "league/uri": "^5.2",
+    "presstify/framework": "1.4.*",
+    "symfony/finder": "^4.0",
+    "symfony/http-foundation": "^4.0",
+    "symfony/psr-http-message-bridge": "^1.0",
+    "zendframework/zend-diactoros": "^1.7",
+    "zendframework/zend-httphandlerrunner": "^1.0"
+  },
+  "autoload": {
+    "files" : [
+      "helpers.php"
+    ],
+    "psr-4": {
+      "tiFy\\": ""
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "secure-http": false,
+    "sort-packages": true
+  }
+}

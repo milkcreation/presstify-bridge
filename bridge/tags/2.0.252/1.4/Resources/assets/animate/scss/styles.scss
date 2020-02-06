@@ -1,0 +1,205 @@
+.tiFy-animate {
+  transition: all 1s;
+}
+
+/** Animation OFF */
+.tiFy-animate--off {
+  transition: opacity 1ms;
+  opacity: 0;
+}
+
+.tiFy-animate--off.animated,
+.tiFy-animate--off.tiFy-isAnimated {
+  opacity: 1;
+}
+
+/** Easings */
+/** Basiques */
+.tiFy-animateTiming--linear {
+  animation-timing-function: linear;
+  transition-timing-function: linear;
+}
+
+.tiFy-animateTiming--ease {
+  animation-timing-function: ease;
+  transition-timing-function: ease;
+}
+
+.tiFy-animateTiming--easeOut {
+  animation-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+
+.tiFy-animateTiming--easeIn {
+  animation-timing-function: ease-in;
+  transition-timing-function: ease-in;
+}
+
+.tiFy-animateTiming--easeInOut {
+  animation-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+
+/** Complexes */
+.tiFy-animateTiming--easeInSine {
+  animation-timing-function: cubic-bezier(0.47, 0, 0.745, 0.715);
+  transition-timing-function: cubic-bezier(0.47, 0, 0.745, 0.715);
+}
+
+.tiFy-animateTiming--easeOutSine {
+  animation-timing-function: cubic-bezier(0.39, 0.575, 0.565, 1);
+  transition-timing-function: cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+.tiFy-animateTiming--easeInOutSine {
+  animation-timing-function: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  transition-timing-function: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.tiFy-animateTiming--easeInQuad {
+  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  transition-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+
+.tiFy-animateTiming--easeOutQuad {
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.tiFy-animateTiming--easeInOutQuad {
+  animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  transition-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+.tiFy-animateTiming--easeInCubic {
+  animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+
+.tiFy-animateTiming--easeOutCubic {
+  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.tiFy-animateTiming--easeInOutCubic {
+  animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.tiFy-animateTiming--easeInQuart {
+  animation-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+  transition-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+}
+
+.tiFy-animateTiming--easeOutQuart {
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.tiFy-animateTiming--easeInOutQuart {
+  animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.tiFy-animateTiming--easeInQuint {
+  animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+  transition-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+}
+
+.tiFy-animateTiming--easeOutQuint {
+  animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.tiFy-animateTiming--easeInOutQuint {
+  animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+  transition-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+}
+
+.tiFy-animateTiming--easeInExpo {
+  animation-timing-function: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  transition-timing-function: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+}
+
+.tiFy-animateTiming--easeOutExpo {
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.tiFy-animateTiming--easeInOutExpo {
+  animation-timing-function: cubic-bezier(1, 0, 0, 1);
+  transition-timing-function: cubic-bezier(1, 0, 0, 1);
+}
+
+.tiFy-animateTiming--easeInCirc {
+  animation-timing-function: cubic-bezier(0.6, 0.04, 0.98, 0.335);
+  transition-timing-function: cubic-bezier(0.6, 0.04, 0.98, 0.335);
+}
+
+.tiFy-animateTiming--easeOutCirc {
+  animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.tiFy-animateTiming--easeInOutCirc {
+  animation-timing-function: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  transition-timing-function: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+.tiFy-animateTiming--easeInBack {
+  animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+  transition-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+}
+
+.tiFy-animateTiming--easeOutBack {
+  animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tiFy-animateTiming--easeInOutBack {
+  animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* = ANIMATION INFINIE = */
+.tiFy-animate.tiFy-isAnimated.isInfinite {
+  animation-iteration-count: infinite;
+}
+
+/* = GROSSISSEMENT = */
+.tiFy-scaleUp {
+  transform: scale3d(1, 1, 1);
+}
+
+.tiFy-scaleUp.tiFy-isAnimated,
+.tiFy-scaleUp.tiFy-animate--hover:hover,
+.tiFy-animate--hover:hover .tiFy-scaleUp.tiFy-animate--hoverTarget,
+.tiFy-animate--hover:hover + .tiFy-scaleUp.tiFy-animate--hoverTarget,
+.tiFy-animate--hover:hover ~ .tiFy-scaleUp.tiFy-animate--hoverTarget {
+  transform: scale3d(1.2, 1.2, 1.2);
+}
+
+/* = RÉTRÉCISSEMENT = */
+.tiFy-scaleDown {
+  transform: scale3d(1, 1, 1);
+}
+
+.tiFy-scaleDown.tiFy-isAnimated,
+.tiFy-scaleDown.tiFy-animate--hover:hover,
+.tiFy-animate--hover:hover .tiFy-scaleDown.tiFy-animate--hoverTarget,
+.tiFy-animate--hover:hover + .tiFy-scaleDown.tiFy-animate--hoverTarget,
+.tiFy-animate--hover:hover ~ .tiFy-scaleDown.tiFy-animate--hoverTarget {
+  transform: scale3d(0.8, 0.8, 0.8);
+}
+
+@for $i from 1 through 50 {
+  $time: $i*100;
+  .tiFy-animateDuration--#{$time}ms {
+    animation-duration: #{$time}ms;
+    transition-duration: #{$time}ms;
+  }
+  .tiFy-animateDelay--#{$time}ms {
+    animation-delay: #{$time}ms;
+    transition-delay: #{$time}ms;
+  }
+}
