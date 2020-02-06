@@ -1,2 +1,0 @@
-/** JS */
-import './js/scripts';
