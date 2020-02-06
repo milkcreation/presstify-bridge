@@ -1,0 +1,22 @@
+.FieldDatetimeJs * {
+    vertical-align: middle;
+}
+
+input.FieldDatetimeJs-field,
+select.FieldDatetimeJs-field {
+    width: 3.6em;
+    line-height: 100%;
+    height: 2em;
+    margin: 0;
+    font-size: 14px;
+    box-shadow: none;
+}
+
+input.FieldDatetimeJs-field--year,
+select.FieldDatetimeJs-field--month {
+    width: 5em;
+}
+
+.FieldDatetimeJs.invalid .FieldDatetimeJs-field {
+    border-color: red;
+}
