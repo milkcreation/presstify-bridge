@@ -28,6 +28,7 @@
     "slick-carousel": "^1.8.1",
     "spinkit": "^1.2.5",
     "tinymce": "^5.0.14",
-    "tinymce-i18n": "^19.5.15"
+    "tinymce-i18n": "^19.5.15",
+    "url-search-params-polyfill": "^8.0.0"
   }
 }

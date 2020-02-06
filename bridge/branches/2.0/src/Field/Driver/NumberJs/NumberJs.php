@@ -64,23 +64,4 @@ class NumberJs extends FieldDriver implements NumberJsContract
 
         return $this;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function parseDefaults(): FieldDriverContract
-    {
-        $default_class = 'FieldNumberJs-input FieldNumberJs-input' . '--' . $this->getIndex();
-        if (!$this->has('attrs.class')) {
-            $this->set('attrs.class', $default_class);
-        } else {
-            $this->set('attrs.class', sprintf($this->get('attrs.class', ''), $default_class));
-        }
-
-        $this->parseName();
-        $this->parseValue();
-        $this->parseViewer();
-
-        return $this;
-    }
 }

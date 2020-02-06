@@ -90,9 +90,6 @@ class TextRemaining extends FieldDriver implements TextRemainingContract
      */
     public function parseDefaults(): FieldDriverContract
     {
-        $this->parseName();
-        $this->parseViewer();
-
-        return $this;
+        return $this->parseAttrName()->parseViewer();
     }
 }

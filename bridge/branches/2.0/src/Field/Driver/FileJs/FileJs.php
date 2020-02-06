@@ -78,7 +78,7 @@ class FileJs extends FieldDriver implements FileJsContract
         $this->set('attrs.data-control', 'file-js');
 
         $this->set('container.attrs.class', sprintf(
-            $this->get('container.attrs.class') ?: '%s', 'tiFyField-fileJsContainer'
+            $this->get('container.attrs.class') ?: '%s', 'FieldFileJs-container'
         ));
         $this->set('container.attrs.data-control', 'file-js.container');
 

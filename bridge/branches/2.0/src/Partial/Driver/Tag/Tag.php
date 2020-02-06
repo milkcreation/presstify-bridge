@@ -57,24 +57,4 @@ class Tag extends PartialDriver implements TagContract
 
         return $this;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function parseAttrsClass(): PartialDriverContract
-    {
-        $base = Str::studly($this->getAlias());
-
-        $default_class = "{$base} {$base}--" . $this->get('tag') . " {$base}--" . $this->getIndex();
-        if (!$this->has('attrs.class')) {
-            $this->set('attrs.class', $default_class);
-        } else {
-            $this->set('attrs.class', sprintf($this->get('attrs.class', ''), $default_class));
-        }
-        if (!$this->get('attrs.class')) {
-            $this->forget('attrs.class');
-        }
-
-        return $this;
-    }
 }

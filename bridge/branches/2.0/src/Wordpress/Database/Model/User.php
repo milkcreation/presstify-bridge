@@ -33,5 +33,5 @@ class User extends CorcelUser implements UserBuilder
      * Nom de qualification de la connexion associé.
      * @var string
      */
-    protected $connection = 'wp';
+    protected $connection = 'wp_user';
 }

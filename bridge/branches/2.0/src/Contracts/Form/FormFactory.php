@@ -61,6 +61,13 @@ interface FormFactory extends FactoryResolver, ParamsBag
     public function getTitle(): string;
 
     /**
+     * Vérification du status en erreur du formulaire.
+     *
+     * @return bool
+     */
+    public function hasError(): bool;
+
+    /**
      * Vérification d'activation de l'agencement des éléments.
      *
      * @return boolean

@@ -4,7 +4,7 @@ namespace tiFy\Form\Factory;
 
 use tiFy\Contracts\Form\FactoryRequest;
 use tiFy\Contracts\Form\FormFactory;
-use tiFy\Support\ParamsBag;
+use tiFy\Support\{ParamsBag, Proxy\Request as Req};
 
 class Request extends ParamsBag implements FactoryRequest
 {
@@ -15,12 +15,6 @@ class Request extends ParamsBag implements FactoryRequest
      * @var boolean
      */
     protected $handled = false;
-
-    /**
-     * Url de redirection à l'issue de la soumission du formulaire.
-     * @var string
-     */
-    protected $redirectUrl;
 
     /**
      * CONSTRUCTEUR.
@@ -35,15 +29,23 @@ class Request extends ParamsBag implements FactoryRequest
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getRedirectUrl(): string
     {
-        return $this->redirectUrl;
+        $redirect = add_query_arg(['success' => $this->form()->name()], $this->get(
+            '_http_referer',
+            Req::header('referer')
+        ));
+        $redirect .= $this->option('anchor') && ($id = $this->form()->get('attrs.id')) ? "#{$id}" : '';
+
+        $this->events('request.redirect', [&$redirect]);
+
+        return $redirect;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function handle(): void
     {
@@ -71,11 +73,11 @@ class Request extends ParamsBag implements FactoryRequest
         }
         $this->events('request.success', [&$this]);
 
-        $this->redirect();
+        wp_redirect($this->getRedirectUrl());
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function prepare(): FactoryRequest
     {
@@ -97,28 +99,7 @@ class Request extends ParamsBag implements FactoryRequest
     }
 
     /**
-     * @inheritdoc
-     */
-    public function redirect(): void
-    {
-        $redirect = add_query_arg(['success' => $this->form()->name()], $this->get(
-            '_http_referer',
-            request()->server('HTTP_REFERER')
-        ));
-        $redirect .= $this->option('anchor') && ($id = $this->form()->get('attrs.id')) ? "#{$id}" : '';
-
-        $this->events('request.redirect', [&$redirect]);
-
-        $this->redirectUrl = $redirect;
-
-        if ($this->redirectUrl) {
-            wp_redirect($this->redirectUrl);
-            exit;
-        }
-    }
-
-    /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function resetFields(): FactoryRequest
     {
@@ -133,7 +114,7 @@ class Request extends ParamsBag implements FactoryRequest
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function validate(): FactoryRequest
     {
@@ -180,7 +161,7 @@ class Request extends ParamsBag implements FactoryRequest
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function verify(): bool
     {

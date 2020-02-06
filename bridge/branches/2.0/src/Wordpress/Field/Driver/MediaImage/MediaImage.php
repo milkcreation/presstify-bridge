@@ -127,29 +127,4 @@ class MediaImage extends FieldDriver implements MediaImageContract
 
         return $this;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function parseDefaults(): BaseFieldDriverContract
-    {
-        $base = 'Field' . Str::studly($this->getAlias());
-
-        $default_class = "{$base} {$base}--" . $this->getIndex();
-        if (!$this->has('attrs.class')) {
-            $this->set('attrs.class', $default_class);
-        } else {
-            $this->set('attrs.class', sprintf($this->get('attrs.class', ''), $default_class));
-        }
-
-        if (!$this->get('attrs.class')) {
-            $this->forget('attrs.class');
-        }
-
-        $this->parseName();
-        $this->parseValue();
-        $this->parseViewer();
-
-        return $this;
-    }
 }

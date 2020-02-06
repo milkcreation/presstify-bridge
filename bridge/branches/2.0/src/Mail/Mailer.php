@@ -13,6 +13,12 @@ use tiFy\View\Engine\Engine as ViewEngine;
 class Mailer extends ParamsBag implements MailerContract
 {
     /**
+     * Liste des attributs de configuration par défaut.
+     * @var array
+     */
+    protected static $defaults = [];
+
+    /**
      * Instance du pilote de traitement de mail.
      * @var LibraryAdapter
      */
@@ -291,7 +297,7 @@ class Mailer extends ParamsBag implements MailerContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function debug($params = [])
     {
@@ -304,32 +310,32 @@ class Mailer extends ParamsBag implements MailerContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function defaults()
     {
-        return array_merge(config('mail', []), [
-            'to'           => [],
-            'from'         => [],
-            'reply-to'     => [],
-            'bcc'          => [],
-            'cc'           => [],
-            'attachments'  => [],
-            'header'       => '',
-            'footer'       => '',
+        return array_merge(static::$defaults, config('mail', []), [
+            //'to'           => [],
+            //'from'         => [],
+            //'reply-to'     => [],
+            //'bcc'          => [],
+            //'cc'           => [],
+            //'attachments'  => [],
+            //'header'       => '',
+            //'footer'       => '',
             'subject'      => sprintf(__('Test d\'envoi de mail depuis le site %s', 'tify'),
                 get_bloginfo('blogname')),
             'charset'      => get_bloginfo('charset'),
             'encoding'     => '8bit',
             'content_type' => 'multipart/alternative',
             'inline_css'   => true,
-            'vars'         => [],
-            'viewer'       => [],
+            //'vars'         => [],
+            //'viewer'       => [],
         ]);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getLib()
     {
@@ -340,7 +346,7 @@ class Mailer extends ParamsBag implements MailerContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function queue($params = [], $date = 'now', $extras = [])
     {
@@ -357,7 +363,7 @@ class Mailer extends ParamsBag implements MailerContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function send($params = [])
     {
@@ -370,7 +376,19 @@ class Mailer extends ParamsBag implements MailerContract
     }
 
     /**
-     * @inheritdoc
+     * Définition de la liste des arguments utilisés par défaut.
+     *
+     * @param array $attrs
+     *
+     * @return void
+     */
+    public static function setDefaults(array $attrs = []): void
+    {
+        static::$defaults = $attrs;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function viewer(?string $view = null, array $data = [])
     {

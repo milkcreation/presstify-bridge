@@ -81,7 +81,7 @@ class Tab extends PartialDriver implements TabContract
     /**
      * @inheritDoc
      */
-    public function viewer($view = null, $data = [])
+    public function viewer(?string $view = null, $data = [])
     {
         if (is_null($this->viewer)) {
             $this->viewer = app()->get('partial.viewer', [$this]);

@@ -173,6 +173,14 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     /**
      * @inheritDoc
      */
+    public function hasError(): bool
+    {
+        return $this->notices()->has('error');
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function hasGrid()
     {
         return !empty($this->get('grid'));
@@ -313,7 +321,7 @@ class FormFactory extends ParamsBag implements FormFactoryContract
         $buttons = $this->buttons();
         $notices = $this->notices()->getMessages();
 
-        return (string)$this->viewer('form', compact('buttons', 'fields', 'groups', 'notices'));
+        return (string)$this->viewer('index', compact('buttons', 'fields', 'groups', 'notices'));
     }
 
     /**

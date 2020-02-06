@@ -85,13 +85,6 @@ interface FieldDriver extends ParamsBag
     public function getValue();
 
     /**
-     * Vérification de correspondance entre la valeur de coche et celle du champ.
-     *
-     * @return bool
-     */
-    public function isChecked();
-
-    /**
      * Récupération du gestionnaire de champs.
      *
      * @return Field|null
@@ -106,25 +99,39 @@ interface FieldDriver extends ParamsBag
     public function parse(): FieldDriver;
 
     /**
+     * Traitement de l'attribut "class" de la balise HTML du champ.
+     *
+     * @return static
+     */
+    public function parseAttrClass(): FieldDriver;
+
+    /**
+     * Traitement de l'attribut "id" de la balise HTML du champ.
+     *
+     * @return static
+     */
+    public function parseAttrId(): FieldDriver;
+
+    /**
+     * Traitement de l'attribut "name" de la balise HTML du champ.
+     *
+     * @return static
+     */
+    public function parseAttrName(): FieldDriver;
+
+    /**
+     * Traitement de l'attribut "value" de la balise HTML du champ.
+     *
+     * @return static
+     */
+    public function parseAttrValue(): FieldDriver;
+
+    /**
      * Traitement de la liste des attributs par défaut.
      *
      * @return static
      */
     public function parseDefaults(): FieldDriver;
-
-    /**
-     * Traitement de l'indice dans la requête HTTP de soumission..
-     *
-     * @return static
-     */
-    public function parseName(): FieldDriver;
-
-    /**
-     * Traitement de la valeur dans la requête HTTP de soumission.
-     *
-     * @return static
-     */
-    public function parseValue(): FieldDriver;
 
     /**
      * Traitement des attributs de configuration du pilote d'affichage.

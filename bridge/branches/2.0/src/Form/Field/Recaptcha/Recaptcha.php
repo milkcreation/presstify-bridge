@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Form\Field\Recaptcha;
 
 use tiFy\Api\Recaptcha\Recaptcha as ApiRecaptcha;
 use tiFy\Contracts\Form\FactoryField;
 use tiFy\Form\FieldController;
+use tiFy\Support\Proxy\Field;
 
 class Recaptcha extends FieldController
 {
@@ -47,12 +48,11 @@ class Recaptcha extends FieldController
      */
     public function render()
     {
-        return field('recaptcha', array_merge($this->field()->getExtras(), [
+        return Field::get('recaptcha', array_merge($this->field()->getExtras(), [
             'name'  => $this->field()->getName(),
-            'attrs' => array_merge(
-                ['id' => preg_replace('/-/', '_', sanitize_key($this->form()->name()))],
-                $this->field()->get('attrs', [])
-            )
-        ]));
+            'attrs' => array_merge([
+                'id' => preg_replace('/-/', '_', sanitize_key($this->form()->name()))
+            ], $this->field()->get('attrs', []))
+        ]))->render();
     }
 }

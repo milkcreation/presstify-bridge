@@ -14,6 +14,16 @@ interface FactoryField extends FactoryResolver, ParamsBag
     public function __toString();
 
     /**
+     * Définition d'un message d'erreur associé au champ.
+     *
+     * @param string $message
+     * @param array $datas Liste des données associées au message.
+     *
+     * @return static
+     */
+    public function addError(string $message, array $datas = []): FactoryField;
+
+    /**
      * Récupération du pré-affichage du champ.
      *
      * @return string

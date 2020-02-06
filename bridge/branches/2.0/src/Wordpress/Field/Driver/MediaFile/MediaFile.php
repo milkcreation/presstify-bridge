@@ -90,23 +90,4 @@ class MediaFile extends FieldDriver implements MediaFileContract
 
         return $this;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function parseDefaults(): BaseFieldDriverContract
-    {
-        $default_class = 'FieldMediaFile FieldMediaFile' . '--' . $this->getIndex();
-        if (!$this->has('attrs.class')) {
-            $this->set('attrs.class', $default_class);
-        } else {
-            $this->set('attrs.class', sprintf($this->get('attrs.class', ''), $default_class));
-        }
-
-        $this->parseName();
-        $this->parseValue();
-        $this->parseViewer();
-
-        return $this;
-    }
 }

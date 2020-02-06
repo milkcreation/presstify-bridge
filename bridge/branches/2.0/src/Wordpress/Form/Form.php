@@ -49,11 +49,9 @@ class Form implements FormContract
             foreach ($this->manager->all() as $form) {
                 if (is_admin()) {
                     /* @var FormFactory $form */
-                    if ($form->isAuto()) {
-                        $this->manager->current($form);
-                        $form->prepare();
-                        $this->manager->reset();
-                    }
+                    $this->manager->current($form);
+                    $form->prepare();
+                    $this->manager->reset();
                 }
             }
         });
