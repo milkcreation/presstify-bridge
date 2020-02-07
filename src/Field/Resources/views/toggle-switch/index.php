@@ -20,8 +20,8 @@
                     'autocomplete' => 'off',
                 ],
                 'name'    => $this->getName(),
-                'value'   => $this->get('value_on'),
-                'checked' => $this->getValue(),
+                'value'   => $this->getValue(),
+                'checked' => $this->get('value_on'),
             ]); ?>
 
             <?php echo field('radio', [
@@ -38,8 +38,8 @@
                     'autocomplete' => 'off',
                 ],
                 'name'    => $this->getName(),
-                'value'   => $this->get('value_off'),
-                'checked' => $this->getValue(),
+                'value'   => $this->getValue(),
+                'checked' => $this->get('value_off'),
             ]); ?>
 
             <span class="FieldToggleSwitch-handler"></span>

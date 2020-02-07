@@ -15,8 +15,14 @@ class Mailer extends AddonFactory
     public function boot(): void
     {
         $this->form()->events()
-            ->listen('request.submit', [$this, 'onRequestSubmit'])
-            ->listen('request.success', [$this, 'onRequestSuccess'])
+            ->listen('request.submit', function (FactoryRequest &$request) {
+                if ($debug = $this->params('debug')) {
+                    $this->form()->events('addon.mailer.email.debug');
+                }
+            })
+            ->listen('request.success', function (FactoryRequest $request) {
+                $this->form()->events('addon.mailer.email.send');
+            })
             ->listen('addon.mailer.email.debug', [$this, 'emailDebug'])
             ->listen('addon.mailer.email.send', [$this, 'emailSend']);
 
@@ -211,32 +217,6 @@ class Mailer extends AddonFactory
                 return $field->getValues();
             },
         ];
-    }
-
-    /**
-     * Court-circuitage du traitement de la requête du formulaire.
-     *
-     * @param FactoryRequest $request
-     *
-     * @return void
-     */
-    public function onRequestSubmit(FactoryRequest $request)
-    {
-        if ($debug = $this->params('debug')) {
-            $this->form()->events('addon.mailer.email.debug');
-        }
-    }
-
-    /**
-     * Court-circuitage de l'issue d'un traitement de formulaire réussi.
-     *
-     * @param FactoryRequest $request
-     *
-     * @return void
-     */
-    public function onRequestSuccess(FactoryRequest $request)
-    {
-        $this->form()->events('addon.mailer.email.send');
     }
 
     /**

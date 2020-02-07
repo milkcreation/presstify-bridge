@@ -32,7 +32,7 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
                 } elseif (is_front_page()) {
                 } elseif (is_home()) {
                     if ($id = (int)get_option('page_for_posts')) {
-                        if ($acs = $this->getAncestorsRender($id)) {
+                        if ($acs = $this->getPostAncestorsRender($id)) {
                             array_walk($acs, function ($render) {
                                 $this->add($render);
                             });
@@ -44,6 +44,12 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
                 } elseif (is_post_type_archive()) {
                     /** @todo */
                 } elseif (is_tax()) {
+                    if ($acsr = $this->getTermAncestorsRender(get_queried_object_id())) {
+                        array_walk($acsr, function ($render) {
+                            $this->add($render);
+                        });
+                    }
+
                     $this->addTax();
                 } elseif (is_attachment()) {
                     /** @todo */
@@ -53,7 +59,7 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
                             $this->add($pr);
                         }
                     } else {
-                        if ($acs = $this->getAncestorsRender(get_the_ID())) {
+                        if ($acs = $this->getPostAncestorsRender(get_the_ID())) {
                             array_walk($acs, function ($render) {
                                 $this->add($render);
                             });
@@ -64,7 +70,7 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
                         $this->add($pr);
                     }
                 } elseif (is_page()) {
-                    if ($acsr = $this->getAncestorsRender(get_the_ID())) {
+                    if ($acsr = $this->getPostAncestorsRender(get_the_ID())) {
                         array_walk($acsr, function ($render) {
                             $this->add($render);
                         });
@@ -74,7 +80,7 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
                         $this->add($pr);
                     }
                 } elseif (is_singular()) {
-                    if ($acsr = $this->getAncestorsRender(get_the_ID())) {
+                    if ($acsr = $this->getPostAncestorsRender(get_the_ID())) {
                         array_walk($acsr, function ($render) {
                             $this->add($render);
                         });
@@ -84,13 +90,17 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
                         $this->add($pr);
                     }
                 } elseif (is_category()) {
-                    if ($tr = $this->getTermRender(get_queried_object_id(), false)) {
-                        $this->add(sprintf(__('Catégorie : %s', 'tify'), $tr));
+                    $cat_id = get_queried_object_id();
+
+                    if ($acsr = $this->getTermAncestorsRender($cat_id)) {
+                        array_walk($acsr, function ($render) {
+                            $this->add($render);
+                        });
                     }
+
+                    $this->addTax();
                 } elseif (is_tag()) {
-                    if ($tr = $this->getTermRender(get_queried_object_id(), false)) {
-                        $this->add(sprintf(__('Mot-clef : %s', 'tify'), $tr));
-                    }
+                    $this->addTax();
                 } elseif (is_author()) {
                     /** @todo */
                 } elseif (is_date()) {
@@ -180,7 +190,7 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
     /**
      * @inheritDoc
      */
-    public function getAncestorsRender(int $id, bool $url = true, array $attrs = []): array
+    public function getPostAncestorsRender(int $id, bool $url = true, array $attrs = []): array
     {
         $parents = get_post_ancestors($id);
 
@@ -206,6 +216,28 @@ class BreadcrumbCollection extends BaseBreadcrumbCollection implements Breadcrum
     public function getPostTitle($post): string
     {
         return esc_html(wp_strip_all_tags(get_the_title(get_post($post)->ID)));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTermAncestorsRender(int $id, bool $url = true, array $attrs = []): array
+    {
+        if (
+            ($term = get_term($id)) instanceof WP_Term &&
+            $parents = get_ancestors($term->term_id, $term->taxonomy, 'taxonomy')
+        ) {
+            $items = [];
+            foreach (array_reverse($parents) as $pid) {
+                if (($t = get_term($pid)) instanceof WP_Term) {
+                    $items[] = $this->getRender($t->name, $url ? get_term_link($t) : null, $attrs);
+                }
+            }
+
+            return $items;
+        }
+
+        return [];
     }
 
     /**
