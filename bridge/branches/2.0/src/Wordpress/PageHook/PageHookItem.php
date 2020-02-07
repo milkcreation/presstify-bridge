@@ -212,7 +212,7 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
 
                     $bc->addRoot(null, true);
 
-                    if ($acs = $bc->getAncestorsRender($hookid)) {
+                    if ($acs = $bc->getPostAncestorsRender($hookid)) {
                         array_walk($acs, function ($render) use ($bc) {
                             $bc->add($render);
                         });
@@ -233,7 +233,7 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
                             }
                         } elseif (is_single()) {
                             $id = get_the_ID();
-                            if ($acs = $bc->getAncestorsRender($id)) {
+                            if ($acs = $bc->getPostAncestorsRender($id)) {
                                 array_walk($acs, function ($render) use ($bc) {
                                     $bc->add($render);
                                 });

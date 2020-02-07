@@ -150,23 +150,11 @@ class Record extends AddonFactory
             );
         });
 
-        $this->form()->events()->listen('request.submit',  function (FactoryRequest $request) {
-            $datas = [
-                'form_id'      => $this->form()->name(),
-                'session'      => $this->form()->session()->create(),
-                'status'       => 'publish',
-                'created_date' => DateTime::now()->toDateTimeString(),
-            ];
-            if ($id = RecordModel::insertGetId($datas)) {
-                $record = RecordModel::find($id);
-
-                foreach ($this->form()->fields() as $field) {
-                    if ($column = $field->getAddonOption('record.save')) {
-                        $record->saveMeta($field->getSlug(), wp_unslash($field->getValues()));
-                    }
-                }
-            }
-        });
+        $this->form()->events()
+            ->listen('request.submit',  function (FactoryRequest &$request) {
+                $this->form()->events('addon.record.save');
+            })
+            ->listen('addon.record.save', [$this, 'save']);
     }
 
     /**
@@ -181,5 +169,30 @@ class Record extends AddonFactory
             'preview'  => true,
             'save'     => true,
         ];
+    }
+
+    /**
+     * Sauvegarde des données de formulaire.
+     *
+     * @return void
+     */
+    public function save()
+    {
+        $datas = [
+            'form_id'      => $this->form()->name(),
+            'session'      => $this->form()->session()->create(),
+            'status'       => 'publish',
+            'created_date' => DateTime::now()->toDateTimeString(),
+        ];
+
+        if ($id = RecordModel::insertGetId($datas)) {
+            $record = RecordModel::find($id);
+
+            foreach ($this->form()->fields() as $field) {
+                if ($column = $field->getAddonOption('record.save')) {
+                    $record->saveMeta($field->getSlug(), wp_unslash($field->getValues()));
+                }
+            }
+        }
     }
 }

@@ -81,7 +81,7 @@ interface BreadcrumbCollection extends BaseBreadcrumbCollectionContract
      *
      * @return string[]|array
      */
-    public function getAncestorsRender(int $id, bool $url = true, array $attrs = []): array;
+    public function getPostAncestorsRender(int $id, bool $url = true, array $attrs = []): array;
 
     /**
      * Ajout d'un élément associé à un post.

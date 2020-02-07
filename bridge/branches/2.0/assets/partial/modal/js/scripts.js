@@ -145,6 +145,8 @@ jQuery(function ($) {
       }
       this.spin.addClass(this.option('classes.spinner')).attr('aria-hide', 'true');
 
+      this.el.modal();
+
       // Délégation d'appel des événements de la modal.
       // @see https://getbootstrap.com/docs/4.0/components/modal/#events
       // ex. $('[data-control="modal"]').on('modal:show', function (event) {
