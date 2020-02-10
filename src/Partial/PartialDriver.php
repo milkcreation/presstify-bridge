@@ -10,6 +10,12 @@ use tiFy\Support\{HtmlAttrs, ParamsBag};
 abstract class PartialDriver extends ParamsBag implements PartialDriverContract
 {
     /**
+     * Liste des attributs par défaut.
+     * @var array
+     */
+    protected static $defaults = [];
+
+    /**
      * Indicateur d'initialisation.
      * @var string
      */
@@ -98,7 +104,7 @@ abstract class PartialDriver extends ParamsBag implements PartialDriverContract
      */
     public function defaults(): array
     {
-        return [];
+        return array_merge(static::$defaults, []);
     }
 
     /**
@@ -235,6 +241,14 @@ abstract class PartialDriver extends ParamsBag implements PartialDriverContract
     public function render(): string
     {
         return (string)$this->viewer('index', $this->all());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function setDefaults(array $defaults = []): void
+    {
+        static::$defaults = $defaults;
     }
 
     /**

@@ -158,6 +158,15 @@ interface FieldDriver extends ParamsBag
     public function render(): string;
 
     /**
+     * Définition de la liste des paramètres par défaut.
+     *
+     * @param array $defaults
+     *
+     * @return void
+     */
+    public static function setDefaults(array $defaults = []): void;
+
+    /**
      * Définition de l'identifiant de qualification.
      *
      * @param string $id

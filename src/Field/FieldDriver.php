@@ -10,6 +10,12 @@ use tiFy\Support\{HtmlAttrs, ParamsBag, Str};
 abstract class FieldDriver extends ParamsBag implements FieldDriverContract
 {
     /**
+     * Liste des attributs par défaut.
+     * @var array
+     */
+    protected static $defaults = [];
+
+    /**
      * Indicateur d'initialisation.
      * @var string
      */
@@ -98,7 +104,7 @@ abstract class FieldDriver extends ParamsBag implements FieldDriverContract
      */
     public function defaults(): array
     {
-        return [];
+        return array_merge(static::$defaults, []);
     }
 
     /**
@@ -263,6 +269,14 @@ abstract class FieldDriver extends ParamsBag implements FieldDriverContract
     public function render(): string
     {
         return (string)$this->viewer('index', $this->all());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function setDefaults(array $defaults = []): void
+    {
+        static::$defaults = $defaults;
     }
 
     /**

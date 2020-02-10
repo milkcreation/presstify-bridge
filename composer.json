@@ -9,7 +9,7 @@
     "wordpress"
   ],
   "homepage": "https://svn.tigreblanc.fr/presstify-plugins/bridge",
-  "time": "2020-02-07",
+  "time": "2020-02-08",
   "authors": [
     {
       "name": "Jordy Manner",
@@ -34,7 +34,6 @@
     "defuse/php-encryption": "^2.0",
     "doctrine/dbal": "^2.9",
     "embed/embed": "^3.3",
-    "erusev/parsedown-extra": "^0.8.1",
     "facebook/graph-sdk": "^5.5",
     "google/apiclient": "^2.2",
     "google/recaptcha": "^1.1",
