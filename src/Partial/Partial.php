@@ -100,10 +100,12 @@ class Partial extends Manager implements PartialContract
         }
 
         if ($id) {
-            if (!isset($this->instances[$alias][$id])) {
-                $this->indexes[$alias]++;
-                $this->instances[$alias][$id] = clone $this->items[$alias];
+            if (isset($this->instances[$alias][$id])) {
+                return $this->instances[$alias][$id];
             }
+
+            $this->indexes[$alias]++;
+            $this->instances[$alias][$id] = clone $this->items[$alias];
             $partial = $this->instances[$alias][$id];
         } else {
             $this->indexes[$alias]++;
@@ -148,7 +150,7 @@ class Partial extends Manager implements PartialContract
     {
         $path = $path ? '/' . ltrim($path, '/') : '';
 
-        return (file_exists(__DIR__ . "/Resources{$path}")) ? __DIR__ . "/Resources{$path}" : '';
+        return file_exists(__DIR__ . "/Resources{$path}") ? __DIR__ . "/Resources{$path}" : '';
     }
 
     /**
@@ -159,7 +161,7 @@ class Partial extends Manager implements PartialContract
         $cinfo = class_info($this);
         $path = $path ? '/' . ltrim($path, '/') : '';
 
-        return (file_exists($cinfo->getDirname() . "/Resources{$path}")) ? $cinfo->getUrl() . "/Resources{$path}" : '';
+        return file_exists($cinfo->getDirname() . "/Resources{$path}") ? $cinfo->getUrl() . "/Resources{$path}" : '';
     }
 
     /**

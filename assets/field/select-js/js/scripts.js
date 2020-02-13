@@ -1142,10 +1142,8 @@ jQuery(function ($) {
     $(document).ready(function ($) {
         $('[data-control="select-js"]').tifySelectJs();
 
-        $(document).on('mouseenter.field.select-js', '[data-control="select-js"]', function () {
-            $(this).each(function () {
-                $(this).tifySelectJs();
-            });
+        $.tify.observe('[data-control="select-js"]', function (i, target) {
+            $(target).tifySelectJs();
         });
     });
 });

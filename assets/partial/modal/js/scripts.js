@@ -30,9 +30,9 @@ jQuery(function ($) {
       dialog: 'modal.dialog',
       footer: 'modal.content.footer',
       header: 'modal.content.header',
-      spinner: 'modal.spinner'
+      spinner: 'modal.content.spinner'
     },
-
+    ajax: '',
     // Instanciation de l'élément.
     _create: function () {
       this.instance = this;
@@ -54,6 +54,13 @@ jQuery(function ($) {
       this._initControls();
       this._initEvents();
     },
+
+    // Définition des options
+    _setOptions: function (options) {
+      if (options) {
+        $.extend(true, this.options, options);
+      }
+    },
     // INTIALISATIONS.
     // -----------------------------------------------------------------------------------------------------------------
     // Initialisation des attributs de configuration.
@@ -71,7 +78,9 @@ jQuery(function ($) {
       this.flags.hasClose = !!this.option('close');
       this.flags.hasFooter = !!this.option('footer');
       this.flags.hasHeader = !!this.option('header');
+      this.flags.hasSpinner = !!this.option('spinner');
       this.flags.isAjax = !!this.option('ajax');
+      this.flags.isAjaxCacheable = !!this.option('ajax_cacheable');
       this.flags.isAnimated = !!this.option('animated');
     },
     // Initialisation des agents de contrôle.
@@ -139,11 +148,13 @@ jQuery(function ($) {
         $footer.addClass(this.option('classes.footer'));
       }
 
-      this.spin = $('> [data-control="' + this.control.spinner + '"]', this.dialog);
-      if (!this.spin.length) {
-        this.spin = $('<span data-control="' + this.control.spinner + '"/>').appendTo(this.dialog);
+      if (this.flags.hasSpinner) {
+        this.spin = $('> [data-control="' + this.control.spinner + '"]', this.content);
+        if (!this.spin.length) {
+          this.spin = $('<span data-control="' + this.control.spinner + '"/>').appendTo(this.content);
+        }
+        this.spin.addClass(this.option('classes.spinner')).attr('aria-hide', 'true');
       }
-      this.spin.addClass(this.option('classes.spinner')).attr('aria-hide', 'true');
 
       this.el.modal();
 
@@ -161,28 +172,43 @@ jQuery(function ($) {
       });
 
       if (this.flags.isAjax) {
-        let ajax = this.option('ajax');
-
         this.originalHtml = this.content.html();
 
         this.el
             .on('shown.bs.modal', function () {
-              if (self.ajaxHtml === undefined) {
+              let ajax = self.option('ajax'),
+                  _ajax = JSON.stringify(ajax),
+                  reload = self.ajax !== _ajax;
+
+              self.ajax = _ajax;
+
+              if (self.ajaxCache === undefined || reload) {
                 self.spinner('show');
+
+                self._trigger('ajax-load');
+
                 $.ajax(ajax)
                     .done(function (resp) {
+                      self.ajaxResponse = resp;
+
+                      let content = '';
+
                       if (typeof resp === 'string') {
-                        self.ajaxHtml = resp;
+                        content = resp;
                       } else if (typeof resp === 'object') {
-                        self.ajaxHtml = resp.data || undefined;
+                        content = resp.data || undefined;
                       }
-                      self.content.html(self.ajaxHtml);
+
+                      self.content.html(content);
+
+                      self.ajaxCache = self.flags.isAjaxCacheable ? content : undefined;
                     })
                     .always(function () {
+                      self._trigger('ajax-loaded');
                       self.spinner('hide');
                     });
               } else {
-                self.content.html(self.ajaxHtml);
+                self.content.html(self.ajaxCache);
               }
             })
             .on('hidden.bs.modal', function () {
@@ -214,15 +240,37 @@ jQuery(function ($) {
     body: function (html) {
       let $body = $('> [data-control="' + this.control.body + '"]', this.content);
 
-      return html === undefined ? $body.html() : $body.html(html);
+      $body.html(html);
+
+      if (html) {
+        $body.addClass(this.option('classes.body'));
+      } else {
+        $body.removeClass(this.option('classes.body'));
+      }
     },
-    // Modification du contenu du corps.
+    // Modification du contenu de l'entête.
     header: function (html) {
-      $('> [data-control="' + this.control.header + '"]', this.content).html(html);
+      let $header = $('> [data-control="' + this.control.header + '"]', this.content);
+
+      $header.html(html);
+
+      if (html) {
+        $header.addClass(this.option('classes.header'));
+      } else {
+        $header.removeClass(this.option('classes.header'));
+      }
     },
-    // Modification du contenu du corps.
+    // Modification du contenu du pied.
     footer: function (html) {
-      $('> [data-control="' + this.control.footer + '"]', this.content).html(html);
+      let $footer = $('> [data-control="' + this.control.footer + '"]', this.content);
+
+      $footer.html(html);
+
+      if (html) {
+        $footer.addClass(this.option('classes.footer'));
+      } else {
+        $footer.removeClass(this.option('classes.footer'));
+      }
     },
     // Fermeture de la modale.
     close: function () {
@@ -249,21 +297,27 @@ jQuery(function ($) {
      * @var string status hide|show|toggle
      */
     spinner: function (status = 'toggle') {
-      switch (status) {
-        default:
-          if (this.spin.attr('aria-hide') === 'true') {
-            this.spin.attr('aria-hide', 'false');
-          } else {
+      if (this.flags.hasSpinner) {
+        switch (status) {
+          default:
+            if (this.spin.attr('aria-hide') === 'true') {
+              this.spin.attr('aria-hide', 'false');
+            } else {
+              this.spin.attr('aria-hide', 'true');
+            }
+            break;
+          case 'hide' :
             this.spin.attr('aria-hide', 'true');
-          }
-          break;
-        case 'hide' :
-          this.spin.attr('aria-hide', 'true');
-          break;
-        case 'show' :
-          this.spin.attr('aria-hide', 'false');
-          break;
+            break;
+          case 'show' :
+            this.spin.attr('aria-hide', 'false');
+            break;
+        }
       }
+    },
+    // Récupération de la réponse ajax
+    response: function () {
+      return this.ajaxResponse;
     }
   });
 
@@ -274,17 +328,21 @@ jQuery(function ($) {
     _create: function () {
       this.el = this.element;
 
-      this._on(this.el, { 'click': function (e) {
+      this._on(this.el, {
+        'click': function (e) {
           e.preventDefault();
 
           let self = this,
               $el = $(self.el),
-              $target = $('[data-id="' + self.el.data('target') + '"]');
+              $target = $('[data-id="' + self.el.data('target') + '"]'),
+              options = self.el.data('options') && $.parseJSON(decodeURIComponent(self.el.data('options'))) || {};
 
           if (!$el.hasClass('show')) {
             $el.addClass('show');
 
             if ($target.length) {
+              $target.tifyModal(options);
+
               $target.on('modal:hide', function () {
                 $el.removeClass('show');
               }).tifyModal('open');
@@ -297,11 +355,13 @@ jQuery(function ($) {
 
   $(document).ready(function () {
     $('[data-control="modal"]').tifyModal();
+
     $.tify.observe('[data-control="modal"]', function (i, target) {
       $(target).tifyModal();
     });
 
     $('[data-control="modal.trigger"]').tifyModalTrigger();
+
     $.tify.observe('[data-control="modal.trigger"]', function (i, target) {
       $(target).tifyModalTrigger();
     });
