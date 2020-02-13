@@ -1,0 +1,36 @@
+[data-control="file-manager.content"][data-view="list"] {
+  & .FileManager-contentFile:nth-child(odd) {
+    background-color: color(white);
+  }
+  & .FileManager-contentFile:nth-child(even) {
+    background-color: color(gray, 100);
+  }
+
+  & .FileManager-contentFileLink {
+    display: block;
+    padding: 5px 10px;
+    border-bottom: solid 1px color(gray, 300);
+  }
+
+  & .FileManager-contentFile.selected .FileManager-contentFileLink {
+    color: color(gray, 900);
+    background-color: color(gray, 300);
+  }
+
+  & .FileManager-contentFileAttr {
+    display: inline-block;
+  }
+
+  & .FileManager-contentFileAttr--preview {
+    vertical-align: middle;
+    width: 20px;
+  }
+
+  & .FileManager-contentFileAttr--name {
+    width: calc(50% - 20px);
+  }
+
+  & .FileManager-contentFileAttr--size {
+    width: 10%;
+  }
+}
