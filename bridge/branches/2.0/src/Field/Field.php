@@ -114,17 +114,19 @@ class Field extends Manager implements FieldContract
         }
 
         if ($id) {
-            if (!isset($this->instances[$alias][$id])) {
-                $this->indexes[$alias]++;
-                $this->instances[$alias][$id] = clone $this->items[$alias];
+            if (isset($this->instances[$alias][$id])) {
+                return $this->instances[$alias][$id];
             }
-            $partial = $this->instances[$alias][$id];
+
+            $this->indexes[$alias]++;
+            $this->instances[$alias][$id] = clone $this->items[$alias];
+            $field = $this->instances[$alias][$id];
         } else {
             $this->indexes[$alias]++;
-            $partial = clone $this->items[$alias];
+            $field = clone $this->items[$alias];
         }
 
-        return $partial
+        return $field
             ->setIndex($this->indexes[$alias])
             ->setId($id ?? $alias . $this->indexes[$alias])
             ->set($attrs)->parse();
@@ -172,9 +174,7 @@ class Field extends Manager implements FieldContract
     {
         $path = $path ? '/' . ltrim($path, '/') : '';
 
-        return (file_exists(__DIR__ . "/Resources{$path}"))
-            ? __DIR__ . "/Resources{$path}"
-            : '';
+        return file_exists(__DIR__ . "/Resources{$path}") ? __DIR__ . "/Resources{$path}" : '';
     }
 
     /**
@@ -185,8 +185,6 @@ class Field extends Manager implements FieldContract
         $cinfo = class_info($this);
         $path = $path ? '/' . ltrim($path, '/') : '';
 
-        return (file_exists($cinfo->getDirname() . "/Resources{$path}"))
-            ? $cinfo->getUrl() . "/Resources{$path}"
-            : '';
+        return file_exists($cinfo->getDirname() . "/Resources{$path}") ? $cinfo->getUrl() . "/Resources{$path}" : '';
     }
 }

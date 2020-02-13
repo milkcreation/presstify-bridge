@@ -12,3 +12,6 @@
 <?php if ($this->get('content.footer', '') !== false): ?>
     <div data-control="modal.content.footer"><?php echo $this->get('content.footer', ''); ?></div>
 <?php endif; ?>
+<?php if ($this->get('content.spinner', '') !== false): ?>
+    <div data-control="modal.content.spinner"><?php echo $this->get('content.spinner', ''); ?></div>
+<?php endif; ?>
