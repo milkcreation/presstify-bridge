@@ -15,9 +15,7 @@ class Pdfviewer extends BasePdfviewer
         parent::parse();
 
         $src = $this->get('src');
-        if (is_numeric($src)) {
-            $src = wp_get_attachment_url($src);
-
+        if (is_numeric($src) && ($src = wp_get_attachment_url($src))) {
             $this->set([
                 'attrs.data-options.src' => $src,
                 'src'                    => $src,

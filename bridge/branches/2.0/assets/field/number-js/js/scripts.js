@@ -88,6 +88,12 @@ jQuery(function ($) {
         });
       }
     },
+    // ACCESSEURS.
+    // -----------------------------------------------------------------------------------------------------------------
+    // Appel des méthodes uiWidgetSpinner
+    spinner: function () {
+      return this.uispinner.spinner(...arguments);
+    }
   });
 
   $(document).ready(function () {

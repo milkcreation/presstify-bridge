@@ -72,34 +72,60 @@ class ImageLightbox extends PartialDriver implements ImageLightboxContract
     /**
      * @inheritDoc
      */
+    public function fetchItem($item): ?ImageLightboxItemContract
+    {
+        if ($item instanceof ImageLightboxItemContract) {
+            return $item;
+        } elseif (is_array($item)) {
+            if (isset($item['src']) && ($instance = $this->fetchItem($item['src']))) {
+                unset($item['src']);
+                return $instance->set($item);
+            } elseif (isset($item['content'])) {
+                return (new ImageLightboxItem())->set($item);
+            } else {
+                return null;
+            }
+        } elseif (is_string($item) && v::url()->validate($item)) {
+            return (new ImageLightboxItem())->set([
+                'src' => $item
+            ]);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function parse(): PartialDriverContract
     {
         parent::parse();
 
-        $items = [];
-        foreach((array)$this->get('items', []) as &$item) {
-            if ($item instanceof ImageLightboxItemContract) {
-            } elseif (is_array($item)){
-                $item = (new ImageLightboxItem())->set($item);
-            } elseif (is_string($item) && v::url()->validate($item)) {
-                $item = (new ImageLightboxItem())->set([
-                    'src' => $item
-                ]);
-            } else {
-                continue;
-            }
-            if (!$item->get('group')) {
-                $item->set('group', $this->get('group') ? : $this->getId());
-            }
-
-            $items[] = $item->parse();
-
-        }
-        $this->set('items', $items);
+        $this->parseItems();
 
         $this->set('attrs.data-control', 'image-lightbox');
         $this->set('attrs.data-options', $this->pull('options', []));
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseItems(): ImageLightboxContract
+    {
+        $items = [];
+
+        foreach((array)$this->get('items', []) as $item) {
+            if($item = $this->fetchItem($item)) {
+                if (!$item->get('group')) {
+                    $item->set('group', $this->get('group') ?: $this->getId());
+                }
+
+                $items[] = $item->parse();
+            }
+        }
+
+        return $this->set('items', $items);
     }
 }
