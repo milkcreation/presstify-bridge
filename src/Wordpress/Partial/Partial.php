@@ -10,6 +10,7 @@ use tiFy\Contracts\Partial\{
     Dropdown as DropdownContract,
     Downloader as DownloaderContract,
     Holder as HolderContract,
+    ImageLightbox as ImageLightboxContract,
     Modal as ModalContract,
     Notice as NoticeContract,
     Pagination as PaginationContract,
@@ -30,6 +31,7 @@ use tiFy\Wordpress\Partial\Driver\{
     Dropdown\Dropdown,
     Downloader\Downloader,
     Holder\Holder,
+    ImageLightbox\ImageLightbox,
     Modal\Modal,
     MediaLibrary\MediaLibrary,
     Notice\Notice,
@@ -100,6 +102,10 @@ class Partial
 
         app()->add(HolderContract::class, function () {
             return new Holder();
+        });
+
+        app()->add(ImageLightboxContract::class, function () {
+            return new ImageLightbox();
         });
 
         app()->add(MediaLibraryContract::class, function () {
