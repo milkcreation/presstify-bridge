@@ -1,3 +1,5 @@
+@import "~wp-admin/css/colors/variables";
+
 $gray: (
     100: #F7FAFC,
     200: #EDF2F7,
@@ -58,14 +60,28 @@ $blue: (
     900: #2A4365,
 );
 
+$wp : (
+    text: $text-color,
+    base: $base-color,
+    icon: $icon-color,
+    highlight: $highlight-color,
+    notification:$notification-color,
+);
+
 $colors: (
     white: #FFFFFF,
-    black: #3B3B3B,
+    black: #000000,
+    light: #C4C4C4,
+    lighter:#F4F4F4,
+    dark:#4B4B4B,
+    darker:#2B2B2B,
+    regular:#3B3B3B,
     blue: $blue,
     gray: $gray,
     green: $green,
     red: $red,
-    yellow: $yellow
+    yellow: $yellow,
+    wp:$wp
 );
 
 @function color($color, $type:'') {
@@ -83,10 +99,11 @@ $colors: (
   @return null;
 }
 
-// Grid
+// GRID
 $grid-container-center: false !default;
 $grid-container-prefix: 'ThemeContainer' !default;
 $grid-container-width: '1024px' !default;
+$grid-container-fluid-prefix: 'ThemeContainerFluid' !default;
 $grid-row: 'ThemeRow' !default;
 $grid-col-prefix: 'ThemeCol' !default;
 $grid-no-gutters: 'ThemeNoGutters' !default;
