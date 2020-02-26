@@ -1,7 +1,7 @@
 'use strict';
 
-import Dropzone from 'dropzone/dist/min/dropzone.min';
 import jQuery from 'jquery';
+import Dropzone from 'dropzone/dist/min/dropzone.min';
 import 'jquery-ui/ui/core';
 import 'jquery-ui/ui/widget';
 import 'presstify-framework/observer/js/scripts';

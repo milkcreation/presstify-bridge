@@ -535,7 +535,12 @@ class Field extends ParamsBag implements FactoryField
         // Attributs HTML du libellé.
         if ($label = $this->get('label')) :
             $label = (is_array($label)) ? $label : [];
-            $this->set('label', array_merge(['tag' => 'label', 'attrs' => [], 'wrapper' => false], $label));
+            $this->set('label', array_merge([
+                'tag'       => 'label',
+                'attrs'     => [],
+                'wrapper'   => false,
+                'position'  => 'before'
+            ], $label));
 
             if (!$this->has('label.attrs.id')) :
                 $this->set('label.attrs.id', "Form{$this->form()->index()}-fieldLabel--{$this->getSlug()}");

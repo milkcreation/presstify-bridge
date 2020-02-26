@@ -5,6 +5,7 @@ namespace tiFy\Routing;
 use tiFy\Http\RedirectResponse as HttpRedirect;
 use tiFy\Contracts\Http\Response as HttpResponse;
 use tiFy\Contracts\Routing\{Redirector as RedirectorContract, Router};
+use tiFy\Support\Proxy\Url;
 
 class Redirector implements RedirectorContract
 {
@@ -31,6 +32,8 @@ class Redirector implements RedirectorContract
      */
     public function to(string $path, int $status = 302, array $headers = []): HttpResponse
     {
+        $path = empty($path) || $path === '/' ? (string)Url::root() : $path;
+
         return new HttpRedirect($path, $status, $headers);
     }
 

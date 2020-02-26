@@ -96,7 +96,7 @@ class Suggest extends FieldDriver implements SuggestContract
      */
     public function getUrl(...$params): string
     {
-        return $this->url instanceof Route ? $this->url->getUrl($params) : $this->url;
+        return $this->url instanceof Route ? (string)$this->url->getUrl($params) : $this->url;
     }
 
     /**

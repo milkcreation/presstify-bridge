@@ -147,17 +147,17 @@ class FileManager extends TemplateFactory implements FileManagerContract
      */
     public function preview(FileInfo $file): string
     {
-        if ($this->viewer("preview-{$file->getExtension()}")->exists()) {
-            return (string)$this->viewer("preview-{$file->getExtension()}", compact('file'));
+        if ($this->viewer()->exists("preview-{$file->getExtension()}")) {
+            return $this->viewer("preview-{$file->getExtension()}", compact('file'));
         }
 
         foreach ($file->tag()->get() as $tag) {
-            if ($this->viewer("preview-{$tag}")->exists()) {
-                return (string)$this->viewer("preview-{$tag}", compact('file'));
+            if ($this->viewer()->exists("preview-{$tag}")) {
+                return $this->viewer("preview-{$tag}", compact('file'));
             }
         }
 
-        return (string)$this->viewer('preview', compact('file'));
+        return $this->viewer('preview', compact('file'));
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace tiFy\Form\Addon\Mailer;
 
 use Closure;
-use tiFy\Contracts\{Form\FactoryField, Form\FactoryRequest};
+use tiFy\Contracts\Form\FactoryField;
 use tiFy\Form\AddonFactory;
 use tiFy\Support\Proxy\{Mailer as Mail, Metabox};
 
@@ -15,12 +15,12 @@ class Mailer extends AddonFactory
     public function boot(): void
     {
         $this->form()->events()
-            ->listen('request.submit', function (FactoryRequest &$request) {
+            ->listen('request.submit', function () {
                 if ($debug = $this->params('debug')) {
                     $this->form()->events('addon.mailer.email.debug');
                 }
             })
-            ->listen('request.success', function (FactoryRequest $request) {
+            ->listen('request.success', function () {
                 $this->form()->events('addon.mailer.email.send');
             })
             ->listen('addon.mailer.email.debug', [$this, 'emailDebug'])

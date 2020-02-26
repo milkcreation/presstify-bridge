@@ -58,7 +58,7 @@
     "mobiledetect/mobiledetectlib": "^2.8",
     "monolog/monolog": "^1.22",
     "nyholm/psr7": "^1.1",
-    "pelago/emogrifier": "^2.0",
+    "pelago/emogrifier": "^3.1",
     "phpmailer/phpmailer": "^6.0",
     "ralouphie/mimey": "^2.1",
     "redeyeventures/geopattern": "^1.1",

@@ -136,11 +136,11 @@ class IconSet extends ParamsBag implements IconSetContract
      */
     public function render(array $attrs): string
     {
-        return (string)partial('tag', array_merge([
-            'tag'   => 'span',
+        return partial('tag', array_merge([
             'attrs' => [
                 'class' => 'FileManager-icon'
-            ]
-        ], $attrs));
+            ],
+            'tag'   => 'span',
+        ], $attrs))->render();
     }
 }

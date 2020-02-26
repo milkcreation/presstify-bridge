@@ -67,7 +67,25 @@ abstract class BaseController extends ParamsBag
     }
 
     /**
+     * Récupération de l'affichage d'un gabarit.
      *
+     * @param string $view Nom de qualification du gabarit.
+     * @param array $data Liste des variables passées en argument.
+     *
+     * @return string
+     */
+    public function render(string $view, array $data = []): string
+    {
+        return View::render($view, $data);
+    }
+
+    /**
+     * Génération d'une la reponse HTTP.
+     *
+     * @param string $view Nom de qualification du gabarit.
+     * @param array $data Liste des variables passées en argument.
+     *
+     * @return ResponseContract
      */
     public function response($content = '', int $status = 200, array $headers = []): ?ResponseContract
     {
@@ -90,7 +108,7 @@ abstract class BaseController extends ParamsBag
     }
 
     /**
-     * Récupération de l'affichage d'un gabarit.
+     * Génération de la reponse HTTP associé à l'affichage d'un gabarit.
      *
      * @param string $view Nom de qualification du gabarit.
      * @param array $data Liste des variables passées en argument.
@@ -99,6 +117,6 @@ abstract class BaseController extends ParamsBag
      */
     public function view(string $view, array $data = []): ?ResponseContract
     {
-        return $this->response(View::render($view, $data));
+        return $this->response($this->render($view, $data));
     }
 }

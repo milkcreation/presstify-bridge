@@ -38,7 +38,7 @@ class IconSet extends BaseIconSet
         return (string)partial('tag', [
             'tag'   => 'span',
             'attrs' => [
-                'class' => 'Browser-icon Browser-icon--file' . ($class ? ' ' . $class : '')
+                'class' => 'FileManager-icon FileManager-icon--file' . ($class ? ' ' . $class : '')
             ]
         ]);
     }
