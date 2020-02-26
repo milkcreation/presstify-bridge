@@ -37,6 +37,8 @@ class Database implements DatabaseContract
             'prefix'    => $wpdb->base_prefix
         ], 'wp_user');
 
-        //$this->manager->getConnection()->setTablePrefix($wpdb->prefix);
+        if (is_multisite()) {
+            $this->manager->getConnection()->setTablePrefix($wpdb->prefix);
+        }
     }
 }

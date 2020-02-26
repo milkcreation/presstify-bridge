@@ -212,7 +212,7 @@ class Router extends LeagueRouter implements RouterContract
     /**
      * @inheritdoc
      */
-    public function url(string $name, array $parameters = [], bool $absolute = false): ?string
+    public function url(string $name, array $parameters = [], bool $absolute = false, bool $asserts = false): ?string
     {
         try {
             $route = $this->getNamedRoute($name);
@@ -220,10 +220,18 @@ class Router extends LeagueRouter implements RouterContract
             try {
                 return $route->getUrl($parameters, $absolute);
             } catch (LogicException $e) {
-                throw new LogicException($e->getMessage(), $e->getCode());
+                if ($asserts) {
+                    throw new LogicException($e->getMessage(), $e->getCode());
+                } else {
+                    return null;
+                }
             }
         } catch (InvalidArgumentException $e) {
-            throw new InvalidArgumentException($e->getMessage(), $e->getCode());
+            if ($asserts) {
+                throw new InvalidArgumentException($e->getMessage(), $e->getCode());
+            } else {
+                return null;
+            }
         }
     }
 

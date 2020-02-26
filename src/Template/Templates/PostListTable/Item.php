@@ -35,7 +35,9 @@ class Item extends BaseItem implements ItemContract
         parent::parse();
 
         if (is_null($this->delegate)) {
-            $this->setDelegate(QueryPost::createFromId($this->getKeyValue()));
+            if ($post = QueryPost::createFromId($this->getKeyValue())) {
+                $this->setDelegate($post);
+            }
         }
 
         return $this;

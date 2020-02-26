@@ -5,7 +5,7 @@ namespace tiFy\Filesystem;
 use League\Flysystem\FileNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use tiFy\Contracts\Container\Container;
-use tiFy\Contracts\Filesystem\{Filesystem, StaticCacheManager as StaticCacheManagerContract};
+use tiFy\Contracts\Filesystem\{Filesystem, LocalFilesystem, StaticCacheManager as StaticCacheManagerContract};
 
 class StaticCacheManager extends StorageManager implements StaticCacheManagerContract
 {
@@ -129,7 +129,7 @@ class StaticCacheManager extends StorageManager implements StaticCacheManagerCon
     /**
      * @inheritDoc
      */
-    public function setCache(Filesystem $cache): StaticCacheManagerContract
+    public function setCache(LocalFilesystem $cache): StaticCacheManagerContract
     {
         $this->mountFilesystem('cache', $cache);
 

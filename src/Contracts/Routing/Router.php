@@ -173,10 +173,11 @@ interface Router extends
      * @param string $name Nom de qualification.
      * @param array $parameters Liste des variables passées en argument.
      * @param boolean $absolute Activation de l'url absolue.
+     * @param boolean $asserts Activation des exceptions.
      *
      * @return string
      */
-    public function url(string $name, array $parameters = [], bool $absolute = false);
+    public function url(string $name, array $parameters = [], bool $absolute = false, bool $asserts = false);
 
     /**
      * Définition du préfixe du chemin des routes.

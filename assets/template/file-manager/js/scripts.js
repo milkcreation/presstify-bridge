@@ -3,7 +3,7 @@
 import jQuery from 'jquery';
 import 'jquery-ui/ui/core';
 import 'jquery-ui/ui/widget';
-import 'dropzone/dist/min/dropzone.min';
+import Dropzone from 'dropzone/dist/min/dropzone.min';
 import 'presstify-framework/partial/notice/js/scripts';
 import 'presstify-framework/partial/pdfviewer/js/scripts';
 
@@ -76,10 +76,10 @@ jQuery(function ($) {
       let self = this;
 
       $('[data-control="file-manager.action.upload.form"]').each(function () {
-        let dropzoneControl = $(this).get(0).dropzone;
+        let exists = $(this).get(0).dropzone;
 
-        if (dropzoneControl === undefined) {
-          $(this).dropzone({
+        if (exists === undefined) {
+          new Dropzone($(this).get(0), {
             url: self.option('ajax.url'),
             createImageThumbnails: false,
             success: function (res, resp) {
@@ -92,7 +92,7 @@ jQuery(function ($) {
       });
     },
     _initPdfPreview: function () {
-      $('.FileManager-preview--pdf').tifyPdfPreview();
+      $('.FileManager-preview--pdf').tifyPdfviewer();
     },
 
     // ACTIONS

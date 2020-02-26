@@ -61,7 +61,7 @@ class Findposts extends FieldDriver implements FindpostsContract
     {
         parent::parse();
 
-        $this->set('attrs.id', 'FieldFindposts--' . $this->getId());
+        $this->set('attrs.id', 'FieldFindposts--' . uniqid());
 
         return $this;
     }

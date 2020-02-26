@@ -34,7 +34,9 @@ class DbBuilder extends BaseDbBuilder implements DbBuilderContract
         $this->querySearch();
         $this->queryWhere();
         $this->queryOrder();
+
         $total = $this->query()->count();
+
         if ($total < $this->getPerPage()) {
             $this->setPage(1);
         }

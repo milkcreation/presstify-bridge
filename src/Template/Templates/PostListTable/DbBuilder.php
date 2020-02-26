@@ -97,8 +97,6 @@ class DbBuilder extends BaseDbBuilder implements DbBuilderContract
      */
     public function queryWhere(): EloquentBuilder
     {
-        parent::queryWhere();
-
         foreach ($this->all() as $k => $v) {
             if ($this->db()->hasColumn($k)) {
                 is_array($v) ? $this->query()->whereIn($k, $v) : $this->query()->where($k, $v);

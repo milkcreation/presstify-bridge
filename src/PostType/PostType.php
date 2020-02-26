@@ -62,9 +62,11 @@ class PostType implements PostTypeContract
     /**
      * @inheritDoc
      */
-    public function register(string $name, array $args = []): PostTypeFactoryContract
+    public function register(string $name, $args = []): PostTypeFactoryContract
     {
-        return $this->items[$name] = (new PostTypeFactory($name, $args))->setManager($this)->prepare();
+        $factory = $args instanceof PostTypeFactoryContract ? $args :new PostTypeFactory($name, $args);
+
+        return $this->items[$name] = $factory->setManager($this)->prepare();
     }
 
     /**

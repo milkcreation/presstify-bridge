@@ -7,7 +7,7 @@
  */
 ?>
 <?php if ($field->hasLabel()) : ?>
-    <?php if ($field->get('label.wrapper')) : $this->layout('field-label_wrapper', $this->all()); endif; ?>
+    <?php if ($field->get('label.wrapper')) : $this->layout('wrapper-label', $this->all()); endif; ?>
     <?php echo partial('tag', $field->get('label', [])); ?>
     <?php $this->insert('field-tag', compact('field')); ?>
 <?php endif;

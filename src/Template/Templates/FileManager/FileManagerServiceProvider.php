@@ -3,7 +3,8 @@
 namespace tiFy\Template\Templates\FileManager;
 
 use League\Flysystem\Adapter\Local;
-use tiFy\Contracts\Filesystem\Filesystem as tiFyFilesystem;
+use tiFy\Contracts\Filesystem\Filesystem as BaseFilesystem;
+use tiFy\Contracts\Filesystem\LocalFilesystem;
 use tiFy\Template\Factory\ServiceProvider as BaseServiceProvider;
 use tiFy\Template\Templates\FileManager\Contracts\{
     Ajax as AjaxContract,
@@ -122,7 +123,7 @@ class FileManagerServiceProvider extends BaseServiceProvider
                 : $this->getContainer()->get(Cache::class);
 
             $root = paths()->getCachePath('Template/' . $this->factory->name());
-            $repo = $this->getContainer()->get(tiFyFilesystem::class, [new Local($root)]);
+            $repo = $this->getContainer()->get(LocalFilesystem::class, [$root]);
 
             return $ctrl->setTemplateFactory($this->factory)
                 ->setSource($this->factory->filesystem())->setCache($repo);

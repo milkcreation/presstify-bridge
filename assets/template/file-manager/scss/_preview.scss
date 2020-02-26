@@ -23,13 +23,24 @@
 }
 
 .FileManager-preview--default {
-  width: 150px;
-  height: 150px;
-  font-size: 150px;
-  line-height: 1;
+  text-align: center;
+
+  .FileManager-icon--file {
+    width: 150px;
+    height: 150px;
+    font-size: 150px;
+    line-height: 1;
+  }
 }
 
 .FileManager-preview--pdf {
+  position:relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  height: auto;
+  transform: none;
+
   .PdfPreview-view {
     height: 150px;
     width: auto;

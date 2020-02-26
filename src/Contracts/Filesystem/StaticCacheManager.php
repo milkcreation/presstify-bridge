@@ -82,16 +82,16 @@ interface StaticCacheManager extends StorageManager
     /**
      * Définition du gestionnaire des ressources en cache.
      *
-     * @param Filesystem $cache
+     * @param LocalFilesystem $cache
      *
      * @return static
      */
-    public function setCache(Filesystem $cache): StaticCacheManager;
+    public function setCache(LocalFilesystem $cache): StaticCacheManager;
 
     /**
      * Définition du gestionnaire des ressources originales.
      *
-     * @param Filesystem $source
+     * @param LocalFilesystem $source
      *
      * @return static
      */

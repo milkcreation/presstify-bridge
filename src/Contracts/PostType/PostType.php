@@ -33,11 +33,11 @@ interface PostType
      * Déclaration d'un type de post.
      *
      * @param string $name Nom de qualification du type de post.
-     * @param array $args Liste des arguments de configuration.
+     * @param array|PostTypeFactory $args Liste des arguments de configuration.
      *
      * @return PostTypeFactory|null
      */
-    public function register(string $name, array $args = []): ?PostTypeFactory;
+    public function register(string $name, $args = []): ?PostTypeFactory;
 
     /**
      * Récupération de l'instance d'un statut de post.

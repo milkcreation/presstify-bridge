@@ -2,7 +2,7 @@
 
 namespace tiFy\Form\Addon\User;
 
-use tiFy\Contracts\Form\{FactoryField, FactoryRequest};
+use tiFy\Contracts\Form\FactoryField;
 use tiFy\Form\AddonFactory;
 use WP_Error;
 use WP_User;
@@ -64,8 +64,14 @@ class User extends AddonFactory
         });
 
         $this->form()->events()
-            ->listen('request.validation.field', [$this, 'onRequestValidationFields'])
-            ->listen('request.submit', [$this, 'onRequestSubmit']);
+            ->listen('request.validation.field', function (FactoryField $field) {
+                $this->form()->events('addon.user.field.validation', [&$field]);
+            })
+            ->listen('request.submit', function () {
+                $this->form()->events('addon.user.save');
+            })
+            ->listen('addon.user.field.validation', [$this, 'fieldValidation'])
+            ->listen('addon.user.save', [$this, 'save']);
     }
 
     /**
@@ -159,11 +165,11 @@ class User extends AddonFactory
     /**
      * Vérification d'intégrité d'un champ.
      *
-     * @param FactoryField $field Instance du contrôleur de champ.
+     * @param FactoryField $field Instance du champ.
      *
      * @return void
      */
-    public function onRequestValidationFields(FactoryField &$field): void
+    public function fieldValidation(FactoryField &$field): void
     {
         if (!$userdata = $field->getAddonOption($this->name(), 'userdata', false)) {
             return;
@@ -181,7 +187,6 @@ class User extends AddonFactory
                                 ['field' => $field->getSlug()]
                             );
                         }
-
                         if (is_multisite()) {
                             // Lettres et/ou chiffres uniquement
                             $user_name = $field->getValue();
@@ -253,7 +258,6 @@ class User extends AddonFactory
                             }
                         }
                         break;
-
                     // Email
                     case 'user_email' :
                         if (
@@ -267,7 +271,6 @@ class User extends AddonFactory
                             );
                         }
                         break;
-
                     // Rôle
                     case 'role' :
                         if (!$this->canRole($field->getValue())) {
@@ -284,14 +287,11 @@ class User extends AddonFactory
     }
 
     /**
-     * Court-circuitage du traitement de la requête du formulaire.
-     *
-     * @param FactoryRequest $request Instance du contrôleur de traitement de la requête de soumission du formulaire
-     *     associé.
+     * Sauvegarde de l'utilisateur.
      *
      * @return void
      */
-    public function onRequestSubmit(FactoryRequest $request): void
+    public function save(): void
     {
         $userdatas = [];
 
@@ -303,7 +303,12 @@ class User extends AddonFactory
             } elseif (in_array($key, ['meta', 'option'])) {
                 continue;
             }
-            $userdatas[$key] = $this->form()->request()->get($field->getName());
+
+            $userdatas[$key] = $field->getValue();
+        }
+
+        if (!isset($userdatas['user_login'])) {
+            $userdatas['user_login'] = md5(wp_generate_password(20). uniqid());
         }
 
         if (isset($userdatas['show_admin_bar_front'])) {
@@ -333,6 +338,10 @@ class User extends AddonFactory
 
             $result = wp_update_user($userdatas);
         } else {
+            if (!isset($userdatas['user_pass'])) {
+                $userdatas['user_pass'] = '';
+            }
+
             if (empty($userdatas['role'])) {
                 $userdatas['role'] = ($roles = $this->getRoles())
                     ? current($roles)
