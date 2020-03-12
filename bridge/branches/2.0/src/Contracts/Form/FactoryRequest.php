@@ -23,23 +23,33 @@ interface FactoryRequest extends FactoryResolver, ParamsBag
     /**
      * Préparation des données de traitement de la requête.
      *
-     * @return FactoryRequest
+     * @return static
      */
     public function prepare(): FactoryRequest;
 
     /**
-     * Traitement de la validation de soumission du formulaire.
+     * Réinitialisation de la requête.
      *
-     * @return FactoryRequest
+     * @return static
      */
-    public function validate(): FactoryRequest;
+    public function reset(): FactoryRequest;
 
     /**
-     * Réinitialisation des champs.
+     * Définition de l'url de redirection.
      *
-     * @return FactoryRequest
+     * @param string $url
+     * @param bool $raw Désactivation du formatage (indicateur de succès && ancre).
+     *
+     * @return static
      */
-    public function resetFields(): FactoryRequest;
+    public function setRedirectUrl(string $url, bool $raw = false): FactoryRequest;
+
+    /**
+     * Traitement de la validation de soumission du formulaire.
+     *
+     * @return static
+     */
+    public function validate(): FactoryRequest;
 
     /**
      * Vérification de l'origine de la requête.

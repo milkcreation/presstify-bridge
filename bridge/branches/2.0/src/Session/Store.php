@@ -3,9 +3,10 @@
 namespace tiFy\Session;
 
 use Illuminate\Database\Query\Builder as DbBuilder;
+use Illuminate\Database\Schema\Blueprint;
 use tiFy\Contracts\Session\{Session, Store as StoreContract};
 use tiFy\Support\{Arr, ParamsBag, Str};
-use tiFy\Support\Proxy\{Crypt, Database, Log};
+use tiFy\Support\Proxy\{Crypt, Database, Log, Schema};
 
 class Store extends ParamsBag implements StoreContract
 {
@@ -70,6 +71,30 @@ class Store extends ParamsBag implements StoreContract
      */
     public function db(): DbBuilder
     {
+        if (! Database::schema()->hasTable('tify_session')) {
+            Database::addConnection(
+                array_merge(
+                    Database::getConnection()->getConfig(), ['strict' => false]
+                ),
+                'tify.session'
+            );
+            $schema = Schema::connexion('tify.session');
+
+            $schema->create('tify_session', function (Blueprint $table) {
+                $table->unsignedInteger('session_id');
+                $table->string('session_name', 255);
+                $table->char('session_key', 32);
+                $table->longText('session_value');
+                $table->bigInteger('session_expiry', false, true);
+                $table->primary(['session_key']);
+                $table->index('session_id', 'session_id');
+            });
+
+            $schema->table('tify_session', function (Blueprint $table) {
+                $table->bigInteger('session_id', true, true)->change();
+            });
+        }
+
         return Database::table('tify_session');
     }
 

@@ -2,6 +2,7 @@
 
 namespace tiFy\Field\Driver\ToggleSwitch;
 
+use tiFy\Contracts\Field\FieldDriver as FieldDriverContract;
 use tiFy\Contracts\Field\ToggleSwitch as ToggleSwitchContract;
 use tiFy\Field\FieldDriver;
 
@@ -37,5 +38,17 @@ class ToggleSwitch extends FieldDriver implements ToggleSwitchContract
             'value_on'  => 'on',
             'value_off' => 'off'
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parse(): FieldDriverContract
+    {
+        parent::parse();
+
+        $this->set('attrs.data-control', 'toggle-switch');
+
+        return $this;
     }
 }

@@ -3,9 +3,8 @@
 namespace tiFy\Field\Driver\RadioCollection;
 
 use tiFy\Contracts\Field\RadioChoice as RadioChoiceContract;
-use tiFy\Support\ParamsBag;
-use tiFy\Field\Driver\Label\Label;
-use tiFy\Field\Driver\Radio\Radio;
+use tiFy\Support\{ParamsBag, Proxy\Field};
+use tiFy\Field\Driver\{Label\Label, Radio\Radio};
 
 class RadioChoice extends ParamsBag implements RadioChoiceContract
 {
@@ -92,8 +91,8 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
                 'after'   => '',
                 'attrs'   => [],
                 'name'    => '',
-                'value'   => $this->name,
-                'checked' => null
+                'value'   => '',
+                'checked' => $this->name
             ]
 
         ];
@@ -136,7 +135,7 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
      */
     public function isChecked()
     {
-        return $this->getRadio() instanceof Radio ? in_array('checked', $this->getRadio()->get('attrs', [])) : null;
+        return $this->getRadio() instanceof Radio ? $this->getRadio()->isChecked() : null;
     }
 
     /**
@@ -170,8 +169,8 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
             $this->set('label.attrs.for', 'FieldRadioCollection-itemInput--' . $this->index);
         }
 
-        $this->radio = field('radio', $this->get('radio', []));
-        $this->label = field('label', $this->get('label', []));
+        $this->radio = Field::get('radio', $this->get('radio', []));
+        $this->label = Field::get('label', $this->get('label', []));
 
         return $this;
     }

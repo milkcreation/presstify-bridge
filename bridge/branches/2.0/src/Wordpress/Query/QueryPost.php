@@ -84,12 +84,8 @@ class QueryPost extends ParamsBag implements QueryPostContract
             return (new static($id));
         } elseif ($id instanceof QueryPostContract) {
             return static::createFromId($id->getId());
-        } elseif (is_null($id) && ($instance = static::createFromGlobal())) {
-            if (($postType = static::$postType) && ($postType !== 'any')) {
-                return $instance->typeIn($postType) ? $instance : null;
-            } else {
-                return $instance;
-            }
+        } elseif (is_null($id)) {
+            return static::createFromGlobal();
         } else {
             return null;
         }
@@ -110,7 +106,11 @@ class QueryPost extends ParamsBag implements QueryPostContract
     {
         global $post;
 
-        return $post instanceof WP_Post ? new static($post) : null;
+        if ($post instanceof WP_Post) {
+             return static::is($instance = new static($post)) ? $instance :  null;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -118,8 +118,11 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public static function createFromId(int $post_id): ?QueryPostContract
     {
-        return ($post_id && ($wp_post = get_post($post_id)) && ($wp_post instanceof WP_Post))
-            ? new static($wp_post) : null;
+        if ($post_id && ($wp_post = get_post($post_id)) && ($wp_post instanceof WP_Post)) {
+            return static::is($instance = new static($wp_post)) ? $instance :  null;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -127,7 +130,11 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public static function createFromPostdata(array $postdata): ?QueryPostContract
     {
-        return isset($postdata['ID']) ? new static(new WP_Post((object)$postdata)) : null;
+        if(isset($postdata['ID'])) {
+            return static::is($instance = new static(new WP_Post((object)$postdata))) ? $instance :  null;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -137,7 +144,11 @@ class QueryPost extends ParamsBag implements QueryPostContract
     {
         $wpQuery = new WP_Query(static::parseQueryArgs(['name' => $name]));
 
-        return ($wpQuery->found_posts == 1) ? new static(current($wpQuery->posts)) : null;
+        if ($wpQuery->found_posts == 1) {
+            return static::is($instance = new static(current($wpQuery->posts))) ? $instance :  null;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -146,14 +157,110 @@ class QueryPost extends ParamsBag implements QueryPostContract
     public static function fetch($query = null): array
     {
         if (is_array($query)) {
-            return static::queryFromArgs($query);
+            return static::fetchFromArgs($query);
         } elseif ($query instanceof WP_Query) {
-            return static::queryFromWpQuery($query);
+            return static::fetchFromWpQuery($query);
         } elseif (is_null($query)) {
-            return static::queryFromGlobal();
+            return static::fetchFromGlobal();
         } else {
             return [];
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetchFromArgs(array $args = []): array
+    {
+        return static::fetchFromWpQuery(new WP_Query(static::parseQueryArgs($args)));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetchFromEloquent(EloquentCollection $collection): array
+    {
+        $items = $collection->toArray();
+
+        $instances = [];
+        foreach($items as $item) {
+            if (static::is($instance = new static(new WP_Post((object)$item)))) {
+                $instances[] = $instance;
+            }
+        }
+
+        return $instances;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetchFromGlobal(): array
+    {
+        global $wp_query;
+
+        return static::fetchFromWpQuery($wp_query);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetchFromIds(array $ids): array
+    {
+        $args = static::parseQueryArgs(['post__in' => $ids, 'posts_per_page' => -1]);
+        if (!isset($args['post_type'])) {
+            $args['post_type'] = 'any';
+        }
+        $args['post__in'] = $ids;
+        $args['posts_per_page'] = -1;
+
+        return static::fetchFromWpQuery(new WP_Query($args));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetchFromWpQuery(WP_Query $wp_query): array
+    {
+        $total = (int)$wp_query->found_posts;
+        $per_page = (int)$wp_query->get('posts_per_page');
+        $current = $wp_query->get('paged') ?: 1;
+
+        static::query()->clear()->set([
+            'args'     => $wp_query->query,
+            'count'    => (int)$wp_query->post_count,
+            'pages'    => $per_page < 0 ? 1 : (int)$wp_query->max_num_pages,
+            'page'     => $per_page < 0 ? 1 : (int)$current,
+            'per_page' => $per_page,
+            'total'    => $total,
+        ]);
+
+        $wp_posts = $wp_query->posts ?? [];
+
+        $data = [];
+        foreach($wp_posts as $wp_post) {
+            $instance = new static($wp_post);
+            if (($postType = static::$postType) && ($postType !== 'any')) {
+                if ($instance->typeIn($postType)) {
+                    $data[] = $instance;
+                }
+            } else {
+                $data[] = $instance;
+            }
+        }
+
+        static::query()->set(compact('data'));
+
+        return $data;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function is($instance): bool
+    {
+        return $instance instanceof static &&
+            ((($postType = static::$postType) && ($postType !== 'any')) ? $instance->typeIn($postType) : true);
     }
 
     /**
@@ -181,78 +288,53 @@ class QueryPost extends ParamsBag implements QueryPostContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @deprecated
      */
     public static function queryFromArgs(array $args = []): array
     {
-        return static::queryFromWpQuery(new WP_Query(static::parseQueryArgs($args)));
+        return static::fetchFromArgs($args);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @deprecated
      */
     public static function queryFromEloquent(EloquentCollection $collection): array
     {
-        $items = $collection->toArray();
-        array_walk($items, function (array &$item) {
-            $item = new static(new WP_Post((object)$item));
-        });
-
-        return $items;
+        return static::fetchFromEloquent($collection);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @deprecated
      */
     public static function queryFromGlobal(): array
     {
-        global $wp_query;
-
-        return static::queryFromWpQuery($wp_query);
+        return static::fetchFromGlobal();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @deprecated
      */
     public static function queryFromIds(array $ids): array
     {
-        $args = static::parseQueryArgs(['post__in' => $ids, 'posts_per_page' => -1]);
-        if (!isset($args['post_type'])) {
-            $args['post_type'] = 'any';
-        }
-        $args['post__in'] = $ids;
-        $args['posts_per_page'] = -1;
-
-        return static::queryFromWpQuery(new WP_Query($args));
+        return static::fetchFromIds($ids);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @deprecated
      */
     public static function queryFromWpQuery(WP_Query $wp_query): array
     {
-        $total = (int)$wp_query->found_posts;
-        $per_page = (int)$wp_query->get('posts_per_page');
-        $current = $wp_query->get('paged') ?: 1;
-
-        static::query()->clear()->set([
-            'args'     => $wp_query->query,
-            'count'    => (int)$wp_query->post_count,
-            'pages'    => $per_page < 0 ? 1 : (int)$wp_query->max_num_pages,
-            'page'     => $per_page < 0 ? 1 : (int)$current,
-            'per_page' => $per_page,
-            'total'    => $total,
-        ]);
-
-        $data = $wp_query->posts ?? [];
-
-        array_walk($data, function (WP_Post &$wp_post) {
-            $wp_post = new static($wp_post);
-        });
-
-        static::query()->set(compact('data'));
-
-        return $data;
+        return static::fetchFromWpQuery($wp_query);
     }
 
     /**
@@ -380,7 +462,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
             $per_page = get_option('posts_per_page');
         }
 
-        return static::queryFromArgs(array_merge($args, [
+        return static::fetchFromArgs(array_merge($args, [
             'paged'         => $page,
             'post_parent'   => $this->getId(),
             'post_status'   => 'publish',
@@ -411,7 +493,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public function getComments(array $args = []): array
     {
-        return QueryComment::queryFromArgs(array_merge(['post_id' => $this->getId()], $args));
+        return QueryComment::fetchFromArgs(array_merge(['post_id' => $this->getId()], $args));
     }
 
     /**
@@ -623,7 +705,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
         bool $use_tag = true,
         bool $uncut = true
     ): string {
-        return Str::teaser($this->getExcerpt(true), $length, $teaser, $use_tag, $uncut);
+        return Str::teaser($this->getContent(), $length, $teaser, $use_tag, $uncut);
     }
 
     /**
@@ -768,8 +850,8 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public function typeIn(array $post_types): bool
+    public function typeIn($post_types): bool
     {
-        return in_array((string)$this->getType(), $post_types);
+        return in_array((string)$this->getType(), (array)$post_types);
     }
 }

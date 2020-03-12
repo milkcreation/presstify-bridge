@@ -2,6 +2,7 @@
 
 namespace tiFy\Wordpress\Query;
 
+use tiFy\Contracts\Support\ParamsBag as ParamsBagContract;
 use tiFy\Wordpress\Contracts\Query\QueryComment as QueryCommentContract;
 use tiFy\Wordpress\Contracts\Query\QueryPost as QueryPostContract;
 use tiFy\Wordpress\Contracts\Query\QueryUser as QueryUserContract;
@@ -17,6 +18,12 @@ class QueryComment extends ParamsBag implements QueryCommentContract
      * @var string|array
      */
     protected static $type = [];
+
+    /**
+     * Instance de la dernière requête de récupération d'une liste d'éléments.
+     * @var ParamsBag|null
+     */
+    protected static $query;
 
     /**
      * Liste des arguments de requête de récupération des éléments par défaut.
@@ -56,6 +63,42 @@ class QueryComment extends ParamsBag implements QueryCommentContract
     /**
      * @inheritDoc
      */
+    public static function fetchFromArgs(array $args = []): array
+    {
+        return static::fetchFromWpCommentQuery(new WP_Comment_Query(static::parseQueryArgs($args)));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetchFromIds(array $ids): array
+    {
+        return static::fetchFromWpCommentQuery(new WP_Comment_Query(static::parseQueryArgs(['comment__in' => $ids])));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetchFromWpCommentQuery(WP_Comment_Query $wp_comment_query): array
+    {
+        static::query()->clear();
+
+        if ($comments = $wp_comment_query->comments) {
+            array_walk($comments, function (WP_Comment &$wp_comment) {
+                $wp_comment = new static($wp_comment);
+            });
+        } else {
+            $comments = [];
+        }
+
+        static::query()->set('data', $comments);
+
+        return $comments;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function parseQueryArgs(array $args = []): array
     {
         if ($type = static::$type) {
@@ -68,32 +111,33 @@ class QueryComment extends ParamsBag implements QueryCommentContract
     /**
      * @inheritDoc
      */
-    public static function query(WP_Comment_Query $wp_comment_query): array
+    public static function query(): ParamsBagContract
     {
-        if ($comments = $wp_comment_query->comments) {
-            array_walk($comments, function (WP_Comment &$wp_comment) {
-                $wp_comment = new static($wp_comment);
-            });
-            return $comments;
-        } else {
-            return [];
+        if (is_null(static::$query)) {
+            static::$query = new ParamsBag();
         }
+
+        return static::$query;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @deprecated
      */
     public static function queryFromArgs(array $args = []): array
     {
-        return static::query(new WP_Comment_Query(static::parseQueryArgs($args)));
+        return static::fetchFromArgs($args);
     }
 
     /**
      * @inheritDoc
+     *
+     * @deprecated
      */
     public static function queryFromIds(array $ids): array
     {
-        return static::query(new WP_Comment_Query(static::parseQueryArgs(['comment__in' => $ids])));
+        return static::fetchFromIds($ids);
     }
 
     /**

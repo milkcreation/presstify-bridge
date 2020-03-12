@@ -3,9 +3,8 @@
 namespace tiFy\Field\Driver\CheckboxCollection;
 
 use tiFy\Contracts\Field\CheckboxChoice as CheckboxChoiceContract;
-use tiFy\Support\ParamsBag;
-use tiFy\Field\Driver\Label\Label;
-use tiFy\Field\Driver\Checkbox\Checkbox;
+use tiFy\Support\{ParamsBag, Proxy\Field};
+use tiFy\Field\Driver\{Checkbox\Checkbox, Label\Label};
 
 class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
 {
@@ -92,10 +91,9 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
                 'after'   => '',
                 'attrs'   => [],
                 'name'    => '',
-                'value'   => $this->name,
-                'checked' => null
+                'value'   => '',
+                'checked' => $this->name
             ]
-
         ];
     }
 
@@ -136,8 +134,7 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
      */
     public function isChecked()
     {
-        return $this->getCheckbox() instanceof Checkbox
-            ? in_array('checked', $this->getCheckbox()->get('attrs', [])) : null;
+        return $this->getCheckbox() instanceof Checkbox ? $this->getCheckbox()->isChecked() : null;
     }
 
     /**
@@ -171,8 +168,8 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
             $this->set('label.attrs.for', 'FieldCheckboxCollection-itemInput--'. $this->index);
         }
 
-        $this->checkbox = field('checkbox', $this->get('checkbox', []));
-        $this->label = field('label', $this->get('label', []));
+        $this->checkbox = Field::get('checkbox', $this->get('checkbox', []));
+        $this->label = Field::get('label', $this->get('label', []));
 
         return $this;
     }

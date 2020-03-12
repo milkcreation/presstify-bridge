@@ -1,6 +1,6 @@
 <?php
 /**
- * @var tiFy\Contracts\View\PlatesFactory $this
+ * @var tiFy\Wordpress\Option\OptionPageView $this
  */
 ?>
 <div>
@@ -8,6 +8,4 @@
     <?php do_settings_sections($this->get('name')); ?>
 </div>
 
-<div class="submit">
-    <?php submit_button(); ?>
-</div>
+<?php submit_button(); ?>

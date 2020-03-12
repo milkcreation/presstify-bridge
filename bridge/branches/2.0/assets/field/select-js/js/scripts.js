@@ -5,6 +5,7 @@ import jQuery from 'jquery';
 import 'jquery-ui/ui/core';
 import 'jquery-ui/ui/widget';
 import 'jquery-ui/ui/widgets/sortable';
+import 'presstify-framework/observer/js/scripts';
 
 jQuery(function ($) {
     // Attribution de la valeur à l'élément.
@@ -332,6 +333,8 @@ jQuery(function ($) {
 
             this.handler.val(this.selected);
             this.el.data('value', this.selected);
+
+            this._trigger('init');
         },
 
         // SETTER
@@ -815,8 +818,10 @@ jQuery(function ($) {
             }
 
             // @todo Adminbar test
-            // let $html = $('html');
-            //offset.top += $html.outerHeight(true) - $html.height();
+            if( $('body:not(.wp-admin)').hasClass('admin-bar')) {
+                let $html = $('html');
+                offset.top += $html.height() - $html.outerHeight(true);
+            }
 
             if (placement === 'clever') {
                 placement = (

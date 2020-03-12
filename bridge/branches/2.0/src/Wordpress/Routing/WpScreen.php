@@ -2,9 +2,9 @@
 
 namespace tiFy\Wordpress\Routing;
 
-use tiFy\Wordpress\Contracts\WpScreen as WpScreenContract;
-use tiFy\Wordpress\Query\QueryUser;
 use tiFy\Support\Proxy\Request;
+use tiFy\Wordpress\Contracts\WpScreen as WpScreenContract;
+use tiFy\Wordpress\{Proxy\Option, Query\QueryUser};
 use WP_Screen;
 
 class WpScreen implements WpScreenContract
@@ -122,7 +122,10 @@ class WpScreen implements WpScreenContract
             } elseif (preg_match('/(.*)@(options)/', $screen, $matches)) {
                 switch ($matches[2]) {
                     case 'options' :
-                        $screen = clone WP_Screen::get('settings_page_' . $matches[1]);
+                        $screen = clone WP_Screen::get(
+                            ($oPage = Option::getPage($matches[1]))
+                                ? $oPage->getHookname() : 'settings_page_' . $matches[1]
+                        );
                         break;
                 }
             } else {
@@ -216,6 +219,9 @@ class WpScreen implements WpScreenContract
         ) {
             $this->objectName = join('|', array_keys($user->getRoles()));
             $this->objectType = 'user';
+        } elseif (preg_match('/^(.*)_page_(.*)$/', $this->screen->id, $matches) && Option::getPage($matches[2])) {
+            $this->objectName = $matches[2];
+            $this->objectType = 'options';
         }
 
         return $this;

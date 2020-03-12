@@ -124,6 +124,14 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     }
 
     /**
+     * @inheritDoc
+     */
+    public function error(string $message, array $datas = []): string
+    {
+        return $this->form()->notices()->add('error', $message, $datas);
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @return string

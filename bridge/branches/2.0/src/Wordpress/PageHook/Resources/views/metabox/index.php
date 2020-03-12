@@ -15,7 +15,7 @@
                     'post_type'        => $item->getObjectName(),
                     'selected'         => $item->post() ? $item->post()->getId() : 0,
                     'sort_order'       => $item->get('order', 'ASC'),
-                    'sort_column'      => $item->get('orderby', 'post_title'),
+                    'sort_column'      => $item->get('orderby', 'menu_order,post_title'),
                     'show_option_none' => $item->get('show_option_none'),
                 ]);
                 ?>
