@@ -1,0 +1,100 @@
+@import "variables";
+
+.ThemeForm-row {
+  margin-bottom: 5px;
+}
+
+.ThemeForm-label {
+  display:block;
+  font-weight:bold;
+}
+
+.ThemeForm-label--inline {
+  display:inline-block;
+}
+
+.ThemeForm-input {
+  &[type='text'] {
+    width: 100%;
+  }
+}
+
+/** ex. <div class="ThemeInput--email"><input .../></div> */
+div[class*=" ThemeInput--"],
+div[class^="ThemeButton--"] {
+  & {
+    position: relative;
+    display: inline-block;
+    padding-right: 30px;
+  }
+
+  &::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 30px;
+    background-color: #F4F4F4;
+    border: 1px solid #ddd;
+    text-align: center;
+    display: block;
+    content: "";
+  }
+
+  & > input {
+    margin: 0;
+    width: 100%;
+  }
+
+  &::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    bottom: 0;
+    width: 30px;
+    margin-top: -10px;
+    line-height: 100%;
+    font: normal 20px/1 Dashicons;
+    color: #7eb4ea;
+    text-align: center;
+    display: block;
+  }
+}
+
+.ThemeInput {
+  &--building::after {
+    content: "\f512";
+  }
+
+  &--editor-quote::after {
+    content: "\f205";
+  }
+
+  &--email::after {
+    content: "\f466";
+  }
+
+  &--generic::after {
+    content: "\f111";
+  }
+
+  &--link::after {
+    content: "\f103";
+  }
+
+  &--media::after {
+    content: "\f104";
+  }
+
+  &--phone::after {
+    content: "\f525";
+  }
+
+  &--search::after {
+    content: "\f179";
+  }
+
+  &--user::after {
+    content: "\f110";
+  }
+}

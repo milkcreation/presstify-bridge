@@ -1,0 +1,39 @@
+.wp-list-table {
+  dl {
+    margin: 0;
+
+    dt {
+      font-weight: bold;
+    }
+
+    dd {
+      margin: 0 0 3px;
+      padding: 0;
+
+      label {
+        font-style: italic;
+        display: inline-block;
+        vertical-align: top;
+        width: 150px;
+        margin-right:5px;
+      }
+    }
+  }
+
+  ul {
+    margin: 0;
+
+    li {
+      margin: 0 0 3px;
+      padding: 0;
+
+      label {
+        font-style: italic;
+        display: inline-block;
+        vertical-align: top;
+        width: 150px;
+        margin-right:5px;
+      }
+    }
+  }
+}
