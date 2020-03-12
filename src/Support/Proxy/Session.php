@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface as FlashBag
 
 /**
  * @method static FlashBag|SessionContract|mixed flash(string|array|null $key = null, mixed $value = null)
- * @method static Store registerStore(string $name, array|Store|null $args)
+ * @method static Store registerStore(string $name, array|Store|null ...$args)
  * @method static store(string $name)
  */
 class Session extends AbstractProxy

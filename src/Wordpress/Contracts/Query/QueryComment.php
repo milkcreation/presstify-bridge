@@ -5,6 +5,7 @@ namespace tiFy\Wordpress\Contracts\Query;
 use tiFy\Contracts\Support\ParamsBag;
 use tiFy\Support\DateTime;
 use WP_Comment;
+use WP_Comment_Query;
 
 interface QueryComment extends ParamsBag
 {
@@ -16,6 +17,66 @@ interface QueryComment extends ParamsBag
      * @return static
      */
     public static function createFromId(int $comment_id): ?QueryComment;
+
+    /**
+     * Récupération d'une liste d'instances basée sur des arguments de requête de récupération des éléments.
+     * @see https://developer.wordpress.org/reference/classes/wp_comment_query/
+     *
+     * @param array $args Liste des arguments de la requête récupération des éléments.
+     *
+     * @return array
+     */
+    public static function fetchFromArgs(array $args = []): array;
+
+    /**
+     * Récupération d'une liste d'instances basée sur des identifiants de qualification de commentaires.
+     * @see https://developer.wordpress.org/reference/classes/wp_comment_query/
+     *
+     * @param int[] $ids Liste des identifiants de qualification.
+     *
+     * @return array
+     */
+    public static function fetchFromIds(array $ids): array;
+
+    /**
+     * Récupération d'une liste d'instances basée sur une instance de classe WP_Query.
+     * @see https://developer.wordpress.org/reference/classes/wp_query/
+     *
+     * @param WP_Comment_Query $wp_comment_query
+     *
+     * @return array
+     */
+    public static function fetchFromWpCommentQuery(WP_Comment_Query $wp_comment_query): array;
+
+    /**
+     * Traitement d'arguments de requête de récupération des éléments.
+     *
+     * @param array $args Liste des arguments de la requête récupération des éléments.
+     *
+     * @return array
+     */
+    public static function parseQueryArgs(array $args = []): array;
+
+    /**
+     * Récupération de l'instance de la dernière requête de récupération d'une liste d'éléments.
+     *
+     * @return ParamsBag
+     */
+    public static function query(): ParamsBag;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated
+     */
+    public static function queryFromArgs(array $args = []): array;
+
+    /**
+     * @inheritDoc
+     *
+     * @deprecated
+     */
+    public static function queryFromIds(array $ids): array;
 
     /**
      * Récupération des informations système (navigateur, système d'exploitation ...).

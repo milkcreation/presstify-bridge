@@ -35,7 +35,8 @@ jQuery(function ($) {
       this._on(this.el, {'list-table:created-row': this._onDatatableCreatedRow});
       this._on(this.el, {'list-table:init-complete': this._onDatatableInitComplete});
       this._on(this.el, {'click [data-control="list-table.row-action"]': this._onClickRowAction});
-      this._on(this.el, {'click .pagination-links a': this._onClickPaginate});
+      this._on(this.el, {'click [data-control="list-table.pagination"] a': this._onClickPaginate});
+      this._on(this.el, {'change [data-control="list-table.column.toggle"]': this._onChangeToggleColumn});
       this._on(this.el, {'click [data-control="list-table.search.submit"]': this._onSubmitSearch});
     },
     // Initialisation de la table de données.
@@ -344,6 +345,15 @@ jQuery(function ($) {
         api.draw(true);
       });
        */
+    },
+    //
+    _onChangeToggleColumn: function (e) {
+      let self = this,
+          api = self.dataTable.api(),
+          $target = $(e.target),
+          column = api.column($target.val() + ':name');
+
+      column.visible(!column.visible());
     },
     // Clique sur un lien de pagination.
     _onClickPaginate: function (e) {

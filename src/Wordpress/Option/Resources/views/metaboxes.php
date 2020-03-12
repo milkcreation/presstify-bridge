@@ -1,6 +1,6 @@
 <?php
 /**
- * @var tiFy\Contracts\View\PlatesFactory $this
+ * @var tiFy\Wordpress\Option\OptionPageView $this
  */
 ?>
 <div style="margin-right:300px; margin-top:20px;">

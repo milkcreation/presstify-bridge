@@ -62,7 +62,7 @@ class CheckboxChoices extends Collection implements CheckboxChoicesContract
             $checked = Arr::wrap($checked);
 
             $this->collect()->each(function (CheckboxChoice $item) use ($checked) {
-                if (in_array($item->getValue(), $checked)) {
+                if (in_array($item->getCheckbox()->get('checked'), $checked)) {
                     $item->setChecked();
                 }
             });

@@ -83,11 +83,20 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
         });
 
         add_action('init', function () {
-            if (($rewrite = $this->get('rewrite')) && $this->exists()) {
-                if (preg_match('/(.*)@post_type/', $rewrite, $matches) && post_type_exists($matches[1])) {
-                    global $wp_rewrite, $wp_post_types;
+            $rewrite = $this->get('rewrite') ?: '';
+            if (preg_match('/(.*)@post_type/', $rewrite, $matches)) {
+                $post_type = $matches[1];
+            } else {
+                return;
+            }
 
-                    $post_type = $matches[1];
+            if (($post_type === 'post') && ($id = get_option('page_for_posts'))) {
+                $this->set(compact('id'));
+            }
+
+            if ($this->exists()) {
+                if (preg_match('/(.*)@post_type/', $rewrite, $matches) && post_type_exists($post_type)) {
+                    global $wp_rewrite, $wp_post_types;
 
                     if (isset($wp_post_types[$post_type])) {
                         /** @var WP_Post_Type $obj */
@@ -132,6 +141,12 @@ class PageHookItem extends ParamsBag implements PageHookItemContract
                         add_action('save_post', function (int $post_id) {
                             $post = get_post($post_id);
                             if ($this->is($post)) {
+                                if (get_option('page_for_posts') == $post_id) {
+                                    update_option('permalink_structure',
+                                        '/' . rtrim(ltrim($this->post()->getPath(), '/'), '/') . '/%postname%'
+                                    );
+                                }
+
                                 flush_rewrite_rules();
                             }
                         }, 999999);

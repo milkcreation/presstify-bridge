@@ -16,6 +16,7 @@
     "holderjs": "^2.9.4",
     "hover.css": "^2.3.2",
     "imagelightbox": "^1.0.1",
+    "inputmask": "^5.0.3",
     "jquery": "^3.3.1",
     "jquery.easing": "^1.4.1",
     "jquery-bridget": "^2.0.1",

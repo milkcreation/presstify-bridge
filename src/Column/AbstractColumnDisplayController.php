@@ -88,11 +88,11 @@ abstract class AbstractColumnDisplayController implements ColumnDisplayInterface
     public function viewer($view = null, $data = [])
     {
         if (!$this->viewer) {
-            $this->viewer = View::getPlatesEngine([
-                'directory' => class_info($this)->getDirname() . '/views',
-                'factory'   => ColumnView::class,
+            $this->viewer = View::getPlatesEngine(array_merge([
+                'directory'    => class_info($this)->getDirname() . '/views',
+                'factory'      => ColumnView::class,
                 'column'    => $this
-            ]);
+            ], config('column.viewer', []), $this->item->get('viewer', [])));
         }
 
         if (func_num_args() === 0) {

@@ -4,6 +4,7 @@ namespace tiFy\Form\Addon\User;
 
 use tiFy\Contracts\Form\FactoryField;
 use tiFy\Form\AddonFactory;
+use tiFy\Validation\Validator as v;
 use WP_Error;
 use WP_User;
 
@@ -181,10 +182,8 @@ class User extends AddonFactory
                     // Identifiant de connexion
                     case 'user_login' :
                         if (!$this->isProfile() && get_user_by('login', $field->getValue())) {
-                            $field->notices()->add(
-                                'error',
-                                __('Cet identifiant est déjà utilisé par un autre utilisateur.', 'tify'),
-                                ['field' => $field->getSlug()]
+                            $field->addError(
+                                __('Cet identifiant est déjà utilisé par un autre utilisateur.', 'tify')
                             );
                         }
                         if (is_multisite()) {
@@ -194,13 +193,11 @@ class User extends AddonFactory
                             $user_name = preg_replace('/\s+/', '', sanitize_user($user_name, true));
 
                             if ($user_name != $orig_username || preg_match('/[^a-z0-9]/', $user_name)) {
-                                $field->notices()->add(
-                                    'error',
+                                $field->addError(
                                     __('L\'identifiant de connexion ne devrait contenir que des lettres minuscules (a-z)' .
                                         ' et des chiffres.',
                                         'tify'
-                                    ),
-                                    ['field' => $field->getSlug()]
+                                    )
                                 );
                             }
 
@@ -212,72 +209,72 @@ class User extends AddonFactory
                             }
 
                             if (in_array($user_name, $illegal_names)) {
-                                $field->notices()->add(
-                                    'error',
-                                    __('Désolé, cet identifiant de connexion n\'est pas permis.', 'tify'),
-                                    ['field' => $field->getSlug()]
+                                $field->addError(
+                                    __('Désolé, cet identifiant de connexion n\'est pas permis.', 'tify')
                                 );
                             }
 
                             // Identifiant réservés personnalisés
                             $illegal_logins = (array)apply_filters('illegal_user_logins', []);
                             if (in_array(strtolower($user_name), array_map('strtolower', $illegal_logins))) {
-                                $field->notices()->add(
-                                    'error',
-                                    __('Désolé, cet identifiant de connexion n\'est pas permis.', 'tify'),
-                                    ['field' => $field->getSlug()]
+                                $field->addError(
+                                    __('Désolé, cet identifiant de connexion n\'est pas permis.', 'tify')
                                 );
                             }
 
                             // Longueur minimale
                             if (strlen($user_name) < 4) {
-                                $field->notices()->add(
-                                    'error',
-                                    __('L\'identifiant de connexion doit contenir au moins 4 caractères.', 'tify'),
-                                    ['field' => $field->getSlug()]
+                                $field->addError(
+                                    __('L\'identifiant de connexion doit contenir au moins 4 caractères.', 'tify')
                                 );
                             }
 
                             // Longueur maximale
                             if (strlen($user_name) > 60) {
-                                $field->notices()->add(
-                                    'error',
-                                    __('L\'identifiant de connexion ne doit pas contenir plus de 60 caractères.',
-                                        'tify'),
-                                    ['field' => $field->getSlug()]
+                                $field->addError(
+                                    __(
+                                        'L\'identifiant de connexion ne doit pas contenir plus de 60 caractères.',
+                                        'tify'
+                                    )
                                 );
                             }
 
                             // Lettres obligatoire
                             if (preg_match('/^[0-9]*$/', $user_name)) {
-                                $field->notices()->add(
-                                    'error',
-                                    __('L\'identifiant de connexion doit contenir des lettres.', 'tify'),
-                                    ['field' => $field->getSlug()]
+                                $field->addError(
+                                    __('L\'identifiant de connexion doit contenir des lettres.', 'tify')
                                 );
                             }
                         }
                         break;
+
                     // Email
                     case 'user_email' :
-                        if (
-                            get_user_by('email', $field->getValue()) &&
-                            (!$this->isProfile() || ($field->getValue() !== $this->getUser()->user_email))
+                        $value = $field->getValue();
+
+                        if (!v::notEmpty()->validate($value )) {
+                            $field->addError(
+                                __('Veuillez saisir une adresse de messagerie.', 'tify')
+                            );
+                        } elseif (!v::email()->validate($value)) {
+                            $field->addError(
+                                __('L\'adresse de messagerie est incorrecte.', 'tify')
+                            );
+                        } elseif (
+                            get_user_by('email', $value) &&
+                            (!$this->isProfile() || ($value !== $this->getUser()->user_email))
                         ) {
-                            $field->notices()->add(
-                                'error',
-                                __('Cet email est déjà utilisé par un autre utilisateur.', 'tify'),
-                                ['field' => $field->getSlug()]
+                            $field->addError(
+                                __('Cet email est déjà utilisé par un autre utilisateur.', 'tify')
                             );
                         }
                         break;
+
                     // Rôle
                     case 'role' :
                         if (!$this->canRole($field->getValue())) {
-                            $field->notices()->add(
-                                'error',
-                                __('L\'attribution de ce rôle n\'est pas permise.', 'tify'),
-                                ['field' => $field->getSlug()]
+                            $field->addError(
+                                __('L\'attribution de ce rôle n\'est pas permise.', 'tify')
                             );
                         }
                         break;
@@ -295,7 +292,7 @@ class User extends AddonFactory
     {
         $userdatas = [];
 
-        foreach ($this->form()->fields() as $field) {
+        foreach ($this->form()->fields() as $slug => $field) {
             if (!$key = $field->getAddonOption($this->name(), 'userdata', false)) {
                 continue;
             } elseif (!$this->isUserdataKey($key)) {
@@ -304,7 +301,7 @@ class User extends AddonFactory
                 continue;
             }
 
-            $userdatas[$key] = $field->getValue();
+            $userdatas[$key] = $this->form()->request()->get($slug);
         }
 
         if (!isset($userdatas['user_login'])) {

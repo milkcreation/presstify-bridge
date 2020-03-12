@@ -69,7 +69,7 @@ class QueryUser extends ParamsBag implements QueryUserContract
             return (new static($id));
         } elseif ($id instanceof QueryUserContract) {
             return static::createFromId($id->getId());
-        } elseif(is_null($id)) {
+        } elseif (is_null($id)) {
             return static::createFromGlobal();
         } else {
             return null;
@@ -221,7 +221,7 @@ class QueryUser extends ParamsBag implements QueryUserContract
      */
     public function getDescription(): string
     {
-        return $this->getWpUser()->description;
+        return $this->getWpUser()->description ?: '';
     }
 
     /**
@@ -245,7 +245,7 @@ class QueryUser extends ParamsBag implements QueryUserContract
      */
     public function getFirstName(): string
     {
-        return $this->getWpUser()->first_name;
+        return $this->getWpUser()->first_name ?: '';
     }
 
     /**
@@ -261,7 +261,7 @@ class QueryUser extends ParamsBag implements QueryUserContract
      */
     public function getLastName(): string
     {
-        return $this->getWpUser()->last_name;
+        return $this->getWpUser()->last_name ?: '';
     }
 
     /**
@@ -309,7 +309,7 @@ class QueryUser extends ParamsBag implements QueryUserContract
      */
     public function getNickname(): string
     {
-        return $this->getWpUser()->nickname;
+        return $this->getWpUser()->nickname ?: '';
     }
 
     /**
@@ -317,7 +317,7 @@ class QueryUser extends ParamsBag implements QueryUserContract
      */
     public function getOption(string $option_name, $default = null)
     {
-        return get_user_option($option_name, $this->getId()) ? : $default;
+        return get_user_option($option_name, $this->getId()) ?: $default;
     }
 
     /**
@@ -401,7 +401,7 @@ class QueryUser extends ParamsBag implements QueryUserContract
     public function save($userdata): void
     {
         $p = ParamsBag::createFromAttrs($userdata);
-        $columns =  $this->db()->getConnection()->getSchemaBuilder()->getColumnListing($this->db()->getTable());
+        $columns = $this->db()->getConnection()->getSchemaBuilder()->getColumnListing($this->db()->getTable());
 
         $update = [];
         foreach ($columns as $col) {
@@ -424,7 +424,7 @@ class QueryUser extends ParamsBag implements QueryUserContract
             'admin_color',
             'use_ssl',
             'show_admin_bar_front',
-            'locale'
+            'locale',
         ];
         foreach ($keys as $key) {
             if ($value = $p->pull($key)) {

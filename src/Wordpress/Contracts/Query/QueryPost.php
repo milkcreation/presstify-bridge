@@ -26,7 +26,9 @@ interface QueryPost extends ParamsBag
     public static function create($id = null, ...$args): ?QueryPost;
 
     /**
-     * Récupération d'une instance basée sur un modele Laravel Eloquent
+     * Récupération d'une instance basée sur un modèle Laravel Eloquent
+     *
+     * @param EloquentModel $model
      *
      * @return static|null
      */
@@ -76,6 +78,62 @@ interface QueryPost extends ParamsBag
     public static function fetch($query = null): array;
 
     /**
+     * Récupération d'une liste d'instances basée sur des arguments de requête de récupération des éléments.
+     * @see https://developer.wordpress.org/reference/classes/wp_query/
+     *
+     * @param array $args Liste des arguments de la requête récupération des éléments.
+     *
+     * @return array
+     */
+    public static function fetchFromArgs(array $args = []): array;
+
+    /**
+     * Récupération d'une liste d'instances basée sur un resultat de requête en base de données.
+     *
+     * @param EloquentCollection $collection
+     *
+     * @return array
+     */
+    public static function fetchFromEloquent(EloquentCollection $collection): array;
+
+    /**
+     * Récupération d'une liste d'instances basée sur la requête de récupération globale.
+     * @see https://developer.wordpress.org/reference/classes/wp_query/
+     *
+     * @return array
+     */
+    public static function fetchFromGlobal(): array;
+
+    /**
+     * Récupération d'une liste d'instances basée sur des identifiants de qualification de posts.
+     * @see https://developer.wordpress.org/reference/classes/wp_query/
+     *
+     * @param int[] $ids Liste des identifiants de qualification.
+     *
+     * @return array
+     */
+    public static function fetchFromIds(array $ids): array;
+
+    /**
+     * Récupération d'une liste d'instances basée sur une instance de classe WP_Query.
+     * @see https://developer.wordpress.org/reference/classes/wp_query/
+     *
+     * @param WP_Query $wp_query
+     *
+     * @return array
+     */
+    public static function fetchFromWpQuery(WP_Query $wp_query): array;
+
+    /**
+     * Vérification d'intégrité d'une instance.
+     *
+     * @param QueryPostContract|mixed $instance
+     *
+     * @return bool
+     */
+    public static function is($instance): bool;
+
+    /**
      * Traitement d'arguments de requête de récupération des éléments.
      *
      * @param array $args Liste des arguments de la requête récupération des éléments.
@@ -92,49 +150,27 @@ interface QueryPost extends ParamsBag
     public static function query(): ParamsBag;
 
     /**
-     * Récupération d'une liste d'instances basée sur des arguments de requête de récupération des éléments.
-     * @see https://developer.wordpress.org/reference/classes/wp_query/
-     *
-     * @param array $args Liste des arguments de la requête récupération des éléments.
-     *
-     * @return array
+     * @deprecated
      */
     public static function queryFromArgs(array $args = []): array;
 
     /**
-     * Récupération d'une liste d'instances basée sur un resultat de requête en base de données.
-     *
-     * @param EloquentCollection $collection
-     *
-     * @return array
+     * @deprecated
      */
     public static function queryFromEloquent(EloquentCollection $collection): array;
 
     /**
-     * Récupération d'une liste d'instances basée sur la requête de récupération globale.
-     * @see https://developer.wordpress.org/reference/classes/wp_query/
-     *
-     * @return array
+     * @deprecated
      */
     public static function queryFromGlobal(): array;
 
     /**
-     * Récupération d'une liste d'instances basée sur des identifiants de qualification de posts.
-     * @see https://developer.wordpress.org/reference/classes/wp_query/
-     *
-     * @param int[] $ids Liste des identifiants de qualification.
-     *
-     * @return array
+     * @deprecated
      */
     public static function queryFromIds(array $ids): array;
 
     /**
-     * Récupération d'une liste d'instances basée sur une instance de classe WP_Query.
-     * @see https://developer.wordpress.org/reference/classes/wp_query/
-     *
-     * @param WP_Query $wp_query
-     *
-     * @return array
+     * @deprecated
      */
     public static function queryFromWpQuery(WP_Query $wp_query): array;
 
@@ -562,9 +598,9 @@ interface QueryPost extends ParamsBag
     /**
      * Vérification de correspondance du type de post.
      *
-     * @param array $post_types Liste des types de post à vérifier.
+     * @param array|string $post_types Liste de types de post à vérifier.
      *
      * @return bool
      */
-    public function typeIn(array $post_types): bool;
+    public function typeIn($post_types): bool;
 }

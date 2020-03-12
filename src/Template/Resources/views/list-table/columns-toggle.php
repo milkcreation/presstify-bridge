@@ -8,17 +8,17 @@
  */
 foreach ($this->columns()->getHideable() as $col) {
     echo field('checkbox', [
-        'after' => (string)field('label', [
+        'after' => field('label', [
             'content' => $col->getTitle(),
             'attrs'   => [
                 'for' => 'ListTable-columnToggle--' . $col->getName()
             ]
         ]),
-        'value' => $col->getName(),
+        'value' => !$col->isHidden() ? $col->getName() : null,
         'attrs' => [
             'id'           => 'ListTable-columnToggle--' . $col->getName(),
             'data-control' => 'list-table.column.toggle'
         ],
-        'checked' => true
+        'checked' => $col->getName()
     ]);
 }

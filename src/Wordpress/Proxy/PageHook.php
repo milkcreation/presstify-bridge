@@ -13,6 +13,19 @@ use tiFy\Wordpress\Contracts\{PageHook as PageHookContract, PageHookItem};
  */
 class PageHook extends AbstractProxy
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return PageHookContract
+     */
+    public static function getInstance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function getInstanceIdentifier()
     {
         return 'wp.page-hook';

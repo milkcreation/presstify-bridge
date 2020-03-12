@@ -19,7 +19,7 @@ class FieldController implements FieldControllerContract
         'checkbox'            => ['checking', 'label', 'request', 'tabindex', 'wrapper', 'transport'],
         'checkbox-collection' => ['choices', 'label', 'request', 'tabindexes', 'transport', 'wrapper'],
         'datetime-js'         => ['label', 'request', 'tabindexes', 'transport', 'wrapper'],
-        'hidden'              => ['request'],
+        'hidden'              => ['request', 'transport'],
         'label'               => ['wrapper'],
         'password'            => ['label', 'request', 'tabindex', 'wrapper'],
         'radio'               => ['label', 'request', 'tabindex', 'wrapper', 'transport'],

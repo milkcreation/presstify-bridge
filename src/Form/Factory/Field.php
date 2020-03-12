@@ -472,7 +472,7 @@ class Field extends ParamsBag implements FactoryField
             $this->pull('attrs.id');
         endif;
 
-        $default_class = "Form-fieldInput Form-fieldInput--{$this->getType()} Form-fieldInput--{$this->getSlug()}";
+        $default_class = "%s Form-fieldInput Form-fieldInput--{$this->getType()} Form-fieldInput--{$this->getSlug()}";
         if (!$this->has('attrs.class')) :
             $this->set('attrs.class', $default_class);
         else :

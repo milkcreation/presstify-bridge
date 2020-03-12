@@ -19,7 +19,7 @@ use tiFy\Wordpress\Mail\Mail;
 use tiFy\Wordpress\Media\Media;
 use tiFy\Wordpress\Media\Upload;
 use tiFy\Wordpress\Metabox\Metabox;
-use tiFy\Wordpress\Options\Options;
+use tiFy\Wordpress\Option\Option;
 use tiFy\Wordpress\PageHook\PageHook;
 use tiFy\Wordpress\Partial\Partial;
 use tiFy\Wordpress\PostType\PostType;
@@ -64,7 +64,7 @@ class WordpressServiceProvider extends ServiceProvider
         'wp.metabox',
         'wp.page-hook',
         'wp.partial',
-        'wp.options',
+        'wp.option',
         'wp.post-type',
         'wp.query.post',
         'wp.query.term',
@@ -147,9 +147,7 @@ class WordpressServiceProvider extends ServiceProvider
 
                 $this->getContainer()->get('wp.page-hook');
 
-                if ($this->getContainer()->has('options')) {
-                    $this->getContainer()->get('wp.options');
-                }
+                $this->getContainer()->get('wp.option');
 
                 if ($this->getContainer()->has('partial')) {
                     $this->getContainer()->get('wp.partial');
@@ -393,8 +391,8 @@ class WordpressServiceProvider extends ServiceProvider
      */
     public function registerOptions(): void
     {
-        $this->getContainer()->share('wp.options', function () {
-            return new Options($this->getContainer()->get('options'));
+        $this->getContainer()->share('wp.option', function () {
+            return new Option();
         });
     }
 

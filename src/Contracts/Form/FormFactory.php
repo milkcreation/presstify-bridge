@@ -28,6 +28,16 @@ interface FormFactory extends FactoryResolver, ParamsBag
     public function csrf(): string;
 
     /**
+     * Déclaration d'un message d'erreur.
+     *
+     * @param string $message Intitulé du message.
+     * @param array $datas Données associées à l'erreur
+     *
+     * @return string Identifiant de qualification du message d'erreur
+     */
+    public function error(string $message, array $datas = []): string;
+
+    /**
      * Récupération de valeur(s) de champ(s) basée(s) sur leurs variables d'identifiant de qualification.
      *
      * @param mixed $tags Variables de qualification de champs.

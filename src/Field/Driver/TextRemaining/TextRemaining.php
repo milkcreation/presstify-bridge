@@ -4,6 +4,7 @@ namespace tiFy\Field\Driver\TextRemaining;
 
 use tiFy\Contracts\Field\{FieldDriver as FieldDriverContract, TextRemaining as TextRemainingContract};
 use tiFy\Field\FieldDriver;
+use tiFy\Support\Str;
 
 class TextRemaining extends FieldDriver implements TextRemainingContract
 {
@@ -60,22 +61,19 @@ class TextRemaining extends FieldDriver implements TextRemainingContract
 
         $this->set('tag', $this->get('selector'));
 
-        $this->set(
-            'attrs.data-options',
-            [
-                'infos' => [
-                    'plural'   => __('restants', 'tify'),
-                    'singular' => __('restant', 'tify'),
-                    'none'     => __('restant', 'tify'),
-                ],
-                'limit' => $this->get('limit'),
-                'max'   => $this->get('max')
-            ]
-        );
+        $this->set('attrs.data-options', [
+            'infos' => [
+                'plural'   => __('restants', 'tify'),
+                'singular' => __('restant', 'tify'),
+                'none'     => __('restant', 'tify'),
+            ],
+            'limit' => $this->get('limit'),
+            'max'   => $this->get('max')
+        ]);
 
         switch($this->get('tag')) {
             case 'textarea' :
-                $this->set('content', $this->get('value'));
+                $this->set('content', Str::br2nl($this->get('value')));
                 break;
             case 'input' :
                 $this->set('attrs.value', $this->get('value'));
