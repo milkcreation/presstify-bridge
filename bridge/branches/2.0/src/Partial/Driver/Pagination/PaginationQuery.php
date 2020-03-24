@@ -3,69 +3,75 @@
 namespace tiFy\Partial\Driver\Pagination;
 
 use tiFy\Contracts\Partial\PaginationQuery as PaginationQueryContract;
-use tiFy\Support\Collection;
+use tiFy\Support\{ParamsBag, Traits\PaginationAwareTrait};
 
-class PaginationQuery extends Collection implements PaginationQueryContract
+class PaginationQuery extends ParamsBag implements PaginationQueryContract
 {
-    /**
-     * Nombre de résultats trouvés.
-     * @var int
-     */
-    protected $founds = 0;
+    use PaginationAwareTrait;
 
     /**
-     * Nombre d'éléments de décalage.
-     * @var int
+     * CONSTRUCTEUR.
+     *
+     * @param array|object|null $args
+     *
+     * @return void
      */
-    protected $offset = 0;
-
-    /**
-     * Numéro de page courante.
-     * @var int
-     */
-    protected $page = 0;
-
-    /**
-     * Nombre d'éléments par page.
-     * @var int
-     */
-    protected $per_page = 10;
-
-    /**
-     * Nombre total de page.
-     * @var int
-     */
-    protected $total_page = 0;
-
-    /**
-     * @inheritDoc
-     */
-    public function getPage(): int
+    public function __construct($args = null)
     {
-        return $this->page ? : 1;
+        if (is_array($args)) {
+            $this->set($args);
+        } elseif (is_object($args)) {
+            if (($traits = class_uses($args)) && in_array(PaginationAwareTrait::class, $traits)) {
+                $this->set($args->toArray());
+            } else {
+                $this->set(get_object_vars($args));
+            }
+        }
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @return PaginationQueryContract
      */
-    public function getTotalPage(): int
+    public function parse(): PaginationQueryContract
     {
-        return (int)$this->total_page;
-    }
+        parent::parse();
 
-    /**
-     * @inheritDoc
-     */
-    public function setPagination(): PaginationQueryContract
-    {
-        if ($this->founds) {
-            $this->total_page = $this->offset
-                ? ceil(
-                    ($this->founds + (($this->per_page * ($this->page - 1)) - $this->offset)) / $this->per_page
-                )
-                : ceil($this->founds / $this->per_page);
-        } else {
-            $this->total_page = 0;
+        if ($baseUrl = $this->pull('base_url', null)) {
+            $this->setBaseUrl($baseUrl);
+        }
+
+        if ($count = $this->pull('count')) {
+            $this->setCount($count);
+        }
+
+        if ($currentPage = $this->pull('current_page')) {
+            $this->setCurrentPage($currentPage);
+        }
+
+        if ($lastPage = $this->pull('last_page')) {
+            $this->setLastPage($lastPage);
+        }
+
+        if ($pageIndex = $this->pull('page_index')) {
+            $this->setPageIndex($pageIndex);
+        }
+
+        if ($per_page = $this->pull('per_page')) {
+            $this->setPerPage($per_page);
+        }
+
+        if ($segmentUrl = $this->pull('segment_url')) {
+            $this->setSegmentUrl($segmentUrl);
+        }
+
+        if ($total = $this->pull('total')) {
+            $this->setTotal($total);
+        }
+
+        if ($offset = $this->pull('offset')) {
+            $this->setOffset($offset);
         }
 
         return $this;

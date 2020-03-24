@@ -6,8 +6,8 @@
  * @var string[] $messages
  */
 ?>
-<ol class="Form-noticeItems Form-noticeItems--error">
+<ol class="FormNotice-items FormNotice-items--error">
     <?php foreach ($messages as $message) : ?>
-        <li class="Form-noticeItem Form-noticeItem--error"><?php echo $message; ?></li>
+        <li class="FormNotice-item FormNotice-item--error"><?php echo $message; ?></li>
     <?php endforeach; ?>
 </ol>

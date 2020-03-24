@@ -56,6 +56,7 @@ class Pdfviewer extends PartialDriver implements PdfviewerContract
             $args['attrs'] = [];
         }
         $args['attrs']['data-modal-pdf'] = $this->get('defer') ? 'true' : 'false';
+        $args['attrs']['data-control'] = 'modal-pdf';
 
         /** @var Modal $modal */
         $modal = Partial::get('modal', $args);

@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Link
- * @package tiFy\Wordpress\Database\Model
- *
  * @mixin Builder
  */
 class Link extends Model

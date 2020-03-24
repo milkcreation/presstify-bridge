@@ -136,7 +136,7 @@ class FileInfo extends ParamsBag implements FileInfoContract
      */
     public function getDownloadUrl(bool $absolute = false): string
     {
-        return $this->getFactory()->baseUrl($absolute) . '?action=download&path=' . $this->getRelPath();
+        return $this->factory->url()->http($absolute) . '?action=download&path=' . $this->getRelPath();
     }
 
     /**
@@ -289,7 +289,7 @@ class FileInfo extends ParamsBag implements FileInfoContract
     public function getUrl(bool $absolute = false): string
     {
         return $this->isFile()
-            ? $this->getFactory()->baseUrl($absolute) . '/cache/' . $this->getRelPath()
+            ? $this->factory->url()->http($absolute) . '/cache/' . $this->getRelPath()
             : '';
     }
 

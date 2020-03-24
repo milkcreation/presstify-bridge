@@ -134,6 +134,13 @@ interface QueryPost extends ParamsBag
     public static function is($instance): bool;
 
     /**
+     * Récupération de l'instance de pagination de la dernière requête de récupération d'une liste d'éléments.
+     *
+     * @return PaginationQuery
+     */
+    public static function pagination(): PaginationQuery;
+
+    /**
      * Traitement d'arguments de requête de récupération des éléments.
      *
      * @param array $args Liste des arguments de la requête récupération des éléments.
@@ -141,13 +148,6 @@ interface QueryPost extends ParamsBag
      * @return array
      */
     public static function parseQueryArgs(array $args = []): array;
-
-    /**
-     * Récupération de l'instance de la dernière requête de récupération d'une liste d'éléments.
-     *
-     * @return ParamsBag
-     */
-    public static function query(): ParamsBag;
 
     /**
      * @deprecated

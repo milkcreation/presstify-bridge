@@ -5,7 +5,7 @@ namespace tiFy\Form\Addon\Mailer;
 use Closure;
 use tiFy\Contracts\Form\FactoryField;
 use tiFy\Form\AddonFactory;
-use tiFy\Support\Proxy\{Mailer as Mail, Metabox};
+use tiFy\Support\Proxy\{Mail, Metabox};
 
 class Mailer extends AddonFactory
 {
@@ -287,8 +287,7 @@ class Mailer extends AddonFactory
         $params['subject'] = $params['subject']
             ?? sprintf(__('%1$s - Demande de contact', 'tify'), get_bloginfo('name'));
 
-        $params['to'] = $params['to']
-            ?? get_option('admin_email');
+        $params['to'] = $params['to'] ?? get_option('admin_email');
 
         $params = array_map([$this->form(), 'fieldTagValue'], $params);
 
@@ -308,11 +307,10 @@ class Mailer extends AddonFactory
                 : $mailer_value;
         });
 
-        $params['body'] = $params['body'] ?? (string)$this->form()->viewer(
-                'addon/mailer/body',
-                array_merge($params, compact('fields')
-                )
-            );
+        $params['content'] = $params['content'] ?? [];
+
+        $params['content']['body'] = $params['content']['body']
+            ?? (string)$this->form()->viewer('addon/mailer/body', array_merge($params, compact('fields')));
 
         return $params;
     }

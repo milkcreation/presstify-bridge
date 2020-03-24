@@ -67,7 +67,7 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
      */
     public function registerFactoryActions(): void
     {
-        $this->getContainer()->share($this->getFactoryAlias('assets'), function (): FactoryActionsContract {
+        $this->getContainer()->share($this->getFactoryAlias('actions'), function (): FactoryActionsContract {
             return (new Actions())->setTemplateFactory($this->factory);
         });
     }
@@ -91,7 +91,7 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
      */
     public function registerFactoryBuilder(): void
     {
-        $this->getContainer()->add($this->getFactoryAlias('builder'), function () {
+        $this->getContainer()->share($this->getFactoryAlias('builder'), function () {
             $attrs = $this->factory->param('query_args', []);
 
             $ctrl =  $this->factory->db() ? new DbBuilder() : new Builder();
@@ -222,7 +222,9 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
     public function registerFactoryUrl(): void
     {
         $this->getContainer()->share($this->getFactoryAlias('url'), function () {
-            return (new Url())->setTemplateFactory($this->factory);
+            return (new Url())
+                ->setTemplateFactory($this->factory)
+                ->setBaseUrl($this->factory->manager()->baseUrl . '/' . $this->factory->name());
         });
     }
 

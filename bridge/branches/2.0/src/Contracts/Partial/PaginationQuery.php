@@ -2,28 +2,12 @@
 
 namespace tiFy\Contracts\Partial;
 
-use tiFy\Contracts\Support\Collection as CollectionContract;
+use tiFy\Contracts\Support\ParamsBag;
+use tiFy\Support\Traits\PaginationAwareTrait;
 
-interface PaginationQuery extends CollectionContract
+/**
+ * @mixin PaginationAwareTrait
+ */
+interface PaginationQuery extends ParamsBag
 {
-    /**
-     * Récupération du numéro de la page courante.
-     *
-     * @return int
-     */
-    public function getPage(): int;
-
-    /**
-     * Récupération du nombre total de page.
-     *
-     * @return int
-     */
-    public function getTotalPage(): int;
-
-    /**
-     * Définition des arguments de pagination.
-     *
-     * @return static
-     */
-    public function setPagination(): PaginationQuery;
 }

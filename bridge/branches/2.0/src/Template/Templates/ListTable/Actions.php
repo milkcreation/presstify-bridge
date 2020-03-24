@@ -2,6 +2,7 @@
 
 namespace tiFy\Template\Templates\ListTable;
 
+use Exception;
 use tiFy\Template\Factory\Actions as BaseActions;
 use tiFy\Template\Templates\ListTable\Contracts\Actions as ActionsContract;
 
@@ -25,10 +26,7 @@ class Actions extends BaseActions implements ActionsContract
                 'data'   => $item->getKeyValue()
             ];
         } else {
-            return [
-                'success' => false,
-                'data'    => __('Impossible de récupérer l\'élément associé.', 'tify')
-            ];
+            throw new Exception(__('Impossible de récupérer l\'élément associé.', 'tify'));
         }
     }
 
@@ -44,10 +42,7 @@ class Actions extends BaseActions implements ActionsContract
                 'data'   => $item->getKeyValue()
             ];
         } else {
-            return [
-                'success' => false,
-                'data'    => __('Impossible de récupérer l\'élément associé.', 'tify')
-            ];
+            throw new Exception(__('Impossible de récupérer l\'élément associé.', 'tify'));
         }
     }
 
@@ -63,10 +58,7 @@ class Actions extends BaseActions implements ActionsContract
                 'data'   => $item->getKeyValue()
             ];
         } else {
-            return [
-                'success' => false,
-                'data'    => __('Impossible de récupérer l\'élément associé.', 'tify')
-            ];
+            throw new Exception(__('Impossible de récupérer l\'élément associé.', 'tify'));
         }
     }
 
@@ -82,10 +74,7 @@ class Actions extends BaseActions implements ActionsContract
                 'data'   => $item->getKeyValue()
             ];
         } else {
-            return [
-                'success' => false,
-                'data'    => __('Impossible de récupérer l\'élément associé.', 'tify')
-            ];
+            throw new Exception(__('Impossible de récupérer l\'élément associé.', 'tify'));
         }
     }
 
@@ -101,10 +90,7 @@ class Actions extends BaseActions implements ActionsContract
                 'data'   => $item->getKeyValue()
             ];
         } else {
-            return [
-                'success' => false,
-                'data'    => __('Impossible de récupérer l\'élément associé.', 'tify')
-            ];
+            throw new Exception(__('Impossible de récupérer l\'élément associé.', 'tify'));
         }
     }
 
@@ -120,10 +106,7 @@ class Actions extends BaseActions implements ActionsContract
                 'data'   => $item->getKeyValue()
             ];
         } else {
-            return [
-                'success' => false,
-                'data'    => __('Impossible de récupérer l\'élément associé.', 'tify')
-            ];
+            throw new Exception(__('Impossible de récupérer l\'élément associé.', 'tify'));
         }
     }
 }

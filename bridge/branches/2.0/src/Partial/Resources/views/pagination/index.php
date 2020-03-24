@@ -5,7 +5,7 @@
  * @var tiFy\Partial\Driver\Pagination\PaginationView $this
  */
 ?>
-<?php if ($this->getTotalPage() > 1) : ?>
+<?php if ($this->getLastPage() > 1) : ?>
     <?php $this->before(); ?>
     <ul <?php $this->attrs(); ?>>
         <?php $this->get('links.first') ? $this->insert('first', $this->all()) : false; ?>

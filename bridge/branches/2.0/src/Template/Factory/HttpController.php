@@ -2,6 +2,7 @@
 
 namespace tiFy\Template\Factory;
 
+use Exception;
 use Psr\Http\Message\ServerRequestInterface;
 use tiFy\Contracts\Template\FactoryHttpController as FactoryHttpControllerContract;
 use Zend\Diactoros\Response;
@@ -18,16 +19,17 @@ class HttpController implements FactoryHttpControllerContract
         $method = strtolower($psrRequest->getMethod());
         $response = null;
 
-        if (method_exists($this, $method)) {
-            $this->factory->prepare();
+        if ($action = $this->factory->request()->input($this->factory->actions()->getIndex())) {
+            try {
+                $response = $this->factory->actions()->execute($action, func_get_args());
+            } catch (Exception $e) {
+                $response = new Response($e->getMessage(), 405);
+            }
+        } elseif (method_exists($this, $method)) {
             $response = $this->{$method}($psrRequest);
         }
 
-        if (is_null($response)) {
-            $response = new Response('php://memory', 405);
-        }
-
-        return $response;
+        return is_null($response) ? new Response('php://memory', 405) : $response;
     }
 
     /**

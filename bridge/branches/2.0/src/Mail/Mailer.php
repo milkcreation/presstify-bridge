@@ -2,15 +2,20 @@
 
 namespace tiFy\Mail;
 
+use Exception;
+use DOMDocument;
 use Html2Text\Html2Text;
-use Pelago\Emogrifier;
-use tiFy\Contracts\Mail\LibraryAdapter;
-use tiFy\Contracts\Mail\Mailer as MailerContract;
-use tiFy\Contracts\Mail\MailQueue;
-use tiFy\Support\ParamsBag;
+use Pelago\Emogrifier\CssInliner;
+use Psr\Container\ContainerInterface as Container;
+use tiFy\Contracts\Mail\{
+    Mail as MailContract,
+    MailerDriver,
+    Mailer as MailerContract,
+    MailerQueue as MailerQueueContract
+};
 use tiFy\View\Engine\Engine as ViewEngine;
 
-class Mailer extends ParamsBag implements MailerContract
+class Mailer implements MailerContract
 {
     /**
      * Liste des attributs de configuration par défaut.
@@ -19,16 +24,28 @@ class Mailer extends ParamsBag implements MailerContract
     protected static $defaults = [];
 
     /**
-     * Instance du pilote de traitement de mail.
-     * @var LibraryAdapter
+     * Instance du conteneur d'injection de dépendance.
+     * @var Container|null
      */
-    protected $lib;
+    protected $container;
 
     /**
-     * Liste des paramètres d'expédition du mail.
-     * @var array
+     * Instance du pilote d'expédition des mails.
+     * @var MailerDriver
      */
-    protected $params = [];
+    protected $driver;
+
+    /**
+     * Instance de l'email
+     * @var Mail|null
+     */
+    protected $mail;
+
+    /**
+     * Instance du gestionnaire de mise en file.
+     * @var MailerQueueContract
+     */
+    protected $queue;
 
     /**
      * Instance du controleur de gabarit d'affichage.
@@ -43,7 +60,7 @@ class Mailer extends ParamsBag implements MailerContract
      *
      * @return array
      */
-    private function _parseAttachments($attachments)
+    private function _parseAttachments($attachments): array
     {
         $output = (func_num_args() === 2) ? func_get_arg(1) : [];
 
@@ -64,6 +81,7 @@ class Mailer extends ParamsBag implements MailerContract
                 }
             }
         }
+
         return $output;
     }
 
@@ -71,11 +89,12 @@ class Mailer extends ParamsBag implements MailerContract
      * Traitement récursif d'une liste de contacts.
      *
      * @param string|string[]|array $contacts Liste de contact.
-     * {@internal "{email}"|"{name} {email}"|["{email1}", ["{name2} {email2}"]]}
+     * {@internal "{{ email:string }}"|"{{ name:string }} {{ email:string }}"|["{{ email1:string }}", ["{{ name2:string
+     *     }} {{ email2:string }}"]] }
      *
      * @return array
      */
-    private function _parseContacts($contacts)
+    private function _parseContacts($contacts): array
     {
         $output = (func_num_args() === 2) ? func_get_arg(1) : [];
 
@@ -122,265 +141,12 @@ class Mailer extends ParamsBag implements MailerContract
                 }
             }
         }
+
         return $output;
     }
 
     /**
-     * Traitement de remplacement des variables d'environnement.
-     *
-     * @param string $output
-     * @param array Liste des variables d'environnement personnalisées.
-     * @param string $regex Format de détection des variables.
-     *
-     * @return string
-     *
-     * private function _parseMergeVars($output, $vars = [], $regex = '\*\|(.*?)\|\*')
-     * {
-     * $vars = array_merge([
-     * 'SITE:URL'         => site_url('/'),
-     * 'SITE:NAME'        => get_bloginfo('name'),
-     * 'SITE:DESCRIPTION' => get_bloginfo('description'),
-     * ], $vars);
-     *
-     * $callback = function ($matches) use ($vars) {
-     * if (!isset($matches[1])) :
-     * return $matches[0];
-     * elseif (isset($vars[$matches[1]])) :
-     * return $vars[$matches[1]];
-     * endif;
-     *
-     * return $matches[0];
-     * };
-     *
-     * $output = preg_replace_callback('/' . $regex . '/', $callback, $output);
-     *
-     * return $output;
-     * }
-     */
-
-    /**
-     * Traitement des élements texte de composition du message.
-     *
-     * @param string|string[] $body {body}|[{html_body},{plain_body}]
-     * @param string|string[] $header {header}|[{html_header},{plain_header}]
-     * @param string|string[] $footer {footer}|[{html_footer},{plain_footer}]
-     *
-     * @return array
-     */
-    private function _parseMessage($body, $header = '', $footer = '')
-    {
-        $header = $this->_parseTextParts($header);
-        $footer = $this->_parseTextParts($footer);
-        $message = $this->_parseTextParts($body);
-
-        array_walk($message, function (&$item, $key) use ($header, $footer) {
-            $item = $header[$key] . $item . $footer[$key];
-        });
-        return $message;
-    }
-
-    /**
-     * Traitement des éléments de texte composant le message (body|header|footer).
-     *
-     * @param string|array $part
-     *
-     * @return array
-     */
-    private function _parseTextParts($part)
-    {
-        if (is_string($part)) {
-            $part = [$part, (new Html2Text($part))->getText()];
-        } elseif (is_array($part)) {
-            $html = $part[0] ?? '';
-            $text = $part[1] ?? (new Html2Text($html))->getText();
-
-            $part = [$html, $text];
-        }
-        return $part;
-    }
-
-    /**
-     * Traitement de la liste des paramètres de configuration.
-     *
-     * @param array $params Liste des paramètres de configuration.
-     *
-     * @return $this
-     */
-    private function _parseParams($params = [])
-    {
-        $this->set($params)->parse();
-
-        $lib = $this->getLib();
-
-        foreach ($this->keys() as $key) {
-            switch ($key) {
-                default :
-                    break;
-                case 'from' :
-                case 'to' :
-                case 'reply-to' :
-                case 'bcc' :
-                case 'cc' :
-                    $this->set($key, $this->_parseContacts($this->get($key, [])));
-                    break;
-                case 'attachments' :
-                    $this->set($key, $this->_parseAttachments($this->get($key, [])));
-                    break;
-            }
-        }
-
-        call_user_func_array([$lib, 'setFrom'], current($this->get('from', [])));
-
-        foreach ($this->get('to', []) as $contact) {
-            call_user_func_array([$lib, 'addTo'], $contact);
-        }
-
-        foreach ($this->get('reply-to', []) as $contact) {
-            call_user_func_array([$lib, 'addReplyTo'], $contact);
-        }
-
-        foreach ($this->get('bcc', []) as $contact) {
-            call_user_func_array([$lib, 'addBcc'], $contact);
-        }
-
-        foreach ($this->get('cc', []) as $contact) {
-            call_user_func_array([$lib, 'addCc'], $contact);
-        }
-
-        foreach ($this->get('attachments', []) as $attachment) {
-            call_user_func_array([$lib, 'addAttachment'], $attachment);
-        }
-
-        $lib->setCharset($this->get('charset'));
-
-        $lib->setEncoding($this->get('encoding'));
-
-        $lib->setContentType($this->get('content_type'));
-
-        $lib->setSubject($this->get('subject'));
-
-        $body = $this->get('body') ?? [
-                (string)$this->viewer('default', $this->all()),
-                sprintf(__('Ceci est un test d\'envoi de mail depuis le site %s', 'tify'),
-                    get_bloginfo('blogname')) . "\n\n" .
-                __('Si ce mail, vous est parvenu c\'est qu\'il vous a été expédié depuis le site : ') . "\n" .
-                site_url('/') . "\n\n" .
-                __('Néanmoins, il pourrait s\'agir d\'une erreur. Si vous n\'êtes pas concerné par cet e-mail, ',
-                    'tify') . "\n" .
-                __('vous pouvez prendre contact avec l\'administrateur du site à cette adresse : ', 'tify') . "\n" .
-                get_option('admin_email') . "\n\n" .
-                __('Merci de votre compréhension', 'tify'),
-            ];
-
-        $message = $this->_parseMessage($body, $this->get('header'), $this->get('footer'));
-
-        $html = (string)$this->viewer('message', array_merge($this->all(), ['message' => $message[0]]));
-        $html = $this->get('inline_css') ? (new Emogrifier($html))->emogrify() : $html;
-        $plain = $message[1];
-
-        switch ($this->get('content_type')) {
-            case 'multipart/alternative' :
-                call_user_func([$lib, 'setBody'], $html);
-                call_user_func([$lib, 'setAlt'], $plain);
-                break;
-            case 'text/html' :
-                call_user_func([$lib, 'setBody'], $html);
-                break;
-            case 'text/plain' :
-                call_user_func([$lib, 'setBody'], $plain);
-                break;
-        }
-
-        $this->params = $this->all() + compact('message', 'html', 'plain');
-
-        return $this;
-    }
-
-    /**
      * @inheritDoc
-     */
-    public function debug($params = [])
-    {
-        $this->_parseParams($params);
-
-        echo ($this->getLib()->prepare())
-            ? $this->viewer('debug', array_merge($this->params, ['headers' => $this->getLib()->getHeaders()]))
-            : $this->getLib()->error();
-        exit;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function defaults()
-    {
-        return array_merge(static::$defaults, config('mail', []), [
-            //'to'           => [],
-            //'from'         => [],
-            //'reply-to'     => [],
-            //'bcc'          => [],
-            //'cc'           => [],
-            //'attachments'  => [],
-            //'header'       => '',
-            //'footer'       => '',
-            'subject'      => sprintf(__('Test d\'envoi de mail depuis le site %s', 'tify'),
-                get_bloginfo('blogname')),
-            'charset'      => get_bloginfo('charset'),
-            'encoding'     => '8bit',
-            'content_type' => 'multipart/alternative',
-            'inline_css'   => true,
-            //'vars'         => [],
-            //'viewer'       => [],
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getLib()
-    {
-        if (is_null($this->lib)) {
-            $this->lib = app()->get('mailer.library');
-        }
-        return $this->lib;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function queue($params = [], $date = 'now', $extras = [])
-    {
-        $this->_parseParams($params);
-
-        if ($res = $this->getLib()->prepare()) {
-            $this->lib = null;
-
-            /** @var MailQueue $queue */
-            $queue = app()->get('mail.queue');
-            return $queue->add($this->params, $date, $extras);
-        }
-        return 0;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function send($params = [])
-    {
-        $this->_parseParams($params);
-
-        if ($res = $this->getLib()->send()) {
-            $this->lib = null;
-        }
-        return $res;
-    }
-
-    /**
-     * Définition de la liste des arguments utilisés par défaut.
-     *
-     * @param array $attrs
-     *
-     * @return void
      */
     public static function setDefaults(array $attrs = []): void
     {
@@ -390,10 +156,264 @@ class Mailer extends ParamsBag implements MailerContract
     /**
      * @inheritDoc
      */
+    public function addQueue(MailContract $mail, $date = 'now', array $params = []): int
+    {
+        return $this->getDriver()->prepare() ? $this->getQueue()->add($mail, $date, $params) : 0;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function clearDriver(): MailerContract
+    {
+        $this->driver = null;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function create($attrs = null): MailContract
+    {
+        if (is_null($attrs) && $this->mail instanceof Mail) {
+            $attrs = $this->mail;
+        }
+
+        if ($attrs instanceof Mail) {
+            return $this->mail = $attrs->setMailer($this);
+        } else {
+            $this->clearDriver();
+
+            $mail = (new Mail())->setMailer($this);
+
+            $mail->params(array_merge([
+                'to'           => [],
+                'from'         => [],
+                'reply-to'     => [],
+                'bcc'          => [],
+                'cc'           => [],
+                'attachments'  => [],
+                'html'         => '',
+                'plain'        => '',
+                'data'         => [],
+                'content'      => [],
+                'subject'      => __('Test d\'envoi de mail', 'tify'),
+                'charset'      => 'utf-8',
+                'encoding'     => '8bit',
+                'content_type' => 'multipart/alternative',
+                'inline_css'   => true,
+                'vars'         => [],
+                'viewer'       => [],
+            ], static::$defaults, config('mail', []), $attrs ?: []));
+
+            return $this->mail = $mail;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function debug($attrs = null): void
+    {
+        echo $this->create($attrs)->debug();
+        exit;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContainer(): ?Container
+    {
+        return $this->container;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDriver(): MailerDriver
+    {
+        if (is_null($this->driver)) {
+            $driver = !is_null($this->getContainer()) ? $this->getContainer()->get('mailer.driver') : null;
+            $this->driver = $driver ?: new Driver\PhpMailerDriver();
+        }
+
+        return $this->driver;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getQueue(): MailerQueueContract
+    {
+        if (is_null($this->queue)) {
+            $queue = !is_null($this->getContainer()) ? $this->getContainer()->get('mailer.queue') : null;
+            $this->queue = $queue ?: new MailerQueue();
+        }
+
+        return $this->queue->setMailer($this);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function prepare(): MailerContract
+    {
+        $mail = $this->create();
+
+        if ($from = $mail->params('from')) {
+            $contact = $this->_parseContacts($from)[0];
+            $this->getDriver()->setFrom(...$contact);
+        }
+
+        if ($to = $mail->params('to')) {
+            $contacts = $this->_parseContacts($to);
+            foreach ($contacts as $c) {
+                $this->getDriver()->addTo(...$c);
+            }
+        }
+
+        if ($replyTo = $mail->params('reply-to')) {
+            $contacts = $this->_parseContacts($replyTo);
+            foreach ($contacts as $c) {
+                $this->getDriver()->addReplyTo(...$c);
+            }
+        }
+
+        if ($bcc = $mail->params('bcc')) {
+            $contacts = $this->_parseContacts($bcc);
+            foreach ($contacts as $c) {
+                $this->getDriver()->addBcc(...$c);
+            }
+        }
+
+        if ($cc = $mail->params('cc')) {
+            $contacts = $this->_parseContacts($cc);
+            foreach ($contacts as $c) {
+                $this->getDriver()->addCc(...$c);
+            }
+        }
+
+        if ($attachments = $mail->params('attachments', [])) {
+            $files = $this->_parseAttachments($attachments);
+            foreach ($files as $path) {
+                $this->getDriver()->addAttachment($path);
+            }
+        }
+
+        if ($charset = $mail->params('charset')) {
+            $this->getDriver()->setCharset($charset);
+        }
+
+        if ($encoding = $mail->params('encoding')) {
+            $this->getDriver()->setEncoding($encoding);
+        }
+
+        if ($content_type = $mail->params('content_type')) {
+            $this->getDriver()->setContentType($content_type);
+        }
+
+        if ($subject = $mail->params('subject')) {
+            $this->getDriver()->setSubject($subject);
+        }
+
+        if ($data = $mail->params('data', [])) {
+            $mail->data($data);
+        }
+
+        if (!$html = $mail->params('html')) {
+            if ($mail->params('content')) {
+                if ($body = $mail->params('content.body', true)) {
+                    $body = is_string($body) ? $body : $mail->view('html/body');
+                }
+                if ($header = $mail->params('content.header', true)) {
+                    $header = is_string($header) ? $header : $mail->view('html/header');
+                }
+                if ($footer = $mail->params('content.footer', true)) {
+                    $footer = is_string($footer) ? $footer : $mail->view('html/footer');
+                }
+
+                $html = $this->viewer('html/content', compact('body', 'header', 'footer'));
+            } else {
+                $html = $mail->params('text') ?: $mail->view('html/message');
+            }
+        }
+
+        if (!$text = $mail->params('text')) {
+            $text = (new Html2Text($html ?: $mail->view('text/message')))->getText();
+        }
+
+        $dom = new DOMDocument();
+        $dom->loadHTML(htmlentities($html));
+
+        if (!$dom->getElementsByTagName('head')->length) {
+            $html = $this->viewer('html/wrap-html', ['html' => $html]);
+        }
+
+        if ($css = $mail->params('inline_css')) {
+            $css = is_string($css) ?: '';
+
+            try {
+                $html = CssInliner::fromHtml($html)->inlineCss($css)->render();
+            } catch (Exception $e) {
+                unset($e);
+            }
+        }
+
+        switch ($mail->params('content_type')) {
+            case 'multipart/alternative' :
+                $this->getDriver()->setHtml($html);
+                $this->getDriver()->setText($text);
+                break;
+            case 'text/html' :
+                $this->getDriver()->setHtml($text);
+                break;
+            case 'text/plain' :
+                $this->getDriver()->setText($text);
+                break;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @todo
+     */
+    public function queue($attrs = null, $date = 'now', array $params = []): int
+    {
+        return $this->create($attrs)->queue($date, $params);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function send($attrs = null): bool
+    {
+        return $this->create($attrs)->send();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setContainer(Container $container): MailerContract
+    {
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function viewer(?string $view = null, array $data = [])
     {
         if (is_null($this->viewer)) {
-            $this->viewer = app()->get('mailer.viewer', $this->pull('viewer', []));
+            $container = $this->getContainer();
+            if ($container instanceof \tiFy\Contracts\Container\Container) {
+                $this->viewer = $container->get('mail.view', [$this]);
+            }
         }
 
         if (func_num_args() === 0) {

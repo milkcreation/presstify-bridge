@@ -22,7 +22,7 @@ class Ajax extends ParamsBag implements AjaxContract
     public function defaults()
     {
         return [
-            'url'      => $this->getFactory()->baseUrl() . '/xhr',
+            'url'      => $this->factory->url()->xhr(),
             'dataType' => 'json',
             'type'     => 'POST'
         ];

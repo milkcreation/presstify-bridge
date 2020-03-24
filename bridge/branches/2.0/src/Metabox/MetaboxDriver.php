@@ -100,13 +100,13 @@ class MetaboxDriver extends ParamsBag implements MetaboxDriverContract
     public function defaults(): array
     {
         return [
-            'content'  => '',
             'name'     => '',
             'parent'   => null,
             'params'   => [],
             'position' => null,
             'title'    => '',
             'value'    => null,
+            'render'   => '',
             'viewer'   => [],
         ];
     }
@@ -181,8 +181,13 @@ class MetaboxDriver extends ParamsBag implements MetaboxDriverContract
      */
     public function render(): string
     {
-        return $this->viewer()->exists('index')
-            ? (string)$this->viewer('index', $this->all()) : $this->get('content', '');
+        $render = $this->get('render', '');
+
+        if ($render instanceof Closure) {
+            $render = (string) $render($this, ...$this->args);
+        }
+
+        return $render ? : ($this->viewer()->exists('index') ? $this->viewer('index', $this->all()) : '');
     }
 
     /**

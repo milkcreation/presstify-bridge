@@ -28,7 +28,7 @@ class TemplateFactory extends ParamsBag implements TemplateFactoryContract
 
     /**
      * Instance du gestionnaire de templates.
-     * @var TemplateManager
+     * @var TemplateManagerContract|null
      */
     protected $manager;
 
@@ -87,20 +87,7 @@ class TemplateFactory extends ParamsBag implements TemplateFactoryContract
     /**
      * @inheritDoc
      */
-    public function baseUrl(bool $absolute = false): string
-    {
-        $path = $this->manager->baseUrl . '/' . $this->name();
-
-        return $absolute ? (string)url()->root($path) : url()->rewriteBase() . '/' . $path;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function boot(): void
-    {
-
-    }
+    public function boot(): void {}
 
     /**
      * @inheritDoc
@@ -188,6 +175,14 @@ class TemplateFactory extends ParamsBag implements TemplateFactoryContract
         } else {
             return $labels;
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function manager(): ?TemplateManagerContract
+    {
+        return $this->manager;
     }
 
     /**

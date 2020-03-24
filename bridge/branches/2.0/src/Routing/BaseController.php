@@ -17,6 +17,12 @@ abstract class BaseController extends ParamsBag
     protected $container;
 
     /**
+     * Indicateur d'activation du mode de déboguage.
+     * @var bool|null
+     */
+    protected $debug;
+
+    /**
      * CONSTRUCTEUR.
      *
      * @param Container|null $container Instance de conteneur d'injection de dépendances.
@@ -37,6 +43,15 @@ abstract class BaseController extends ParamsBag
      */
     public function boot(): void { }
 
+    /**
+     * Vérification d'activation du mode de deboguage.
+     *
+     * @return bool
+     */
+    protected function debug(): bool
+    {
+        return is_null($this->debug) ? env('APP_DEBUG', false) : $this->debug;
+    }
 
     /**
      * Récupération de l'instance du conteneur d'injection de dépendances.
@@ -80,10 +95,11 @@ abstract class BaseController extends ParamsBag
     }
 
     /**
-     * Génération d'une la reponse HTTP.
+     * Récupération de la reponse HTTP.
      *
-     * @param string $view Nom de qualification du gabarit.
-     * @param array $data Liste des variables passées en argument.
+     * @param string $content.
+     * @param int $status
+     * @param array $headers
      *
      * @return ResponseContract
      */
@@ -96,7 +112,7 @@ abstract class BaseController extends ParamsBag
      * Redirection vers une route déclarée.
      *
      * @param string $name Nom de qualification de la route.
-     * @param string $params Liste des paramètres de définition de l'url de la route.
+     * @param array $params Liste des paramètres de définition de l'url de la route.
      * @param int $status Statut de redirection.
      * @param array $headers Liste des entêtes complémentaires associées à la redirection.
      *
@@ -105,6 +121,20 @@ abstract class BaseController extends ParamsBag
     public function route(string $name, array $params= [], int $status = 302, array $headers = []): RedirectResponse
     {
         return Redirect::route($name, $params, $status, $headers);
+    }
+
+    /**
+     * Définition de l'activation du mode de deboguage.
+     *
+     * @param bool $debug
+     *
+     * @return static
+     */
+    protected function setDebug(bool $debug = true): self
+    {
+        $this->debug = $debug;
+
+        return $this;
     }
 
     /**

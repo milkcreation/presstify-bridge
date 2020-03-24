@@ -172,9 +172,9 @@ class FormServiceProvider extends ServiceProvider
         $this->getContainer()->add('form.factory.viewer', function (FormFactoryContract $form) {
             return View::getPlatesEngine(array_merge([
                 'directory' => form()->resourcesDir('/views'),
-                'factory' => FactoryView::class,
-                'form' => $form
-            ], $form->get('viewer', [])));
+                'factory'   => FactoryView::class,
+                'form'      => $form,
+            ], config('form.viewer', []), $form->get('viewer', [])));
         });
     }
 

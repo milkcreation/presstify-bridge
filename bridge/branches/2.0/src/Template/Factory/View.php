@@ -4,7 +4,13 @@ namespace tiFy\Template\Factory;
 
 use BadMethodCallException;
 use Exception;
-use tiFy\Contracts\Template\{FactoryLabels, FactoryParams, FactoryRequest, FactoryViewer as FactoryViewerContract};
+use tiFy\Contracts\Template\{
+    FactoryLabels,
+    FactoryParams,
+    FactoryRequest,
+    FactoryUrl,
+    FactoryViewer
+};
 use tiFy\View\Factory\PlatesFactory;
 
 /**
@@ -12,8 +18,9 @@ use tiFy\View\Factory\PlatesFactory;
  * @method string name()
  * @method FactoryParams|mixed param($key = null, $default = null)
  * @method FactoryRequest request()
+ * @method FactoryUrl url()
  */
-class View extends PlatesFactory implements FactoryViewerContract
+class View extends PlatesFactory implements FactoryViewer
 {
     /**
      * Liste des méthodes heritées.
@@ -23,7 +30,8 @@ class View extends PlatesFactory implements FactoryViewerContract
         'label',
         'name',
         'param',
-        'request'
+        'request',
+        'url'
     ];
 
     /**

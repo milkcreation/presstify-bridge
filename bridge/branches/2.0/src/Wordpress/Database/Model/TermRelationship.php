@@ -6,9 +6,6 @@ use Corcel\Model\TermRelationship as CorcelTermRelationship;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Class TermRelationships
- * @package tiFy\Wordpress\Database\Model
- *
  * @mixin Builder
  */
 class TermRelationship extends CorcelTermRelationship

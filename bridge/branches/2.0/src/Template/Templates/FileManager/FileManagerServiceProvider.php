@@ -102,7 +102,7 @@ class FileManagerServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('breadcrumb'), function () {
             $ctrl = $this->factory->provider('breadcrumb');
             $ctrl = $ctrl instanceof Breadcrumb
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(Breadcrumb::class);
 
             return $ctrl->setTemplateFactory($this->factory)->setPath();
@@ -119,7 +119,7 @@ class FileManagerServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('cache'), function () {
             $ctrl = $this->factory->provider('cache');
             $ctrl = $ctrl instanceof Cache
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(Cache::class);
 
             $root = paths()->getCachePath('Template/' . $this->factory->name());
@@ -140,7 +140,7 @@ class FileManagerServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('file-collection'), function (array $files = []) {
             $ctrl = $this->factory->provider('file-collection');
             $ctrl = $ctrl instanceof FileCollection
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(FileCollection::class);
 
             return $ctrl->setTemplateFactory($this->factory)->set($files);
@@ -157,7 +157,7 @@ class FileManagerServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('file-info'), function (array $infos) {
             $ctrl = $this->factory->provider('file-info');
             $ctrl = $ctrl instanceof FileInfo
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(FileInfo::class, [$infos]);
 
             return $ctrl->setTemplateFactory($this->factory);
@@ -189,7 +189,7 @@ class FileManagerServiceProvider extends BaseServiceProvider
     {
         $this->getContainer()->add($this->getFactoryAlias('file-tag'), function (FileInfo $file) {
             $ctrl = $this->factory->provider('file-tag');
-            $ctrl = $ctrl instanceof FileTag ? $ctrl : $this->getContainer()->get(FileTag::class);
+            $ctrl = $ctrl instanceof FileTag ? clone $ctrl : $this->getContainer()->get(FileTag::class);
 
             return $ctrl->setTemplateFactory($this->factory)->setFile($file);
         });
@@ -203,7 +203,7 @@ class FileManagerServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('controller'), function () {
             $ctrl = $this->factory->provider('controller');
             $ctrl = $ctrl instanceof HttpController
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(HttpController::class);
 
             return $ctrl->setTemplateFactory($this->factory);
@@ -218,7 +218,7 @@ class FileManagerServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('xhr'), function () {
             $ctrl = $this->factory->provider('xhr');
             $ctrl = $ctrl instanceof HttpXhrController
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(HttpXhrController::class);
 
             return $ctrl->setTemplateFactory($this->factory);
@@ -269,7 +269,7 @@ class FileManagerServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('sidebar'), function () {
             $ctrl = $this->factory->provider('sidebar');
             $ctrl = $ctrl instanceof Sidebar
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(Sidebar::class);
 
             return $ctrl->setTemplateFactory($this->factory);

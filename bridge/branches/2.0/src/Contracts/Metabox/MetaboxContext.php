@@ -14,6 +14,13 @@ interface MetaboxContext extends ParamsBag
     public function __toString(): string;
 
     /**
+     * Récupération du nom de qualification.
+     *
+     * @return string
+     */
+    public function getName(): string;
+
+    /**
      * Récupération de l'instance du gestionnaire.
      *
      * @return MetaboxManager|null

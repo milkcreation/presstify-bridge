@@ -50,7 +50,7 @@ class Pagination extends ParamsBag implements PaginationContract
      */
     public function isDisableFirst(): bool
     {
-        return ($this->getPage() === 1 || $this->getPage() === 2);
+        return ($this->getCurrentPage() === 1 || $this->getCurrentPage() === 2);
     }
 
     /**
@@ -58,7 +58,7 @@ class Pagination extends ParamsBag implements PaginationContract
      */
     public function isDisableLast(): bool
     {
-        return $this->getPage() >= ($this->getLastPage() - 1);
+        return $this->getCurrentPage() >= ($this->getLastPage() - 1);
     }
 
     /**
@@ -66,7 +66,7 @@ class Pagination extends ParamsBag implements PaginationContract
      */
     public function isDisableNext(): bool
     {
-        return $this->getPage() === $this->getLastPage();
+        return $this->getCurrentPage() === $this->getLastPage();
     }
 
     /**
@@ -74,7 +74,7 @@ class Pagination extends ParamsBag implements PaginationContract
      */
     public function isDisablePrev(): bool
     {
-        return $this->getPage() === 1;
+        return $this->getCurrentPage() === 1;
     }
 
     /**
@@ -206,7 +206,7 @@ class Pagination extends ParamsBag implements PaginationContract
                 $this->set('next.tag', 'a');
             }
             if (!$this->has('next.attrs.href')) {
-                $this->set('next.attrs.href', $this->pagedUrl(min($this->getLastPage(), $this->getPage() + 1)));
+                $this->set('next.attrs.href', $this->pagedUrl(min($this->getLastPage(), $this->getCurrentPage() + 1)));
             }
         }
 
@@ -239,7 +239,7 @@ class Pagination extends ParamsBag implements PaginationContract
                 $this->set('prev.tag', 'a');
             }
             if (!$this->has('prev.attrs.href')) {
-                $this->set('prev.attrs.href', $this->pagedUrl(max(1, $this->getPage() - 1)));
+                $this->set('prev.attrs.href', $this->pagedUrl(max(1, $this->getCurrentPage() - 1)));
             }
         }
 

@@ -21,16 +21,16 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function registerFactoryBuilder(): void
     {
-        $this->getContainer()->add($this->getFactoryAlias('builder'), function () {
+        $this->getContainer()->share($this->getFactoryAlias('builder'), function () {
             $ctrl = $this->factory->provider('builder');
 
             if ($this->factory->db()) {
                 $ctrl = $ctrl instanceof DbBuilder
-                    ? clone $ctrl
+                    ? $ctrl
                     : $this->getContainer()->get(DbBuilder::class);
             } else {
                 $ctrl = $ctrl instanceof BaseBuilderContract
-                    ? clone $ctrl
+                    ? $ctrl
                     : $this->getContainer()->get(BaseBuilderContract::class);
             }
 

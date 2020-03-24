@@ -2,8 +2,13 @@
 
 namespace tiFy\Mail;
 
+use tiFy\Contracts\Mail\{
+    Mailer as MailerContract,
+    MailerDriver as MailerDriverContract,
+    MailerQueue as MailerQueueContract
+};
 use tiFy\Container\ServiceProvider;
-use tiFy\Mail\Adapter\PhpMailer as AdapterPhpMailer;
+use tiFy\Mail\Driver\PhpMailerDriver;
 use PHPMailer\PHPMailer\PHPMailer;
 use tiFy\Support\Proxy\View;
 
@@ -14,10 +19,10 @@ class MailServiceProvider extends ServiceProvider
      * @var string[]
      */
     protected $provides = [
+        'mail.view',
         'mailer',
-        'mail.queue',
-        'mailer.library',
-        'mailer.viewer',
+        'mailer.driver',
+        'mailer.queue',
     ];
 
     /**
@@ -25,29 +30,28 @@ class MailServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->getContainer()->add('mailer', function () {
-            return new Mailer();
+        $this->getContainer()->add('mailer', function (): MailerContract {
+            return (new Mailer())->setContainer($this->getContainer()->get('app'));
         });
 
-        $this->getContainer()->add('mailer.library', function () {
-            switch(config('mail.library')) {
-                default :
-                    $adapter = new AdapterPhpMailer(new PHPMailer(true));
-                    break;
+        $this->getContainer()->add('mailer.driver', function (): MailerDriverContract {
+            if (!($driver = config('mail.driver', null)) instanceof MailerDriverContract) {
+                $driver = new PhpMailerDriver(new PHPMailer(env('APP_DEBUG')));
             }
 
-            return $adapter;
+            return $driver;
         });
 
-        $this->getContainer()->share('mail.queue', function () {
-            return new MailQueue();
+        $this->getContainer()->share('mailer.queue', function (): MailerQueueContract {
+            return (new MailerQueue())->setMailer($this->getContainer()->get('mailer'));
         });
 
-        $this->getContainer()->add('mailer.viewer', function(array $attrs = []) {
+        $this->getContainer()->add('mail.view', function (Mailer $mailer) {
             return View::getPlatesEngine(array_merge([
-                'directory' => __DIR__ . '/Resources/views',
-                'factory'   => MailerView::class
-            ], $attrs));
+                'directory' => __DIR__ . '/Resources/views/',
+                'factory'   => MailView::class,
+                'mailer'    => $mailer,
+            ], config('mail.viewer', []), $mailer->create()->params('viewer', [])));
         });
     }
 }

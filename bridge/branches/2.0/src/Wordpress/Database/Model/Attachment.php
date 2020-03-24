@@ -6,9 +6,6 @@ use Corcel\Model\Attachment as CorcelAttachment;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Class Attachment
- * @package tiFy\Wordpress\Database\Model
- *
  * @mixin Builder
  */
 class Attachment extends CorcelAttachment

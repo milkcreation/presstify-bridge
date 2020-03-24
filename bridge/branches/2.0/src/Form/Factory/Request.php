@@ -121,11 +121,9 @@ class Request extends ParamsBag implements FactoryRequest
     public function setRedirectUrl(string $url, bool $raw = false): FactoryRequest
     {
         if (!$raw) {
-            $uri = Url::set($url);
-            $uri->with(['success' => $this->form()->name()]);
-
+            $uri = Url::set($url)->with(['success' => $this->form()->name()]);
             $url = (string)$uri;
-            $url .= $this->option('anchor') && ($id = $this->form()->get('attrs.id')) ? "#{$id}" : '';
+            $url .= $this->form()->getAnchor();
         }
 
         $this->redirect = $url;

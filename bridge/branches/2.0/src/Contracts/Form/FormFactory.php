@@ -57,6 +57,13 @@ interface FormFactory extends FactoryResolver, ParamsBag
     public function getAction(): string;
 
     /**
+     * Récupération de l'ancre du formulaire.
+     *
+     * @return string
+     */
+    public function getAnchor(): string;
+
+    /**
      * Récupération de la méthode de soumission du formulaire.
      *
      * @return string

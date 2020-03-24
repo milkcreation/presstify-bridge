@@ -74,7 +74,7 @@ class RowAction extends ParamsBag implements RowActionContract
      */
     public function getBaseUrl(): string
     {
-        return $this->isXhr() ? $this->factory->baseUrl() . '/xhr' : $this->factory->baseUrl();
+        return $this->isXhr() ? $this->factory->url()->xhr() : $this->factory->url()->http();
     }
 
     /**

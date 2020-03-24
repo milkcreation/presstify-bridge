@@ -2,8 +2,26 @@
 
 namespace tiFy\Support\Traits;
 
+use Psr\Http\Message\UriInterface;
+use League\Uri\UriInterface as LeagueUriInterface;
+use tiFy\Contracts\Routing\UrlFactory;
+use tiFy\Support\Proxy\Url;
+
 trait PaginationAwareTrait
 {
+    /**
+     * Instance de l'url de base.
+     * {@internal Page d'affichage courante par défaut. }
+     * @var UrlFactory|null
+     */
+    protected $base_url;
+
+    /**
+     * Numéro de la page courante.
+     * @var int
+     */
+    protected $current_page = 1;
+
     /**
      * Nombre d'éléments courant.
      * @var int
@@ -14,7 +32,7 @@ trait PaginationAwareTrait
      * Numéro de la dernière page.
      * @var int
      */
-    protected $lastPage = 1;
+    protected $last_page = 1;
 
     /**
      * La ligne de démarrage du traitement.
@@ -23,28 +41,40 @@ trait PaginationAwareTrait
     protected $offset = 0;
 
     /**
-     * Numéro de la page courante.
-     * @var int
+     * Indice de qualification des pages.
+     * @var string
      */
-    protected $page = 1;
+    protected $page_index = 'page';
 
     /**
      * Nombre d'éléments par page.
      * @var int|null
      */
-    protected $perPage;
+    protected $per_page;
 
     /**
-     * Colonne de clés primaires d'indexation des éléments.
-     * @var string|int|null
+     * Indicateur d'url basée sur un segment.
+     * {@internal false : {{ base_url }}/?page={{ num }} | true :{{ base_url }}/page/{{ num }} }
+     *
+     * @var bool
      */
-    protected $primary;
+    protected $segment_url = false;
 
     /**
      * Nombre total d'éléments.
      * @var int
      */
     protected $total = 0;
+
+    /**
+     * Récupération de l'url de base.
+     *
+     * @return UrlFactory|null
+     */
+    public function getBaseUrl(): ?UrlFactory
+    {
+        return $this->base_url;
+    }
 
     /**
      * Récupération du nombre d'éléments courant.
@@ -57,13 +87,23 @@ trait PaginationAwareTrait
     }
 
     /**
+     * Récupération de la page courante.
+     *
+     * @return int
+     */
+    public function getCurrentPage(): int
+    {
+        return $this->current_page;
+    }
+
+    /**
      * Récupération du numéro de la dernière page.
      *
      * @return int
      */
     public function getLastPage(): int
     {
-        return $this->lastPage;
+        return $this->last_page;
     }
 
     /**
@@ -77,13 +117,42 @@ trait PaginationAwareTrait
     }
 
     /**
-     * Récupération de la page courante.
+     * Récupération de l'indice de qualification des pages.
      *
-     * @return int
+     * @return string
      */
-    public function getPage(): int
+    public function getPageIndex(): string
     {
-        return $this->page;
+        return $this->page_index;
+    }
+
+    /**
+     * Récupération de l'url associé à un numéro de page
+     *
+     * @param int $num
+     *
+     * @return string
+     */
+    public function getPageNumUrl(int $num): string
+    {
+        if (!$this->getBaseUrl()) {
+            $this->setBaseUrl();
+        }
+
+        $url = clone $this->getBaseUrl();
+
+        if (preg_match('/%d/', $url->decoded())) {
+            return sprintf($url->decoded(), $num);
+        } elseif ($this->isSegmentUrl()) {
+            $url = $url->deleteSegment("/{$this->getPageIndex()}/\d+");
+
+            return $num > 1
+                ? sprintf($url->appendSegment("/{$this->getPageIndex()}/%d")->decoded(), $num) : $url->decoded();
+        } else {
+            $url = $url->without([$this->getPageIndex()]);
+
+            return $num > 1 ? sprintf($url->with([$this->getPageIndex() => '%d'])->decoded(), $num) : $url->decoded();
+        }
     }
 
     /**
@@ -93,7 +162,7 @@ trait PaginationAwareTrait
      */
     public function getPerPage(): ?int
     {
-        return $this->perPage;
+        return $this->per_page;
     }
 
     /**
@@ -104,6 +173,33 @@ trait PaginationAwareTrait
     public function getTotal(): int
     {
         return $this->total;
+    }
+
+    /**
+     * Vérifie si les urls de pagination sont basée sur des segments.
+     *
+     * @return bool
+     */
+    public function isSegmentUrl(): bool
+    {
+        return $this->segment_url;
+    }
+
+    /**
+     * Définition de l'url de base utilisé pour les liens de pagination.
+     * {@internal %d représente le numéro de page.}
+     *
+     * @param UrlFactory|UriInterface|LeagueUriInterface|string|null $base_url
+     *
+     * @return static
+     */
+    public function setBaseUrl($base_url = null): self
+    {
+        if (!$base_url instanceof UrlFactory) {
+            $this->base_url = is_null($base_url) ? Url::current() : Url::set($base_url);
+        }
+
+        return $this;
     }
 
     /**
@@ -121,6 +217,20 @@ trait PaginationAwareTrait
     }
 
     /**
+     * Définition de la page courante de récupération des éléments.
+     *
+     * @param int $page
+     *
+     * @return static
+     */
+    public function setCurrentPage(int $page): self
+    {
+        $this->current_page = $page > 0 ? $page : 1;
+
+        return $this;
+    }
+
+    /**
      * Définition du numéro de la dernière page.
      *
      * @param int $last_page
@@ -129,7 +239,7 @@ trait PaginationAwareTrait
      */
     public function setLastPage(int $last_page): self
     {
-        $this->lastPage = $last_page;
+        $this->last_page = $last_page;
 
         return $this;
     }
@@ -149,15 +259,15 @@ trait PaginationAwareTrait
     }
 
     /**
-     * Définition de la page courante de récupération des éléments.
+     * Définition de l'indice de qualification des page.
      *
-     * @param int $page
+     * @param string $index
      *
      * @return static
      */
-    public function setPage(int $page): self
+    public function setPageIndex(string $index = 'page'): self
     {
-        $this->page = $page > 0 ? $page : 1;
+        $this->page_index = $index;
 
         return $this;
     }
@@ -171,7 +281,21 @@ trait PaginationAwareTrait
      */
     public function setPerPage(?int $per_page = null): self
     {
-        $this->perPage = $per_page > 0 ? $per_page : null;
+        $this->per_page = $per_page > 0 ? $per_page : null;
+
+        return $this;
+    }
+
+    /**
+     * Activation de l'url par segment.
+     *
+     * @param bool $use
+     *
+     * @return static
+     */
+    public function setSegmentUrl(bool $use): self
+    {
+        $this->segment_url = $use;
 
         return $this;
     }
@@ -188,5 +312,25 @@ trait PaginationAwareTrait
         $this->total = $total;
 
         return $this;
+    }
+
+    /**
+     * Récupération de la liste des arguments.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'base_url'     => $this->base_url,
+            'current_page' => $this->current_page,
+            'count'        => $this->count,
+            'last_page'    => $this->last_page,
+            'offset'       => $this->offset,
+            'page_index'   => $this->page_index,
+            'per_page'     => $this->per_page,
+            'segment_url'  => $this->segment_url,
+            'total'        => $this->total
+        ];
     }
 }

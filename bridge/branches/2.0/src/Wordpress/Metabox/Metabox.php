@@ -3,6 +3,7 @@
 namespace tiFy\Wordpress\Metabox;
 
 use tiFy\Contracts\Metabox\{MetaboxDriver, MetaboxManager, MetaboxScreen as MetaboxScreenContract};
+use tiFy\Wordpress\Metabox\Context\SideContext;
 use tiFy\Wordpress\Metabox\Driver\{Filefeed\Filefeed, Imagefeed\Imagefeed, Videofeed\Videofeed};
 use tiFy\Wordpress\Routing\WpScreen;
 use tiFy\Support\Proxy\{PostType, Request, Taxonomy};
@@ -97,6 +98,19 @@ class Metabox
                 }
 
                 array_walk($boxes, function (MetaboxDriver $box) use ($post_type) {
+                    if($box->context()->getName() === 'side') {
+                        add_action('add_meta_boxes', function () use ($box) {
+                            add_meta_box(
+                                $box->name(),
+                                $box->title(), function () use ($box) {
+                                    echo $box->render();
+                                },
+                                null,
+                                'side'
+                            );
+                        });
+                    }
+
                     if (($name = $box->name()) && ! in_array($name, $this->postKeys)) {
                         PostType::meta()->register($post_type, $name, true);
                     }
@@ -286,6 +300,10 @@ class Metabox
     {
         app()->add(MetaboxScreenContract::class, function () {
             return (new MetaboxScreen())->setManager($this->manager);
+        });
+
+        app()->add('metabox.context.side', function () {
+            return new SideContext();
         });
 
         app()->add('metabox.driver.filefeed', function () {

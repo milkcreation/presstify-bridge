@@ -18,27 +18,27 @@ class Builder extends ParamsBag implements FactoryBuilderContract
 
     /**
      * Sens d'ordonnancement des éléments.
-     * @var string
+     * @var string|null
      */
-    protected $order = '';
+    protected $order;
 
     /**
      * Colonne d'ordonnancement des éléments.
-     * @var string
+     * @var string|null
      */
-    protected $orderby = '';
+    protected $orderby;
 
     /**
      * Numéro de la page d'affichage courante.
-     * @var int
+     * @var int|null
      */
-    protected $page = 0;
+    protected $page;
 
     /**
      * Nombre d'éléments affichés par page.
      * @var int|null
      */
-    protected $perPage = 0;
+    protected $perPage;
 
     /**
      * Instance de la requête courante en base de données.
@@ -48,9 +48,9 @@ class Builder extends ParamsBag implements FactoryBuilderContract
 
     /**
      * Mots clefs de recherche.
-     * @var string
+     * @var string|null
      */
-    protected $search = '';
+    protected $search;
 
     /**
      * @inheritDoc
@@ -101,12 +101,25 @@ class Builder extends ParamsBag implements FactoryBuilderContract
 
         $this->set($this->factory->request()->all());
 
-        $this
-            ->setSearch((string)$this->get('s', ''))
-            ->setPerPage($this->get('per_page', 20))
-            ->setPage((int)$this->get('paged', 1))
-            ->setOrder($this->get('order', 'ASC'))
-            ->setOrderBy($this->get('orderby', ''));
+        if (is_null($this->search)) {
+            $this->setSearch((string)$this->get('s', ''));
+        }
+
+        if (is_null($this->perPage)) {
+            $this->setPerPage($this->get('per_page', 20));
+        }
+
+        if (is_null($this->page)) {
+            $this->setPage((int)$this->get('paged', 1));
+        }
+
+        if (is_null($this->order)) {
+            $this->setOrder($this->get('order', 'ASC'));
+        }
+
+        if (is_null($this->orderby)) {
+            $this->setOrderBy($this->get('orderby', ''));
+        }
 
         return $this;
     }
@@ -157,7 +170,7 @@ class Builder extends ParamsBag implements FactoryBuilderContract
      */
     public function setPerPage(int $per_page): FactoryBuilderContract
     {
-        $this->perPage = $per_page > 0 ? $per_page : 0;
+        $this->perPage = $per_page >= 0 ? $per_page : -1;
 
         return $this;
     }

@@ -2,18 +2,11 @@
 
 namespace tiFy\Wordpress\Partial\Driver\Pagination;
 
-use tiFy\Contracts\Partial\PaginationQuery as PaginationQueryContract;
 use tiFy\Partial\Driver\Pagination\PaginationQuery as BasePaginationQuery;
 use WP_Query;
 
 class PaginationQuery extends BasePaginationQuery
 {
-    /**
-     * Instance de requête de récupération des post Wordpress.
-     * @return WP_Query|null
-     */
-    protected $wpQuery;
-
     /**
      * CONSTRUCTEUR.
      *
@@ -26,27 +19,30 @@ class PaginationQuery extends BasePaginationQuery
         if (is_null($args)) {
             global $wp_query;
 
-            $this->wpQuery = $wp_query;
-        } elseif ($args instanceof WP_Query) {
-            $this->wpQuery = $args;
-        } else {
-            $this->wpQuery = new WP_Query($args);
+            $args = $wp_query;
         }
+
+        $args = $args instanceof WP_Query ? $this->wpQueryArgs($args) : $args;
+
+        parent::__construct($args);
     }
 
     /**
      * @inheritDoc
      */
-    public function setPagination(): PaginationQueryContract
+    public function wpQueryArgs(WP_Query $wp_query): array
     {
-        $this->page = intval($this->wpQuery->get('paged', 1));
+        $total = (int)$wp_query->found_posts;
+        $per_page = (int)$wp_query->get('posts_per_page');
+        $current = $wp_query->get('paged') ?: 1;
 
-        $this->per_page = intval($this->wpQuery->get('posts_per_page', get_option('posts_per_page')));
-
-        $this->offset = intval($this->wpQuery->get('offset', 0));
-
-        $this->founds = intval($this->wpQuery->found_posts);
-
-        return parent::setPagination();
+        return [
+            'count'        => (int)$wp_query->post_count,
+            'current_page' => $per_page < 0 ? 1 : (int)$current,
+            'last_page'    => $per_page < 0 ? 1 : (int)$wp_query->max_num_pages,
+            'per_page'     => $per_page,
+            'query_obj'    => $wp_query,
+            'total'        => $total,
+        ];
     }
 }
