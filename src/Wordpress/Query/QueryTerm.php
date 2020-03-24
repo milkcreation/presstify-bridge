@@ -2,9 +2,12 @@
 
 namespace tiFy\Wordpress\Query;
 
-use tiFy\Contracts\Support\ParamsBag as ParamsBagContract;
 use tiFy\Support\ParamsBag;
-use tiFy\Wordpress\Contracts\{Database\TaxonomyBuilder, Query\QueryTerm as QueryTermContract};
+use tiFy\Wordpress\Contracts\{
+    Database\TaxonomyBuilder,
+    Query\PaginationQuery as PaginationQueryContract,
+    Query\QueryTerm as QueryTermContract
+};
 use tiFy\Wordpress\Database\Model\Term as Model;
 use WP_Term;
 use WP_Term_Query;
@@ -18,16 +21,16 @@ class QueryTerm extends ParamsBag implements QueryTermContract
     protected static $defaultArgs = [];
 
     /**
+     * Instance de la pagination la dernière requête de récupération d'une liste d'éléments.
+     * @var PaginationQueryContract|null
+     */
+    protected static $pagination;
+
+    /**
      * Nom de qualification de la taxonomie associée.
      * @var string
      */
     protected static $taxonomy = '';
-
-    /**
-     * Instance de la dernière requête de récupération d'une liste d'éléments.
-     * @var ParamsBag|null
-     */
-    protected static $query;
 
     /**
      * Instance du modèle de base de données associé.
@@ -68,7 +71,7 @@ class QueryTerm extends ParamsBag implements QueryTermContract
             return (new static($id));
         } elseif ($id instanceof QueryTermContract) {
             return static::createFromId($id->getId());
-        } elseif (is_null($id)&& ($instance = static::createFromGlobal())) {
+        } elseif (is_null($id) && ($instance = static::createFromGlobal())) {
             if (($taxonomy = static::$taxonomy)) {
                 return $instance->getTaxonomy() === $taxonomy ? $instance : null;
             } else {
@@ -115,12 +118,87 @@ class QueryTerm extends ParamsBag implements QueryTermContract
     public static function fetch($query): array
     {
         if (is_array($query)) {
-            return static::queryFromArgs($query);
+            return static::fetchFromArgs($query);
         } elseif ($query instanceof WP_Term_Query) {
-            return static::queryFromWpTermQuery($query);
+            return static::fetchFromWpTermQuery($query);
         } else {
             return [];
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetchFromArgs(array $args = []): array
+    {
+        return static::fetchFromWpTermQuery(new WP_Term_Query(static::parseQueryArgs($args)));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetchFromIds(array $ids): array
+    {
+        return static::fetchFromWpTermQuery(new WP_Term_Query(static::parseQueryArgs(['include' => $ids])));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function fetchFromWpTermQuery(WP_Term_Query $wp_term_query): array
+    {
+        $per_page = $wp_term_query->query_vars['number'] ?: -1;
+        $count = count($wp_term_query->terms);
+        $offset = $wp_term_query->query_vars['offset'] ?: 1;
+
+        if ($per_page > 0) {
+            $wp_term_query_count = new WP_Term_Query(array_merge($wp_term_query->query_vars, [
+                'count'  => false,
+                'number' => 0,
+                'offset' => 1,
+                'fields' => 'count',
+            ]));
+
+            $total = (int)$wp_term_query_count->get_terms();
+            $pages = (int)ceil($total / $count);
+            $page = (int)ceil($offset / $per_page);
+        } else {
+            $pages = 1;
+            $page = 1;
+            $total = (int)count($wp_term_query->terms);
+        }
+
+        static::pagination()->clear()->set([
+            'count'        => $count,
+            'current_page' => $page,
+            'last_page'    => $pages,
+            'per_page'     => $per_page,
+            'query_obj'    => $wp_term_query,
+            'results'      => [],
+            'total'        => $total,
+        ]);
+
+        $results = $wp_term_query->terms;
+
+        array_walk($results, function (WP_Term &$wp_term) {
+            $wp_term = new static($wp_term);
+        });
+
+        static::pagination()->set(compact('results'));
+
+        return $results;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function pagination(): PaginationQueryContract
+    {
+        if (is_null(static::$pagination)) {
+            static::$pagination = new PaginationQuery();
+        }
+
+        return static::$pagination;
     }
 
     /**
@@ -136,78 +214,33 @@ class QueryTerm extends ParamsBag implements QueryTermContract
     }
 
     /**
-     * @inheritDoc
-     */
-    public static function query(): ParamsBagContract
-    {
-        if (is_null(static::$query)) {
-            static::$query = new ParamsBag();
-        }
-
-        return static::$query;
-    }
-
-    /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @deprecated
      */
     public static function queryFromArgs(array $args = []): array
     {
-        return static::queryFromWpTermQuery(new WP_Term_Query(static::parseQueryArgs($args)));
+        return static::fetchFromArgs($args);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @deprecated
      */
     public static function queryFromIds(array $ids): array
     {
-        return static::queryFromWpTermQuery(new WP_Term_Query(static::parseQueryArgs(['include' => $ids])));
+        return static::fetchFromIds($ids);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @deprecated
      */
     public static function queryFromWpTermQuery(WP_Term_Query $wp_term_query): array
     {
-        $per_page = $wp_term_query->query_vars['number'] ?: -1;
-        $count = count($wp_term_query->terms);
-        $offset = $wp_term_query->query_vars['offset'] ?: 1;
-
-        if ($per_page > 0) {
-            $args = $wp_term_query->query_vars;
-            $args['count'] = false;
-            $args['number'] = 0;
-            $args['offset'] = 1;
-            $args['fields'] = 'count';
-
-            $wp_term_query_count = new WP_Term_Query($args);
-
-            $total = (int)$wp_term_query_count->get_terms();
-            $pages = (int)ceil($total / $count);
-            $page = (int)ceil($offset / $per_page);
-        } else {
-            $pages = 1;
-            $page = 1;
-            $total = (int)count($wp_term_query->terms);
-        }
-
-        static::query()->clear()->set([
-            'args'     => $wp_term_query->query_vars,
-            'count'    => $count,
-            'pages'    => $pages,
-            'page'     => $page,
-            'per_page' => $per_page,
-            'total'    => $total,
-        ]);
-
-        $data = $wp_term_query->terms;
-
-        array_walk($data, function (WP_Term &$wp_term) {
-            $wp_term = new static($wp_term);
-        });
-
-        static::query()->set(compact('data'));
-
-        return $data;
+        return static::fetchFromWpTermQuery($wp_term_query);
     }
 
     /**

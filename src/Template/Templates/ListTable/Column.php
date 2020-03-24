@@ -189,7 +189,7 @@ class Column extends ParamsBag implements ColumnContract
             ];
 
             if (($content = $this->get('content')) instanceof Closure) {
-                return call_user_func_array($content, $args);
+                return (string)call_user_func_array($content, $args);
             } else {
                 return (string)$this->factory->viewer($this->getTemplate(), $args);
             }

@@ -21,7 +21,7 @@
 
 /** ex. <div class="ThemeInput--email"><input .../></div> */
 div[class*=" ThemeInput--"],
-div[class^="ThemeButton--"] {
+div[class^="ThemeInput--"] {
   & {
     position: relative;
     display: inline-block;

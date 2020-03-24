@@ -31,28 +31,6 @@ class Holder extends PartialDriver implements HolderContract
             'content'          => '',
             'width'            => 100,
             'height'           => 100,
-            // @todo supprimer gérer en CSS
-            'background-color' => '#E4E4E4',
-            // @todo supprimer gérer en CSS
-            'foreground-color' => '#AAA',
-            // @todo supprimer gérer en CSS
-            'font-size'        => '1em',
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function parse(): PartialDriverContract
-    {
-        parent::parse();
-
-        $this->set(
-            'attrs.style',
-            "background-color:{$this->get('background-color')};color:{$this->get('foreground-color')};" .
-            "font-size:{$this->get('font-size')}"
-        );
-
-        return $this;
     }
 }

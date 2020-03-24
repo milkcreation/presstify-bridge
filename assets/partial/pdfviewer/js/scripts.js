@@ -5,6 +5,7 @@ import jQuery from 'jquery';
 import 'jquery-ui/ui/core';
 import 'jquery-ui/ui/widget';
 import pdfjs from 'pdfjs-dist';
+import 'presstify-framework/partial/modal/js/scripts';
 import 'presstify-framework/observer/js/scripts';
 
 /**
@@ -398,6 +399,19 @@ jQuery(function ($) {
     },
   });
 
+  /** @param {Object} $.tify */
+  $.widget('tify.tifyModal', $.tify.tifyModal, {
+    // Instanciation.
+    _create: function () {
+      this._super();
+
+      this.el.on('modal:show', function() {
+        $('[data-control="pdfviewer"]', $(this)).tifyPdfviewer('load');
+      });
+    }
+  });
+
+
   $(document).ready(function () {
     $('[data-control="pdfviewer"]').tifyPdfviewer();
 
@@ -405,8 +419,10 @@ jQuery(function ($) {
       $(target).tifyPdfviewer();
     });
 
-    $('[data-modal-pdf="true"]').on('modal:show', function () {
-      $('[data-control="pdfviewer"]', $(this)).tifyPdfviewer('load');
+    $('[data-control="modal-pdf"]').tifyModal();
+
+    $.tify.observe('[data-control="modal-pdf"]', function (i, target) {
+      $(target).tifyModal();
     });
   });
 });

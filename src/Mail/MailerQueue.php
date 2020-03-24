@@ -1,13 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Mail;
 
-use tiFy\Contracts\Cron\CronJob;
-use tiFy\Contracts\Mail\Mailer;
-use tiFy\Contracts\Mail\MailQueue as MailQueueContract;
+// use DateTime;
+use tiFy\Contracts\Mail\{Mail, Mailer, MailerQueue as MailerQueueContract};
 
-class MailQueue implements MailQueueContract
+class MailerQueue implements MailerQueueContract
 {
+    /**
+     * Instance du gestionnaire de mails.
+     * @return Mailer
+     */
+    protected $mailer;
+
     /**
      * CONSTRUCTEUR.
      *
@@ -15,7 +20,7 @@ class MailQueue implements MailQueueContract
      */
     public function __construct()
     {
-        db()->register('mail.queue', [
+        /*db()->register('mail.queue', [
             'name'          => 'mail_queue',
             'install'       => true,
             'col_prefix'    => 'mq_',
@@ -48,9 +53,9 @@ class MailQueue implements MailQueueContract
                     'type'              => 'LONGTEXT'
                 ]
             ]
-        ]);
+        ]);*/
 
-        cron()->register('mail.queue', [
+        /*cron()->register('mail.queue', [
             'title'         => __('File d\'expédition des emails', 'tify'),
             'description'   => __('Expédition des emails en partance de la file d\'attente.', 'tify'),
             'freq'    => [
@@ -76,7 +81,7 @@ class MailQueue implements MailQueueContract
                             $params = unserialize(base64_decode($email->mq_params));
                             $queue->handle()->delete_by_id($email->mq_id);
 
-                            /** @var Mailer $mailer */
+                            // @var Mailer $mailer
                             $mailer = app()->get('mailer');
                             $mailer->send($params);
 
@@ -85,34 +90,39 @@ class MailQueue implements MailQueueContract
                     endif;
                 endif;
             }
-        ]);
+        ]); */
     }
 
     /**
-     * Ajout d'un élément dans la file d'attente
-     *
-     * @param array $params Paramètre d'expédition du mail.
-     * @param string $sending Date de programmation d'envoi du mail au format timestamp.
-     * @param array $item_meta Données complémentaires d'envoi du mail.
-     *
-     * @return int
+     * @inheritDoc
      */
-    public function add($params, $date = 'now', $item_meta = [])
+    public function add(Mail $mail, $date = 'now', array $params = []): int
     {
-        if ($queue = db('mail.queue')) :
+        /*if ($queue = db('mail.queue')) {
             $id = 0;
             $session_id = uniqid('tFymq_', true);
-            $date_created = (new \DateTime(null, new \DateTimeZone(get_option('timezone_string'))))->format('Y-m-d H:i:s');
-            $date_created_gmt = (new \DateTime())->format('Y-m-d H:i:s');
-            $sending = (new \DateTime($date, new \DateTimeZone(get_option('timezone_string'))))->getTimestamp();
+            $date_created = (new DateTime(null,
+                new \DateTimeZone(get_option('timezone_string'))))->format('Y-m-d H:i:s');
+            $date_created_gmt = (new DateTime())->format('Y-m-d H:i:s');
+            $sending = (new DateTime($date, new \DateTimeZone(get_option('timezone_string'))))->getTimestamp();
             $params = base64_encode(serialize($params));
             $data = compact(['id', 'session_id', 'date_created', 'date_created_gmt', 'sending', 'params', 'item_meta']);
 
             return ($insert_id = $queue->handle()->create($data))
                 ? $queue->select()->cell_by_id($id, 'session_id')
                 : 0;
-        endif;
+        }*/
 
         return 0;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setMailer(Mailer $mailer): MailerQueueContract
+    {
+        $this->mailer = $mailer;
+
+        return $this;
     }
 }

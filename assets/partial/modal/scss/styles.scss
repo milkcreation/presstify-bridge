@@ -17,11 +17,36 @@
   margin-right: auto;
 }
 
-@media (min-width: 992px) {
+// BOOTSTRAP >= LG
+@media (min-width: 1200px) {
+  .modal-dialog.modal-xl {
+    max-width: 1140px;
+    margin: 1.75rem auto;
+  }
+}
+
+@media (max-width: 1199px) {
+  .modal-dialog.modal-xl {
+    max-width: none;
+    margin: 1.75rem 15px;
+  }
+}
+
+@media (max-width: 991px) {
+  .modal-dialog.modal-lg {
+    max-width: none;
+    margin: 1.75rem 15px;
+  }
   .modal-dialog.modal-full {
     width: auto;
     margin-left: 30px;
     margin-right: 30px;
+  }
+}
+
+@media (max-width: 767px) {
+  .modal-dialog.modal-xl {
+    margin: .5em;
   }
 }
 
@@ -39,6 +64,11 @@
   pointer-events: auto;
 }
 
+.modal-backdrop-close {
+  position:fixed;
+  right:10px;
+}
+
 .ThemeButton--close.modal-backdrop-close::after,
 .ThemeButton--close.modal-backdrop-close::before {
   background-color: #FFF;
@@ -47,10 +77,15 @@
 .ThemeButton--close.modal-backdrop-close,
 .ThemeButton--close.modal-close {
   position:absolute;
-  top:15px;
-  right:15px;
+  top:10px;
+  right:10px;
   outline: none;
   z-index:1;
+}
+
+.ThemeButton--close.modal-backdrop-close {
+  position:fixed;
+  right:20px;
 }
 
 .modal-spinner {

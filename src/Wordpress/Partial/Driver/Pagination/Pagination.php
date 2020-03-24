@@ -4,7 +4,6 @@ namespace tiFy\Wordpress\Partial\Driver\Pagination;
 
 use tiFy\Contracts\Partial\{
     PaginationQuery as PaginationQueryContract,
-    PaginationUrl as PaginationUrlContract,
     PartialDriver as BasePartialDriverContract
 };
 use tiFy\Partial\Driver\Pagination\{Pagination as PaginationBase};
@@ -17,11 +16,10 @@ class Pagination extends PaginationBase implements PartialDriverContract
      */
     public function parseQuery(): BasePartialDriverContract
     {
-        $this->query = $this->get('query', []);
+        $this->query = $this->pull('query', null);
         if (!$this->query instanceof PaginationQueryContract) {
             $this->query = new PaginationQuery($this->query);
         }
-        $this->set('query', $this->query->setPagination());
 
         return $this;
     }
@@ -31,11 +29,23 @@ class Pagination extends PaginationBase implements PartialDriverContract
      */
     public function parseUrl(): BasePartialDriverContract
     {
-        $this->url = $this->get('url', []);
-        if (!$this->url instanceof PaginationUrlContract) {
-            $this->url = new PaginationUrl($this->url);
+        if ($this->has('url.base')) {
+            $this->query->setBaseUrl($this->get('url.base', null));
         }
-        $this->set('url', $this->url);
+
+        if ($this->has('url.segment')) {
+            $this->query->setSegmentUrl($this->get('url.segment'));
+        } else {
+            $this->query->setSegmentUrl(true);
+        }
+
+        if ($this->has('url.index')) {
+            $this->query->setPageIndex($this->get('url.index'));
+        }
+
+        if (!is_array($this->get('url'))) {
+            $this->query->setBaseUrl($this->get('url', null));
+        }
 
         return $this;
     }

@@ -9,7 +9,7 @@
     <div <?php echo $this->htmlAttrs($this->param('attrs', [])); ?>>
         <?php $this->insert('header'); ?>
         <?php $this->insert('view-filters'); ?>
-        <form method="get">
+        <form method="get" action="<?php echo $this->url()->http(); ?>">
             <?php if ($this->search()->exists()) : ?>
                 <?php $this->insert('search'); ?>
             <?php endif; ?>

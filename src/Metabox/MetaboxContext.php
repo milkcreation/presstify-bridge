@@ -30,13 +30,19 @@ class MetaboxContext extends ParamsBag implements MetaboxContextContract
     protected $viewer;
 
     /**
-     * Résolution de sortie de la classe sous forme de chaîne de caractères.
-     *
-     * @return string
+     * @inheritDoc
      */
     public function __toString(): string
     {
         return $this->render();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     /**

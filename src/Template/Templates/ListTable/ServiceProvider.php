@@ -104,16 +104,16 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function registerFactoryBuilder(): void
     {
-        $this->getContainer()->add($this->getFactoryAlias('builder'), function () {
+        $this->getContainer()->share($this->getFactoryAlias('builder'), function () {
             $ctrl = $this->factory->provider('builder');
 
             if ($this->factory->db()) {
                 $ctrl = $ctrl instanceof DbBuilder
-                    ? clone $ctrl
+                    ? $ctrl
                     : $this->getContainer()->get(DbBuilder::class);
             } else {
                 $ctrl = $ctrl instanceof Builder
-                    ? clone $ctrl
+                    ? $ctrl
                     : $this->getContainer()->get(Builder::class);
             }
 
@@ -144,7 +144,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('bulk-action'), function (string $name, array $attrs = []) {
             $ctrl = $this->factory->provider('bulk-action');
             $ctrl = $ctrl instanceof BulkAction
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(BulkAction::class, [$name, $attrs]);
 
             return $ctrl->setTemplateFactory($this->factory);
@@ -183,7 +183,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('column'), function (string $name, array $attrs = []) {
             $ctrl = $this->factory->provider('column');
             $ctrl = $ctrl instanceof Column
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(Column::class);
 
             return $ctrl->setTemplateFactory($this->factory)->setName($name)->set($attrs)->parse();
@@ -232,7 +232,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('xhr'), function () {
             $ctrl = $this->factory->provider('xhr');
             $ctrl = $ctrl instanceof HttpXhrController
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(HttpXhrController::class);
 
             return $ctrl->setTemplateFactory($this->factory);
@@ -395,7 +395,6 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->getContainer()->add($this->getFactoryAlias('row-action.edit'), function (): RowAction {
             $ctrl = $this->factory->provider('row-action.edit');
-
             $ctrl = $ctrl instanceof RowAction
                 ? clone $ctrl
                 : new RowActionEdit();
@@ -503,7 +502,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->getContainer()->add($this->getFactoryAlias('view-filter'), function (string $name, array $attrs = []) {
             $ctrl = $this->factory->provider('view-filter');
             $ctrl = $ctrl instanceof ViewFilter
-                ? $ctrl
+                ? clone $ctrl
                 : $this->getContainer()->get(ViewFilter::class);
 
             return $ctrl->setTemplateFactory($this->factory)->setName($name)->set($attrs)->parse();

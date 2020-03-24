@@ -19,6 +19,8 @@ class Mail
         Mailer::setDefaults([
             'to'           => [$admin_email, $admin_name],
             'from'         => [$admin_email, $admin_name],
+            'subject'      => sprintf(__('Test d\'envoi de mail depuis le site %s', 'tify'), get_bloginfo('blogname')),
+            'charset'      => get_bloginfo('charset'),
         ]);
     }
 }

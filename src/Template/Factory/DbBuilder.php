@@ -46,7 +46,8 @@ class DbBuilder extends Builder implements FactoryDbBuilderContract
      */
     public function queryLimit(): EloquentBuilder
     {
-        return $this->query()->forPage($this->getPage(), $this->getPerPage());
+        return $this->getPerPage() >= 0
+            ? $this->query()->forPage($this->getPage(), $this->getPerPage()): $this->query();
     }
 
     /**

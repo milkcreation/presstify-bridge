@@ -55,22 +55,6 @@ interface QueryTerm extends ParamsBag
     public static function fetch($query): array;
 
     /**
-     * Traitement d'arguments de requête de récupération des éléments.
-     *
-     * @param array $args Liste des arguments de la requête récupération des éléments.
-     *
-     * @return array
-     */
-    public static function parseQueryArgs(array $args = []) : array;
-
-    /**
-     * Récupération de l'instance de la dernière requête de récupération d'une liste d'éléments.
-     *
-     * @return ParamsBag
-     */
-    public static function query(): ParamsBag;
-
-    /**
      * Récupération d'une liste d'instances basée sur des arguments de requête de récupération des éléments.
      * @see https://developer.wordpress.org/reference/classes/wp_term_query/
      *
@@ -78,7 +62,7 @@ interface QueryTerm extends ParamsBag
      *
      * @return array
      */
-    public static function queryFromArgs(array $args = []): array;
+    public static function fetchFromArgs(array $args = []): array;
 
     /**
      * Récupération d'une liste d'instances basée sur des identifiants de qualification de termes.
@@ -88,7 +72,7 @@ interface QueryTerm extends ParamsBag
      *
      * @return array
      */
-    public static function queryFromIds(array $ids): array;
+    public static function fetchFromIds(array $ids): array;
 
     /**
      * Récupération d'une liste d'instances basée sur une instance de classe WP_Term_Query.
@@ -98,14 +82,41 @@ interface QueryTerm extends ParamsBag
      *
      * @return array
      */
+    public static function fetchFromWpTermQuery(WP_Term_Query $wp_term_query): array;
+
+    /**
+     * Récupération de l'instance de pagination de la dernière requête de récupération d'une liste d'éléments.
+     *
+     * @return PaginationQuery
+     */
+    public static function pagination(): PaginationQuery;
+
+    /**
+     * Traitement d'arguments de requête de récupération des éléments.
+     *
+     * @param array $args Liste des arguments de la requête récupération des éléments.
+     *
+     * @return array
+     */
+    public static function parseQueryArgs(array $args = []) : array;
+
+    /**
+     * @deprecated
+     */
+    public static function queryFromArgs(array $args = []): array;
+
+    /**
+     * @deprecated
+     */
+    public static function queryFromIds(array $ids): array;
+
+    /**
+     * @deprecated
+     */
     public static function queryFromWpTermQuery(WP_Term_Query $wp_term_query): array;
 
     /**
-     * Définition de la liste des arguments de requête de récupération des éléments.
-     *
-     * @param array $args
-     *
-     * @return void
+     * @deprecated
      */
     public static function setDefaultArgs(array $args): void;
 

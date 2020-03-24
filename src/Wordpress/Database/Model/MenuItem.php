@@ -6,9 +6,6 @@ use Corcel\Model\MenuItem as CorcelMenuItem;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Class MenuItem
- * @package tiFy\Wordpress\Database\Model
- *
  * @mixin Builder
  */
 class MenuItem extends CorcelMenuItem

@@ -165,6 +165,19 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     /**
      * @inheritDoc
      */
+    public function getAnchor(): string
+    {
+        if ($anchor = $this->option('anchor')) {
+            $anchor = is_string($anchor) ? $anchor : $this->form()->get('attrs.id');
+            return '#' . ltrim($anchor, '#');
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getMethod(): string
     {
         return $this->get('method', 'post');
@@ -354,10 +367,8 @@ class FormFactory extends ParamsBag implements FormFactoryContract
             $this->pull('attrs.class');
         }
 
-        $this->set('attrs.action', $this->getAction() .
-            ($this->option('anchor') && ($id = $this->get('attrs.id'))
-                ? "#{$id}" : '')
-        );
+        $this->set('attrs.action', $this->getAction() . $this->getAnchor());
+
         $this->set('attrs.method', $this->getMethod());
         if ($enctype = $this->get('enctype')) {
             $this->set('attrs.enctype', $enctype);

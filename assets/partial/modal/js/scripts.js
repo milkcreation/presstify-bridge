@@ -196,10 +196,10 @@ jQuery(function ($) {
                       if (typeof resp === 'string') {
                         content = resp;
                       } else if (typeof resp === 'object') {
-                        content = resp.data || undefined;
+                        content = resp || undefined;
                       }
 
-                      self.content.html(content);
+                      self.html(content);
 
                       self.ajaxCache = self.flags.isAjaxCacheable ? content : undefined;
                     })
@@ -208,11 +208,11 @@ jQuery(function ($) {
                       self.spinner('hide');
                     });
               } else {
-                self.content.html(self.ajaxCache);
+                self.html(self.ajaxCache);
               }
             })
             .on('hidden.bs.modal', function () {
-              self.content.html(self.originalHtml);
+              self.html(self.originalHtml);
             });
       }
     },
@@ -238,43 +238,63 @@ jQuery(function ($) {
     // -----------------------------------------------------------------------------------------------------------------
     // Modification du contenu du corps.
     body: function (html) {
-      let $body = $('> [data-control="' + this.control.body + '"]', this.content);
+      if (html !== undefined) {
+        let $body = $('> [data-control="' + this.control.body + '"]', this.content);
 
-      $body.html(html);
+        $body.html(html);
 
-      if (html) {
-        $body.addClass(this.option('classes.body'));
-      } else {
-        $body.removeClass(this.option('classes.body'));
-      }
-    },
-    // Modification du contenu de l'entête.
-    header: function (html) {
-      let $header = $('> [data-control="' + this.control.header + '"]', this.content);
-
-      $header.html(html);
-
-      if (html) {
-        $header.addClass(this.option('classes.header'));
-      } else {
-        $header.removeClass(this.option('classes.header'));
-      }
-    },
-    // Modification du contenu du pied.
-    footer: function (html) {
-      let $footer = $('> [data-control="' + this.control.footer + '"]', this.content);
-
-      $footer.html(html);
-
-      if (html) {
-        $footer.addClass(this.option('classes.footer'));
-      } else {
-        $footer.removeClass(this.option('classes.footer'));
+        if (html) {
+          $body.addClass(this.option('classes.body'));
+        } else {
+          $body.removeClass(this.option('classes.body'));
+        }
       }
     },
     // Fermeture de la modale.
     close: function () {
       this.el.modal('hide');
+    },
+    // Modification du contenu du pied.
+    footer: function (html) {
+      if (html !== undefined) {
+        let $footer = $('> [data-control="' + this.control.footer + '"]', this.content);
+
+        $footer.html(html);
+
+        if (html) {
+          $footer.addClass(this.option('classes.footer'));
+        } else {
+          $footer.removeClass(this.option('classes.footer'));
+        }
+      }
+    },
+    // Modification du contenu de l'entête.
+    header: function (html) {
+      if (html !== undefined) {
+        let $header = $('> [data-control="' + this.control.header + '"]', this.content);
+
+        $header.html(html);
+
+        if (html) {
+          $header.addClass(this.option('classes.header'));
+        } else {
+          $header.removeClass(this.option('classes.header'));
+        }
+      }
+    },
+    // Modification du contenu de la modal.
+    html: function (content) {
+      if (typeof content === 'string') {
+        this.content.html(content);
+      } else if (typeof content === 'object') {
+        let body = content.body,
+            footer = content.footer,
+            header = content.header;
+
+        this.body(body);
+        this.footer(footer);
+        this.header(header);
+      }
     },
     // Ouverture de la modale.
     open: function () {

@@ -2,27 +2,41 @@
 
 namespace tiFy\Partial\Driver\Pagination;
 
+use tiFy\Contracts\Partial\PaginationQuery;
 use tiFy\Partial\PartialView;
 
+/**
+ * @method PaginationQuery query()
+ */
 class PaginationView extends PartialView
 {
     /**
-     * Récupération de la page courante.
-     *
-     * @return mixed
+     * @inheritDoc
      */
-    public function getPage()
+    public function __call($method, $parameters)
     {
-        return $this->get('query')->getPage();
+        array_push($this->mixins, 'query');
+
+        return parent::__call($method, $parameters);
     }
 
     /**
-     * Récupération du nombre total de page.
+     * Récupération de la page courante.
      *
-     * @return mixed
+     * @return int
      */
-    public function getTotalPage()
+    public function getCurrentPage(): int
     {
-        return $this->get('query')->getTotalPage();
+        return $this->query()->getCurrentPage();
+    }
+
+    /**
+     * Récupération de la dernière page.
+     *
+     * @return int
+     */
+    public function getLastPage(): int
+    {
+        return $this->query()->getLastPage();
     }
 }

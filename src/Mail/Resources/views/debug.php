@@ -1,14 +1,21 @@
 <?php
 /**
- * Affichage de l'email en mode déboguage.
- * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Mail\MailerMessageView $this
+ * @var tiFy\Contracts\Mail\MailView $this
  */
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html class="ie ie7" <?php language_attributes(); ?>>
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" <?php language_attributes(); ?>>
+<![endif]-->
+<!--[if !(IE 7) | !(IE 8)  ]><!-->
+<html <?php language_attributes(); ?>>
+<!--<![endif]-->
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $this->get('charset', 'utf-8'); ?>"/>
+    <meta charset="<?php echo strtolower(get_bloginfo('charset')); ?>"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
     <title><?php _e('Mail - Mode de déboguage') ?></title>
 </head>
 
@@ -20,22 +27,21 @@
       text="#000000"
       yahoo="fix"
 >
-
 <table cellspacing="0" border="0" bgcolor="#EEEEEE" width="100%" align="center"
        style="border-bottom:solid 1px #AAA;">
     <tbody>
     <tr>
         <td style="line-height:1.1em;padding:3px 10px;color:#000;font-size:13px">
             <h3 style="margin-bottom:10px;">
-                <?php echo $this->get('subject', ''); ?>
+                <?php echo $this->driver()->getSubject(); ?>
             </h3>
 
             <hr style="display:block;margin:10px 0 5px;background-color:#CCC; height:1px; border:none;">
         </td>
     </tr>
 
-    <?php if ($headers = $this->get('headers', [])) : ?>
-        <?php foreach ($this->get('headers', []) as $header) : ?>
+    <?php if ($headers = $this->driver()->getHeaders()) : ?>
+        <?php foreach ($headers as $header) : ?>
             <tr>
                 <td style="line-height:1.1em;padding:3px 10px;color:#000;font-size:13px">
                     <?php echo $this->e($header); ?>
@@ -49,7 +55,7 @@
         </tr>
     <?php endif; ?>
 
-    <?php if ($to = $this->get('to', [])) : ?>
+    <?php if ($to = $this->driver()->getTo()) : ?>
         <tr>
             <td style="line-height:1.1em;padding:3px 10px;color:#000;font-size:13px">
                 <?php printf('To: %s', $this->e(join(', ', $this->linearizeContacts($to)))); ?>
@@ -57,7 +63,7 @@
         </tr>
     <?php endif; ?>
 
-    <?php if ($cc = $this->get('cc', [])) : ?>
+    <?php if ($cc = $this->driver()->getCc()) : ?>
         <tr>
             <td style="line-height:1.1em;padding:3px 10px;color:#000;font-size:13px">
                 <?php printf('Cc: %s', $this->e(join(', ', $this->linearizeContacts($cc)))); ?>
@@ -65,7 +71,7 @@
         </tr>
     <?php endif; ?>
 
-    <?php if ($bcc = $this->get('bcc', [])) : ?>
+    <?php if ($bcc = $this->driver()->getBcc()) : ?>
         <tr>
             <td style="line-height:1.1em;padding:3px 10px;color:#000;font-size:13px">
                 <?php printf('Bcc: %s', $this->e(join(', ', $this->linearizeContacts($bcc)))); ?>
@@ -73,7 +79,7 @@
         </tr>
     <?php endif; ?>
 
-    <?php if ($replyTo = $this->get('reply-to', [])) : ?>
+    <?php if ($replyTo = $this->driver()->getReplyTo()) : ?>
         <tr>
             <td style="line-height:1.1em;padding:3px 10px;color:#000;font-size:13px">
                 <?php printf('ReplyTo: %s', $this->e(join(', ', $this->linearizeContacts($replyTo)))); ?>
@@ -84,7 +90,7 @@
     </tbody>
 </table>
 
-<?php if (in_array($this->get('content_type'), ['text/html', 'multipart/alternative'])) : ?>
+<?php if (in_array($this->driver()->getContentType(), ['text/html', 'multipart/alternative'])) : ?>
 <table cellspacing="0" border="0" width="600" align="center" style="margin:30px auto;">
     <tbody>
     <tr>
@@ -107,7 +113,7 @@
 
 <?php endif;?>
 
-<?php if (in_array($this->get('content_type'), ['text/plain', 'multipart/alternative'])) : ?>
+<?php if (in_array($this->driver()->getContentType(), ['text/plain', 'multipart/alternative'])) : ?>
 <table cellspacing="0" border="0" width="600" align="center" style="margin:30px auto;">
     <tbody>
     <tr>
@@ -122,7 +128,7 @@
     <tr>
         <td width="600">
             <div>
-                <?php echo nl2br($this->get('plain')); ?>
+                <?php echo nl2br($this->driver()->getText()); ?>
             </div>
         </td>
     </tr>
@@ -141,7 +147,7 @@
         };
 
     doc.open();
-    doc.write(decodeURIComponent("<?php echo rawurlencode($this->get("html")); ?>"));
+    doc.write(decodeURIComponent("<?php echo rawurlencode($this->driver()->getHtml()); ?>"));
     doc.close();
     resizeIframe(iframe);
 </script>

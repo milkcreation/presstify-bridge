@@ -1,11 +1,8 @@
 <?php
 /**
- * Message Par défaut - Au format HTML.
- * ---------------------------------------------------------------------------------------------------------------------
- * @var tiFy\Mail\MailerMessageView $this
+ * @var tiFy\Contracts\Mail\MailView $this
  */
 ?>
-
 <table cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" width="600" align="center">
     <tr>
         <td width="600">

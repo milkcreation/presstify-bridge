@@ -4,10 +4,12 @@ namespace tiFy\Wordpress\Query;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
-use tiFy\Contracts\{PostType\PostTypeFactory, PostType\PostTypeStatus, Support\ParamsBag as ParamsBagContract};
+use tiFy\Contracts\{PostType\PostTypeFactory, PostType\PostTypeStatus};
 use tiFy\Support\{DateTime, ParamsBag, Str};
 use tiFy\Support\Proxy\{Cache, PostType};
-use tiFy\Wordpress\{Contracts\Database\PostBuilder,
+use tiFy\Wordpress\{
+    Contracts\Database\PostBuilder,
+    Contracts\Query\PaginationQuery as PaginationQueryContract,
     Contracts\Query\QueryComment as QueryCommentContract,
     Contracts\Query\QueryPost as QueryPostContract,
     Database\Model\Post as ModelPost,
@@ -27,16 +29,16 @@ class QueryPost extends ParamsBag implements QueryPostContract
     protected static $defaultArgs = [];
 
     /**
+     * Instance de pagination de la dernière requête de récupération d'une liste d'éléments
+     * @var PaginationQueryContract|null
+     */
+    protected static $pagination;
+
+    /**
      * Nom de qualification du type de post ou liste de types de post associés.
      * @var string|string[]|null
      */
     protected static $postType = 'any';
-
-    /**
-     * Instance de la dernière requête de récupération d'une liste d'éléments.
-     * @var ParamsBag|null
-     */
-    protected static $query;
 
     /**
      * Instance du modèle de base de données associé.
@@ -107,7 +109,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
         global $post;
 
         if ($post instanceof WP_Post) {
-             return static::is($instance = new static($post)) ? $instance :  null;
+            return static::is($instance = new static($post)) ? $instance : null;
         } else {
             return null;
         }
@@ -119,7 +121,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     public static function createFromId(int $post_id): ?QueryPostContract
     {
         if ($post_id && ($wp_post = get_post($post_id)) && ($wp_post instanceof WP_Post)) {
-            return static::is($instance = new static($wp_post)) ? $instance :  null;
+            return static::is($instance = new static($wp_post)) ? $instance : null;
         } else {
             return null;
         }
@@ -130,8 +132,8 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public static function createFromPostdata(array $postdata): ?QueryPostContract
     {
-        if(isset($postdata['ID'])) {
-            return static::is($instance = new static(new WP_Post((object)$postdata))) ? $instance :  null;
+        if (isset($postdata['ID'])) {
+            return static::is($instance = new static(new WP_Post((object)$postdata))) ? $instance : null;
         } else {
             return null;
         }
@@ -145,7 +147,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
         $wpQuery = new WP_Query(static::parseQueryArgs(['name' => $name]));
 
         if ($wpQuery->found_posts == 1) {
-            return static::is($instance = new static(current($wpQuery->posts))) ? $instance :  null;
+            return static::is($instance = new static(current($wpQuery->posts))) ? $instance : null;
         } else {
             return null;
         }
@@ -183,7 +185,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
         $items = $collection->toArray();
 
         $instances = [];
-        foreach($items as $item) {
+        foreach ($items as $item) {
             if (static::is($instance = new static(new WP_Post((object)$item)))) {
                 $instances[] = $instance;
             }
@@ -226,32 +228,33 @@ class QueryPost extends ParamsBag implements QueryPostContract
         $per_page = (int)$wp_query->get('posts_per_page');
         $current = $wp_query->get('paged') ?: 1;
 
-        static::query()->clear()->set([
-            'args'     => $wp_query->query,
-            'count'    => (int)$wp_query->post_count,
-            'pages'    => $per_page < 0 ? 1 : (int)$wp_query->max_num_pages,
-            'page'     => $per_page < 0 ? 1 : (int)$current,
-            'per_page' => $per_page,
-            'total'    => $total,
+        static::pagination()->clear()->set([
+            'count'        => (int)$wp_query->post_count,
+            'current_page' => $per_page < 0 ? 1 : (int)$current,
+            'last_page'    => $per_page < 0 ? 1 : (int)$wp_query->max_num_pages,
+            'per_page'     => $per_page,
+            'query_obj'    => $wp_query,
+            'results'      => [],
+            'total'        => $total,
         ]);
 
         $wp_posts = $wp_query->posts ?? [];
 
-        $data = [];
-        foreach($wp_posts as $wp_post) {
+        $results = [];
+        foreach ($wp_posts as $wp_post) {
             $instance = new static($wp_post);
             if (($postType = static::$postType) && ($postType !== 'any')) {
                 if ($instance->typeIn($postType)) {
-                    $data[] = $instance;
+                    $results[] = $instance;
                 }
             } else {
-                $data[] = $instance;
+                $results[] = $instance;
             }
         }
 
-        static::query()->set(compact('data'));
+        static::pagination()->set(compact('results'))->parse();
 
-        return $data;
+        return $results;
     }
 
     /**
@@ -266,6 +269,18 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
+    public static function pagination(): PaginationQueryContract
+    {
+        if (is_null(static::$pagination)) {
+            static::$pagination = new PaginationQuery();
+        }
+
+        return static::$pagination;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function parseQueryArgs(array $args = []): array
     {
         if (!isset($args['post_type'])) {
@@ -273,18 +288,6 @@ class QueryPost extends ParamsBag implements QueryPostContract
         }
 
         return array_merge(static::$defaultArgs, $args);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function query(): ParamsBagContract
-    {
-        if (is_null(static::$query)) {
-            static::$query = new ParamsBag();
-        }
-
-        return static::$query;
     }
 
     /**
@@ -463,10 +466,10 @@ class QueryPost extends ParamsBag implements QueryPostContract
         }
 
         return static::fetchFromArgs(array_merge($args, [
-            'paged'         => $page,
-            'post_parent'   => $this->getId(),
-            'post_status'   => 'publish',
-            'posts_per_page'=> $per_page
+            'paged'          => $page,
+            'post_parent'    => $this->getId(),
+            'post_status'    => 'publish',
+            'posts_per_page' => $per_page,
         ]));
     }
 
@@ -716,7 +719,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
         $args['taxonomy'] = $taxonomy;
         $args['object_ids'] = $this->getId();
 
-        return (new WP_Term_Query($args))->terms;
+        return (new WP_Term_Query($args))->terms ? : [];
     }
 
     /**

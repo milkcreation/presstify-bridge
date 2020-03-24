@@ -46,7 +46,7 @@ interface Pagination extends PartialDriver
     public function parseQuery(): PartialDriver;
 
     /**
-     * Traitement de l'instance du gestionnaire d'urls.
+     * Traitement des arguments d'url.
      *
      * @return static
      */
@@ -58,11 +58,4 @@ interface Pagination extends PartialDriver
      * @return PaginationQuery|null
      */
     public function query(): ?PaginationQuery;
-
-    /**
-     * Récupération de l'instance du gestionnaire d'urls.
-     *
-     * @return PaginationUrl|null
-     */
-    public function url(): ?PaginationUrl;
 }

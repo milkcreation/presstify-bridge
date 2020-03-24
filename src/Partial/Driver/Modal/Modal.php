@@ -47,7 +47,7 @@ class Modal extends PartialDriver implements ModalContract
      *                                        booléen pour activer désactiver ou fonction/méthode d'affichage.
      *      }
      * @var array $options Liste des options d'affichage.
-     * @var string $size Taille d'affichage de la fenêtre de dialogue sm|lg|full|flex.
+     * @var string $size Taille d'affichage de la fenêtre de dialogue sm|lg|xl|full|flex.
      * }
      */
     public function defaults(): array
@@ -108,7 +108,7 @@ class Modal extends PartialDriver implements ModalContract
         $this->set([
             'attrs.data-control' => $this->get('attrs.data-control', 'modal'),
             'attrs.data-id'      => $this->get('attrs.id', $this->getId()),
-            'size'               => in_array($this->get('size'), ['sm', 'lg', 'full', 'flex'])
+            'size'               => in_array($this->get('size'), ['sm', 'lg', 'xl', 'full', 'flex'])
                 ? 'modal-' . $this->get('size') : '',
         ]);
 

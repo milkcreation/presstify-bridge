@@ -30,15 +30,6 @@ interface TemplateFactory extends ParamsBag
     public function assets(): FactoryAssets;
 
     /**
-     * Url de routage.
-     *
-     * @param boolean $absolute Activation de la récupération de l'url absolue.
-     *
-     * @return string
-     */
-    public function baseUrl(bool $absolute = false): string;
-
-    /**
      * Initialisation du controleur.
      *
      * @return void
@@ -119,6 +110,13 @@ interface TemplateFactory extends ParamsBag
      * @return FactoryLabels|string
      */
     public function label($key = null, string $default = '');
+
+    /**
+     * Récupération de l'instance du gestionnaire de templates.
+     *
+     * @return TemplateManager|null
+     */
+    public function manager(): ?TemplateManager;
 
     /**
      * Récupération du nom de qualification du controleur.

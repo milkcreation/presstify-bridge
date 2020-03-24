@@ -48,7 +48,7 @@ jQuery(function ($) {
              * @returns {*}
              */
             data: function (d) {
-              return $.extend(d, {action: 'get_items'});
+              return $.extend(d, {});
             },
             /**
              * @param {Object} json

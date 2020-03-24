@@ -6,9 +6,6 @@ use Corcel\Model\Taxonomy as CorcelTaxonomy;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Class Category
- * @package tiFy\Wordpress\Database\Model
- *
  * @mixin Builder
  */
 class Category extends CorcelTaxonomy
