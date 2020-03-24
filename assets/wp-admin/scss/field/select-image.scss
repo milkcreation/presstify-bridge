@@ -1,0 +1,12 @@
+.FieldSelectJs.FieldSelectImage {
+  &[aria-arrow="true"] {
+    .FieldSelectJs-selectionItem {
+      padding: 0;
+    }
+  }
+}
+
+.FieldSelectImage-pickerItem {
+  max-width: 85px;
+  max-height: 85px;
+}
