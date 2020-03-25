@@ -113,6 +113,13 @@ interface FormFactory extends FactoryResolver, ParamsBag
     public function isPrepared(): bool;
 
     /**
+     * Vérifie si le formulaire a été soumis avec succès.
+     *
+     * @return bool
+     */
+    public function isSuccessed(): bool;
+
+    /**
      * Récupération d'intitulé|Définition d'intitulés|Retourne l'instance du gestionnaire d'intitulés.
      *
      * @param string|array|null $key Clé d'indexe de l'intitulé.
