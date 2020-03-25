@@ -10,6 +10,7 @@ use Closure;
 
 /**
  * @method string csrf()
+ * @method bool isSuccessed()
  * @method string tagName()
  */
 class View extends PlatesFactory implements FactoryViewContract
@@ -20,6 +21,7 @@ class View extends PlatesFactory implements FactoryViewContract
      */
     protected $mixins = [
         'csrf',
+        'isSuccessed',
         'tagName'
     ];
 

@@ -33,6 +33,12 @@ class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
     protected $widgets = [];
 
     /**
+     * Indicateur d'initialisation.
+     * @var bool
+     */
+    protected static $built = false;
+
+    /**
      * CONSTRUCTEUR.
      *
      * @param array $attrs Liste des attributs de configuration.
@@ -49,19 +55,23 @@ class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
             Field::set('recaptcha', new RecaptchaField());
 
             add_action('wp_print_footer_scripts', function () {
-                if ($this->widgets) {
-                    $js = "function onloadCallback () {";
-                    foreach ($this->widgets as $id => $params) {
-                        $js .= "let el=document.getElementById('{$id}');";
-                        $js .= "if(typeof(el)!='undefined' && el!=null){";
-                        $js .= "grecaptcha.render('{$id}', " . json_encode($params) . ");";
+                if (!static::$built) {
+                    if ($this->widgets) {
+                        $js = "let reCaptchaEl = {};";
+                        $js .= "function reCaptchaCallback() {";
+                        foreach ($this->widgets as $id => $params) {
+                            $js .= "reCaptchaEl['{$id}']=document.getElementById('{$id}');";
+                            $js .= "if(typeof(reCaptchaEl['{$id}'])!='undefined' && reCaptchaEl['{$id}']!=null){";
+                            $js .= "try{grecaptcha.render('{$id}', " . json_encode($params) . ");} catch(error){/**console.log(error); */}";
+                            $js .= "}";
+                        }
                         $js .= "};";
-                    }
-                    $js .= "};";
-                    echo '<script type="text/javascript">' . $js . '</script>';
-                    echo '<script type="text/javascript"
-                                  src="https://www.google.com/recaptcha/api.js?hl=' . $this->getLanguage() . '&onload=onloadCallback&render=explicit"
+                        echo '<script type="text/javascript">' . $js . '</script>';
+                        echo '<script type="text/javascript"
+                                  src="https://www.google.com/recaptcha/api.js?hl=' . $this->getLanguage() . '&onload=reCaptchaCallback&render=explicit"
                                   async defer></script>';
+                    }
+                    static::$built = true;
                 }
             });
 
@@ -98,7 +108,7 @@ class Recaptcha extends ReCaptchaSdk implements RecaptchaContract
 
         switch ($locale) {
             default :
-                list($lang, $indice) = preg_split('/_/', $locale, 2);
+                [$lang, $indice] = preg_split('/_/', $locale, 2);
                 break;
             case 'zh_CN':
                 $lang = 'zh-CN';

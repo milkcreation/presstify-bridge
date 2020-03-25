@@ -234,6 +234,14 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     /**
      * @inheritDoc
      */
+    public function isSuccessed(): bool
+    {
+        return $this->success;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function label($key = null, string $default = '')
     {
         if (!$this->labels instanceof LabelsBag) {
