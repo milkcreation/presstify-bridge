@@ -2,15 +2,17 @@
 
 namespace tiFy\Template\Templates\ListTable\Contracts;
 
-use tiFy\Contracts\Template\FactoryBuilder;
+use tiFy\Contracts\Template\{FactoryAjax, FactoryBuilder};
 use tiFy\Contracts\Template\TemplateFactory;
 
 interface Factory extends TemplateFactory
 {
     /**
-     * Récupération de l'instance du controleur de table Ajax
+     * {@inheritDoc}
+     *
+     * @return Ajax|null
      */
-    public function ajax(): ? Ajax;
+    public function ajax(): ? FactoryAjax;
 
     /**
      * Récupération de l'instance du controleur d'actions groupées.
@@ -25,6 +27,15 @@ interface Factory extends TemplateFactory
      * @return Columns|Columns[]
      */
     public function columns(): Columns;
+
+    /**
+     * Récupération de l'instance du gestionnaire d'élément de navigation complémentaire.
+     *
+     * @param string $which top|bottom
+     *
+     * @return Extras|Extra[]
+     */
+    public function extras(string $which = 'top'): Extras;
 
     /**
      * Récupération d'une instance d'élément à afficher dans une boucle d'itération.

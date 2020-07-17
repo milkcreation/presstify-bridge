@@ -14,9 +14,9 @@ class Route extends BaseRoute implements RouteContract
     /**
      * @inheritDoc
      *
-     * @return self
+     * @return static
      */
-    public function map(string $method, string $path, $handler) : LeagueRoute
+    public function map(string $method, string $path, $handler): LeagueRoute
     {
         return parent::map($method, $path, $handler);
     }
@@ -24,9 +24,9 @@ class Route extends BaseRoute implements RouteContract
     /**
      * @inheritDoc
      *
-     * @return self
+     * @return static
      */
-    public function get($path, $handler)
+    public function get($path, $handler): LeagueRoute
     {
         return parent::get($path, $handler);
     }
@@ -34,9 +34,9 @@ class Route extends BaseRoute implements RouteContract
     /**
      * @inheritDoc
      *
-     * @return self
+     * @return static
      */
-    public function post($path, $handler)
+    public function post($path, $handler): LeagueRoute
     {
         return parent::post($path, $handler);
     }
@@ -44,9 +44,9 @@ class Route extends BaseRoute implements RouteContract
     /**
      * @inheritDoc
      *
-     * @return self
+     * @return static
      */
-    public function put($path, $handler)
+    public function put($path, $handler): LeagueRoute
     {
         return parent::put($path, $handler);
     }
@@ -54,9 +54,9 @@ class Route extends BaseRoute implements RouteContract
     /**
      * @inheritDoc
      *
-     * @return self
+     * @return static
      */
-    public function patch($path, $handler)
+    public function patch($path, $handler): LeagueRoute
     {
         return parent::patch($path, $handler);
     }
@@ -64,9 +64,9 @@ class Route extends BaseRoute implements RouteContract
     /**
      * @inheritDoc
      *
-     * @return self
+     * @return static
      */
-    public function delete($path, $handler)
+    public function delete($path, $handler): LeagueRoute
     {
         return parent::delete($path, $handler);
     }
@@ -74,9 +74,9 @@ class Route extends BaseRoute implements RouteContract
     /**
      * @inheritDoc
      *
-     * @return self
+     * @return static
      */
-    public function head($path, $handler)
+    public function head($path, $handler): LeagueRoute
     {
         return parent::head($path, $handler);
     }
@@ -84,9 +84,9 @@ class Route extends BaseRoute implements RouteContract
     /**
      * @inheritDoc
      *
-     * @return self
+     * @return static
      */
-    public function options($path, $handler)
+    public function options($path, $handler): LeagueRoute
     {
         return parent::options($path, $handler);
     }

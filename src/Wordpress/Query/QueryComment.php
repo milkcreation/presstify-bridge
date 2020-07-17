@@ -225,7 +225,7 @@ class QueryComment extends ParamsBag implements QueryCommentContract
     /**
      * @inheritDoc
      */
-    public function getEditLink(): string
+    public function getEditUrl(): string
     {
         return get_edit_comment_link($this->getId());
     }

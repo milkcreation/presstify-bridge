@@ -4,12 +4,10 @@ namespace tiFy\Routing;
 
 use Psr\Http\Message\UriInterface;
 use League\Uri\{
-    Components\Query,
+    Contracts\UriInterface as LeagueUri,
     Http,
-    Modifiers\AppendQuery,
-    Modifiers\AppendSegment,
-    Modifiers\RemoveQueryParams,
-    UriInterface as LeagueUri,
+    Components\Query,
+    UriModifier,
 };
 use tiFy\Contracts\Routing\UrlFactory as UrlFactoryContract;
 
@@ -17,7 +15,7 @@ class UrlFactory implements UrlFactoryContract
 {
     /**
      * Instance de l'url.
-     * @var LeagueUri|UriInterface
+     * @var LeagueUri|UriInterface|null
      */
     protected $uri;
 
@@ -38,7 +36,7 @@ class UrlFactory implements UrlFactoryContract
      */
     public function __toString(): string
     {
-        return (string)$this->get();
+        return $this->render();
     }
 
     /**
@@ -46,7 +44,7 @@ class UrlFactory implements UrlFactoryContract
      */
     public function appendSegment(string $segment): UrlFactoryContract
     {
-        $this->uri = (new AppendSegment($segment))->process($this->uri);
+        $this->uri = UriModifier::appendSegment($this->uri, $segment);
 
         return $this;
     }
@@ -73,9 +71,19 @@ class UrlFactory implements UrlFactoryContract
     /**
      * @inheritDoc
      */
-    public function decoded(bool $raw = true)
+    public function decoded(bool $raw = true): string
     {
         return $raw ? rawurldecode((string)$this->uri) : urldecode((string)$this->uri);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function params(?string $key = null, ?string $default = null)
+    {
+        parse_str($this->uri->getQuery(), $params);
+
+        return is_null($key) ? $params : ($params[$key] ?? $default);
     }
 
     /**
@@ -97,7 +105,8 @@ class UrlFactory implements UrlFactoryContract
     public function with(array $args): UrlFactoryContract
     {
         $this->without(array_keys($args));
-        $this->uri = (new AppendQuery((string)Query::createFromPairs($args)))->process($this->uri);
+
+        $this->uri = UriModifier::appendQuery($this->uri, Query::createFromParams($args));
 
         return $this;
     }
@@ -107,8 +116,16 @@ class UrlFactory implements UrlFactoryContract
      */
     public function without(array $args): UrlFactoryContract
     {
-        $this->uri = (new RemoveQueryParams($args))->process($this->uri);
+        $this->uri = UriModifier::removeParams($this->uri, ...$args);
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function render(): string
+    {
+        return $this->uri ? (string)$this->uri : '';
     }
 }

@@ -17,6 +17,12 @@ class WpScreen implements WpScreenContract
 
     /**
      * Nom de qualification de l'objet Wordpress associé.
+     * @var string|null
+     */
+    protected $hookName = null;
+
+    /**
+     * Nom de qualification de l'objet Wordpress associé.
      * @var string
      */
     protected $objectName = '';
@@ -177,7 +183,14 @@ class WpScreen implements WpScreenContract
      */
     public function isCurrent(): bool
     {
-        return (($current_screen = get_current_screen()) && ($current_screen->id === $this->getHookname()));
+        $current_screen = get_current_screen();
+
+        return ($current_screen &&
+            (
+                ($current_screen->id === $this->getHookname()) ||
+                (($current_screen->id === 'profile') && ($this->getHookname() === 'user-edit'))
+            )
+        );
     }
 
     /**
@@ -212,10 +225,16 @@ class WpScreen implements WpScreenContract
         } elseif (post_type_exists($this->screen->id)) {
             $this->objectName = $this->screen->id;
             $this->objectType = 'post_type';
+        } elseif ($this->screen->id === 'users') {
+            $this->objectName = $this->screen->id;
+            $this->objectType = 'user';
         } elseif (
-            (($this->screen->base === 'user-edit') || ($this->screen->base === 'profile')) &&
-            ($user_id = (int)Request::input('user_id', 0)) &&
-            ($user = QueryUser::createFromId($user_id))
+            ((
+                ($this->screen->base === 'user-edit') &&
+                ($user_id = (int)Request::input('user_id', 0)) &&
+                ($user = QueryUser::createFromId($user_id))) ||
+                (($this->screen->base === 'profile') && ($user = QueryUser::createFromId(get_current_user_id()))
+            ))
         ) {
             $this->objectName = join('|', array_keys($user->getRoles()));
             $this->objectType = 'user';

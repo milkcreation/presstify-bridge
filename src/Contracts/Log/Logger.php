@@ -13,16 +13,6 @@ use tiFy\Contracts\Support\ParamsBag;
 interface Logger extends PsrLoggerInterface, ResettableInterface
 {
     /**
-     * Alias de création d'un message de notification.
-     *
-     * @param string $message Intitulé du message.
-     * @param array $context Liste des données de contexte.
-     *
-     * @return boolean
-     */
-    public function addSuccess(string $message, array $context = []): bool;
-
-    /**
      * Récupération du conteneur d'injection de dépendances.
      *
      * @return Container
@@ -63,7 +53,14 @@ interface Logger extends PsrLoggerInterface, ResettableInterface
      * @param string $message Intitulé du message.
      * @param array $context Liste des données de contexte.
      *
-     * @return boolean
+     * @return void
      */
-    public function success(string $message, array $context = []): bool;
+    public function success(string $message, array $context = []): void;
+
+    /**
+     * Définition du traitement par défaut.
+     *
+     * @return void
+     */
+    public function setDefaultHandler(): void;
 }

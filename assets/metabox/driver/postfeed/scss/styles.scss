@@ -18,10 +18,6 @@
   max-width: 1140px;
 }
 
-.MetaboxPostfeed-suggest {
-  display: block;
-}
-
 .MetaboxPostfeed-items {
   margin-top: 10px;
   padding-top: 10px;
@@ -116,12 +112,14 @@
 .MetaboxPostfeed-itemThumb {
   float: left;
   margin-right: 10px;
-  min-width: 80px;
+  width: 80px;
+  height:80px;
 }
 
 .MetaboxPostfeed-itemThumbImg {
-  width: auto;
-  height: 80px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .MetaboxPostfeed-itemTitle {

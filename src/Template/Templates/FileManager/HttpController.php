@@ -2,11 +2,11 @@
 
 namespace tiFy\Template\Templates\FileManager;
 
+use Laminas\Diactoros\Response;
+use League\Flysystem\FileNotFoundException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use tiFy\Template\Factory\HttpController as BaseHttpController;
 use tiFy\Template\Templates\FileManager\Contracts\HttpController as HttpControllerContract;
-use Zend\Diactoros\Response;
-use League\Flysystem\FileNotFoundException;
 
 class HttpController extends BaseHttpController implements HttpControllerContract
 {

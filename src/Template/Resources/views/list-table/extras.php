@@ -5,4 +5,4 @@
  * @var tiFy\Template\Templates\ListTable\View $this
  * @var string $which top|bottom.
  */
-echo $this->extras();
+echo $this->extras($which);

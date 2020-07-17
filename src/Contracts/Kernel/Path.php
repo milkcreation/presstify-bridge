@@ -2,11 +2,25 @@
 
 namespace tiFy\Contracts\Kernel;
 
-use tiFy\Contracts\Filesystem\LocalFilesystem;
+use tiFy\Contracts\Filesystem\{Filesystem, LocalFilesystem};
 use tiFy\Contracts\Filesystem\StorageManager;
 
 interface Path extends StorageManager
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @return LocalFilesystem|null
+     */
+    public function disk(?string $name = null): ?Filesystem;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return LocalFilesystem|null
+     */
+    public function getDefault(): ?Filesystem;
+
     /**
      * {@inheritDoc}
      *
@@ -132,6 +146,16 @@ interface Path extends StorageManager
     public function getPublicPath(string $path = '', bool $rel = false): string;
 
     /**
+     * Récupération du chemin vers un dossier ou un fichier du répertoire de stockage.
+     *
+     * @param string $path Chemin relatif vers un fichier ou un dossier du répertoire.
+     * @param bool $rel Activation de la sortie du chemin en relatif.
+     *
+     * @return string
+     */
+    public function getStoragePath(string $path = '', bool $rel = false): string;
+
+    /**
      * Récupération du chemin vers un dossier ou un fichier du répertoire du thème.
      *
      * @param string $path Chemin relatif vers un fichier ou un dossier du répertoire.
@@ -169,6 +193,15 @@ interface Path extends StorageManager
      * @return LocalFilesystem
      */
     public function mount(string $name, string $root, array $config = []): LocalFilesystem;
+
+    /**
+     * Normalisation d'un chemin.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public function normalize(string $path): string;
 
     /**
      * Récupération du chemin par rapport à la racine.

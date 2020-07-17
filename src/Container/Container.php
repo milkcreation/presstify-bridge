@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Container;
 
@@ -10,28 +10,36 @@ use tiFy\Contracts\Container\Container as ContainerContract;
 class Container extends LeagueContainer implements ContainerContract
 {
     /**
+     * Indicateur d'initialisation.
+     * @var bool
+     */
+    protected $booted = false;
+
+    /**
      * Liste des fournisseurs de service.
      * @var string[]
      */
     protected $serviceProviders = [];
 
     /**
-     * CONSTRUCTEUR.
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function __construct()
+    public function boot(): ContainerContract
     {
-        parent::__construct();
+        if (!$this->booted) {
+            foreach ($this->getServiceProviders() as $serviceProvider) {
+                $this->share($serviceProvider, $resolved = new $serviceProvider());
 
-        foreach ($this->getServiceProviders() as $serviceProvider) {
-            $this->share($serviceProvider, $resolved = new $serviceProvider());
-
-            if ($resolved instanceof ServiceProviderInterface) {
-                $resolved->setContainer($this);
-                $this->addServiceProvider($resolved);
+                if ($resolved instanceof ServiceProviderInterface) {
+                    $resolved->setContainer($this);
+                    $this->addServiceProvider($resolved);
+                }
             }
+
+            $this->booted = true;
         }
+
+        return $this;
     }
 
     /**

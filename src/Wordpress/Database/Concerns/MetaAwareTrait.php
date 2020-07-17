@@ -17,7 +17,7 @@ trait MetaAwareTrait
     public function getValueAttribute()
     {
         try {
-            $value = Str::unserialize($this->meta_value);
+            $value = is_string($this->meta_value) ? Str::unserialize($this->meta_value) : $this->meta_value;
 
             return $value === false && $this->meta_value !== false ? $this->meta_value : $value;
         } catch (Exception $ex) {

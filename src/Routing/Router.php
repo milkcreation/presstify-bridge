@@ -5,20 +5,24 @@ namespace tiFy\Routing;
 use ArrayIterator;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use League\Route\{Route as LeagueRoute, RouteGroup as LeagueRouteGroup, Router as LeagueRouter};
+use League\Route\{
+    Route as LeagueRoute,
+    RouteGroup as LeagueRouteGroup,
+    Router as LeagueRouter
+};
 use LogicException;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\{ResponseInterface as Response, ServerRequestInterface as Request};
+use Psr\Http\Message\{ResponseInterface as PsrResponse, ServerRequestInterface as Request, ServerRequestInterface};
+use Psr\Http\Server\MiddlewareInterface;
 use Symfony\Component\HttpFoundation\Response as SfResponse;
 use tiFy\Contracts\Container\Container;
 use tiFy\Contracts\Routing\{Route as RouteContract, RouteGroup as RouteGroupContract, Router as RouterContract};
 use tiFy\Http\Response as HttpResponse;
-use tiFy\Routing\Concerns\{ContainerAwareTrait, RegisterMapAwareTrait, RouteCollectionAwareTrait};
-use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
+use tiFy\Routing\Concerns\{ContainerAwareTrait, MiddlewareAwareTrait, RouteCollectionAwareTrait};
 
 class Router extends LeagueRouter implements RouterContract
 {
-    use ContainerAwareTrait, RegisterMapAwareTrait, RouteCollectionAwareTrait;
+    use ContainerAwareTrait, MiddlewareAwareTrait, RouteCollectionAwareTrait;
 
     /**
      * Instance de la route associée à la requête HTTP courante.
@@ -33,13 +37,31 @@ class Router extends LeagueRouter implements RouterContract
     protected $items = [];
 
     /**
+     * Liste des controleurs déclarés et qualifiés.
+     * @var BaseController[]|array
+     */
+    protected $namedController = [];
+
+    /**
+     * Liste des middlewares déclarés et qualifiés.
+     * @var MiddlewareInterface[]|array
+     */
+    protected $namedMiddleware = [];
+
+    /**
      * Préfixe des chemins des routes.
      * @var string|null
      */
     protected $prefix;
 
     /**
-     * @inheritdoc
+     * Instance de la réponse.
+     * @var PsrResponse|null
+     */
+    protected $response;
+
+    /**
+     * @inheritDoc
      */
     public function all(): array
     {
@@ -47,7 +69,7 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function collect(): Collection
     {
@@ -55,7 +77,7 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function count(): int
     {
@@ -63,17 +85,17 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function current(): ?RouteContract
     {
         return $this->current = $this->current ?? $this->collect()->first(function (Route $item) {
-            return $item->isCurrent();
-        });
+                return $item->isCurrent();
+            });
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function currentRouteName(): ?string
     {
@@ -81,58 +103,47 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function dispatch(Request $request): Response
+    public function dispatch(Request $request): PsrResponse
     {
         if (is_null($this->getStrategy())) {
             $this->setStrategy($this->getContainer()->get('router.strategy.default'));
         }
-        return parent::dispatch($request);
+
+        return $this->response = parent::dispatch($request);
     }
 
     /**
      * @inheritDoc
      */
-    public function emit($response): void
+    public function getResponse(): ?PsrResponse
     {
-        if ($response instanceof Response) {
-            /** @var EmitterInterface $emitter */
-            $emitter = $this->getContainer()->get('router.emitter');
-            $emitter->emit($response);
-
-            events()->trigger('router.emit.response', [$response]);
-        } elseif ($response instanceof SfResponse) {
-            $response->send();
-
-            events()->trigger('router.emit.response', [HttpResponse::convertToPsr($response)]);
-        } else {
-            (new HttpResponse(__('La réponse attendue n\'est pas conforme', 'tify'), 500))->send();
-        }
+        return $this->response;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
+     */
+    public function emit($response): PsrResponse
+    {
+        if ($response instanceof SfResponse) {
+            $response = HttpResponse::convertToPsr($response);
+        } elseif (!$response instanceof PsrResponse) {
+            $response = (new HttpResponse(__('Le format de la réponse n\'est pas conforme.', 'tify'), 500))->psr();
+        }
+
+        $emitter = $this->getContainer()->get('router.emitter') ? : new Emitter($this);
+
+        return $emitter->send($response);
+    }
+
+    /**
+     * @inheritDoc
      */
     public function exists(): bool
     {
         return !empty($this->items);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return RouteGroupContract
-     */
-    public function group(string $prefix, callable $group): LeagueRouteGroup
-    {
-        $group = $this->getContainer()
-            ? $this->getContainer()->get(RouteGroupContract::class, [$prefix, $group, $this])
-            : new RouteGroup($prefix, $group, $this);
-
-        $this->groups[] = $group;
-
-        return $group;
     }
 
     /**
@@ -146,7 +157,23 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
+     */
+    public function getNamedController(string $name)
+    {
+        return $this->namedController[$name] ?? null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNamedMiddleware(string $name): ?MiddlewareInterface
+    {
+        return $this->namedMiddleware[$name] ?? null;
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @return RouteContract
      */
@@ -156,7 +183,23 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
+     *
+     * @return RouteGroupContract
+     */
+    public function group(string $prefix, callable $group): LeagueRouteGroup
+    {
+        $group = ($this->getContainer())
+             ? $this->getContainer()->extend(RouteGroupContract::class)->build([$prefix, $group, $this])
+             : new RouteGroup($prefix, $group, $this);
+
+        $this->groups[] = $group;
+
+        return $group;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function hasCurrent(): bool
     {
@@ -164,7 +207,7 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function hasNamedRoute(string $name): bool
     {
@@ -174,7 +217,7 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function isCurrentNamed(string $name): bool
     {
@@ -182,7 +225,7 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      *
      * @return RouteContract
      */
@@ -192,8 +235,22 @@ class Router extends LeagueRouter implements RouterContract
 
         $path = '/' . ltrim($prefix . sprintf('/%s', ltrim($path, '/')), '/');
 
+        if (is_string($handler)) {
+            if (preg_match('/([a-zA-Z1-9_\-.]+)@([a-zA-Z1-9_]+)/', $handler, $match)) {
+                if ($controller = $this->getNamedController($match[1])) {
+                    $handler = [$controller, $match[2]];
+                }
+            } elseif ($controller = $this->getNamedController($handler)) {
+                $handler = $controller;
+            }
+        } elseif (is_array($handler) && !empty($handler[0]) && is_string($handler[0])) {
+            if ($controller = $this->getNamedController($handler[0])) {
+                $handler = [$controller, $handler[1]];
+            }
+        }
+
         $route = $this->getContainer()
-            ? $this->getContainer()->get(RouteContract::class, [$method, $path, $handler, $this])
+            ? $this->getContainer()->extend(RouteContract::class)->build([$method, $path, $handler, $this])
             : new Route($method, $path, $handler, $this);
 
         $this->routes[] = $route;
@@ -202,37 +259,11 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function parseRoutePath(string $path): string
     {
         return preg_replace(array_keys($this->patternMatchers), array_values($this->patternMatchers), $path);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function url(string $name, array $parameters = [], bool $absolute = false, bool $asserts = false): ?string
-    {
-        try {
-            $route = $this->getNamedRoute($name);
-
-            try {
-                return $route->getUrl($parameters, $absolute);
-            } catch (LogicException $e) {
-                if ($asserts) {
-                    throw new LogicException($e->getMessage(), $e->getCode());
-                } else {
-                    return null;
-                }
-            }
-        } catch (InvalidArgumentException $e) {
-            if ($asserts) {
-                throw new InvalidArgumentException($e->getMessage(), $e->getCode());
-            } else {
-                return null;
-            }
-        }
     }
 
     /**
@@ -299,7 +330,7 @@ class Router extends LeagueRouter implements RouterContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function prepRoutes(Request $request): void
     {
@@ -310,28 +341,98 @@ class Router extends LeagueRouter implements RouterContract
         $this->items = $routes = array_merge(array_values($this->routes), array_values($this->namedRoutes));
 
         foreach ($routes as $key => $route) {
-            if (!is_null($route->getScheme()) && $route->getScheme() !== $request->getUri()->getScheme()) {
+            // check for scheme condition
+            $scheme = $route->getScheme();
+            if ($scheme !== null && $scheme !== $request->getUri()->getScheme()) {
                 continue;
             }
 
-            if (!is_null($route->getHost()) && $route->getHost() !== $request->getUri()->getHost()) {
+            // check for domain condition
+            $host = $route->getHost();
+            if ($host !== null && $host !== $request->getUri()->getHost()) {
                 continue;
             }
 
-            if (!is_null($route->getPort()) && $route->getPort() !== $request->getUri()->getPort()) {
+            // check for port condition
+            $port = $route->getPort();
+            if ($port !== null && $port !== $request->getUri()->getPort()) {
                 continue;
             }
 
-            if (is_null($route->getStrategy())) {
-                if (($group = $route->getParentGroup()) && !is_null($group->getStrategy())) {
+            if ($route->getStrategy() === null) {
+                $route->setStrategy($this->getStrategy());
+                /**if (($group = $route->getParentGroup()) && !is_null($group->getStrategy())) {
                     $route->setStrategy($group->getStrategy());
                 } else {
                     $route->setStrategy($this->getStrategy());
-                }
+                }*/
             }
 
             $this->addRoute($route->getMethod(), $this->parseRoutePath($route->getPath()), $route);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function processGroups(ServerRequestInterface $request): void
+    {
+        $activePath = $request->getUri()->getPath();
+
+        foreach ($this->groups as $key => $group) {
+            // we want to determine if we are technically in a group even if the
+            // route is not matched so exceptions are handled correctly
+            if ($group->getStrategy() !== null
+                && strncmp($activePath, $group->getPrefix(), strlen($group->getPrefix())) === 0
+            ) {
+                $this->setStrategy($group->getStrategy());
+            }
+
+            unset($this->groups[$key]);
+            $group();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function registerController(string $name, $controller)
+    {
+        return $this->namedController[$name] = $controller;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function registerMiddleware(string $name, MiddlewareInterface $middleware): MiddlewareInterface
+    {
+        return $this->namedMiddleware[$name] = $middleware;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setControllerStack(array $controllers): RouterContract
+    {
+        foreach ($controllers as $name => $controller) {
+            $this->registerController($name, $controller);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setMiddlewareStack(array $middlewares): RouterContract
+    {
+        foreach ($middlewares as $name => $middleware) {
+            if (is_string($name) && $middleware instanceof MiddlewareInterface) {
+                $this->registerMiddleware($name, $middleware);
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -342,5 +443,31 @@ class Router extends LeagueRouter implements RouterContract
         $this->prefix = $prefix;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function url(string $name, array $parameters = [], bool $absolute = false, bool $asserts = false): ?string
+    {
+        try {
+            $route = $this->getNamedRoute($name);
+
+            try {
+                return $route->getUrl($parameters, $absolute);
+            } catch (LogicException $e) {
+                if ($asserts) {
+                    throw new LogicException($e->getMessage(), $e->getCode());
+                } else {
+                    return null;
+                }
+            }
+        } catch (InvalidArgumentException $e) {
+            if ($asserts) {
+                throw new InvalidArgumentException($e->getMessage(), $e->getCode());
+            } else {
+                return null;
+            }
+        }
     }
 }

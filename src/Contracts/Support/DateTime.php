@@ -7,6 +7,7 @@ use DateTime as BaseDateTime;
 use DateTimeZone;
 
 /**
+ * @mixin BaseDateTime
  * @mixin Carbon
  */
 interface DateTime

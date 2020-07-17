@@ -2,26 +2,26 @@
 
 namespace tiFy\Wordpress\Taxonomy;
 
-use tiFy\Contracts\Taxonomy\{Taxonomy as Manager, TaxonomyFactory};
+use tiFy\Contracts\Taxonomy\{Taxonomy as TaxonomyManager, TaxonomyFactory};
 use tiFy\Wordpress\Contracts\Taxonomy as TaxonomyContract;
-use WP_Term_Query;
+use WP_Taxonomy, WP_Term_Query;
 
 class Taxonomy implements TaxonomyContract
 {
     /**
      * Instance gestionnaire de taxonomies.
-     * @var Manager
+     * @var TaxonomyManager
      */
     protected $manager;
 
     /**
      * CONSTRUCTEUR.
      *
-     * @param Manager $manager
+     * @param TaxonomyManager $manager
      *
      * @return void
      */
-    public function __construct(Manager $manager)
+    public function __construct(TaxonomyManager $manager)
     {
         $this->manager = $manager;
 
@@ -34,18 +34,32 @@ class Taxonomy implements TaxonomyContract
         add_action('init', function () {
             global $wp_taxonomies;
 
-            foreach ($wp_taxonomies as $name => $attrs) {
+            foreach ($wp_taxonomies as $name => $taxonomy) {
                 if (!$this->manager->get($name)) {
-                    $this->manager->register($name, get_object_vars($attrs));
+                    $this->manager->register($name, get_object_vars($taxonomy));
                 }
             }
         }, 999999);
+
+        add_action('edited_term', function (int $term_id, int $tt_id, string $taxonomy) {
+            if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+                return;
+            } elseif (defined('DOING_AJAX') && DOING_AJAX) {
+                return;
+            }
+
+            $this->manager->meta()->save($term_id, $taxonomy);
+        }, 10, 3);
 
         events()->on('taxonomy.factory.boot', function (TaxonomyFactory $factory) {
             global $wp_taxonomies;
 
             if (!isset($wp_taxonomies[$factory->getName()])) {
                 register_taxonomy($factory->getName(), $factory->get('object_type', []), $factory->all());
+            }
+
+            if ($wp_taxonomies[$factory->getName()] instanceof WP_Taxonomy) {
+                $factory->setWpTaxonomy($wp_taxonomies[$factory->getName()]);
             }
 
             add_action('init', function () use ($factory) {
@@ -73,15 +87,6 @@ class Taxonomy implements TaxonomyContract
                 }
             });
         });
-
-        add_action('edited_term', function ($term_id, $tt_id, $taxonomy) {
-            if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-                return;
-            } elseif (defined('DOING_AJAX') && DOING_AJAX) {
-                return;
-            }
-            $this->manager->meta()->save($term_id, $tt_id, $taxonomy);
-        }, 10, 3);
     }
 
     /**

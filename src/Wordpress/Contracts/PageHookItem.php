@@ -2,7 +2,7 @@
 
 namespace tiFy\Wordpress\Contracts;
 
-use tiFy\Contracts\{Routing\Route, Support\ParamsBag};
+use tiFy\Contracts\Support\ParamsBag;
 use tiFy\Wordpress\Contracts\Query\QueryPost;
 use WP_Post;
 
@@ -86,11 +86,4 @@ interface PageHookItem extends ParamsBag
      * @return QueryPost|null
      */
     public function post(): ?QueryPost;
-
-    /**
-     * Récupération de l'instance de la route associée.
-     *
-     * @return Route|null
-     */
-    public function route(): ?Route;
 }

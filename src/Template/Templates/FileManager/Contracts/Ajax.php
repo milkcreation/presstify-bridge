@@ -2,10 +2,9 @@
 
 namespace tiFy\Template\Templates\FileManager\Contracts;
 
-use tiFy\Contracts\Support\ParamsBag;
-use tiFy\Contracts\Template\FactoryAwareTrait;
+use tiFy\Contracts\Template\{FactoryAjax, FactoryAwareTrait};
 
-interface Ajax extends FactoryAwareTrait, ParamsBag
+interface Ajax extends FactoryAwareTrait, FactoryAjax
 {
 
 }

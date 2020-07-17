@@ -3,23 +3,30 @@
 namespace tiFy\Plugins\Bridge;
 
 use App\App;
+use tiFy\Contracts\Container\Container as ContainerContract;
 use tiFy\Container\Container;
+use tiFy\Kernel\Application;
 use tiFy\Kernel\KernelServiceProvider;
-
 /**
  * @desc Bridge PresstifyFramework.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\Bridge
- * @version 2.0.280
+ * @version 2.0.319
  * @copyright Milkcreation
  */
-class Bridge extends Container
+final class Bridge extends Container
 {
     /**
      * Instance de la classe
      * @var self
      */
     protected static $instance;
+
+    /**
+     * Instance de l'application.
+     * @var App|Application|null
+     */
+    protected $app;
 
     /**
      * Liste des fournisseurs de service.
@@ -36,28 +43,37 @@ class Bridge extends Container
      */
     public function __construct()
     {
-        if (defined('WP_INSTALLING') && (WP_INSTALLING === true)) {
-            return;
-        }
-
         if (self::instance()) {
             return;
+        } else {
+            self::$instance = $this;
+
+            parent::__construct();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function boot(): ContainerContract
+    {
+        parent::boot();
+
+        if (is_null($this->app)) {
+            $this->app = class_exists(App::class) ? (new App($this)): (new Application($this));
+
+            $this->share('app', $this->app->boot());
         }
 
-        self::$instance = $this;
+        return $this;
+    }
 
-        parent::__construct();
-
-        add_action('plugins_loaded', function () {
-            load_muplugin_textdomain('tify', '/presstify/languages/');
-            do_action('tify_load_textdomain');
-        });
-
-        add_action('after_setup_theme', function () {
-            if (class_exists(App::class)) {
-                $this->share('app', new App($this));
-            }
-        }, 0);
+    /**
+     * @inheritDoc
+     */
+    public function get($alias, array $args = [])
+    {
+        return ($alias === 'app') ? $this->app : parent::get($alias, $args);
     }
 
     /**

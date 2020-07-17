@@ -17,9 +17,9 @@ interface ImgFilesystem extends LocalFilesystem
      * Récupération du rendu d'affichage d'une image.
      *
      * @param string $path Chemin relatif vers la ressource image.
-     * @param array $attrs Liste des attributs de balise HTML.
+     * @param array|null $attrs Liste des attributs de balise HTML. Si null, pas d'encapsulation (.svg uniquement).
      *
      * @return string
      */
-    public function render(string $path, array $attrs = []): ?string;
+    public function render(string $path, ?array $attrs = []): ?string;
 }

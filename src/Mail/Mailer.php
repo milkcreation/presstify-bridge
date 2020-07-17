@@ -3,17 +3,16 @@
 namespace tiFy\Mail;
 
 use Exception;
-use DOMDocument;
 use Html2Text\Html2Text;
 use Pelago\Emogrifier\CssInliner;
 use Psr\Container\ContainerInterface as Container;
+use Symfony\Component\DomCrawler\Crawler;
 use tiFy\Contracts\Mail\{
     Mail as MailContract,
     MailerDriver,
     Mailer as MailerContract,
     MailerQueue as MailerQueueContract
 };
-use tiFy\View\Engine\Engine as ViewEngine;
 
 class Mailer implements MailerContract
 {
@@ -46,12 +45,6 @@ class Mailer implements MailerContract
      * @var MailerQueueContract
      */
     protected $queue;
-
-    /**
-     * Instance du controleur de gabarit d'affichage.
-     * @var ViewEngine
-     */
-    protected $viewer;
 
     /**
      * Traitement récursif d'une liste de pièces jointes.
@@ -148,9 +141,36 @@ class Mailer implements MailerContract
     /**
      * @inheritDoc
      */
+    public static function getDefaults(): array
+    {
+        return array_merge([
+            'to'           => [],
+            'from'         => [],
+            'reply-to'     => [],
+            'bcc'          => [],
+            'cc'           => [],
+            'attachments'  => [],
+            'html'         => '',
+            'plain'        => '',
+            'data'         => [],
+            'content'      => [],
+            'subject'      => __('Test d\'envoi de mail', 'tify'),
+            'charset'      => 'utf-8',
+            'encoding'     => '8bit',
+            'content_type' => 'multipart/alternative',
+            'css'          => file_get_contents(__DIR__ .'/Resources/assets/css/styles.css'),
+            'inline_css'   => true,
+            'vars'         => [],
+            'viewer'       => [],
+        ], static::$defaults);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function setDefaults(array $attrs = []): void
     {
-        static::$defaults = $attrs;
+        static::$defaults = array_merge(static::$defaults, $attrs);
     }
 
     /**
@@ -185,29 +205,7 @@ class Mailer implements MailerContract
         } else {
             $this->clearDriver();
 
-            $mail = (new Mail())->setMailer($this);
-
-            $mail->params(array_merge([
-                'to'           => [],
-                'from'         => [],
-                'reply-to'     => [],
-                'bcc'          => [],
-                'cc'           => [],
-                'attachments'  => [],
-                'html'         => '',
-                'plain'        => '',
-                'data'         => [],
-                'content'      => [],
-                'subject'      => __('Test d\'envoi de mail', 'tify'),
-                'charset'      => 'utf-8',
-                'encoding'     => '8bit',
-                'content_type' => 'multipart/alternative',
-                'inline_css'   => true,
-                'vars'         => [],
-                'viewer'       => [],
-            ], static::$defaults, config('mail', []), $attrs ?: []));
-
-            return $this->mail = $mail;
+            return $this->mail = (new Mail())->setMailer($this)->setParams($attrs);
         }
     }
 
@@ -318,7 +316,7 @@ class Mailer implements MailerContract
         }
 
         if ($data = $mail->params('data', [])) {
-            $mail->data($data);
+            $mail->data(array_merge(static::getDefaults()['data'] ?? [], $data));
         }
 
         if (!$html = $mail->params('html')) {
@@ -326,14 +324,16 @@ class Mailer implements MailerContract
                 if ($body = $mail->params('content.body', true)) {
                     $body = is_string($body) ? $body : $mail->view('html/body');
                 }
+
                 if ($header = $mail->params('content.header', true)) {
                     $header = is_string($header) ? $header : $mail->view('html/header');
                 }
+
                 if ($footer = $mail->params('content.footer', true)) {
                     $footer = is_string($footer) ? $footer : $mail->view('html/footer');
                 }
 
-                $html = $this->viewer('html/content', compact('body', 'header', 'footer'));
+                $html = $mail->view('html/content', compact('body', 'header', 'footer'));
             } else {
                 $html = $mail->params('text') ?: $mail->view('html/message');
             }
@@ -343,11 +343,8 @@ class Mailer implements MailerContract
             $text = (new Html2Text($html ?: $mail->view('text/message')))->getText();
         }
 
-        $dom = new DOMDocument();
-        $dom->loadHTML(htmlentities($html));
-
-        if (!$dom->getElementsByTagName('head')->length) {
-            $html = $this->viewer('html/wrap-html', ['html' => $html]);
+        if (!(new Crawler($html))->filter('head')->count()) {
+            $html = $mail->view('html/wrap-html', ['html' => $html]);
         }
 
         if ($css = $mail->params('inline_css')) {
@@ -402,24 +399,5 @@ class Mailer implements MailerContract
         $this->container = $container;
 
         return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function viewer(?string $view = null, array $data = [])
-    {
-        if (is_null($this->viewer)) {
-            $container = $this->getContainer();
-            if ($container instanceof \tiFy\Contracts\Container\Container) {
-                $this->viewer = $container->get('mail.view', [$this]);
-            }
-        }
-
-        if (func_num_args() === 0) {
-            return $this->viewer;
-        }
-
-        return $this->viewer->render($view, $data);
     }
 }

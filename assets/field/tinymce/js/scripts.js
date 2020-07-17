@@ -7,10 +7,12 @@ import 'jquery-ui/ui/widget';
 import 'presstify-framework/observer/js/scripts';
 
 jQuery(function ($) {
+  /* */
   if (typeof (tinyMCE) === 'undefined') {
-    require('tinymce/tinymce');
-    require('tinymce/themes/silver/index');
+    require('tinymce');
+    require('tinymce/themes/silver/theme');
   }
+  /**/
 
   if (tify.locale.language !== undefined) {
     try {
@@ -50,8 +52,9 @@ jQuery(function ($) {
       if (tify.locale.language !== undefined) {
         o.language = tify.locale.language;
       }
-
       this.el.addClass('tifyTinymce'+ this.uuid);
+
+      o.icons_url = tify.base_url + '/node_modules/tinymce/icons/default/icons.js';
 
       tinymce.init($.extend({selector: '.tifyTinymce'+ this.uuid}, o, this.option()));
     }

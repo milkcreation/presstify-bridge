@@ -38,19 +38,21 @@ class BaseController extends ParentBaseController
     /**
      * Traitement de la requête HTTP.
      *
+     * @param string $path
+     *
      * @return ResponseContract
      */
     public function handle($path): ResponseContract
     {
         if (config('routing.remove_trailing_slash', true)) {
             if (($path != '/') && (substr($path, -1) == '/') && (Request::isMethod('get'))) {
-                return $this->redirect(rtrim($path, '/'));
+                return $this->redirect(Request::getBaseUrl() . '/' . rtrim($path, '/'));
             }
         }
 
         foreach (array_keys($this->tagTemplates) as $tag) {
             if (call_user_func($tag)) {
-                if ($response = $this->handleTag($tag, func_get_args())) {
+                if ($response = $this->handleTag($tag, ...func_get_args())) {
                     return $response;
                 }
             }

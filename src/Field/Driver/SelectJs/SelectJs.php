@@ -99,7 +99,9 @@ class SelectJs extends FieldDriver implements SelectJsContract
         parent::parse();
 
         $this->set('attrs.class', trim(sprintf($this->get('attrs.class', '%s'), ' FieldSelectJs')));
-        $this->set('attrs.data-control', 'select-js');
+        if (!$this->has('attrs.data-control')) {
+            $this->set('attrs.data-control', 'select-js');
+        }
         $this->set('attrs.data-id', $this->getId());
 
         $classes = [

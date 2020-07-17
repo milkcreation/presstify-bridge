@@ -5,18 +5,19 @@ namespace tiFy\Template;
 use Psr\Http\Message\ServerRequestInterface;
 use tiFy\Contracts\Template\{
     FactoryActions,
+    FactoryAjax,
     FactoryAssets,
+    FactoryBuilder,
     FactoryCache,
     FactoryDb,
-    FactoryBuilder,
+    FactoryForm,
     FactoryNotices,
     FactoryRequest,
     FactoryServiceProvider,
     FactoryUrl,
     TemplateFactory as TemplateFactoryContract,
     TemplateManager as TemplateManagerContract};
-use tiFy\Support\ParamsBag;
-use tiFy\Support\Str;
+use tiFy\Support\{ParamsBag, Str};
 
 class TemplateFactory extends ParamsBag implements TemplateFactoryContract
 {
@@ -45,7 +46,7 @@ class TemplateFactory extends ParamsBag implements TemplateFactoryContract
     protected $prepared = false;
 
     /**
-     * Identifiant de qualification compatible au formatage dans une url.
+     * Identifiant de qualification compaptible au formatage dans une url.
      * @var string|null
      */
     protected $slug;
@@ -74,6 +75,14 @@ class TemplateFactory extends ParamsBag implements TemplateFactoryContract
     public function actions(): FactoryActions
     {
         return $this->resolve('actions');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function ajax(): ?FactoryAjax
+    {
+        return $this->resolve('ajax');
     }
 
     /**
@@ -127,6 +136,14 @@ class TemplateFactory extends ParamsBag implements TemplateFactoryContract
     public function display()
     {
         echo (string)$this->render();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function form(): ?FactoryForm
+    {
+        return $this->resolve('form');
     }
 
     /**

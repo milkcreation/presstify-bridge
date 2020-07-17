@@ -1,42 +1,52 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Field;
 
 use tiFy\Contracts\Support\ParamsBag;
-use tiFy\Field\Driver\{
-    Label\Label,
-    Radio\Radio
-};
 
 interface RadioChoice extends ParamsBag
 {
     /**
-     * Résolution de sortie de la classe en tant que chaîne de caractère.
+     * Résolution de sortie de la classe sous la forme d'une chaîne de caractères.
      *
      * @return string
      */
-    public function __toString();
+    public function __toString(): string;
 
     /**
-     * Récupération du nom de soumission de la requête de traitement.
+     * Initialisation.
      *
-     * @return string
+     * @return static
      */
-    public function getName();
+    public function build(): RadioChoice;
+
+    /**
+     * Récupération du l'identifiant de qualification de l'élément.
+     *
+     * @return string|int
+     */
+    public function getId();
 
     /**
      * Récupération de l'intance du champ label.
      *
      * @return Label
      */
-    public function getLabel();
+    public function getLabel(): Label;
+
+    /**
+     * Récupération du nom de soumission de la requête de traitement.
+     *
+     * @return string
+     */
+    public function getNameAttr(): string;
 
     /**
      * Récupération de l'intance du champ radio.
      *
      * @return Radio
      */
-    public function getRadio();
+    public function getRadio(): Radio;
 
     /**
      * Récupération de la valeur de soumission de la requête de traitement.
@@ -48,30 +58,39 @@ interface RadioChoice extends ParamsBag
     /**
      * Vérification de l'indicateur de selection de l'élément.
      *
-     * @return mixed
+     * @return bool
      */
-    public function isChecked();
-
-    /**
-     * Définition du nom de soumission de la requête de traitement.
-     *
-     * @param string $name
-     *
-     * @return self
-     */
-    public function setName($name);
-
-    /**
-     * Définition de la selection de l'élément pour la requête de traitement.
-     *
-     * @return self
-     */
-    public function setChecked();
+    public function isChecked(): bool;
 
     /**
      * Récupération du rendu d'affichage de l'élément.
      *
      * @return string
      */
-    public function render();
+    public function render(): string;
+
+    /**
+     * Définition du nom de soumission de la requête de traitement.
+     *
+     * @param string $name
+     *
+     * @return static
+     */
+    public function setNameAttr(string $name): RadioChoice;
+
+    /**
+     * Définition de la selection de l'élément pour la requête de traitement.
+     *
+     * @return static
+     */
+    public function setChecked(): RadioChoice;
+
+    /**
+     * Définition de l'instance du gestionnaire d'affichage de la liste des éléments.
+     *
+     * @param RadioWalker $walker
+     *
+     * @return static
+     */
+    public function setWalker(RadioWalker $walker): RadioChoice;
 }

@@ -1,11 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Container;
 
-use League\Container\ContainerInterface as LeagueContainerInterface;
+use League\Container\ContainerInterface;
 
-interface Container extends LeagueContainerInterface
+interface Container extends ContainerInterface
 {
+    /**
+     * Initialisation.
+     *
+     * @return static
+     */
+    public function boot(): Container;
+
     /**
      * Récupération de la liste des fournisseurs de services ou services indépendants déclaré.
      *

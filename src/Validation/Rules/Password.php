@@ -2,6 +2,8 @@
 
 namespace tiFy\Validation\Rules;
 
+use Respect\Validation\Rules\{Length, Regex};
+use Respect\Validation\Exceptions\ComponentException;
 use tiFy\Contracts\Validation\Rule;
 
 class Password extends AbstractRule
@@ -70,32 +72,36 @@ class Password extends AbstractRule
      */
     public function validate($input): bool
     {
-        if ($this->min && !$this->validator::length($this->min)->validate($input)) {
+        try {
+            if ($this->min && !(new Length($this->min))->validate($input)) {
+                return false;
+            }
+
+            if ($this->max && !(new Length(null, $this->max))->validate($input)) {
+                return false;
+            }
+
+            $regex = "";
+
+            if ($this->digit) {
+                $regex .= "(?=(?:.*\d){" . $this->digit . ",})";
+            }
+
+            if ($this->lower) {
+                $regex .= "(?=(?:.*[a-z]){" . $this->lower . ",})";
+            }
+
+            if ($this->upper) {
+                $regex .= "(?=(?:.*[A-Z]){" . $this->upper . ",})";
+            }
+
+            if ($this->special) {
+                $regex .= "(?=(?:.*[!@#$%^&*()\[\]\-_=+{};:,<.>]){" . $this->special . ",})";
+            }
+
+            return (new Regex('/' . $regex . '/'))->validate($input);
+        } catch (ComponentException $e) {
             return false;
         }
-
-        if ($this->max && !$this->validator::length(null, $this->max)->validate($input)) {
-            return false;
-        }
-
-        $regex = "";
-
-        if ($this->digit) {
-            $regex .= "(?=(?:.*\d){" . $this->digit . ",})";
-        }
-
-        if ($this->lower) {
-            $regex .= "(?=(?:.*[a-z]){" . $this->lower . ",})";
-        }
-
-        if ($this->upper) {
-            $regex .= "(?=(?:.*[A-Z]){" . $this->upper . ",})";
-        }
-
-        if ($this->special) {
-            $regex .= "(?=(?:.*[!@#$%^&*()\[\]\-_=+{};:,<.>]){" . $this->special . ",})";
-        }
-
-        return $this->validator::regex('/' . $regex . '/')->validate($input);
     }
 }

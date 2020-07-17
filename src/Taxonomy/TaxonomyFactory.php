@@ -5,7 +5,33 @@ namespace tiFy\Taxonomy;
 use LogicException;
 use tiFy\Contracts\Taxonomy\{Taxonomy, TaxonomyFactory as TaxonomyFactoryContract};
 use tiFy\Support\ParamsBag;
+use WP_Taxonomy;
 
+/**
+ * @property-read string $label
+ * @property-read object $labels
+ * @property-read string $description
+ * @property-read bool $public
+ * @property-read bool $publicly_queryable
+ * @property-read bool $hierarchical
+ * @property-read bool $show_ui
+ * @property-read bool $show_in_menu
+ * @property-read bool $show_in_nav_menus
+ * @property-read bool $show_tagcloud
+ * @property-read bool show_in_quick_edit
+ * @property-read bool $show_admin_column
+ * @property-read bool|callable $meta_box_cb
+ * @property-read callable $meta_box_sanitize_cb
+ * @property-read array $object_type
+ * @property-read object $cap
+ * @property-read array|false $rewrite
+ * @property-read string|false $query_var
+ * @property-read callable $update_count_callback
+ * @property-read bool $show_in_rest
+ * @property-read string|bool $rest_base
+ * @property-read string|bool  $rest_controller_class
+ * @property-read bool $_builtin
+ */
 class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
 {
     /**
@@ -27,6 +53,12 @@ class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
     protected $name = '';
 
     /**
+     * Instance de la taxonomie Wordpress associée.
+     * @return WP_Taxonomy|null
+     */
+    protected $wpTax;
+
+    /**
      * CONSTRUCTEUR.
      *
      * @param string $name Nom de qualification de l'élément.
@@ -38,6 +70,14 @@ class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
     {
         $this->name = $name;
         $this->set($attrs);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function __get($key)
+    {
+        return $this->wpTax->{$key} ?? parent::__get($key);
     }
 
     /**
@@ -194,6 +234,20 @@ class TaxonomyFactory extends ParamsBag implements TaxonomyFactoryContract
     public function setManager(Taxonomy $manager): TaxonomyFactoryContract
     {
         $this->manager = $manager;
+
+        return $this;
+    }
+
+    /**
+     * Définition de l'instance de la taxonomie Wordpress associée.
+     *
+     * @param WP_Taxonomy $taxonomy
+     *
+     * @return static
+     */
+    public function setWpTaxonomy(WP_Taxonomy $taxonomy): TaxonomyFactoryContract
+    {
+        $this->wpTax = $taxonomy;
 
         return $this;
     }

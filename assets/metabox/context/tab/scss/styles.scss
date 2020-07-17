@@ -263,3 +263,26 @@
 .MetaboxTab-container .add-thumb-area-150:hover a.remove {
     display: block;
 }
+
+#blockEditor-metabox {
+    .MetaboxTab-containerHeader {
+        display:none;
+    }
+
+    .MetaboxTab-wrapper {
+        border:none;
+        background-color: transparent;
+
+        .Tab-nav--top {
+            background-color: transparent;
+        }
+    }
+
+    .MetaboxTab-wrapperBack {
+        border:none;
+    }
+
+    [data-control="tab.nav"].Tab-nav--left, [data-control="tab.nav"].Tab-nav--right {
+        margin-top:39px;
+    }
+}

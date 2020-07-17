@@ -193,10 +193,10 @@ jQuery(function ($) {
 
                       let content = '';
 
-                      if (typeof resp === 'string') {
-                        content = resp;
-                      } else if (typeof resp === 'object') {
-                        content = resp || undefined;
+                      if (typeof resp.data === 'string') {
+                        content = resp.data;
+                      } else if (typeof resp.data === 'object') {
+                        content = resp.data || undefined;
                       }
 
                       self.html(content);

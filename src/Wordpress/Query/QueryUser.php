@@ -3,13 +3,23 @@
 namespace tiFy\Wordpress\Query;
 
 use tiFy\Contracts\User\RoleFactory;
-use tiFy\Support\{ParamsBag, Proxy\Role};
+use tiFy\Support\{Arr, ParamsBag, Proxy\Role};
 use tiFy\Wordpress\Contracts\{Database\UserBuilder, Query\QueryUser as QueryUserContract};
 use tiFy\Wordpress\Database\Model\User as UserModel;
-use WP_Site;
-use WP_User;
-use WP_User_Query;
+use WP_Site, WP_User, WP_User_Query;
 
+/**
+ * @property-read int ID
+ * @property-read string user_login
+ * @property-read string user_pass
+ * @property-read string user_nicename
+ * @property-read string user_email
+ * @property-read string user_url
+ * @property-read string user_registered
+ * @property-read string user_activation_key
+ * @property-read string user_status
+ * @property-read string display_name
+ */
 class QueryUser extends ParamsBag implements QueryUserContract
 {
     /**
@@ -235,6 +245,14 @@ class QueryUser extends ParamsBag implements QueryUserContract
     /**
      * @inheritDoc
      */
+    public function getEditUrl(): string
+    {
+        return get_edit_user_link($this->getId());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getEmail(): string
     {
         return (string)$this->get('user_email', '');
@@ -390,9 +408,9 @@ class QueryUser extends ParamsBag implements QueryUserContract
     /**
      * @inheritDoc
      */
-    public function roleIn(array $roles): bool
+    public function roleIn($roles): bool
     {
-        return !!array_intersect(array_keys($this->getRoles()), $roles);
+        return !!array_intersect(array_keys($this->getRoles()), Arr::wrap($roles));
     }
 
     /**

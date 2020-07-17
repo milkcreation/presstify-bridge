@@ -143,7 +143,7 @@ interface QueryComment extends ParamsBag
      *
      * @return string
      */
-    public function getEditLink(): string;
+    public function getEditUrl(): string;
 
     /**
      * Récupération de l'identifiant de qualification.

@@ -5,7 +5,7 @@ namespace tiFy\Support\Proxy;
 use tiFy\Contracts\Cookie\Cookie as CookieContract;
 
 /**
- * @method static CookieContract instance(string $alias, string|array|null $attrs = null)
+ * @method static CookieContract make(string $alias, string|array|null $attrs = null)
  */
 class Cookie extends AbstractProxy
 {

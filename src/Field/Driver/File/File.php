@@ -43,6 +43,23 @@ class File extends FieldDriver implements FileContract
         if ($this->get('multiple')) {
             $this->push('attrs', 'multiple');
         }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseAttrName(): FieldDriverContract
+    {
+        if ($name = $this->get('name')) {
+            if ($this->get('multiple', false)) {
+                $name = "{$name}[]";
+            }
+
+            $this->set('attrs.name', $name);
+        }
+
         return $this;
     }
 }

@@ -3,9 +3,44 @@
 namespace tiFy\Contracts\Taxonomy;
 
 use tiFy\Contracts\Support\ParamsBag;
+use WP_Taxonomy;
 
+/**
+ * @property-read string $label
+ * @property-read object $labels
+ * @property-read string $description
+ * @property-read bool $public
+ * @property-read bool $publicly_queryable
+ * @property-read bool $hierarchical
+ * @property-read bool $show_ui
+ * @property-read bool $show_in_menu
+ * @property-read bool $show_in_nav_menus
+ * @property-read bool $show_tagcloud
+ * @property-read bool show_in_quick_edit
+ * @property-read bool $show_admin_column
+ * @property-read bool|callable $meta_box_cb
+ * @property-read callable $meta_box_sanitize_cb
+ * @property-read array $object_type
+ * @property-read object $cap
+ * @property-read array|false $rewrite
+ * @property-read string|false $query_var
+ * @property-read callable $update_count_callback
+ * @property-read bool $show_in_rest
+ * @property-read string|bool $rest_base
+ * @property-read string|bool  $rest_controller_class
+ * @property-read bool  $_builtin
+ */
 interface TaxonomyFactory extends ParamsBag
 {
+    /**
+     * Récupération des données de délégation de la Taxonomie Wordpress associée.
+     *
+     * @param int|string $key
+     *
+     * @return mixed
+     */
+    public function __get($key);
+
     /**
      * Résolution de sortie de la classe sous forme de chaîne de caractère.
      * {@internal Retourne le nom de qualification de la taxonomie.}
@@ -60,4 +95,13 @@ interface TaxonomyFactory extends ParamsBag
      * @return static
      */
     public function setManager(Taxonomy $manager): TaxonomyFactory;
+
+    /**
+     * Définition de l'instance de la taxonomie Wordpress associée.
+     *
+     * @param WP_Taxonomy $taxonomy
+     *
+     * @return static
+     */
+    public function setWpTaxonomy(WP_Taxonomy $taxonomy): TaxonomyFactory;
 }

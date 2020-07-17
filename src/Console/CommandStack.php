@@ -56,12 +56,15 @@ class CommandStack extends Command implements CommandStackContract
      * CONSTRUCTEUR.
      *
      * @param string|null $name Nom de qualification de la commande.
+     * @param string[]|array $commands Liste des commandes associées.
      *
      * @return void
      */
-    public function __construct(string $name = null)
+    public function __construct(string $name = null, array $commands = [])
     {
         parent::__construct($name);
+
+        $this->setStack($commands);
 
         $this->args = new ParamsBag();
     }

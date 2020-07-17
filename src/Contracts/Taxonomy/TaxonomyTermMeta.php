@@ -1,49 +1,105 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Taxonomy;
 
 interface TaxonomyTermMeta
 {
     /**
-     * Récupération d'une métadonné de taxonomie.
+     * Ajout d'une metadonnée.
      *
-     * @param int $term_id Identifiant de qualification du terme de taxonomie.
-     * @param string $meta_key Clé d'identification de la métadonnée enregistrées en base de données.
+     * @param int $id Identifiant de qualification du post.
+     * @param string $key Clé d'indice de la metadonnée.
+     * @param mixed $value Valeur de la métadonnée à ajouter.
      *
-     * @return mixed[]
+     * @return int|null
      */
-    public function get($term_id, $meta_key);
+    public function add(int $id, string $key, $value): ?int;
 
     /**
-     * Vérification si l'enregistrement de la métadonnée en base est de type unique.
+     * Vérification d'existance d'une métadonnée déclarée.
      *
-     * @param string $taxonomy Identifiant de qualification de la taxonomie associée.
-     * @param string $meta_key Clé d'identification de la métadonnée enregistrées en base de données.
+     * @param string $tax Taxonomie.
+     * @param string $key Clé d'indice de la metadonnée.
      *
      * @return bool
      */
-    public function isSingle($taxonomy, $meta_key);
+    public function exists(string $tax, string $key): bool;
 
     /**
-     * Déclaration d'une métadonné.
+     * Récupération d'une métadonnée.
      *
-     * @param string $taxonomy Identifiant de qualification de la taxonomie associée.
-     * @param string $meta_key Clé d'identification de la métadonnée enregistrées en base de données.
-     * @param bool $single Type d'enregistrement de la metadonnées en base. true (unique)|false (multiple).
-     * @param callable $sanitize_callback Fonction ou Méthode de rappel appelé avant la sauvegarde en base de données.
+     * @param int $id Identifiant de qualification du terme de taxonomie.
+     * @param string $key Clé d'indice de la metadonnée.
      *
-     * @return void
+     * @return array|null
      */
-    public function register($taxonomy, $meta_key, $single = false, $sanitize_callback = 'wp_unslash');
+    public function get(int $id, string $key): ?array;
 
     /**
-     * Enregistrement de metadonnées de taxonomie.
+     * Vérifie si une métadonnée déclarée est à occurence unique en base de données.
+     *
+     * @param string $tax Taxonomie.
+     * @param string $key Clé d'indice de la metadonnée.
+     *
+     * @return bool
+     */
+    public function isSingle(string $tax, string $key);
+
+    /**
+     * Récupération de la liste des clés d'indice des métadonnées déclarées.
+     *
+     * @param string|null $tax Taxonomie.
+     *
+     * @return array
+     */
+    public function keys(?string $tax = null): array;
+
+    /**
+     * Déclaration d'une métadonnée.
+     *
+     * @param string $tax Taxonomie.
+     * @param string $key Clé d'indice de la metadonnée.
+     * @param bool $single Indicateur d'enregistrement de la métadonnée unique (true)|multiple (false).
+     * @param string|callable $callback Méthode ou fonction de rappel avant l'enregistrement.
+     *
+     * @return static
+     */
+    public function register(
+        string $tax,
+        string $key,
+        bool $single = false,
+        $callback = 'wp_unslash'
+    ): TaxonomyTermMeta;
+
+    /**
+     * Déclaration d'une métadonnée à occurrence unique.
+     *
+     * @param string $tax Taxonomie.
+     * @param string $key Clé d'identification.
+     * @param string|callable $callback Fonction de rappel.
+     *
+     * @return static
+     */
+    public function registerSingle(string $tax, string $key, $callback = 'wp_unslash'): TaxonomyTermMeta;
+
+    /**
+     * Déclaration d'une métadonnée à occurrence multiple.
+     *
+     * @param string $tax Taxonomie.
+     * @param string $key Clé d'identification.
+     * @param string|callable $callback Fonction de rappel.
+     *
+     * @return static
+     */
+    public function registerMulti(string $tax, string $key, $callback = 'wp_unslash'): TaxonomyTermMeta;
+
+    /**
+     * Enregistrement de metadonnées.
      *
      * @param int $term_id Identifiant de qualification du terme de taxonomie.
-     * @param int $tt_id
-     * @param string $taxonomy Identifiant de qualification de la taxonomie associée.
+     * @param string $taxonomy Taxonomie.
      *
      * @return void
      */
-    public function save($term_id, $tt_id, $taxonomy);
+    public function save(int $term_id, string $taxonomy): void;
 }

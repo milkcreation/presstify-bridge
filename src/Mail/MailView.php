@@ -22,7 +22,7 @@ class MailView extends PlatesFactory implements MailViewContract
     {
         if (in_array($method, $this->mixins)) {
             try {
-                return call_user_func_array([$this->engine->params('mailer'), $method], $parameters);
+                return call_user_func_array([$this->engine->params('mail'), $method], $parameters);
             } catch (Exception $e) {
                 throw new BadMethodCallException(
                     sprintf(
@@ -41,7 +41,15 @@ class MailView extends PlatesFactory implements MailViewContract
      */
     public function driver(): MailerDriver
     {
-        return $this->engine->params('mailer')->getDriver();
+        return $this->engine->params('mail')->mailer()->getDriver();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function param(string $key, $default = null)
+    {
+        return $this->engine->params('mail')->params($key, $default);
     }
 
     /**

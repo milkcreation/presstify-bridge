@@ -5,7 +5,40 @@ namespace tiFy\PostType;
 use LogicException;
 use tiFy\Contracts\PostType\{PostType, PostTypeFactory as PostTypeFactoryContract};
 use tiFy\Support\ParamsBag;
+use WP_Post_Type;
 
+/**
+ * @property-read string $label
+ * @property-read object $labels
+ * @property-read string $description
+ * @property-read bool $public
+ * @property-read bool $hierarchical
+ * @property-read bool $exclude_from_search
+ * @property-read bool $publicly_queryable
+ * @property-read bool $show_ui
+ * @property-read bool $show_in_menu
+ * @property-read bool $show_in_nav_menus
+ * @property-read bool $show_in_admin_bar
+ * @property-read int $menu_position
+ * @property-read string $menu_icon
+ * @property-read string $capability_type
+ * @property-read bool $map_meta_cap
+ * @property-read string $register_meta_box_cb
+ * @property-read array $taxonomies
+ * @property-read bool|string $has_archive
+ * @property-read string|bool $query_var
+ * @property-read bool $can_export
+ * @property-read bool $delete_with_user
+ * @property-read bool $_builtin
+ * @property-read string $_edit_link
+ * @property-read object $cap
+ * @property-read array|false $rewrite
+ * @property-read array|bool $supports
+ * @property-read bool $show_in_rest
+ * @property-read string|bool $rest_base
+ * @property-read string|bool $rest_controller_class
+ * @property-read \WP_REST_Controller $rest_controller
+ */
 class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
 {
     /**
@@ -27,6 +60,12 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
     protected $name = '';
 
     /**
+     * Instance du type de post Wordpress associé.
+     * @return WP_Post_Type|null
+     */
+    protected $wpPostType;
+
+    /**
      * CONSTRUCTEUR.
      *
      * @param string $name Nom de qualification.
@@ -38,6 +77,14 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
     {
         $this->name = $name;
         $this->set($attrs);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function __get($key)
+    {
+        return $this->wpPost->{$key} ?? parent::__get($key);
     }
 
     /**
@@ -206,6 +253,16 @@ class PostTypeFactory extends ParamsBag implements PostTypeFactoryContract
     public function setManager(PostType $manager): PostTypeFactoryContract
     {
         $this->manager = $manager;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setWpPostType(WP_Post_Type $post_type): PostTypeFactoryContract
+    {
+        $this->wpPostType = $post_type;
 
         return $this;
     }

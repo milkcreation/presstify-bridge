@@ -5,6 +5,7 @@ namespace tiFy\Wordpress\PageHook;
 use tiFy\Contracts\Metabox\MetaboxDriver as MetaboxDriverContract;
 use tiFy\Metabox\MetaboxDriver;
 use tiFy\Wordpress\Contracts\PageHook;
+use tiFy\Wordpress\Proxy\PageHook as ProxyPageHook;
 
 class PageHookMetabox extends MetaboxDriver
 {
@@ -20,6 +21,7 @@ class PageHookMetabox extends MetaboxDriver
     public function defaults(): array
     {
         return array_merge(parent::defaults(), [
+            'items' => [],
             'title' => __('Pages d\'accroche', 'tify'),
         ]);
     }
@@ -31,9 +33,11 @@ class PageHookMetabox extends MetaboxDriver
     {
         parent::parse();
 
-        $this->set([
-            'items' => $this->pageHook()->collect()->where('admin', true)->all(),
-        ]);
+        if (!$this->get('items')) {
+            $this->set([
+                'items' => $this->pageHook() ? $this->pageHook()->collect()->where('admin', true)->all() : [],
+            ]);
+        }
 
         return $this;
     }
@@ -45,7 +49,7 @@ class PageHookMetabox extends MetaboxDriver
      */
     public function pageHook(): ?PageHook
     {
-        return $this->pageHook;
+        return $this->pageHook ?: ProxyPageHook::getInstance();
     }
 
     /**
@@ -68,7 +72,7 @@ class PageHookMetabox extends MetaboxDriver
     public function viewer(?string $view = null, array $data = [])
     {
         if (!$this->viewer && !$this->get('viewer.directory')) {
-            $this->set('viewer.directory', class_info($this->pageHook)->getDirname() . '/Resources/views/metabox');
+            $this->set('viewer.directory', class_info($this->pageHook())->getDirname() . '/Resources/views/metabox');
         }
 
         return func_num_args() === 0 ? parent::viewer() : parent::viewer($view, $data);

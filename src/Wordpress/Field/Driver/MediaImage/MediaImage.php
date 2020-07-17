@@ -3,7 +3,6 @@
 namespace tiFy\Wordpress\Field\Driver\MediaImage;
 
 use tiFy\Contracts\Field\FieldDriver as BaseFieldDriverContract;
-use tiFy\Support\Str;
 use tiFy\Wordpress\Contracts\Field\MediaImage as MediaImageContract;
 use tiFy\Wordpress\Field\FieldDriver;
 
@@ -33,12 +32,13 @@ class MediaImage extends FieldDriver implements MediaImageContract
      * @var array $viewer Liste des attributs de configuration du controleur de gabarit d'affichage.
      * @var string $content Contenu HTML d'enrichissement de l'affichage de l'interface de saisie.
      * @var string|int $default Image par défaut. Affiché lorsqu'aucune image n'est séléctionnée.
+     * @var string $format Format de l'image. cover (défaut)|contain
      * @var int $height Hauteur de l'image en pixel. 100 par defaut.
      * @var bool|string $infos Etiquette d'information complémentaires. {{largeur}} x {{hauteur}} par défaut
      * @var bool $removable Activation de la suppression de l'image active.
      * @var string|array $size Taille de l'attachment utilisé pour la prévisualisation de l'image. 'large' par défaut.
      * @var int $width Largeur de l'image en pixel. 100 par défaut.
-     *  }
+     * }
      */
     public function defaults(): array
     {
@@ -51,6 +51,7 @@ class MediaImage extends FieldDriver implements MediaImageContract
             'viewer'    => [],
             'content'   => __('Cliquez sur la zone', 'tify'),
             'default'   => null,
+            'format'    => 'cover',
             'height'    => 100,
             'infos'     => true,
             'removable' => true,
@@ -113,6 +114,7 @@ class MediaImage extends FieldDriver implements MediaImageContract
 
         $this->set([
             'attrs.data-control'         => 'media-image',
+            'attrs.data-format'          => $this->get('format'),
             'preview.attrs.class'        => 'FieldMediaImage-preview',
             'preview.attrs.data-control' => 'media-image.preview',
             'sizer'                      => [

@@ -22,6 +22,14 @@ abstract class Engine implements EngineContract
     /**
      * @inheritDoc
      */
+    public function exists($name)
+    {
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function params($key = null, $default = null)
     {
         if (is_null($this->params)) {

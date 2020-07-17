@@ -2,25 +2,26 @@
 
 namespace tiFy\Wordpress\PostType;
 
-use tiFy\Contracts\PostType\{PostType as Manager, PostTypeFactory};
+use tiFy\Contracts\PostType\{PostType as PostTypeManager, PostTypeFactory};
 use tiFy\Wordpress\Contracts\PostType as PostTypeContract;
+use WP_Post_Type;
 
 class PostType implements PostTypeContract
 {
     /**
      * Instance du gestionnaire de types de post.
-     * @var Manager
+     * @var PostTypeManager
      */
     protected $manager;
 
     /**
      * CONSTRUCTEUR.
      *
-     * @param Manager $manager
+     * @param PostTypeManager $manager
      *
      * @return void
      */
-    public function __construct(Manager $manager)
+    public function __construct(PostTypeManager $manager)
     {
         $this->manager = $manager;
 
@@ -40,11 +41,31 @@ class PostType implements PostTypeContract
             }
         }, 999999);
 
+        add_action('save_post', function (int $post_id) {
+            if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+                return;
+            } elseif (defined('DOING_AJAX') && DOING_AJAX) {
+                return;
+            } elseif (!$post = get_post($post_id)) {
+                return;
+            } elseif (('page' === $post->post_type) && !current_user_can('edit_page', $post_id)) {
+                return;
+            } elseif (('page' !== $post->post_type) && !current_user_can('edit_post', $post_id)) {
+                return;
+            }
+
+            $this->manager->meta()->save($post_id, $post->post_type);
+        });
+
         events()->listen('post-type.factory.boot', function (PostTypeFactory $factory) {
             global $wp_post_types;
 
             if (!isset($wp_post_types[$factory->getName()])) {
                 register_post_type($factory->getName(), $factory->all());
+            }
+
+            if ($wp_post_types[$factory->getName()] instanceof WP_Post_Type) {
+                $factory->setWpPostType($wp_post_types[$factory->getName()]);
             }
 
             add_action('init', function () use ($factory) {
@@ -55,7 +76,5 @@ class PostType implements PostTypeContract
                 }
             }, 25);
         });
-
-        add_action('save_post', [$this->manager->meta(), 'save'], 10, 2);
     }
 }
