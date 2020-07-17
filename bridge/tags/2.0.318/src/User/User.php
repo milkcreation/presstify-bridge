@@ -4,7 +4,6 @@ namespace tiFy\User;
 
 use Psr\Container\ContainerInterface as Container;
 use tiFy\Contracts\User\User as UserContract;
-use tiFy\User\Metadata\Metadata;
 use tiFy\User\Metadata\Option;
 use tiFy\Contracts\User\RoleManager;
 
@@ -39,7 +38,7 @@ class User implements UserContract
     /**
      * @inheritdoc
      */
-    public function meta(): Metadata
+    public function meta(): UserMeta
     {
         return $this->resolve('meta');
     }

@@ -5,6 +5,7 @@ namespace tiFy\Mail;
 use tiFy\Contracts\{Http\Response as ResponseContract, Mail\Mail as MailContract, Mail\Mailer};
 use tiFy\Http\Response;
 use tiFy\Support\ParamsBag;
+use tiFy\Contracts\View\Engine as ViewEngine;
 
 class Mail implements MailContract
 {
@@ -25,6 +26,12 @@ class Mail implements MailContract
      * @var ParamsBag
      */
     protected $params;
+
+    /**
+     * Instance du controleur de gabarit d'affichage.
+     * @var ViewEngine
+     */
+    protected $view;
 
     /**
      * @inheritDoc
@@ -55,10 +62,28 @@ class Mail implements MailContract
     /**
      * @inheritDoc
      */
+    public function defaults(): array
+    {
+        return $this->mailer()::getDefaults();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function debug(): string
     {
-        return $this->mailer->prepare()->getDriver()->prepare()
-            ? $this->mailer->viewer('debug') : $this->mailer->getDriver()->error();
+        $this->mailer()->create($this);
+
+        return $this->mailer()->prepare()
+            ? $this->view('debug') : $this->mailer()->getDriver()->error();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function mailer(): ?Mailer
+    {
+        return $this->mailer ?? \tiFy\Support\Proxy\Mail::getInstance();
     }
 
     /**
@@ -67,7 +92,7 @@ class Mail implements MailContract
     public function params($key = null, $default = null)
     {
         if (!$this->params instanceof ParamsBag) {
-            $this->params = new ParamsBag();
+            $this->params = (new ParamsBag())->set($this->defaults());
         }
 
         if (is_string($key)) {
@@ -84,7 +109,9 @@ class Mail implements MailContract
      */
     public function queue($date = 'now', array $params = []): int
     {
-        return $this->mailer->prepare()->addQueue($this, $date, $params);
+        $this->mailer()->create($this);
+
+        return $this->mailer()->prepare()->addQueue($this, $date, $params);
     }
 
     /**
@@ -92,7 +119,9 @@ class Mail implements MailContract
      */
     public function send(): bool
     {
-        return $this->mailer->prepare()->getDriver()->send();
+        $this->mailer()->create($this);
+
+        return $this->mailer()->prepare()->getDriver()->send();
     }
 
     /**
@@ -108,9 +137,19 @@ class Mail implements MailContract
     /**
      * @inheritDoc
      */
+    public function setParams(array $params): MailContract
+    {
+        $this->params($params);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function render(): string
     {
-        return (string)$this->mailer->prepare()->getDriver()->getHtml();
+        return (string)$this->mailer()->prepare()->getDriver()->getHtml();
     }
 
     /**
@@ -124,8 +163,14 @@ class Mail implements MailContract
     /**
      * @inheritDoc
      */
-    public function view(string $name): string
+    public function view(string $name, array $data = []): string
     {
-        return $this->mailer->viewer($name, $this->data ? $this->data->all() : []);
+        if (is_null($this->view)) {
+            if ($container = $this->mailer()->getContainer()) {
+                $this->view = $container->get('mail.view', [$this]);
+            }
+        }
+
+        return $this->view->render($name, array_merge($this->data ? $this->data->all() : [], $data));
     }
 }

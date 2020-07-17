@@ -4,6 +4,7 @@ namespace tiFy\Field\Driver\NumberJs;
 
 use tiFy\Contracts\Field\{FieldDriver as FieldDriverContract, NumberJs as NumberJsContract};
 use tiFy\Field\FieldDriver;
+use tiFy\Support\Str;
 
 class NumberJs extends FieldDriver implements NumberJsContract
 {
@@ -61,6 +62,23 @@ class NumberJs extends FieldDriver implements NumberJsContract
         $this->set('attrs.type', 'text');
 
         $this->set('attrs.data-control', 'number-js.input');
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parseAttrClass(): FieldDriverContract
+    {
+        $base = 'Field' . ucfirst(preg_replace('/\./', '-', Str::camel($this->getAlias()))) . '-input';
+
+        $default_class = "{$base} {$base}--" . $this->getIndex();
+        if (!$this->has('attrs.class')) {
+            $this->set('attrs.class', $default_class);
+        } else {
+            $this->set('attrs.class', sprintf($this->get('attrs.class', ''), $default_class));
+        }
 
         return $this;
     }

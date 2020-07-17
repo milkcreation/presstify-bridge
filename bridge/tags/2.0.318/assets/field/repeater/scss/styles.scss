@@ -1,1 +1,15 @@
 @import '~presstify-framework/theme/scss/styles';
+
+// Personnalisation
+.FieldRepeater-item {
+  min-height:80px;
+
+  .FieldText {
+    width: 100%;
+  }
+}
+
+.FieldRepeater-itemOrder.ThemeFeed-itemOrder[type="text"] {
+  min-height:12px;
+  font-size:9px;
+}

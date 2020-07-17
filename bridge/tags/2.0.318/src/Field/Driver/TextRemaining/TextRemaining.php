@@ -12,15 +12,15 @@ class TextRemaining extends FieldDriver implements TextRemainingContract
      * {@inheritDoc}
      *
      * @return array {
-     *      @var array $attrs Attributs HTML du champ.
-     *      @var string $after Contenu placé après le champ.
-     *      @var string $before Contenu placé avant le champ.
-     *      @var string $name Clé d'indice de la valeur de soumission du champ.
-     *      @var string $value Valeur courante de soumission du champ.
-     *      @var array $viewer Liste des attributs de configuration du pilote d'affichage.
-     *      @var string $selector Type de selecteur. textarea (défaut)|input.
-     *      @var int $max Nombre maximum de caractères attendus. 150 par défaut.
-     *      @var boolean $limit Activation de la limite de saisie selon le nombre maximum de caractères.
+     * @var array $attrs Attributs HTML du champ.
+     * @var string $after Contenu placé après le champ.
+     * @var string $before Contenu placé avant le champ.
+     * @var string $name Clé d'indice de la valeur de soumission du champ.
+     * @var string $value Valeur courante de soumission du champ.
+     * @var array $viewer Liste des attributs de configuration du pilote d'affichage.
+     * @var string $selector Type de selecteur. textarea (défaut)|input.
+     * @var int $max Nombre maximum de caractères attendus. 150 par défaut.
+     * @var boolean $limit Activation de la limite de saisie selon le nombre maximum de caractères.
      *  }
      */
     public function defaults(): array
@@ -34,7 +34,7 @@ class TextRemaining extends FieldDriver implements TextRemainingContract
             'viewer'   => [],
             'limit'    => false,
             'max'      => 150,
-            'selector' => 'textarea'
+            'selector' => 'textarea',
         ];
     }
 
@@ -68,15 +68,15 @@ class TextRemaining extends FieldDriver implements TextRemainingContract
                 'none'     => __('restant', 'tify'),
             ],
             'limit' => $this->get('limit'),
-            'max'   => $this->get('max')
+            'max'   => $this->get('max'),
         ]);
 
-        switch($this->get('tag')) {
+        switch ($this->get('tag')) {
             case 'textarea' :
-                $this->set('content', Str::br2nl($this->get('value')));
+                $this->set('content', Str::br2nl($this->get('value') ?: ''));
                 break;
             case 'input' :
-                $this->set('attrs.value', $this->get('value'));
+                $this->set('attrs.value', $this->get('value') ?: '');
                 break;
         }
 

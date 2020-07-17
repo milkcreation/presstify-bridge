@@ -18,7 +18,7 @@ use tiFy\Template\Templates\ListTable\Contracts\{
  * @method Builder builder()
  * @method BulkActions bulkActions()
  * @method Columns columns()
- * @method Extras extras()
+ * @method Extras extras(string $which = null)
  * @method Items items()
  * @method FactoryLabels|string label(?string $key = null, string $default = '')
  * @method string name()

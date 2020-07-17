@@ -33,8 +33,6 @@ trait MetaFieldsAwareTrait
      */
     public function saveMeta($key, $value = null)
     {
-        $value = Arr::serialize($value);
-
         if (is_array($key)) {
             foreach ($key as $k => $v) {
                 $this->saveOneMeta($k, $v);
@@ -55,8 +53,9 @@ trait MetaFieldsAwareTrait
      */
     private function saveOneMeta($key, $value)
     {
-        $meta = $this->meta()->where('meta_key', $key)
-            ->firstOrNew(['meta_key' => $key]);
+        $meta = $this->meta()->where('meta_key', $key)->firstOrNew(['meta_key' => $key]);
+
+        $value = Arr::serialize($value);
 
         $result = $meta->fill(['meta_value' => $value])->save();
         $this->load('meta');

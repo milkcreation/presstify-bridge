@@ -194,6 +194,14 @@ jQuery(function ($) {
     // Initialisation des événements déclenchement.
     _initEvents: function () {
       this._on(this.wrap, {'click [data-control="suggest.reset"]': this.reset});
+      this._on(this.uiautocomplete, {'keyup': this._onKeyUp});
+    },
+    // EVENEMENTS.
+    // -----------------------------------------------------------------------------------------------------------------
+    _onKeyUp: function () {
+      if (this.wrap.attr('aria-selected') === 'true') {
+        this.reset();
+      }
     },
     // ACCESSEURS.
     // -----------------------------------------------------------------------------------------------------------------
@@ -219,6 +227,7 @@ jQuery(function ($) {
           this.wrap.attr('aria-selected', 'false');
         }
       }
+
       return this.el.data('value');
     }
   });

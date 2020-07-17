@@ -33,7 +33,7 @@ class UserServiceProvider extends ServiceProvider
         });
 
         $this->getContainer()->share('user.meta', function () {
-            return new Metadata();
+            return new UserMeta();
         });
 
         $this->getContainer()->share('user.option', function () {

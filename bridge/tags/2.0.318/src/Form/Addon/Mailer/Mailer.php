@@ -15,12 +15,12 @@ class Mailer extends AddonFactory
     public function boot(): void
     {
         $this->form()->events()
-            ->listen('request.submit', function () {
+            ->listen('request.proceed', function () {
                 if ($debug = $this->params('debug')) {
                     $this->form()->events('addon.mailer.email.debug');
                 }
             })
-            ->listen('request.success', function () {
+            ->listen('request.successed', function () {
                 $this->form()->events('addon.mailer.email.send');
             })
             ->listen('addon.mailer.email.debug', [$this, 'emailDebug'])

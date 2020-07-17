@@ -29,13 +29,16 @@ class Buttons extends Collection implements FactoryButtons
     {
         $this->form = $form;
 
-        // Déclaration des champs.
-        foreach($buttons as $name => $attrs) :
-            if (is_numeric($name)) :
-                $name = is_string($attrs) ? $attrs : null;
-            endif;
+        if (!isset($buttons['submit'])) {
+            $buttons['submit'] = true;
+        }
 
-            if (!is_null($name) && ($attrs !== false)) :
+        foreach($buttons as $name => $attrs) {
+            if (is_numeric($name)) {
+                $name = is_string($attrs) ? $attrs : null;
+            }
+
+            if (!is_null($name) && ($attrs !== false)) {
                 $attrs = is_array($attrs) ? $attrs : [$attrs];
 
                 $this->items[$name] = (app()->has("form.button.{$name}"))
@@ -43,8 +46,8 @@ class Buttons extends Collection implements FactoryButtons
                     : $this->resolve("button", [$name, $attrs, $this->form()]);
 
                 app()->share("form.factory.button.{$name}.{$this->form()->name()}", $this->items[$name]);
-            endif;
-        endforeach;
+            }
+        }
 
         // ré-ordonnacement des boutons.
         $max = $this->collect()->max(

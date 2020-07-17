@@ -3,7 +3,8 @@
 namespace tiFy\Wordpress\Database\Model;
 
 use Corcel\Model\Post as CorcelPost;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\{Builder, Collection};
+use Illuminate\Support\Carbon;
 use tiFy\Database\Concerns\{ColumnsAwareTrait, ConnectionAwareTrait};
 use tiFy\Support\ParamsBag;
 use tiFy\Wordpress\Contracts\Database\PostBuilder;
@@ -15,6 +16,32 @@ use tiFy\Wordpress\Database\Concerns\{BlogAwareTrait, MetaFieldsAwareTrait};
  * @method PostBuilder hasMeta(string|array $meta_key, mixed|null $value, string $operator = '=')
  * @method PostBuilder hasMetaLike(string $key, string $value),
  * @method boolean saveMeta($key, $value = null)
+ *
+ * @property-read int $ID
+ * @property-read int $post_author
+ * @property-read Carbon $post_date
+ * @property-read Carbon $post_date_gmt
+ * @property-read string $post_content
+ * @property-read string $post_title
+ * @property-read string $post_excerpt
+ * @property-read string $post_status
+ * @property-read string $comment_status
+ * @property-read string $ping_status
+ * @property-read string $post_password
+ * @property-read string $post_name
+ * @property-read string $to_ping
+ * @property-read string $pinged
+ * @property-read Carbon $post_modified
+ * @property-read Carbon $post_modified_gmt
+ * @property-read string $post_content_filtered
+ * @property-read int $post_parent
+ * @property-read string $guid
+ * @property-read int $menu_order
+ * @property-read string $post_type
+ * @property-read string $post_mime_type
+ * @property-read int $comment_count
+ * @property-read string[][]|array $terms
+ * @property-read Collection $taxonomies
  */
 class Post extends CorcelPost implements PostBuilder
 {
@@ -169,7 +196,7 @@ class Post extends CorcelPost implements PostBuilder
      */
     public static function query(): Builder
     {
-        return (new static)->newQuery();
+        return (new static())->newQuery();
     }
 
     /**
@@ -193,5 +220,13 @@ class Post extends CorcelPost implements PostBuilder
         $query = $this->clauseWhere($p->all(), $query);
 
         return $query;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function thumbnail()
+    {
+        return $this->hasOne(PostThumbnailmeta::class, 'post_id')->where('meta_key', '_thumbnail_id');
     }
 }

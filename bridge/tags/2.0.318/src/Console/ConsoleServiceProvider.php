@@ -36,7 +36,7 @@ class ConsoleServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->getContainer()->share('console', function() {
-            $app = new Application('presstiFy PHP CLI Console', '1.0.0');
+            $app = new Console('presstiFy PHP CLI Console', '1.0.0');
 
             foreach (config('console.commands', []) as $k => $command) {
                 if (is_numeric($k) && class_exists($command)) {

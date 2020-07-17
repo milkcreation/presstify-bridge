@@ -2,7 +2,12 @@
 
 namespace tiFy\Field\Driver\RadioCollection;
 
-use tiFy\Contracts\Field\RadioChoice as RadioChoiceContract;
+use tiFy\Contracts\Field\{
+    Radio as RadioContract,
+    RadioChoice as RadioChoiceContract,
+    RadioWalker as RadioWalkerContract,
+    Label as LabelContract
+};
 use tiFy\Support\{ParamsBag, Proxy\Field};
 use tiFy\Field\Driver\{Label\Label, Radio\Radio};
 
@@ -13,6 +18,18 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
      * @var integer
      */
     static $_index = 0;
+
+    /**
+     * Indicateur d'initialisation.
+     * @var bool
+     */
+    private $built = false;
+
+    /**
+     * Nom de qualification.
+     * @var string|int
+     */
+    protected $id = '';
 
     /**
      * Indice de qualification.
@@ -27,28 +44,28 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
     protected $label;
 
     /**
-     * Nom de qualification.
-     * @var int|string
-     */
-    protected $name = '';
-
-    /**
      * Instance du bouton radio.
      * @var Radio
      */
     protected $radio;
 
     /**
+     * Instance du gestionnaire d'affichage de la liste des éléments.
+     * @var RadioWalkerContract
+     */
+    protected $walker;
+
+    /**
      * CONSTRUCTEUR.
      *
-     * @param string|int $name Nom de qualification.
+     * @param string|int $id Identifiant de qualification.
      * @param array|string $attrs Liste des attributs de configuration.
      *
      * @return void
      */
-    public function __construct($name, $attrs)
+    public function __construct($id, $attrs)
     {
-        $this->name = $name;
+        $this->id = $id;
         $this->index = self::$_index++;
 
         if (is_string($attrs)) {
@@ -62,22 +79,36 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
         if ($attrs instanceof Radio) {
             $this->radio = $attrs;
         } else {
-            $this->set($attrs)->parse();
+            $this->set($attrs);
         }
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return (string)$this->render();
+        return $this->render();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function defaults()
+    public function build(): RadioChoiceContract
+    {
+        if(!$this->built) {
+            $this->parse();
+
+            $this->built = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function defaults(): array
     {
         return [
             'label' => [
@@ -92,38 +123,46 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
                 'attrs'   => [],
                 'name'    => '',
                 'value'   => '',
-                'checked' => $this->name
+                'checked' => $this->id
             ]
 
         ];
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getName()
+    public function getId()
     {
-        return $this->getRadio() instanceof Radio ? $this->getRadio()->getName() : '';
+        return $this->id;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getLabel()
+    public function getLabel(): LabelContract
     {
         return $this->label;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getRadio()
+    public function getNameAttr(): string
+    {
+        return $this->getRadio() instanceof Radio ? $this->getRadio()->getName() : '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRadio(): RadioContract
     {
         return $this->radio;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getValue()
     {
@@ -131,17 +170,17 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function isChecked()
+    public function isChecked(): bool
     {
-        return $this->getRadio() instanceof Radio ? $this->getRadio()->isChecked() : null;
+        return $this->getRadio() instanceof Radio ? $this->getRadio()->isChecked() : false;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function parse()
+    public function parse(): RadioChoiceContract
     {
         parent::parse();
 
@@ -176,17 +215,17 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function render()
+    public function render(): string
     {
-        return $this->getRadio() . $this->getLabel();
+        return $this->getRadio()->render() . $this->getLabel()->render();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function setName($name)
+    public function setNameAttr(string $name): RadioChoiceContract
     {
         if ($this->getRadio() instanceof Radio) {
             $this->getRadio()->set('attrs.name', $name);
@@ -196,13 +235,23 @@ class RadioChoice extends ParamsBag implements RadioChoiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function setChecked()
+    public function setChecked(): RadioChoiceContract
     {
         if ($this->getRadio() instanceof Radio) {
             $this->getRadio()->push('attrs', 'checked');
         }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setWalker(RadioWalkerContract $walker): RadioChoiceContract
+    {
+        $this->walker = $walker;
 
         return $this;
     }

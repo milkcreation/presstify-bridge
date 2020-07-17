@@ -26,7 +26,6 @@ class Repeater extends FieldDriver implements RepeaterContract
     /**
      * {@inheritDoc}
      *
-     * @return array {
      * @var array $attrs Attributs HTML du champ.
      * @var string $after Contenu placé après le champ.
      * @var string $before Contenu placé avant le champ.
@@ -40,7 +39,6 @@ class Repeater extends FieldDriver implements RepeaterContract
      * @var boolean $removable Activation du déclencheur de suppression des éléments.
      * @var bool|array $sortable Activation de l'ordonnacemment des éléments|Liste des attributs de configuration.
      * @see http://api.jqueryui.com/sortable/
-     * }
      */
     public function defaults(): array
     {

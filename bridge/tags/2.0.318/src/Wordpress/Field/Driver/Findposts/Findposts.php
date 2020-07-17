@@ -3,14 +3,20 @@
 namespace tiFy\Wordpress\Field\Driver\Findposts;
 
 use tiFy\Contracts\Field\FieldDriver as BaseFieldDriverContract;
-use tiFy\Wordpress\Contracts\Field\Findposts as FindpostsContract;
+use tiFy\Contracts\Routing\Route;
+use tiFy\Wordpress\Contracts\Field\{Findposts as FindpostsContract, FieldDriver as FieldDriverContract};
 use tiFy\Wordpress\Field\FieldDriver;
-use tiFy\Support\Proxy\Asset;
-use WP_Post;
-use WP_Query;
+use tiFy\Support\Proxy\{Asset, Request, Router};
+use WP_Post, WP_Query;
 
 class Findposts extends FieldDriver implements FindpostsContract
 {
+    /**
+     * Url de traitement de requête XHR.
+     * @var Route|string
+     */
+    protected $url = '';
+
     /**
      * @inheritDoc
      */
@@ -18,40 +24,41 @@ class Findposts extends FieldDriver implements FindpostsContract
     {
         parent::boot();
 
-        add_action('wp_ajax_field_findposts', [$this, 'xhrResponse']);
-        add_action('wp_ajax_nopriv_field_findposts', [$this, 'xhrResponse']);
-
-        add_action('wp_ajax_field_findposts_post_permalink', [$this, 'xhrGetPermalink']);
-        add_action('wp_ajax_nopriv_field_findposts_post_permalink', [$this, 'xhrGetPermalink']);
+        $this->setUrl();
     }
 
     /**
      * {@inheritDoc}
      *
      * @return array $attributes {
-     *      @var string $before Contenu placé avant le champ.
-     *      @var string $after Contenu placé après le champ.
-     *      @var string $name Clé d'indice de la valeur de soumission du champ.
-     *      @var string $value Valeur courante de soumission du champ.
-     *      @var array $attrs Attributs HTML du champ.
-     *      @var array $viewer Liste des attributs de configuration du controleur de gabarit d'affichage.
-     *      @var string $ajax_action
-     *      @var array $query_args
-     *      @var array $viewer Liste des attributs de configuration de la classe des gabarits d'affichage.
+     * @var string $before Contenu placé avant le champ.
+     * @var string $after Contenu placé après le champ.
+     * @var string $name Clé d'indice de la valeur de soumission du champ.
+     * @var string $value Valeur courante de soumission du champ.
+     * @var array $attrs Attributs HTML du champ.
+     * @var array $viewer Liste des attributs de configuration du controleur de gabarit d'affichage.
+     * @var array $query_args
      * }
      */
     public function defaults(): array
     {
         return [
-            'before'      => '',
-            'after'       => '',
-            'name'        => '',
-            'value'       => '',
-            'attrs'       => [],
-            'viewer'      => [],
-            'ajax_action' => 'field_findposts',
-            'query_args'  => [],
+            'before'     => '',
+            'after'      => '',
+            'name'       => '',
+            'value'      => '',
+            'attrs'      => [],
+            'viewer'     => [],
+            'query_args' => [],
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUrl(...$params): string
+    {
+        return $this->url instanceof Route ? (string)$this->url->getUrl($params) : $this->url;
     }
 
     /**
@@ -61,34 +68,51 @@ class Findposts extends FieldDriver implements FindpostsContract
     {
         parent::parse();
 
-        $this->set('attrs.id', 'FieldFindposts--' . uniqid());
+        $uniqid = md5(uniqid() . $this->getIndex());
 
-        return $this;
-    }
-
-    /**
-     * Affichage de la fenêtre modale.
-     *
-     * @param string $found_action Action Ajax de récupération des éléments.
-     * @param array $query_args Arguments de la requête de récupération des éléments.
-     *
-     * @todo pagination + gestion instance multiple
-     *
-     * @return string
-     */
-    public function modal($found_action = '', $query_args = [])
-    {
-        // Définition des types de post
-        if (!empty($query_args['post_type'])) {
-            $post_types = (array)$query_args['post_type'];
-            unset($query_args['post_type']);
-        } else {
-            $post_types = get_post_types(['public' => true], 'objects');
-            unset($post_types['attachment']);
-            $post_types = array_keys($post_types);
+        if (!$post_types = $this->pull('query_args.post_type')) {
+            $post_types = get_post_types(['public' => true], 'names');
+            $post_types = array_values($post_types);
         }
 
-        return (string)$this->viewer('modal', compact('found_action', 'query_args', 'post_types'));
+        $available_post_types = [];
+        foreach ($post_types as $pt) {
+            if ($obj = get_post_type_object($pt)) {
+                $available_post_types[$pt] = $obj->label;
+            }
+        }
+
+        if (count($available_post_types) > 1) {
+            $available_post_types = array_merge(['any' => __('Tous', 'tify')], $available_post_types);
+        }
+
+        $this->set([
+            'uniqid'               => $uniqid,
+            'attrs.data-control'   => 'findposts',
+            'attrs.data-options'   => [
+                'ajax'   => [
+                    'url'      => $this->getUrl(),
+                    'dataType' => 'json',
+                    'method'   => 'POST',
+                ],
+                'uniqid' => $uniqid,
+            ],
+            'attrs.id'             => "FieldFindposts--{$uniqid}",
+            'available_post_types' => $available_post_types,
+            'modal.attrs'          => [
+                'id'           => "FieldFindposts-modal--{$uniqid}",
+                'class'        => "find-box FieldFindposts-modal",
+                'data-control' => 'findposts.modal',
+                'style'        => 'display: none;',
+            ],
+            'tmpl.attrs'           => [
+                'id'           => "FieldFindposts-response--{$uniqid}",
+                'data-control' => 'findposts.tmpl',
+            ],
+            'post_types'           => $post_types,
+        ]);
+
+        return $this;
     }
 
     /**
@@ -96,104 +120,75 @@ class Findposts extends FieldDriver implements FindpostsContract
      */
     public function render(): string
     {
-        static $init;
-
-        if (!$init++) {
-            add_action('admin_footer', function () {
-                echo $this->modal($this->get('ajax_action'), $this->get('query_args'));
-            });
-        }
-
         Asset::setDataJs($this->getAlias() . 'l10n', [
-            'error' => __( 'Une erreur s\'est produite. Veuillez recharger la page et essayer à nouveau.', 'tify')
+            'error' => __('Une erreur s\'est produite. Veuillez recharger la page et essayer à nouveau.', 'tify'),
         ], true);
 
         return parent::render();
     }
 
     /**
-     * Récupération d'un permalien de post selon son ID.
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function xhrGetPermalink(): void
+    public function setUrl(?string $url = null): FieldDriverContract
     {
-        // Traitement des arguments de requête
-        $post_id = intval(request()->post('post_id', 0));
-        $relative = request()->post('relative', false);
-        $default = request()->post('default', site_url('/'));
+        $this->url = is_null($url) ? Router::xhr(md5($this->getAlias()), [$this, 'xhrResponse']) : $url;
 
-        // Traitement du permalien
-        $permalink = ($_permalink = get_permalink($post_id)) ? $_permalink : $default;
-        if ($relative) {
-            $url_path = parse_url(site_url('/'), PHP_URL_PATH);
-            $permalink = $url_path . preg_replace('/' . preg_quote(site_url('/'), '/') . '/', '', $permalink);
-        }
-
-        wp_die($permalink);
+        return $this;
     }
 
     /**
-     * Récupération de la reponse via Ajax
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function xhrResponse(): void
+    public function xhrResponse(...$args): array
     {
-        check_ajax_referer('FieldFindposts' . request()->input('id'));
-
-        $post_types = get_post_types(['public' => true], 'objects');
-
-        $s = wp_unslash(request()->input('ps', ''));
-        $args = [
-            'post_type'      => array_keys($post_types),
-            'post_status'    => 'any',
-            'posts_per_page' => 50,
-        ];
-
-        $args = wp_parse_args(request()->input('query_args', []), $args);
-        array_diff($args['post_type'], ['attachment']);
-
-        if ('' !== $s) {
-            $args['s'] = $s;
+        if (!wp_verify_nonce(Request::post('_ajax_nonce'), 'Findposts')) {
+            return [
+                'success' => false,
+                'data'    => __('Invalid nonce'),
+            ];
         }
 
-        $posts = (new WP_Query())->query($args);
+        $query_args = wp_parse_args([
+            'post_type'      => Request::post('post_type', 'any'),
+            'post_status'    => 'any',
+            'posts_per_page' => 50,
+        ], Request::input('query_args', []));
 
-        if (!$posts) {
-            wp_send_json_error(__('No items found.'));
+        $s = wp_unslash(Request::input('ps', ''));
+        if ('' !== $s) {
+            $query_args['s'] = $s;
+        }
+
+        /** @var WP_Post[]|array $post */
+        $results = (new WP_Query())->query($query_args);
+
+        if (empty($results)) {
+            return [
+                'success' => false,
+                'data'    => __('No items found.'),
+            ];
         } else {
-            $alt = 'alternate';
+            $posts = [];
 
-            foreach ($posts as &$post) {
-                /** @var WP_Post $post */
-                $post = $post->to_array();
-
-                $post['_post_title'] = trim($post['post_title']) ? $post['post_title'] : __('(no title)');
-
-                switch ($post['post_status']) {
-                    case 'publish' :
-                    case 'private' :
-                        $post['_post_status'] = __('Published');
-                        break;
-                    case 'future' :
-                        $post['_post_status'] = __('Scheduled');
-                        break;
-                    case 'pending' :
-                        $post['_post_status'] = __('Pending Review');
-                        break;
-                    case 'draft' :
-                        $post['_post_status'] = __('Draft');
-                        break;
-                    default:
-                        $post['_post_status'] = '';
-                        break;
-                }
-
-                $post['_post_date'] = ('0000-00-00 00:00:00' == $post['post_date']) ? '' : mysql2date(__('Y/m/d'),
-                    $post['post_date']);
+            foreach ($results as $i => $r) {
+                $posts[] = [
+                    'ID'          => $r->ID,
+                    'post_title'  => trim($r->post_title) ?: __('(no title)'),
+                    'post_type'   => ($type = get_post_type_object($r->post_type))
+                        ? $type->labels->singular_name : '--',
+                    'post_status' => ($st = get_post_status_object($r->post_status)) ? $st->label : '--',
+                    'post_date'   => ('0000-00-00 00:00:00' !== $r->post_date)
+                        ? mysql2date(__('Y/m/d'), $r->post_date) : '--',
+                    'alt'         => ($i % 2 !== 0) ? 'alternate' : '',
+                    'value'       => get_permalink($r->ID),
+                ];
             }
-            wp_send_json_success($this->viewer('response', compact('post_types', 'posts', 'alt')));
+
+            return [
+                'success' => true,
+                'data'    => $posts,
+            ];
         }
     }
 }

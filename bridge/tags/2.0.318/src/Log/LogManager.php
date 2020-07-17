@@ -132,6 +132,14 @@ class LogManager extends Manager implements LogManagerContract
     /**
      * @inheritDoc
      */
+    public function success(string $message, array $context = []): void
+    {
+        $this->channel()->success($message, $context);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function registerChannel(string $name, array $params = []): ?LoggerContract
     {
         return $this->set($name, $params)->channel($name);

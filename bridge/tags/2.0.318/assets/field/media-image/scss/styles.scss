@@ -37,6 +37,10 @@
   background-position: center !important;
 }
 
+.FieldMediaImage[data-format="contain"] .FieldMediaImage-preview {
+  background-size: contain;
+}
+
 .FieldMediaImage-info {
   position: absolute;
   display: inline-block;

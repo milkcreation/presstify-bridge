@@ -1,18 +1,18 @@
 @import '~presstify-framework/partial/spinner/scss/three-bounce';
 
 /** STYLES DE CONTROLE (recommandé) */
-[data-control="select-js"],
-[data-control="select-js"] > *,
-[data-control="select-js.picker"],
-[data-control="select-js.picker"] > * {
+.FieldSelectJs,
+.FieldSelectJs > *,
+.FieldSelectJs-picker,
+.FieldSelectJs-picker > * {
     box-sizing: border-box;
 }
 
-[data-control="select-js.handler"] {
+.FieldSelectJs-handler {
     display: none;
 }
 
-[data-control="select-js.selection.item"][aria-selected="true"] {
+.FieldSelectJs-selectionItem[aria-selected="true"] {
     display:inherit;
 }
 

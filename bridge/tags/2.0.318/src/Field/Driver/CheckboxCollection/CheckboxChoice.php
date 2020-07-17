@@ -1,8 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Field\Driver\CheckboxCollection;
 
-use tiFy\Contracts\Field\CheckboxChoice as CheckboxChoiceContract;
+use tiFy\Contracts\Field\{
+    Checkbox as CheckboxContract,
+    CheckboxChoice as CheckboxChoiceContract,
+    CheckboxWalker as CheckboxWalkerContract,
+    Label as LabelContract
+};
 use tiFy\Support\{ParamsBag, Proxy\Field};
 use tiFy\Field\Driver\{Checkbox\Checkbox, Label\Label};
 
@@ -13,6 +18,24 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
      * @var integer
      */
     static $_index = 0;
+
+    /**
+     * Indicateur d'initialisation.
+     * @var bool
+     */
+    private $built = false;
+
+    /**
+     * Instance de la case à cocher.
+     * @var Checkbox
+     */
+    protected $checkbox;
+
+    /**
+     * Identifiant de qualification.
+     * @var string|int
+     */
+    protected $id = '';
 
     /**
      * Indice de qualification.
@@ -27,57 +50,65 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
     protected $label;
 
     /**
-     * Nom de qualification.
-     * @var int|string
+     * Instance du gestionnaire d'affichage de la liste des éléments.
+     * @var CheckboxWalkerContract
      */
-    protected $name = '';
-
-    /**
-     * Instance de la case à cocher.
-     * @var Checkbox
-     */
-    protected $checkbox;
+    protected $walker;
 
     /**
      * CONSTRUCTEUR.
      *
-     * @param string|int $name Nom de qualification.
+     * @param string|int $id Identifiant de qualification.
      * @param array|string $attrs Liste des attributs de configuration.
      *
      * @return void
      */
-    public function __construct($name, $attrs)
+    public function __construct($id, $attrs)
     {
-        $this->name = $name;
+        $this->id = $id;
         $this->index = self::$_index++;
 
         if (is_string($attrs)) {
             $attrs = [
                 'label' => [
                     'content' => $attrs
-                ],
+                ]
             ];
         }
 
         if ($attrs instanceof Checkbox) {
             $this->checkbox = $attrs;
         } else {
-            $this->set($attrs)->parse();
+            $this->set($attrs);
         }
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return (string)$this->render();
+        return $this->render();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function defaults()
+    public function build(): CheckboxChoiceContract
+    {
+        if(!$this->built) {
+            $this->parse();
+
+            $this->built = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function defaults(): array
     {
         return [
             'label'     => [
@@ -92,37 +123,45 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
                 'attrs'   => [],
                 'name'    => '',
                 'value'   => '',
-                'checked' => $this->name
+                'checked' => $this->id
             ]
         ];
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getCheckbox()
+    public function getCheckbox(): CheckboxContract
     {
         return $this->checkbox;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getName()
+    public function getId()
     {
-        return $this->getCheckbox() instanceof Checkbox ? $this->getCheckbox()->getName() : '';
+        return $this->id;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getLabel()
+    public function getLabel(): LabelContract
     {
         return $this->label;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
+     */
+    public function getNameAttr(): string
+    {
+        return $this->getCheckbox() instanceof Checkbox ? $this->getCheckbox()->getName() : '';
+    }
+
+    /**
+     * @inheritDoc
      */
     public function getValue()
     {
@@ -130,17 +169,17 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function isChecked()
+    public function isChecked(): bool
     {
-        return $this->getCheckbox() instanceof Checkbox ? $this->getCheckbox()->isChecked() : null;
+        return $this->getCheckbox() instanceof Checkbox ? $this->getCheckbox()->isChecked() : false;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function parse()
+    public function parse(): CheckboxChoiceContract
     {
         parent::parse();
 
@@ -175,17 +214,17 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function render()
+    public function render(): string
     {
-        return $this->getCheckbox() . $this->getLabel();
+        return $this->getCheckbox()->render() . $this->getLabel()->render();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function setName($name)
+    public function setNameAttr(string $name): CheckboxChoiceContract
     {
         if($this->getCheckbox() instanceof Checkbox) {
             $this->getCheckbox()->set('attrs.name', $name);
@@ -195,13 +234,23 @@ class CheckboxChoice extends ParamsBag implements CheckboxChoiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function setChecked()
+    public function setChecked(): CheckboxChoiceContract
     {
         if($this->getCheckbox() instanceof Checkbox) {
             $this->getCheckbox()->push('attrs', 'checked');
         }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setWalker(CheckboxWalkerContract $walker): CheckboxChoiceContract
+    {
+        $this->walker = $walker;
 
         return $this;
     }

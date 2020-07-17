@@ -3,7 +3,7 @@
 namespace tiFy\Support\Traits;
 
 use Psr\Http\Message\UriInterface;
-use League\Uri\UriInterface as LeagueUriInterface;
+use League\Uri\Contracts\UriInterface as LeagueUri;
 use tiFy\Contracts\Routing\UrlFactory;
 use tiFy\Support\Proxy\Url;
 
@@ -142,16 +142,16 @@ trait PaginationAwareTrait
         $url = clone $this->getBaseUrl();
 
         if (preg_match('/%d/', $url->decoded())) {
-            return sprintf($url->decoded(), $num);
+            return urlencode(sprintf($url->decoded(), $num));
         } elseif ($this->isSegmentUrl()) {
             $url = $url->deleteSegment("/{$this->getPageIndex()}/\d+");
 
             return $num > 1
-                ? sprintf($url->appendSegment("/{$this->getPageIndex()}/%d")->decoded(), $num) : $url->decoded();
+                ? $url->appendSegment("/{$this->getPageIndex()}/{$num}")->render() : $url->render();
         } else {
             $url = $url->without([$this->getPageIndex()]);
 
-            return $num > 1 ? sprintf($url->with([$this->getPageIndex() => '%d'])->decoded(), $num) : $url->decoded();
+            return $num > 1 ? $url->with([$this->getPageIndex() => $num])->render() : $url->render();
         }
     }
 
@@ -189,7 +189,7 @@ trait PaginationAwareTrait
      * Définition de l'url de base utilisé pour les liens de pagination.
      * {@internal %d représente le numéro de page.}
      *
-     * @param UrlFactory|UriInterface|LeagueUriInterface|string|null $base_url
+     * @param UrlFactory|UriInterface|LeagueUri|string|null $base_url
      *
      * @return static
      */

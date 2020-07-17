@@ -46,6 +46,8 @@ class Str extends BaseStr
 
             if ($length > strlen($teased)) {
                 return $teased . $teaser;
+            } else {
+                $string = $teased;
             }
         } else {
             $string = str_replace(']]>', ']]&gt;', $string);
@@ -61,9 +63,9 @@ class Str extends BaseStr
             $string = substr($string, 0, $length);
             $pos = strrpos($string, " ");
 
-            if ($pos === false) :
+            if ($pos === false) {
                 return substr($string, 0, $length) . $teaser;
-            endif;
+            }
 
             return substr($string, 0, $pos) . $teaser;
         } else {
@@ -83,6 +85,40 @@ class Str extends BaseStr
         return preg_replace('/<br\s?\/?>/ius', "\n", str_replace(
             "\n", "", str_replace("\r", "", htmlspecialchars_decode($text))
         ));
+    }
+
+    /**
+     * Fermeture des balise HTML non fermée.
+     *
+     * @param $html
+     *
+     * @return string
+     *
+     * @see https://gist.github.com/JayWood/348752b568ecd63ae5ce
+     */
+    public static function closeTags($html) {
+        preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
+        $openedtags = $result[1];
+        preg_match_all('#</([a-z]+)>#iU', $html, $result);
+
+        $closedtags = $result[1];
+        $len_opened = count($openedtags);
+
+        if (count($closedtags) == $len_opened) {
+            return $html;
+        }
+
+        $openedtags = array_reverse($openedtags);
+
+        for ($i=0; $i < $len_opened; $i++) {
+            if (!in_array($openedtags[$i], $closedtags)) {
+                $html .= '</'.$openedtags[$i].'>';
+            } else {
+                unset($closedtags[array_search($openedtags[$i], $closedtags)]);
+            }
+        }
+
+        return $html;
     }
 
     /**
@@ -123,8 +159,9 @@ class Str extends BaseStr
     public static function unserialize(string $value)
     {
         if (v::serialized()->validate($value)) {
-            return @unserialize(stripslashes($value));
+            return @unserialize($value);
         }
+
         return $value;
     }
 }

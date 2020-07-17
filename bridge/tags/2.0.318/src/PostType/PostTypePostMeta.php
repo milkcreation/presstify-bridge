@@ -3,247 +3,227 @@
 namespace tiFy\PostType;
 
 use tiFy\Contracts\PostType\PostTypePostMeta as PostTypePostMetaContract;
+use tiFy\Support\{Str, Proxy\Request};
 
 class PostTypePostMeta implements PostTypePostMetaContract
 {
     /**
-     * Liste des clés d'identifications de metadonnées.
-     * @internal Tableau multidimensionné où la clé de l'index de premier niveau qualifie le type de post associé.
-     *
-     * @var array
+     * Liste des clés d'indice de metadonnées par type de post.
+     * @var string[][]
      */
     protected $metaKeys = [];
 
     /**
-     * Liste des types d'enregistrement unique (true)|multiple (false) d'une metadonnée.
-     * @internal Tableau multidimensionné où la clé de l'index de premier niveau qualifie le type de post associé.
-     *
-     * @var array
+     * Liste des clés d'indice de metadonnées à occurrence unique en base de données par type de post.
+     * @var bool[][]
      */
-    protected $single = [];
+    protected $singleKeys = [];
 
     /**
-     * CONSTRUCTEUR.
-     *
-     * @return void
+     * Liste des fonctions de rappel des clés d'indice de metadonnées par type de post.
+     * @var string[]|callable[]
      */
-    public function __construct()
+    protected $callbackKeys = [];
+
+    /**
+     * @inheritDoc
+     */
+    public function add(int $id, string $key, $value): ?int
     {
-        add_action('save_post', [$this, 'save'], 10, 2);
+        if (!$type = get_post_type($id)) {
+            return null;
+        } elseif (!$this->exists($type, $key)) {
+            return null;
+        }
+
+        return add_post_meta($id, $key, $value, $this->isSingle($type, $key)) ?: null;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function add($post_id, $meta_key, $meta_value)
+    public function exists(string $type, string $key): bool
     {
-        if (!$post_type = get_post_type($post_id)) :
-            return false;
-        endif;
-
-        $unique = $this->isSingle($post_type, $meta_key);
-
-        if ($unique === null):
-            return false;
-        endif;
-
-        return add_post_meta($post_id, $meta_key, $meta_value, $unique);
+        return in_array($key, $this->metaKeys[$type] ?? []);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function get($post_id, $meta_key)
+    public function get(int $id, string $key): ?array
     {
         global $wpdb;
+
         $query = "SELECT meta_id, meta_value" . " FROM {$wpdb->postmeta}" .
             " WHERE 1" . " AND {$wpdb->postmeta}.post_id = %d" . " AND {$wpdb->postmeta}.meta_key = %s";
 
-        if ($order = get_post_meta($post_id, '_order_' . $meta_key, true)) :
+        if ($order = get_post_meta($id, '_order_' . $key, true)) {
             $query .= " ORDER BY FIELD( {$wpdb->postmeta}.meta_id," . implode(',', $order) . ")";
-        endif;
+        }
 
-        if (!$metas = $wpdb->get_results($wpdb->prepare($query, $post_id, $meta_key))) :
-            return [];
-        endif;
+        if (!$res = $wpdb->get_results($wpdb->prepare($query, $id, $key))) {
+            return null;
+        } else {
+            $metas = [];
 
-        $_metas = [];
-        foreach ((array)$metas as $index => $args) :
-            $_metas[$args->meta_id] = maybe_unserialize($args->meta_value);
-        endforeach;
+            foreach ((array)$res as $args) {
+                $metas[$args->meta_id] = Str::unserialize($args->meta_value);
+            }
 
-        return $_metas;
+            return $metas;
+        }
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function isSingle($post_type, $meta_key)
+    public function isSingle(string $type, string $key): bool
     {
-        return isset($this->single[$post_type][$meta_key]) ? $this->single[$post_type][$meta_key] : false;
+        return isset($this->singleKeys[$type][$key]) ? $this->singleKeys[$type][$key] : false;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function keys(?string $post_type = ''): array
+    public function keys(?string $type = null): array
     {
-       return $post_type ? ($this->metaKeys[$post_type] ?? []) : $this->metaKeys;
+        return $type ? ($this->metaKeys[$type] ?? []) : $this->metaKeys;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function register($post_type, $meta_key, $single = false, $sanitize_callback = 'wp_unslash')
-    {
-        // Bypass
-        if (! empty($this->metaKeys[$post_type]) && in_array($meta_key, $this->metaKeys[$post_type])) :
-            return $this;
-        endif;
+    public function register(
+        string $type,
+        string $key,
+        bool $single = false,
+        $callback = 'wp_unslash'
+    ): PostTypePostMetaContract {
+        if (empty($this->metaKeys[$type])) {
+            $this->metaKeys[$type] = [];
+        }
 
-        $this->metaKeys[$post_type][] = $meta_key;
-        $this->single[$post_type][$meta_key] = $single;
+        $this->metaKeys[$type][] = $key;
 
-        if ($sanitize_callback !== '') :
-            add_filter("tify_sanitize_meta_post_{$post_type}_{$meta_key}", $sanitize_callback);
-        endif;
+        if (empty($this->singleKeys[$type])) {
+            $this->singleKeys[$type] = [];
+        }
+
+        if ($single) {
+            $this->singleKeys[$type][$key] = true;
+        } else {
+            unset($this->singleKeys[$type][$key]);
+        }
+
+        if (!empty($callback) && is_callable($callback)) {
+            if (empty($this->callbackKeys[$type])) {
+                $this->callbackKeys[$type] = [];
+            }
+
+            $this->callbackKeys[$type][$key] = $callback;
+        }
 
         return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function save($post_id, $post)
+    public function registerSingle(string $type, string $key, $callback = 'wp_unslash'): PostTypePostMetaContract
     {
-        // Bypass - S'il s'agit d'une routine de sauvegarde automatique.
-        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-            return;
-        }
-        // Bypass - Si le script est executé via Ajax.
-        if (defined('DOING_AJAX') && DOING_AJAX) {
-            return;
-        }
+        return $this->register($type, $key, true, $callback);
+    }
 
-        // Bypass - Si l'argument de requête renseignant l'indication de type de post est manquant.
-        if (! $post_type = request()->post('post_type', '')) {
-            return;
-        }
+    /**
+     * @inheritDoc
+     */
+    public function registerMulti(string $type, string $key, $callback = 'wp_unslash'): PostTypePostMetaContract
+    {
+        return $this->register($type, $key, false, $callback);
+    }
 
-        // Bypass - Si l'utilisateur courant n'est pas habilité  à modifié le contenu.
-        if (('page' === $post_type) && ! current_user_can('edit_page', $post_id)) {
-            return;
-        }
-
-        if (('page' !== $post_type) && ! current_user_can('edit_post', $post_id)) {
-            return;
-        }
-
-        // Bypass - Si la vérification de l'existance du post est en échec.
-        if (! $post = get_post($post_id)) {
-            return;
-        }
-
-        // Bypass - Si le type de post définit dans la requête est différent du type de post du contenu a éditer.
-        if ($post_type !== $post->post_type) {
-            return;
-        }
-
-        // Bypass - Si aucune métadonnée n'est déclarée pour le type de post.
+    /**
+     * @inheritDoc
+     */
+    public function save(int $post_id, string $post_type): void
+    {
         if (empty($this->metaKeys[$post_type])) {
             return;
+        } elseif (!is_admin() || !($screen = get_current_screen()) || !in_array($screen->id, [$post_type])) {
+            return;
         }
 
-        // Déclaration des variables
         $meta_keys = $this->metaKeys[$post_type];
         $postmeta = [];
         $meta_ids = [];
         $meta_exists = [];
         $request = [];
 
-        // Récupération des metadonnés en requête $_POST
-        foreach ($this->metaKeys[$post_type] as $key) {
-            if ($value = request()->post($key)) {
-                $request[$key] = $value;
+        foreach ($meta_keys as $key) {
+            if (Request::instance()->has($key)) {
+                $request[$key] = Request::post($key);
             }
         }
 
         foreach ($meta_keys as $meta_key) {
             // Vérification d'existance de la metadonnées en base
-            if ($_meta = $this->get($post_id, $meta_key)) :
+            if ($_meta = $this->get($post_id, $meta_key)) {
                 $meta_exists += $_meta;
-            endif;
+            }
 
-            if (!isset($request[$meta_key])) :
+            if (!isset($request[$meta_key])) {
                 continue;
-            endif;
+            }
 
             // Récupération des meta_ids de metadonnées unique
-            if ($this->isSingle($post_type, $meta_key)) :
+            if ($this->isSingle($post_type, $meta_key)) {
                 $meta_id = $_meta ? key($_meta) : uniqid();
                 array_push($meta_ids, $meta_id);
                 $postmeta[$meta_key][$meta_id] = $request[$meta_key];
 
-            // Récupération des meta_ids de metadonnées multiple
-            elseif ($this->isSingle($post_type, $meta_key) === false) :
+                // Récupération des meta_ids de metadonnées multiple
+            } elseif ($this->isSingle($post_type, $meta_key) === false) {
                 $meta_ids += array_keys($request[$meta_key]);
                 $postmeta[$meta_key] = $request[$meta_key];
-            endif;
+            }
         }
 
         // Suppression des metadonnées absente du processus de sauvegarde
-        foreach ($meta_exists as $meta_id => $meta_value) :
-            if (! in_array($meta_id, $meta_ids)) :
+        foreach ($meta_exists as $meta_id => $meta_value) {
+            if (!in_array($meta_id, $meta_ids)) {
                 delete_metadata_by_mid('post', $meta_id);
-            endif;
-        endforeach;
+            }
+        }
 
         // Sauvegarde des metadonnées (mise à jour ou ajout)
-        foreach ($meta_keys as $meta_key) :
-            if (! isset($postmeta[$meta_key])) :
+        foreach ($meta_keys as $meta_key) {
+            if (!isset($postmeta[$meta_key])) {
                 continue;
-            endif;
+            }
 
             $order = [];
-            foreach ((array)$postmeta[$meta_key] as $meta_id => $meta_value) :
-                $meta_value = apply_filters("tify_sanitize_meta_post_{$post_type}_{$meta_key}", $meta_value);
+            foreach ((array)$postmeta[$meta_key] as $meta_id => $meta_value) {
+                if (isset($this->callbackKeys[$post_type][$meta_key])) {
+                    $callback = $this->callbackKeys[$post_type][$meta_key];
 
-                if (is_int($meta_id) && get_post_meta_by_id($meta_id)) :
+                    $meta_value = $callback($meta_value);
+                }
+
+                if (is_int($meta_id) && get_post_meta_by_id($meta_id)) {
                     $_meta_id = $meta_id;
                     update_metadata_by_mid('post', $meta_id, $meta_value);
-                else :
+                } else {
                     $_meta_id = add_post_meta($post_id, $meta_key, $meta_value);
-                endif;
-                // Récupération de l'ordre des metadonnées multiple
-                if ($this->isSingle($post_type, $meta_key) === false) :
+                }
+
+                if (!$this->isSingle($post_type, $meta_key)) {
                     $order[] = $_meta_id;
-                endif;
-            endforeach;
+                }
+            }
 
-            // Sauvegarde de l'ordre
-            if (! empty($order)) :
+            if (!empty($order)) {
                 update_post_meta($post_id, '_order_' . $meta_key, $order);
-            endif;
-        endforeach;
-
-        return;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update($post_id, $meta_key, $meta_value)
-    {
-        if (!$post_type = get_post_type($post_id)) :
-            return false;
-        endif;
-
-        $unique = $this->isSingle($post_type, $meta_key);
-
-        if ($unique === null):
-            return false;
-        endif;
-
-        return update_post_meta($post_id, $meta_key, $meta_value, $unique);
+            }
+        }
     }
 }

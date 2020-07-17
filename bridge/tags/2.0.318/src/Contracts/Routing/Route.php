@@ -11,6 +11,7 @@ use League\Route\RouteConditionHandlerInterface;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use tiFy\Contracts\Http\{RedirectResponse as HttpRedirect};
 use tiFy\Contracts\Support\ParamsBag;
 
 /**
@@ -96,6 +97,15 @@ interface Route extends
     public function isCurrent(): bool;
 
     /**
+     * Définition d'un ou plusieurs middlewares associés.
+     *
+     * @param string|string[]|MiddlewareInterface|MiddlewareInterface[] $middleware
+     *
+     * @return static
+     */
+    public function middleware($middleware): MiddlewareAwareInterface;
+
+    /**
      * Définition de paramètre|Récupération de paramètres|Récupération de l'instance des paramètres.
      *
      * @param array|string|null $key Liste des définitions de paramètres|Indice de qualification du paramètres à récupérer (Syntaxe à point permise).
@@ -104,6 +114,17 @@ interface Route extends
      * @return mixed|ParamsBag
      */
     public function params($key = null, $default = null);
+
+    /**
+     * Création d'une instance de reponse de redirection PSR.
+     *
+     * @param array $parameters Liste des paramètres passés en argument dans l'url de la route.
+     * @param int $status Code du statut de redirection.
+     * @param array $headers Liste des entêtes complémentaires.
+     *
+     * @return HttpRedirect
+     */
+    public function redirect(array $parameters = [], int $status = 302, array $headers = []): HttpRedirect;
 
     /**
      * Définition de l'indicateur de route en réponse à la requête courante.
@@ -117,7 +138,7 @@ interface Route extends
      *
      * @param RouteGroup $group
      *
-     * @return static
+     * @return LeagueRoute|static
      */
     public function setParentGroup(RouteGroup $group): LeagueRoute;
 

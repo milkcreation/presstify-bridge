@@ -2,7 +2,7 @@
 
 namespace tiFy\Template\Templates\ListTable;
 
-use tiFy\Contracts\Template\{FactoryBuilder, TemplateFactory as TemplateFactoryContract};
+use tiFy\Contracts\Template\{FactoryAjax, FactoryBuilder, TemplateFactory as TemplateFactoryContract};
 use tiFy\Template\TemplateFactory as BaseFactory;
 use tiFy\Template\Templates\ListTable\Contracts\{
     Ajax,
@@ -31,11 +31,13 @@ class Factory extends BaseFactory implements FactoryContract
     ];
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @return Ajax|null
      */
-    public function ajax(): ?Ajax
+    public function ajax(): ?FactoryAjax
     {
-        return $this->resolve('ajax');
+        return parent::ajax();
     }
 
     /**
@@ -67,9 +69,9 @@ class Factory extends BaseFactory implements FactoryContract
     /**
      * @inheritDoc
      */
-    public function extras(): Extras
+    public function extras(string $which = 'top'): Extras
     {
-        return $this->resolve('extras');
+        return $this->resolve('extras')->setWhich($which);
     }
 
     /**
@@ -105,7 +107,7 @@ class Factory extends BaseFactory implements FactoryContract
     {
         $this->builder()->fetchItems();
 
-        if ( ! $this->items()->exists()) {
+        if (!$this->items()->exists()) {
             return $this;
         } elseif ($ajax = $this->ajax()) {
             $ajax->parse();

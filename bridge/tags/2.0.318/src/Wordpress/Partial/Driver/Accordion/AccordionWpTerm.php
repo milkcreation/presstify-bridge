@@ -18,8 +18,8 @@ class AccordionWpTerm extends AccordionItem implements AccordionWpTermContract
     /**
      * CONSTRUCTEUR.
      *
-     * @param string $name Nom de qualification de l'élément.
-     * @param WP_Term $term Liste des attributs de configuration.
+     * @param string|int $name Nom de qualification de l'élément.
+     * @param WP_Term $term Objet term Wordpress
      *
      * @return void
      */
@@ -36,58 +36,32 @@ class AccordionWpTerm extends AccordionItem implements AccordionWpTermContract
     public function defaults(): array
     {
         return [
-            'attrs'   => [],
-            'content' => $this->term->name,
-            'depth'   => 0,
-            'parent'  => null,
+            'attrs'  => [],
+            'depth'  => 0,
+            'parent' => null,
+            'render' => $this->term()->name,
         ];
     }
 
     /**
      * @inheritDoc
      */
-    public function getContent(): string
+    public function render(): string
     {
-        return (string)Partial::get('tag', [
+        return Partial::get('tag', [
             'tag'     => 'a',
             'attrs'   => [
                 'class' => "AccordionItem-link",
-                'href'  => get_term_link($this->term),
+                'href'  => get_term_link($this->term()),
             ],
-            'content' => $this->term->name,
-        ]);
+            'content' => $this->term()->name,
+        ])->render();
     }
 
     /**
      * @inheritDoc
      */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getParent()
-    {
-        return $this->get('parent') ?: null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setDepth($depth)
-    {
-        $this->set('depth', $depth);
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function wpTerm(): ?WP_Term
+    public function term(): WP_Term
     {
         return $this->term;
     }

@@ -7,7 +7,23 @@ use tiFy\Contracts\Routing\Url;
 interface FactoryUrl extends FactoryAwareTrait, Url
 {
     /**
-     * Url de requête HTTP.
+     * Url vers le controleur des requêtes HTTP ou XHR (selon le contexte).
+     *
+     * @param bool $absolute
+     *
+     * @return string
+     */
+    public function action(bool $absolute = false): string;
+
+    /**
+     * Url d'affichage.
+     *
+     * @return string
+     */
+    public function display(): string;
+
+    /**
+     * Url vers le controleur des requêtes HTTP.
      *
      * @param bool $absolute
      *
@@ -16,16 +32,25 @@ interface FactoryUrl extends FactoryAwareTrait, Url
     public function http(bool $absolute = false): string;
 
     /**
-     * Définition de chemin des requêtes HTTP et XHR.
+     * Définition du chemin des requêtes HTTP et XHR.
      *
-     * @param string $base_url
+     * @param string $base_path
      *
      * @return static
      */
-    public function setBaseUrl(string $base_url): FactoryUrl;
+    public function setBasePath(string $base_path): FactoryUrl;
 
     /**
-     * Url de requête XHR.
+     * Définition de l'url d'affichage.
+     *
+     * @param string $display_url
+     *
+     * @return static
+     */
+    public function setDisplayUrl(string $display_url): FactoryUrl;
+
+    /**
+     * Url vers le contrôleur des requêtes XHR.
      *
      * @param bool $absolute
      *

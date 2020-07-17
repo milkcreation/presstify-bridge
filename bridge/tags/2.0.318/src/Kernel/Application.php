@@ -6,7 +6,7 @@ use BadMethodCallException;
 use Exception;
 use Interop\Container\ContainerInterface;
 use tiFy\Container\Container;
-use XStatic\ProxyManager;
+use ReStatic\ProxyManager;
 
 class Application extends Container
 {
@@ -29,11 +29,9 @@ class Application extends Container
 
         $this->delegate($container);
 
-        parent::__construct();
-
         $this->registerProxy();
 
-        $this->boot();
+        parent::__construct();
     }
 
     /**
@@ -58,7 +56,10 @@ class Application extends Container
     /**
      * @inheritDoc
      */
-    public function boot(): void {}
+    public function get($alias, array $args = [])
+    {
+        return ($alias === 'app') ? $this : parent::get($alias, $args);
+    }
 
     /**
      * @inheritDoc
@@ -82,6 +83,7 @@ class Application extends Container
         } elseif(isset($argv[0]) && preg_match('/vendor\/bin\/bee$/', $argv[0])) {
             return true;
         }
+
         return php_sapi_name() === 'cli' || php_sapi_name() === 'phpdbg';
     }
 
@@ -94,11 +96,12 @@ class Application extends Container
         foreach(config('app.proxy', []) as $alias => $proxy) {
             $manager->addProxy($alias, $proxy);
         }
+
         $manager->enable(ProxyManager::ROOT_NAMESPACE_ANY);
     }
 
     /**
-     * Compatibilité corcel.
+     * Compatibilité Corcel.
      *
      * @return string
      */

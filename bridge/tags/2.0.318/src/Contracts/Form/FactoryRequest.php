@@ -2,6 +2,7 @@
 
 namespace tiFy\Contracts\Form;
 
+use tiFy\Http\RedirectResponse;
 use tiFy\Contracts\Support\ParamsBag;
 
 interface FactoryRequest extends FactoryResolver, ParamsBag
@@ -14,11 +15,18 @@ interface FactoryRequest extends FactoryResolver, ParamsBag
     public function getRedirectUrl(): string;
 
     /**
+     * Récupération de la valeur de la protection CSRF.
+     *
+     * @return string
+     */
+    public function getToken(): string;
+
+    /**
      * Traitement de la requête de soumission du formulaire.
      *
-     * @return void
+     * @return RedirectResponse|null
      */
-    public function handle(): void;
+    public function handle(): ?RedirectResponse;
 
     /**
      * Préparation des données de traitement de la requête.
@@ -26,6 +34,13 @@ interface FactoryRequest extends FactoryResolver, ParamsBag
      * @return static
      */
     public function prepare(): FactoryRequest;
+
+    /**
+     * Redirection de la requête de traitement du formulaire.
+     *
+     * @return RedirectResponse
+     */
+    public function redirect(): RedirectResponse;
 
     /**
      * Réinitialisation de la requête.

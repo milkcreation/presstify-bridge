@@ -1,11 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Contracts\Container;
 
-use League\Container\ServiceProvider\ServiceProviderInterface as LeagueServiceProviderInterface;
-use League\Container\ServiceProvider\BootableServiceProviderInterface;
+use League\Container\ServiceProvider\{ServiceProviderInterface, BootableServiceProviderInterface};
 
-interface ServiceProvider extends LeagueServiceProviderInterface, BootableServiceProviderInterface
+interface ServiceProvider extends ServiceProviderInterface, BootableServiceProviderInterface
 {
     /**
      * Initialisation du fournisseur de service.

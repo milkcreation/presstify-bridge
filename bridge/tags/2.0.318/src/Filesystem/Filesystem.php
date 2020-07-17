@@ -4,7 +4,9 @@ namespace tiFy\Filesystem;
 
 use League\Flysystem\{AdapterInterface, Cached\CachedAdapter, Filesystem as BaseFilesystem};
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use SplFileInfo;
 use tiFy\Contracts\Filesystem\Filesystem as FilesystemContract;
+use tiFy\Http\UploadedFile;
 use tiFy\Support\Str;
 
 class Filesystem extends BaseFilesystem implements FilesystemContract
@@ -25,6 +27,31 @@ class Filesystem extends BaseFilesystem implements FilesystemContract
         $disk = $this->getAdapter();
 
         return $disk instanceof CachedAdapter ? $disk->getAdapter() : $disk;
+    }
+
+    /**
+     * Enregistrement d'un fichier téléchargé.
+     *
+     * @param string  $path
+     * @param UploadedFile $file
+     * @param string  $name
+     * @param array  $options
+     *
+     * @return string|false
+     */
+    public function putUploaded(string $path, SplFileInfo $file, string $name, array $options = [])
+    {
+        $stream = fopen($file->getRealPath(), 'r');
+
+        $result = $this->put(
+            $path = trim($path.'/'.$name, '/'), $stream, $options
+        );
+
+        if (is_resource($stream)) {
+            fclose($stream);
+        }
+
+        return $result ? $path : false;
     }
 
     /**
