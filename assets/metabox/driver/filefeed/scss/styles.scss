@@ -1,0 +1,27 @@
+@import '~presstify-framework/theme/scss/styles';
+
+.MetaboxFilefeed-itemIcon {
+    position:relative;
+    float: left;
+    margin-right: 5px;
+    width:80px;
+    height:80px;
+}
+
+.MetaboxFilefeed-itemIcon > img {
+    position:absolute;
+    top:50%;
+    left:50%;
+    object-fit: contain;
+    transform: translate(-50%, -50%);
+}
+
+.MetaboxFilefeed-itemTitle {
+    font-weight: bold;
+    display: block;
+}
+
+.MetaboxFilefeed-itemMime {
+    font-style: italic;
+    color: #666;
+}

@@ -1,0 +1,56 @@
+@import "variables";
+
+[class^="#{$grid-container-prefix}"],
+[class^="#{$grid-container-fluid-prefix}"],
+.#{$grid-row},
+[class^="#{$grid-col-prefix}"] {
+  box-sizing: border-box;
+}
+
+.#{$grid-container-prefix} {
+  width: #{$grid-container-width};
+  padding-right: #{$grid-gutter};
+  padding-left: #{$grid-gutter};
+  @if $grid-container-center {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.#{$grid-container-fluid-prefix} {
+  width: 100%;
+  padding-right: #{$grid-gutter};
+  padding-left: #{$grid-gutter};
+}
+
+.#{$grid-row} {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -#{$grid-gutter};
+  margin-left: -#{$grid-gutter};
+}
+
+.#{$grid-row} [class^="#{$grid-col-prefix}"] {
+  position: relative;
+  width: 100%;
+  padding-right: #{$grid-gutter};
+  padding-left: #{$grid-gutter};
+}
+
+@for $i from 1 through $grid-columns {
+  .#{$grid-col-prefix}-#{$i} {
+    flex: 0 0 percentage($i / $grid-columns);
+    max-width: percentage($i / $grid-columns);
+  }
+}
+
+.#{$grid-no-gutters} {
+  margin-right: 0;
+  margin-left: 0;
+
+  > .#{$grid-col-prefix},
+  > [class*="#{$grid-col-prefix}"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}

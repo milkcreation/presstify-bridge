@@ -1,0 +1,51 @@
+.FileManager-notice {
+  position: absolute;
+  top:50%;
+  left: 50%;
+  z-index: 20;
+  transform: translate(-50%, -50%);
+}
+
+.FileManager-noticeMessage {
+  & {
+    position:relative;
+    padding: 15px 20px;
+    font-size:14px;
+    box-shadow: 5px 5px 0 0 color(gray, 900);
+  }
+
+  & [data-toggle="notice.dismiss"] {
+    position:absolute;
+    top:0;
+    right:0;
+    border: none;
+    line-height:1;
+    padding: 3px 5px;
+    background-color: transparent;
+    color:color(white);
+  }
+}
+
+.FileManager-noticeMessage--error {
+  background-color: color(red, 500);
+  color: color(white);
+  box-shadow: 5px 5px 0 0 color(red, 900);
+}
+
+.FileManager-noticeMessage--info {
+  background-color: color(blue, 500);
+  color: color(white);
+  box-shadow: 5px 5px 0 0 color(blue, 900);
+}
+
+.FileManager-noticeMessage--success {
+  background-color: color(green, 500);
+  color: color(white);
+  box-shadow: 5px 5px 0 0 color(green, 900);
+}
+
+.FileManager-noticeMessage--warning {
+  background-color: color(yellow, 500);
+  color: color(white);
+  box-shadow: 5px 5px 0 0 color(yellow, 900);
+}

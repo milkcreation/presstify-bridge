@@ -1,0 +1,123 @@
+@import "~wp-admin/css/colors/variables";
+
+$gray: (
+    100: #F7FAFC,
+    200: #EDF2F7,
+    300: #E2E8F0,
+    400: #CBD5E0,
+    500: #A0AEC0,
+    600: #718096,
+    700: #4A5568,
+    800: #2D3748,
+    900: #1A202C,
+) !default;
+
+$red: (
+    100: #FFF5F5,
+    200: #FED7D7,
+    300: #FEB2B2,
+    400: #FC8181,
+    500: #F56565,
+    600: #E53E3E,
+    700: #C53030,
+    800: #9B2C2C,
+    900: #742A2A,
+) !default;
+
+$yellow: (
+    100: #FFFFF0,
+    200: #FEFCBF,
+    300: #FAF089,
+    400: #F6E05E,
+    500: #ECC94B,
+    600: #D69E2E,
+    700: #B7791F,
+    800: #975A16,
+    900: #744210,
+) !default;
+
+$green: (
+    100: #F0FFF4,
+    200: #C6F6D5,
+    300: #9AE6B4,
+    400: #68D391,
+    500: #48BB78,
+    600: #38A169,
+    700: #2F855A,
+    800: #276749,
+    900: #22543D,
+) !default;
+
+$blue: (
+    100: #EBF8FF,
+    200: #BEE3F8,
+    300: #90CDF4,
+    400: #63B3ED,
+    500: #4299E1,
+    600: #3182CE,
+    700: #2B6CB0,
+    800: #2C5282,
+    900: #2A4365,
+) !default;
+
+$wp : (
+    text: $text-color,
+    base: $base-color,
+    icon: $icon-color,
+    highlight: $highlight-color,
+    notification:$notification-color,
+) !default;
+
+$colors: (
+    white: #FFFFFF,
+    black: #000000,
+    light: #C4C4C4,
+    lighter:#F4F4F4,
+    dark:#4B4B4B,
+    darker:#2B2B2B,
+    regular:#3B3B3B,
+    primary:#4B4B4B,
+    primary-alt:#5B5B5B,
+    secondary:#E4E4E4,
+    secondary-alt:#E9E9E9,
+    blue: $blue,
+    gray: $gray,
+    green: $green,
+    red: $red,
+    yellow: $yellow,
+    wp:$wp,
+    error:#e74c3c,
+    success:#1abc9c,
+    warning:#f1c40f,
+    infos:#3498db,
+) !default;
+
+@function color($color, $type:'') {
+  @if map-has-key($colors, $color) {
+    $curr_color: map-get($colors, $color);
+    @if $type != '' {
+      @if map-has-key($curr_color, $type) {
+        @return map-get($curr_color, $type);
+      }
+    } @else {
+      @return $curr_color;
+    }
+  }
+  @warn "Unknown `#{$color}` - `#{$type}` in $colors.";
+  @return null;
+}
+
+// GRID
+$grid-container-center: false !default;
+$grid-container-prefix: 'ThemeContainer' !default;
+$grid-container-width: '1024px' !default;
+$grid-container-fluid-prefix: 'ThemeContainerFluid' !default;
+$grid-row: 'ThemeRow' !default;
+$grid-col-prefix: 'ThemeCol' !default;
+$grid-no-gutters: 'ThemeNoGutters' !default;
+$grid-width: 96% !default;
+$grid-gutter: 15px !default;
+$grid-columns: 12 !default;
+$grid-breakpoint-small: 33.75em !default; // 540px
+$grid-breakpoint-med: 45em !default; // 720px
+$grid-breakpoint-large: 60em !default; // 960px
