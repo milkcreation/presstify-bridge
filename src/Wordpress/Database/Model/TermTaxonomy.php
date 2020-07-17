@@ -15,6 +15,16 @@ use tiFy\Wordpress\Database\{Concerns\BlogAwareTrait, Concerns\MetaFieldsAwareTr
  * @method static TaxonomyBuilder hasMetaLike(string $key, string $value),
  * @method static boolean saveMeta($key, $value = null)
  *
+ * @property-read int $term_id
+ * @property-read int $term_taxonomy_id
+ * @property-read string $slug
+ * @property-read string $name
+ * @property-read string $description
+ * @property-read int $parent
+ * @property-read int $count
+ * @property-read int $term_group
+ * @property-read string $taxonomy
+ *
  * @mixin Builder
  */
 class TermTaxonomy extends CorcelTaxonomy

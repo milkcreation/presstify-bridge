@@ -60,6 +60,14 @@ class Record extends AddonFactory
             ),
             'form.addon.record'
         );
+
+        if (is_multisite()) {
+            global $wpdb;
+
+            Database::getConnection('form.addon.record')->setTablePrefix($wpdb->prefix);
+        }
+
+
         $schema = Schema::connexion('form.addon.record');
 
         if (!$schema->hasTable('tify_forms_record')) {
@@ -161,7 +169,7 @@ class Record extends AddonFactory
         });
 
         $this->form()->events()
-            ->listen('request.submit',  function () {
+            ->listen('request.proceed',  function () {
                 $this->form()->events('addon.record.save');
             })
             ->listen('addon.record.save', [$this, 'save']);

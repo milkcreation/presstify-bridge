@@ -10,7 +10,7 @@ $gray: (
     700: #4A5568,
     800: #2D3748,
     900: #1A202C,
-);
+) !default;
 
 $red: (
     100: #FFF5F5,
@@ -22,7 +22,7 @@ $red: (
     700: #C53030,
     800: #9B2C2C,
     900: #742A2A,
-);
+) !default;
 
 $yellow: (
     100: #FFFFF0,
@@ -34,7 +34,7 @@ $yellow: (
     700: #B7791F,
     800: #975A16,
     900: #744210,
-);
+) !default;
 
 $green: (
     100: #F0FFF4,
@@ -46,7 +46,7 @@ $green: (
     700: #2F855A,
     800: #276749,
     900: #22543D,
-);
+) !default;
 
 $blue: (
     100: #EBF8FF,
@@ -58,7 +58,7 @@ $blue: (
     700: #2B6CB0,
     800: #2C5282,
     900: #2A4365,
-);
+) !default;
 
 $wp : (
     text: $text-color,
@@ -66,7 +66,7 @@ $wp : (
     icon: $icon-color,
     highlight: $highlight-color,
     notification:$notification-color,
-);
+) !default;
 
 $colors: (
     white: #FFFFFF,
@@ -76,13 +76,21 @@ $colors: (
     dark:#4B4B4B,
     darker:#2B2B2B,
     regular:#3B3B3B,
+    primary:#4B4B4B,
+    primary-alt:#5B5B5B,
+    secondary:#E4E4E4,
+    secondary-alt:#E9E9E9,
     blue: $blue,
     gray: $gray,
     green: $green,
     red: $red,
     yellow: $yellow,
-    wp:$wp
-);
+    wp:$wp,
+    error:#e74c3c,
+    success:#1abc9c,
+    warning:#f1c40f,
+    infos:#3498db,
+) !default;
 
 @function color($color, $type:'') {
   @if map-has-key($colors, $color) {

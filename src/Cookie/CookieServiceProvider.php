@@ -11,9 +11,7 @@ class CookieServiceProvider extends ServiceProvider
      * {@internal Permet le chargement différé des services qualifié.}
      * @var string[]
      */
-    protected $provides = [
-        'cookie'
-    ];
+    protected $provides = ['cookie'];
 
     /**
      * @inheritDoc
@@ -21,26 +19,26 @@ class CookieServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->getContainer()->share('cookie', function () {
-            $instance = (new Cookie($this->getContainer()))->setDefaults(
+            $cookie = (new Cookie())->setContainer($this->getContainer())->setArgs(
                 config('cookie.value', null),
-                (int)config('cookie.expire', 3600),
-                ($path = config('cookie.path', null)) ? (string) $path : null,
-                ($domain = config('cookie.domain', null)) ? (string)$domain : null,
-                ($secure = config('cookie.secure', null)) ? (bool)$secure : null,
-                ($httpOnly = config('cookie.httpOnly')) ? (bool)$httpOnly : true,
-                ($raw = config('cookie.raw', false)) ? (bool)$raw : false,
-                ($sameSite = config('cookie.sameSite', null)) ? (string)$sameSite : null
+                config('cookie.expire', 3600),
+                config('cookie.path', null),
+                config('cookie.domain', null),
+                config('cookie.secure', null),
+                config('cookie.httpOnly', true),
+                config('cookie.raw', false),
+                config('cookie.sameSite', null)
             );
 
             if ($base64 = config('cookie.base64', false)) {
-                $instance->setBase64((bool)$base64);
+                $cookie->setBase64((bool)$base64);
             }
 
             if ($salt = config('cookie.salt', '')) {
-                $instance->setSalt((string)$salt);
+                $cookie->setSalt((string)$salt);
             }
 
-            return $instance;
+            return $cookie;
         });
     }
 }

@@ -3,6 +3,7 @@
 namespace tiFy\Validation;
 
 use tiFy\Container\ServiceProvider;
+use tiFy\Validation\Rules\{Password as PasswordRule, Serialized as SerializedRule};
 
 class ValidationServiceProvider extends ServiceProvider
 {
@@ -13,8 +14,6 @@ class ValidationServiceProvider extends ServiceProvider
      */
     protected $provides = [
         'validator',
-        'validator.rule.base64',
-        'validator.rule.email',
         'validator.rule.password',
         'validator.rule.serialized',
     ];
@@ -25,28 +24,24 @@ class ValidationServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->getContainer()->share('validator', function () {
-            return new Validator($this->getContainer(), [
-                'base64'     => $this->getContainer()->get('validator.rule.base64'),
-                'email'      => $this->getContainer()->get('validator.rule.email'),
+            $rules = [
                 'password'   => $this->getContainer()->get('validator.rule.password'),
                 'serialized' => $this->getContainer()->get('validator.rule.serialized'),
-            ]);
-        });
+            ];
 
-        $this->getContainer()->add('validator.rule.base64', function () {
-            return new Rules\Base64();
-        });
+            foreach ($rules as $name => $rule) {
+                Validator::setCustom($name, $rule);
+            }
 
-        $this->getContainer()->add('validator.rule.email', function () {
-            return new Rules\Email();
+            return new Validator();
         });
 
         $this->getContainer()->add('validator.rule.password', function () {
-            return new Rules\Password();
+            return new PasswordRule();
         });
 
         $this->getContainer()->add('validator.rule.serialized', function () {
-            return new Rules\Serialized();
+            return new SerializedRule();
         });
     }
 }

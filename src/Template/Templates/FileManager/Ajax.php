@@ -2,11 +2,10 @@
 
 namespace tiFy\Template\Templates\FileManager;
 
-use tiFy\Template\Factory\FactoryAwareTrait;
+use tiFy\Template\Factory\{Ajax as BaseAjax, FactoryAwareTrait};
 use tiFy\Template\Templates\FileManager\Contracts\{Ajax as AjaxContract, FileManager};
-use tiFy\Support\ParamsBag;
 
-class Ajax extends ParamsBag implements AjaxContract
+class Ajax extends BaseAjax implements AjaxContract
 {
     use FactoryAwareTrait;
 
@@ -15,18 +14,6 @@ class Ajax extends ParamsBag implements AjaxContract
      * @var FileManager
      */
     protected $factory;
-
-    /**
-     * @inheritDoc
-     */
-    public function defaults()
-    {
-        return [
-            'url'      => $this->factory->url()->xhr(),
-            'dataType' => 'json',
-            'type'     => 'POST'
-        ];
-    }
 
     /**
      * @inheritDoc

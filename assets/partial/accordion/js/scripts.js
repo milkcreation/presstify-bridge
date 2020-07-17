@@ -55,7 +55,12 @@ jQuery(function ($) {
       });
     },
     _initOpened: function () {
-      $('[data-control="accordion.items"]:has(> [data-control="accordion.item"][aria-open="true"])', this.el).each(function () {
+      $('[data-control="accordion.items"]:has([data-control="accordion.item"][aria-open="true"])', this.el).each(function () {
+        let $closest = $(this).closest('[data-control="accordion.item"][aria-open="false"]');
+        if ($closest.length) {
+          $closest.attr('aria-open', true);
+        }
+
         $(this).css('max-height', '100%');
         $('> [data-control="accordion.item"][aria-open="true"] > [data-control="accordion.items"]', this).each(function () {
           $(this).css('max-height', '100%');

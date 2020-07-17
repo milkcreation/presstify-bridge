@@ -6,7 +6,8 @@
   }
 }
 
-.FieldSelectImage-pickerItem {
-  max-width: 85px;
-  max-height: 85px;
+.FieldSelectImage-pickerItem,
+.FieldSelectImage-pickerItem > img {
+  max-width: 75px;
+  max-height: 75px;
 }

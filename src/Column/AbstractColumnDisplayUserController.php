@@ -4,8 +4,7 @@ namespace tiFy\Column;
 
 use tiFy\Contracts\Column\ColumnDisplayUserInterface;
 
-class AbstractColumnDisplayUserController
-    extends AbstractColumnDisplayController
+class AbstractColumnDisplayUserController extends AbstractColumnDisplayController
     implements ColumnDisplayUserInterface
 {
     /**

@@ -3,7 +3,7 @@
 namespace tiFy\Contracts\User;
 
 use Psr\Container\ContainerInterface;
-use tiFy\User\Metadata\Metadata;
+use tiFy\User\UserMeta;
 use tiFy\User\Metadata\Option;
 
 interface User
@@ -18,9 +18,9 @@ interface User
     /**
      * Récupération de l'instance de traitement des métadonnées utilisateur.
      *
-     * @return Metadata
+     * @return UserMeta
      */
-    public function meta(): Metadata;
+    public function meta(): UserMeta;
 
     /**
      * Récupération de l'instance de traitement des options utilisateur.

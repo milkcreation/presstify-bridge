@@ -8,6 +8,12 @@ use tiFy\Partial\PartialDriver;
 class Breadcrumb extends PartialDriver implements BreadcrumbContract
 {
     /**
+     * Instance principale.
+     * @var BreadcrumbContract|null
+     */
+    protected static $main;
+
+    /**
      * Indicateur de d'activation d'affichage du fil d'ariane.
      * @var bool
      */
@@ -37,16 +43,6 @@ class Breadcrumb extends PartialDriver implements BreadcrumbContract
     public function append($item): ?int
     {
         return $this->add($item);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function flush(): BreadcrumbContract
-    {
-        $this->collection()->clear();
-
-        return $this;
     }
 
     /**
@@ -101,6 +97,28 @@ class Breadcrumb extends PartialDriver implements BreadcrumbContract
         $this->enabled = true;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function flush(): BreadcrumbContract
+    {
+        $this->collection()->clear();
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function main(): BreadcrumbContract
+    {
+        if (is_null(self::$main)) {
+            self::$main = $this->manager()->get('breadcrumb');
+        }
+
+        return self::$main;
     }
 
     /**
@@ -178,9 +196,13 @@ class Breadcrumb extends PartialDriver implements BreadcrumbContract
      */
     public function render(): string
     {
-        $this->set('parts', $this->isEnabled() ? $this->collection()->fetch() : []);
+        if ($this->get('main')) {
+            return $this->main()->render();
+        } else {
+            $this->set('parts', $this->isEnabled() ? $this->collection()->fetch() : []);
 
-        return parent::render();
+            return parent::render();
+        }
     }
 
     /**

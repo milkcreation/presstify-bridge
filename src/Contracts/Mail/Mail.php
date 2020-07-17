@@ -25,11 +25,25 @@ interface Mail
     public function data($key, $value = null): Mail;
 
     /**
+     * Liste des paramètres par défaut.
+     *
+     * @return array
+     */
+    public function defaults(): array;
+
+    /**
      * Récupération de l'affichage du mode de débogage.
      *
      * @return string
      */
     public function debug(): string;
+
+    /**
+     * Récupération de l'instance du gestionnaire de mail.
+     *
+     * @return Mailer|null
+     */
+    public function mailer(): ?Mailer;
 
     /**
      * Définition de paramètre|Récupération de paramètres|Récupération de l'instance des paramètres.
@@ -39,7 +53,7 @@ interface Mail
      *
      * @return string|bool|mixed|ParamsBag|null
      */
-    public function params($key, $default = null);
+    public function params($key = null, $default = null);
 
     /**
      * Mise en file de l'email dans la queue d'expédition.
@@ -68,6 +82,15 @@ interface Mail
     public function setMailer(Mailer $mailer): Mail;
 
     /**
+     * Définition de la liste des paramètres.
+     *
+     * @param array $params
+     *
+     * @return static
+     */
+    public function setParams(array $params): Mail;
+
+    /**
      * Affichage de l'email.
      *
      * @return string
@@ -85,8 +108,9 @@ interface Mail
      * Récupération de l'affichage d'un gabarit.
      *
      * @param string $name
+     * @param array $data
      *
      * @return string
      */
-    public function view(string $name): string;
+    public function view(string $name, array $data = []): string;
 }

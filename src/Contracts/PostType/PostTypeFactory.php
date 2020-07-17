@@ -3,9 +3,51 @@
 namespace tiFy\Contracts\PostType;
 
 use tiFy\Contracts\Support\ParamsBag;
+use WP_Post_Type;
 
+/**
+ * @property-read string $label
+ * @property-read object $labels
+ * @property-read string $description
+ * @property-read bool $public
+ * @property-read bool $hierarchical
+ * @property-read bool $exclude_from_search
+ * @property-read bool $publicly_queryable
+ * @property-read bool $show_ui
+ * @property-read bool $show_in_menu
+ * @property-read bool $show_in_nav_menus
+ * @property-read bool $show_in_admin_bar
+ * @property-read int $menu_position
+ * @property-read string $menu_icon
+ * @property-read string $capability_type
+ * @property-read bool $map_meta_cap
+ * @property-read string $register_meta_box_cb
+ * @property-read array $taxonomies
+ * @property-read bool|string $has_archive
+ * @property-read string|bool $query_var
+ * @property-read bool $can_export
+ * @property-read bool $delete_with_user
+ * @property-read bool $_builtin
+ * @property-read string $_edit_link
+ * @property-read object $cap
+ * @property-read array|false $rewrite
+ * @property-read array|bool $supports
+ * @property-read bool $show_in_rest
+ * @property-read string|bool $rest_base
+ * @property-read string|bool $rest_controller_class
+ * @property-read \WP_REST_Controller $rest_controller
+ */
 interface PostTypeFactory extends ParamsBag
 {
+    /**
+     * Récupération des données de délégation du type de post Wordpress associée.
+     *
+     * @param int|string $key
+     *
+     * @return mixed
+     */
+    public function __get($key);
+
     /**
      * Résolution de sortie de la classe sous forme de chaîne de caractère.
      * {@internal Retourne le nom de qualification du type de post.}
@@ -61,4 +103,13 @@ interface PostTypeFactory extends ParamsBag
      * @return static
      */
     public function setManager(PostType $manager): PostTypeFactory;
+
+    /**
+     * Définition de l'instance de la taxonomie Wordpress associée.
+     *
+     * @param WP_Post_Type $post_type
+     *
+     * @return static
+     */
+    public function setWpPostType(WP_Post_Type $post_type): PostTypeFactory;
 }

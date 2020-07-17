@@ -1,69 +1,72 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace tiFy\Wordpress\User;
 
 use Illuminate\Support\Collection;
 use tiFy\Contracts\User\RoleFactory;
-use tiFy\Contracts\User\SigninFactory as BaseSigninFactoryContract;
-use tiFy\Contracts\User\User as tiFyUser;
+use tiFy\Contracts\User\User as UserManager;
 use tiFy\Wordpress\Contracts\User as UserContract;
-use tiFy\Wordpress\User\Signin\SigninFactory;
 use WP_Roles;
 use WP_User_Query;
+use WP_Role;
 
 class User implements UserContract
 {
     /**
-     * Instance de l'accesseur de service utilisateur.
-     * @var tiFyUser
+     * Instance du gestionnaire des utilisateurs.
+     * @var UserManager
      */
-    protected $accessor;
+    protected $manager;
 
     /**
      * CONSTRUCTEUR
      *
-     * @param tiFyUser $accessor Instance du gestionnaire utilisateur.
+     * @param UserManager $manager
      *
      * @return void
      */
-    public function __construct(tiFyUser $accessor)
+    public function __construct(UserManager $manager)
     {
-        $this->accessor = $accessor;
+        $this->manager = $manager;
 
         add_action('init', function () {
-            /* @see https://codex.wordpress.org/Roles_and_Capabilities */
             foreach (config('user.role', []) as $name => $attrs) {
-                $this->accessor->role()->register($name, $attrs);
+                $this->manager->role()->register($name, $attrs);
             }
         }, 0);
 
         add_action('init', function () {
             global $wp_roles;
 
-            foreach($wp_roles->roles as $role => $data) {
-                if (!$this->accessor->role()->get($role)) {
-                    $this->accessor->role()->register(
+            foreach ($wp_roles->roles as $role => $data) {
+                if (!$this->manager->role()->get($role)) {
+                    $this->manager->role()->register(
                         $role, ['display_name' => $data['name'], 'capabilities' => $data['capabilities']]
                     );
                 }
             }
-
-            foreach (config('user.signin', []) as $name => $attrs) {
-                $this->accessor->signin()->register($name, $attrs);
-            }
-            foreach (config('user.signup', []) as $name => $attrs) {
-                $this->accessor->signup()->register($name, $attrs);
-            }
         }, 999998);
 
-        add_action('profile_update', function ($user_id) {
-            $this->accessor->meta()->Save($user_id);
-            $this->accessor->option()->Save($user_id);
-        }, 2);
+        add_action('profile_update', function (int $user_id) {
+            if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+                return;
+            } elseif (defined('DOING_AJAX') && DOING_AJAX) {
+                return;
+            }
 
-        add_action('user_register', function ($user_id) {
-            $this->accessor->meta()->Save($user_id);
-            $this->accessor->option()->Save($user_id);
+            $this->manager->meta()->save($user_id);
+            $this->manager->option()->Save($user_id);
+        });
+
+        add_action('user_register', function (int $user_id) {
+            if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+                return;
+            } elseif (defined('DOING_AJAX') && DOING_AJAX) {
+                return;
+            }
+
+            $this->manager->meta()->save($user_id);
+            $this->manager->option()->Save($user_id);
         });
 
         events()->on('user.role.factory.boot', function (RoleFactory $factory) {
@@ -72,7 +75,7 @@ class User implements UserContract
 
             $name = $factory->getName();
 
-            /** @var \WP_Role $role */
+            /** @var WP_Role $role */
             if (!$role = $wp_roles->get_role($name)) {
                 $role = $wp_roles->add_role($name, $factory->get('display_name'));
             } elseif (($names = $wp_roles->get_names()) && ($names[$name] !== $factory->get('display_name'))) {
@@ -86,24 +89,10 @@ class User implements UserContract
                 }
             }
         });
-
-        $this->register();
     }
 
     /**
-     * Déclaration des surchages de service du conteneur d'injection.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        app()->add(BaseSigninFactoryContract::class, function () {
-            return new SigninFactory();
-        });
-    }
-
-    /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function pluck($value = 'display_name', $key = 'ID', $query_args = [])
     {
@@ -119,7 +108,7 @@ class User implements UserContract
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function roleDisplayName($role)
     {
@@ -129,6 +118,7 @@ class User implements UserContract
         if (!isset($roles[$role])) {
             return $role;
         }
+
         return translate_user_role($roles[$role]);
     }
 }

@@ -26,6 +26,7 @@ class SessionServiceProvider extends ServiceProvider
             $session = new Session($this->getContainer());
 
             if (session_status() == PHP_SESSION_NONE) {
+                $_SESSION['flag'] = TRUE;
                 $session->start();
             }
 

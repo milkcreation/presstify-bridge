@@ -5,16 +5,23 @@ namespace tiFy\Template\Factory;
 use tiFy\Contracts\Template\FactoryUrl as FactoryUrlContract;
 use tiFy\Contracts\Template\TemplateFactory;
 use tiFy\Routing\Url as BaseUrl;
+use tiFy\Support\Proxy\{Router, Request};
 
 class Url extends BaseUrl implements FactoryUrlContract
 {
     use FactoryAwareTrait;
 
     /**
-     * Url des contrôle.
+     * Url des contrôleurs.
      * @var string
      */
-    protected $baseUrl;
+    protected $basePath = '';
+
+    /**
+     * Url d'affichage du template.
+     * @var string
+     */
+    protected $displayUrl = '';
 
     /**
      * Instance du gabarit d'affichage.
@@ -29,7 +36,23 @@ class Url extends BaseUrl implements FactoryUrlContract
      */
     public function __construct()
     {
-        parent::__construct(router(), request());
+        parent::__construct(Router::getInstance(), Request::getInstance());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function action(bool $absolute = false): string
+    {
+        return $this->factory->ajax() ? $this->xhr($absolute) : $this->http($absolute);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function display(): string
+    {
+        return $this->displayUrl;
     }
 
     /**
@@ -37,15 +60,25 @@ class Url extends BaseUrl implements FactoryUrlContract
      */
     public function http(bool $absolute = false): string
     {
-        return $absolute ? (string)$this->root($this->baseUrl) : $this->rewriteBase() . '/' . $this->baseUrl;
+        return $absolute ? (string)$this->root($this->basePath) : $this->rewriteBase() . '/' . $this->basePath;
     }
 
     /**
      * @inheritDoc
      */
-    public function setBaseUrl(string $base_url): FactoryUrlContract
+    public function setBasePath(string $base_path): FactoryUrlContract
     {
-        $this->baseUrl = $base_url;
+        $this->basePath = $base_path;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setDisplayUrl(string $display_url): FactoryUrlContract
+    {
+        $this->displayUrl = $display_url;
 
         return $this;
     }
@@ -55,7 +88,7 @@ class Url extends BaseUrl implements FactoryUrlContract
      */
     public function xhr(bool $absolute = false): string
     {
-        $path = $this->baseUrl . '/xhr';
+        $path = $this->basePath . '/xhr';
 
         return $absolute ? (string)$this->root($path) : $this->rewriteBase() . '/' . $path;
     }

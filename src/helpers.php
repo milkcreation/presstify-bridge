@@ -2,6 +2,8 @@
 
 use App\App;
 use Illuminate\Database\Query\Builder as LaraDatabaseQueryBuilder;
+use League\Uri\Contracts\UriInterface as LeagueUri;
+use Psr\Http\Message\UriInterface;
 use tiFy\Contracts\Asset\Asset;
 use tiFy\Contracts\Container\Container;
 use tiFy\Contracts\Cron\CronJob;
@@ -25,7 +27,6 @@ use tiFy\Contracts\Partial\Partial;
 use tiFy\Contracts\PostType\PostTypeFactory;
 use tiFy\Contracts\PostType\PostType;
 use tiFy\Contracts\Routing\Redirector;
-use tiFy\Contracts\Routing\Route;
 use tiFy\Contracts\Routing\Router;
 use tiFy\Contracts\Routing\Url;
 use tiFy\Contracts\Support\ClassInfo;
@@ -58,6 +59,7 @@ if (!function_exists('app')) {
         if (is_null($abstract)) {
             return $factory;
         }
+
         return $factory->get($abstract, $args);
     }
 }
@@ -349,6 +351,7 @@ if (!function_exists('redirect')) {
         if (is_null($to)) {
             return app('redirect');
         }
+
         return app('redirect')->to($to, $status, $headers, $secure);
     }
 }
@@ -377,40 +380,10 @@ if (!function_exists('route')) {
      */
     function route($name, $parameters = [], $absolute = true): ?string
     {
-        return router()->url($name, $parameters, $absolute);
-    }
-}
-
-if (!function_exists('route_exists')) {
-    /**
-     * Vérification si la requête courante répond à une route déclarée.
-     *
-     * @return bool
-     */
-    function route_exists(): bool
-    {
-        return router()->hasCurrent();
-    }
-}
-
-if (!function_exists('router')) {
-    /**
-     * Routing - Récupération de l'instance du controleur de routage ou déclaration d'une nouvelle route.
-     *
-     * @param string|null $name Nom de qualification de la route.
-     * @param array $attrs Liste des attributs de configuration.
-     *
-     * @return Router|Route
-     */
-    function router(?string $name = null, ?array $attrs = [])
-    {
         /* @var Router $factory */
-        $factory = app('router');
+        $router = app('router');
 
-        if (is_null($name)) {
-            return $factory;
-        }
-        return $factory->register($name, $attrs);
+        return $router->url($name, $parameters, $absolute);
     }
 }
 
@@ -483,11 +456,16 @@ if (!function_exists('url')) {
     /**
      * Récupération de l'instance du contrôleur d'url.
      *
+     * @param UriInterface|LeagueUri|string|null $uri
+     *
      * @return Url
      */
-    function url(): Url
+    function url($uri = null): Url
     {
-        return app('url');
+        /** @var Url $url */
+        $url =  app('url');
+
+        return is_null($uri) ? $url : $url->set($uri);
     }
 }
 
@@ -529,7 +507,7 @@ if (!function_exists('view')) {
     function view($view = null, $data = [])
     {
         /* @var ViewEngine $factory */
-        $factory = app('viewer');
+        $factory = app('view');
 
         if (func_num_args() === 0) {
             return $factory;

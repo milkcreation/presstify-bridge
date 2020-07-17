@@ -70,7 +70,7 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     /**
      * @inheritDoc
      */
-    public function boot(): void {}
+    public function boot(): void { }
 
     /**
      * @inheritDoc
@@ -83,43 +83,44 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     /**
      * Listes des attributs de configuration par défaut.
      * @return array {
-     *      @var string $action Propriété 'action' de la balise <form/>.
-     *      @var array $addons Liste des attributs des addons actifs.
-     *      @var array $attrs Liste des attributs complémentaires de la balise <form/>.
-     *      @var string $after Post-affichage, après la balise <form/>.
-     *      @var boolean $auto Indicateur de traitement automatisé de la requête de soumission du formulaire. true par défaut
-     *      @var string $before Pré-affichage, avant la balise <form/>.
-     *      @var array $buttons Liste des attributs des boutons actifs.
-     *      @var string $enctype Propriété 'enctype' de la balise <form/>.
-     *      @var array $events Liste des événements de court-circuitage.
-     *      @var array $fields Liste des attributs de champs.
-     *      @var boolean|array $grid Activation de l'agencement des éléments sur grille.
-     *      @var string $method Propriété 'method' de la balise <form/>.
-     *      @var array $notices Liste des attributs des messages de notification.
-     *      @var array $options Liste des options du formulaire.
-     *      @var string $title Intitulé de qualification du formulaire.
-     *      @var array $viewer Attributs de configuration du gestionnaire de gabarits d'affichage.
+     * @var string $action Propriété 'action' de la balise <form/>.
+     * @var array $addons Liste des attributs des addons actifs.
+     * @var array $attrs Liste des attributs complémentaires de la balise <form/>.
+     * @var string $after Post-affichage, après la balise <form/>.
+     * @var boolean $auto Indicateur de traitement automatisé de la requête de soumission du formulaire. true par défaut
+     * @var string $before Pré-affichage, avant la balise <form/>.
+     * @var array $buttons Liste des attributs des boutons actifs.
+     * @var string $enctype Propriété 'enctype' de la balise <form/>.
+     * @var array $events Liste des événements de court-circuitage.
+     * @var array $fields Liste des attributs de champs.
+     * @var boolean|array $grid Activation de l'agencement des éléments sur grille.
+     * @var string $method Propriété 'method' de la balise <form/>.
+     * @var array $notices Liste des attributs des messages de notification.
+     * @var array $options Liste des options du formulaire.
+     * @var string $title Intitulé de qualification du formulaire.
+     * @var array $viewer Attributs de configuration du gestionnaire de gabarits d'affichage.
      * }
      */
     public function defaults(): array
     {
         return [
-            'action'  => '',
-            'addons'  => [],
-            'after'   => '',
-            'attrs'   => [],
-            'auto'    => true,
-            'before'  => '',
-            'buttons' => [],
-            'enctype' => '',
-            'events'  => [],
-            'fields'  => [],
-            'grid'    => false,
-            'method'  => 'post',
-            'notices' => [],
-            'options' => [],
-            'title'   => '',
-            'viewer'  => [],
+            'action'    => '',
+            'addons'    => [],
+            'after'     => '',
+            'attrs'     => [],
+            'auto'      => true,
+            'before'    => '',
+            'buttons'   => [],
+            'container' => [],
+            'enctype'   => '',
+            'events'    => [],
+            'fields'    => [],
+            'grid'      => false,
+            'method'    => 'post',
+            'notices'   => [],
+            'options'   => [],
+            'title'     => '',
+            'viewer'    => [],
         ];
     }
 
@@ -180,7 +181,9 @@ class FormFactory extends ParamsBag implements FormFactoryContract
      */
     public function getMethod(): string
     {
-        return $this->get('method', 'post');
+        $method = strtolower($this->get('method'));
+
+        return in_array($method, ['get', 'post']) ? $method : 'post';
     }
 
     /**
@@ -220,7 +223,7 @@ class FormFactory extends ParamsBag implements FormFactoryContract
      */
     public function isAuto(): bool
     {
-        return $this->auto ?? false;
+        return $this->auto ?? filter_var($this->get('auto', false), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
@@ -246,15 +249,15 @@ class FormFactory extends ParamsBag implements FormFactoryContract
     {
         if (!$this->labels instanceof LabelsBag) {
             $this->labels = LabelsBag::createFromAttrs([
-                'gender'    => $this->get('labels.gender', false),
-                'plural'    => $this->get('labels.plural', $this->getTitle()),
-                'singular'  => $this->get('labels.singular', $this->getTitle()),
+                'gender'   => $this->get('labels.gender', false),
+                'plural'   => $this->get('labels.plural', $this->getTitle()),
+                'singular' => $this->get('labels.singular', $this->getTitle()),
             ]);
         }
 
-        if(is_string($key)) {
+        if (is_string($key)) {
             return $this->labels->get($key, $default);
-        }  elseif (is_array($key)) {
+        } elseif (is_array($key)) {
             return $this->labels->set($key);
         } else {
             return $this->labels;
@@ -282,7 +285,7 @@ class FormFactory extends ParamsBag implements FormFactoryContract
      */
     public function onSuccess(): bool
     {
-        return !!$this->success ||(request()->get('success') === $this->name());
+        return !!$this->success || (request()->get('success') === $this->name());
     }
 
     /**
@@ -316,7 +319,7 @@ class FormFactory extends ParamsBag implements FormFactoryContract
                          'request',
                          'session',
                          'validation',
-                         'viewer'
+                         'viewer',
                      ] as $service) {
                 $this->resolve("factory.{$service}." . $this->name());
             }
@@ -358,6 +361,13 @@ class FormFactory extends ParamsBag implements FormFactoryContract
      */
     public function renderPrepare()
     {
+        $this->set('container', array_merge([
+            'attrs' => [
+                'class' => 'Form'
+            ],
+            'tag' => 'div'
+        ], $this->get('container', [])));
+
         if (!$this->has('attrs.id')) {
             $this->set('attrs.id', "Form-content--{$this->tagName()}");
         }

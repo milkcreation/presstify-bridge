@@ -5,10 +5,13 @@ namespace tiFy\Template\Factory;
 use Illuminate\Database\Eloquent\Model;
 use tiFy\Contracts\Template\{
     FactoryActions as FactoryActionsContract,
+    FactoryAjax as FactoryAjaxContract,
     FactoryDb as FactoryDbContract,
     FactoryServiceProvider as FactoryServiceProviderContract,
-    TemplateFactory};
+    TemplateFactory
+};
 use tiFy\Container\ServiceProvider as BaseServiceProvider;
+use tiFy\Support\Proxy\Url as ProxyUrl;
 use tiFy\View\Engine\Engine as ViewEngine;
 use tiFy\Support\Proxy\View as ProxyView;
 
@@ -45,11 +48,13 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
      */
     public function registerFactories(): void
     {
+        $this->registerFactoryAjax();
         $this->registerFactoryActions();
         $this->registerFactoryAssets();
         $this->registerFactoryBuilder();
         $this->registerFactoryCache();
         $this->registerFactoryDb();
+        $this->registerFactoryForm();
         $this->registerFactoryHttpController();
         $this->registerFactoryHttpXhrController();
         $this->registerFactoryLabels();
@@ -69,6 +74,33 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
     {
         $this->getContainer()->share($this->getFactoryAlias('actions'), function (): FactoryActionsContract {
             return (new Actions())->setTemplateFactory($this->factory);
+        });
+    }
+
+    /**
+     * Déclaration du controleur de gestion de la table en ajax.
+     *
+     * @return void
+     */
+    public function registerFactoryAjax(): void
+    {
+        $this->getContainer()->share($this->getFactoryAlias('ajax'), function () {
+            if ($attrs = $this->factory->param('ajax')) {
+                $ajax = $this->factory->provider('ajax');
+                $ajax = $ajax instanceof FactoryAjaxContract ? $ajax : new Ajax();
+
+                if (is_string($attrs)) {
+                    $attrs = [
+                        'url'      => $attrs,
+                        'dataType' => 'json',
+                        'type'     => 'POST',
+                    ];
+                }
+
+                return $ajax->setTemplateFactory($this->factory)->set(is_array($attrs) ? $attrs : []);
+            } else {
+                return null;
+            }
         });
     }
 
@@ -113,6 +145,20 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
     }
 
     /**
+     * Déclaration du gestionnaire de formulaire.
+     *
+     * @return void
+     */
+    public function registerFactoryForm(): void
+    {
+        $this->getContainer()->share($this->getFactoryAlias('form'), function () {
+            return (new Form())->setTemplateFactory($this->factory)->setHidden(
+                ProxyUrl::set($this->factory->url()->display())->params()
+            );
+        });
+    }
+
+    /**
      * Déclaration du controleur de base de données.
      *
      * @return void
@@ -127,9 +173,7 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
                     $db = new Db();
                 }
 
-                $instance =  $db->setTemplateFactory($this->factory);
-
-                return $instance;
+                return  $db->setTemplateFactory($this->factory);
             } else {
                 return null;
             }
@@ -224,7 +268,7 @@ class ServiceProvider extends BaseServiceProvider implements FactoryServiceProvi
         $this->getContainer()->share($this->getFactoryAlias('url'), function () {
             return (new Url())
                 ->setTemplateFactory($this->factory)
-                ->setBaseUrl($this->factory->manager()->baseUrl . '/' . $this->factory->name());
+                ->setBasePath($this->factory->manager()->basePath . '/' . $this->factory->name());
         });
     }
 

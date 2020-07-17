@@ -49,24 +49,24 @@ final class Column implements ColumnContract
     public function __construct()
     {
         add_action('wp_loaded', function () {
-            foreach (config('column', []) as $screen => $items) :
-                foreach ($items as $name => $attrs) :
+            foreach (config('column', []) as $screen => $items) {
+                foreach ($items as $name => $attrs) {
                     $name = (is_numeric($name)) ? Str::random() : $name;
 
                     $_screen = (preg_match('/(.*)@(post_type|taxonomy|user)/', $screen))
-                        ? "list::{$screen}": $screen;
+                        ? "list::{$screen}" : $screen;
 
                     $this->items[] = app()->get('column.item', [$name, $attrs, $_screen]);
-                endforeach;
-            endforeach;
+                }
+            }
         }, 0);
 
         add_action('current_screen', function (WP_Screen $wp_current_screen) {
             $this->screen = app('wp.wp_screen', [$wp_current_screen]);
 
-            foreach ($this->items as $item) :
+            foreach ($this->items as $item) {
                 $item->load($this->screen);
-            endforeach;
+            }
 
             $this->parseColumn($this->screen->getObjectType(), $this->screen->getObjectName());
         });
@@ -117,8 +117,11 @@ final class Column implements ColumnContract
                 add_action("manage_{$object_name}_posts_custom_column", [$this, 'parseColumnContents'], 25, 2);
                 break;
             case 'taxonomy' :
-            case 'user' :
                 add_filter("manage_edit-{$object_name}_columns", [$this, 'parseColumnHeaders']);
+                add_filter("manage_{$object_name}_custom_column", [$this, 'parseColumnContents'], 25, 3);
+                break;
+            case 'user' :
+                add_filter("manage_{$object_name}_columns", [$this, 'parseColumnHeaders']);
                 add_filter("manage_{$object_name}_custom_column", [$this, 'parseColumnContents'], 25, 3);
                 break;
             default :

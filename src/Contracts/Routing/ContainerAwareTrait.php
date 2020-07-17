@@ -2,23 +2,23 @@
 
 namespace tiFy\Contracts\Routing;
 
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 
 interface ContainerAwareTrait
 {
     /**
-     * Récupération du conteneur d'injection de dépendances.
+     * Récupération de l'instance du conteneur d'injection de dépendances.
      *
-     * @return ContainerInterface
+     * @return Container|null
      */
-    public function getContainer(): ?ContainerInterface;
+    public function getContainer(): ?Container;
 
     /**
      * Définition du conteneur d'injection de dépendances.
      *
-     * @param ContainerInterface $container
+     * @param Container $container
      *
      * @return static
      */
-    public function setContainer(ContainerInterface $container): ContainerAwareTrait;
+    public function setContainer(Container $container): ContainerAwareTrait;
 }

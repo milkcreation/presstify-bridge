@@ -29,6 +29,7 @@ use tiFy\Wordpress\Query\QueryUser;
 use tiFy\Wordpress\Routing\Routing;
 use tiFy\Wordpress\Routing\WpQuery;
 use tiFy\Wordpress\Routing\WpScreen;
+use tiFy\Wordpress\Session\Session;
 use tiFy\Wordpress\Taxonomy\Taxonomy;
 use tiFy\Wordpress\Template\Template;
 use tiFy\Wordpress\User\User;
@@ -46,7 +47,6 @@ class WordpressServiceProvider extends ServiceProvider
      * @var array
      */
     protected $provides = [
-        'wp',
         'wp.asset',
         'wp.auth',
         'wp.column',
@@ -70,6 +70,7 @@ class WordpressServiceProvider extends ServiceProvider
         'wp.query.term',
         'wp.query.user',
         'wp.routing',
+        'wp.session',
         'wp.taxonomy',
         'wp.template',
         'wp.user',
@@ -85,11 +86,14 @@ class WordpressServiceProvider extends ServiceProvider
     {
         require_once __DIR__ . '/helpers.php';
 
-        add_action('after_setup_theme', function () {
+        $this->getContainer()->share('wp', $wp = new Wordpress());
 
-            /* @var Wordpress $wp */
-            $wp = $this->getContainer()->get('wp');
+        add_action('plugins_loaded', function () {
+            load_muplugin_textdomain('tify', '/presstify/languages/');
+            do_action('tify_load_textdomain');
+        });
 
+        add_action('after_setup_theme', function () use ($wp) {
             if ($wp->is()) {
                 require_once(ABSPATH . 'wp-admin/includes/translation-install.php');
                 Locale::set(get_locale());
@@ -161,6 +165,10 @@ class WordpressServiceProvider extends ServiceProvider
                     $this->getContainer()->get('validator');
                 }
 
+                if ($this->getContainer()->has('session')) {
+                    $this->getContainer()->get('wp.session');
+                }
+
                 if ($this->getContainer()->has('storage')) {
                     $this->getContainer()->get('wp.filesystem');
                 }
@@ -192,7 +200,6 @@ class WordpressServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerManager();
         $this->registerAsset();
         $this->registerAuth();
         $this->registerColumn();
@@ -211,6 +218,7 @@ class WordpressServiceProvider extends ServiceProvider
         $this->registerPostType();
         $this->registerQuery();
         $this->registerRouting();
+        $this->registerSession();
         $this->registerTaxonomy();
         $this->registerTemplate();
         $this->registerUser();
@@ -345,18 +353,6 @@ class WordpressServiceProvider extends ServiceProvider
     }
 
     /**
-     * Déclaration du controleur de gestion de Wordpress.
-     *
-     * @return void
-     */
-    public function registerManager(): void
-    {
-        $this->getContainer()->share('wp', function () {
-            return new Wordpress();
-        });
-    }
-
-    /**
      * Déclaration du controleur de gestion des Medias.
      *
      * @return void
@@ -469,6 +465,18 @@ class WordpressServiceProvider extends ServiceProvider
 
         $this->getContainer()->add('wp.wp_screen', function (?WP_Screen $wp_screen = null) {
             return new WpScreen($wp_screen);
+        });
+    }
+
+    /**
+     * Déclaration du gestionnaire de session.
+     *
+     * @return void
+     */
+    public function registerSession(): void
+    {
+        $this->getContainer()->share('wp.session', function () {
+            return new Session($this->getContainer()->get('session'));
         });
     }
 

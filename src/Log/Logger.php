@@ -46,14 +46,6 @@ class Logger extends MonologLogger implements LoggerContract
     /**
      * @inheritDoc
      */
-    public function addSuccess(string $message, array $context = []): bool
-    {
-        return $this->addNotice($message, $context);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getContainer(): ?Container
     {
         return $this->container;
@@ -96,15 +88,15 @@ class Logger extends MonologLogger implements LoggerContract
     /**
      * @inheritDoc
      */
-    public function success(string $message, array $context = []): bool
+    public function success(string $message, array $context = []): void
     {
-        return $this->addSuccess($message, $context);
+        $this->notice($message, $context);
     }
 
     /**
      * @inheritDoc
      */
-    public function setDefaultHandler()
+    public function setDefaultHandler(): void
     {
         if ($this->getContainer() && $this->getContainer()->has('path')) {
             /** @var PathContract $path */

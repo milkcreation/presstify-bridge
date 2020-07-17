@@ -23,7 +23,7 @@ class RowActionEdit extends BaseRowActionEdit
             'content' => __('Modifier', 'tify'),
             'url'     => function (BaseItem $item) {
                 /** @var Item $item */
-                return Url::set($item->getEditLink());
+                return Url::set($item->getEditUrl());
             },
         ]);
     }

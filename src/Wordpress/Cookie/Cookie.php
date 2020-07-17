@@ -41,10 +41,9 @@ class Cookie
             }
         }
 
-
         if ($cookies = config('cookie.cookies', [])) {
             foreach (config('cookie.cookies') as $k => $v) {
-                is_numeric($k) ? $this->manager->instance($v) : $this->manager->instance($k, $v);
+                is_numeric($k) ? $this->manager->make($v) : $this->manager->make($k, $v);
             }
         }
     }

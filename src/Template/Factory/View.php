@@ -5,6 +5,7 @@ namespace tiFy\Template\Factory;
 use BadMethodCallException;
 use Exception;
 use tiFy\Contracts\Template\{
+    FactoryForm,
     FactoryLabels,
     FactoryParams,
     FactoryRequest,
@@ -14,6 +15,7 @@ use tiFy\Contracts\Template\{
 use tiFy\View\Factory\PlatesFactory;
 
 /**
+ * @method FactoryForm form()
  * @method FactoryLabels|string label(?string $key = null, string $default = '')
  * @method string name()
  * @method FactoryParams|mixed param($key = null, $default = null)
@@ -27,11 +29,12 @@ class View extends PlatesFactory implements FactoryViewer
      * @var array
      */
     protected $mixins = [
+        'form',
         'label',
         'name',
         'param',
         'request',
-        'url'
+        'url',
     ];
 
     /**

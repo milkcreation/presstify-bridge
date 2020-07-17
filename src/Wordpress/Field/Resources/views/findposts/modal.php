@@ -3,48 +3,100 @@
  * Field Findposts - Fenêtre modale.
  * ---------------------------------------------------------------------------------------------------------------------
  * @var tiFy\Field\FieldView $this
+ * @var array $post_types
+ * @var array $query_args
  */
 ?>
-<div id="ajax-response"></div>
-
-<div id="find-posts" class="find-box FieldFindPosts-box" style="display: none;">
-    <div id="find-posts-head" class="find-box-head">
+<div <?php echo $this->htmlAttrs($this->get('modal.attrs', [])); ?>>
+    <div class="find-box-head">
         <?php _e('Attach to existing content'); ?>
-        <button type="button" id="find-posts-close">
+        <button type="button" data-control="findposts.modal.close">
             <span class="screen-reader-text"><?php _e('Close media attachment panel'); ?></span>
         </button>
     </div>
 
     <div class="find-box-inside">
         <div class="find-box-search">
-            <?php if ($found_action) : ?>
-                <input type="hidden" name="found_action" value="<?php echo esc_attr($found_action); ?>"/>
+            <?php if ($found_action = $this->get('found_action', '')) : ?>
+                <?php echo field('hidden', [
+                    'name'  => 'found_action',
+                    'value' => esc_attr($found_action),
+                ]); ?>
             <?php endif; ?>
-            <?php if ($query_args) : ?>
-                <input type="hidden" name="query_args"
-                       value="<?php echo urlencode(json_encode($query_args)); ?>"/>
+
+            <?php if ($query_args = $this->get('query_args', [])) : ?>
+                <?php echo field('hidden', [
+                    'name'  => 'query_args',
+                    'value' => rawurlencode(json_encode($query_args)),
+                ]); ?>
             <?php endif; ?>
-            <input type="hidden" name="affected" id="affected" value=""/>
-            <?php wp_nonce_field('FieldFindposts', '_ajax_nonce', false); ?>
-            <label class="screen-reader-text" for="find-posts-input"><?php _e('Search'); ?></label>
-            <input type="text" id="find-posts-input" name="ps" value=""/>
 
-            &nbsp;&nbsp;<?php _e('Type :', 'tify'); ?>
-            <select id="find-posts-post_type" name="post_type">
-                <option value="any"><?php _e('Tous', 'tify'); ?></option>
-                <?php foreach ($post_types as $post_type) : ?>
-                    <option value="<?php echo $post_type; ?>"><?php echo get_post_type_object($post_type)->label; ?></option>
-                <?php endforeach; ?>
-            </select>
+            <?php echo field('hidden', [
+                'name'  => '_ajax_nonce',
+                'value' => wp_create_nonce('Findposts'),
+            ]); ?>
 
-            <span class="spinner"></span>
-            <input type="button" id="find-posts-search" value="<?php esc_attr_e('Search'); ?>" class="button"/>
+            <?php echo field('hidden', [
+                'name'  => 'affected',
+                'value' => '',
+            ]); ?>
+
+            <label class="screen-reader-text" for="FieldFindposts-modalSearch--<?php echo $this->get('uniqid'); ?>">
+                <?php _e('Search'); ?>
+            </label>
+            <?php echo field('text', [
+                'attrs' => [
+                    'id'    => 'FieldFindposts-modalSearch--' . $this->get('uniqid'),
+                    'style' => 'vertical-align:middle;',
+                    'type'  => 'search',
+                ],
+                'name'  => 'ps',
+                'value' => '',
+            ]); ?>
+
+            <?php if ($available_post_types = $this->get('available_post_types', [])) : ?>
+                <label class="screen-reader-text" for="FieldFindposts-modalSelect--<?php echo $this->get('uniqid'); ?>">
+                    <?php _e('Post type'); ?>
+                </label>
+                <select id="FieldFindposts-modalSelect--<?php echo $this->get('uniqid'); ?>" name="post_type">
+                    <?php foreach ($available_post_types as $post_type => $label) : ?>
+                        <option value="<?php echo $post_type; ?>">
+                            <?php echo $label; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <?php echo field('hidden', [
+                    'name'  => 'available_post_types',
+                    'value' => array_values($available_post_types),
+                ]); ?>
+            <?php endif; ?>
+
+            <span class="spinner" data-control="findposts.modal.spinner"></span>
+
+            <?php echo field('button', [
+                'attrs'   => [
+                    'class'        => 'button button-secondary',
+                    'data-control' => 'findposts.modal.search',
+                    'type'         => 'submit',
+                ],
+                'content' => esc_attr__('Search'),
+            ]); ?>
+
             <div class="clear"></div>
         </div>
-        <div id="find-posts-response"></div>
+
+        <div class="find-posts-response" data-control="findposts.modal.response"></div>
     </div>
+
     <div class="find-box-buttons">
-        <?php submit_button(__('Select'), 'primary alignright', 'find-posts-submit', false); ?>
+        <?php echo field('button', [
+            'attrs'   => [
+                'class'        => 'button button-primary alignright',
+                'data-control' => 'findposts.modal.select',
+            ],
+            'name'    => 'find-posts-submit',
+            'content' => __('Select'),
+        ]); ?>
         <div class="clear"></div>
     </div>
 </div>

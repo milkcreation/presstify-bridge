@@ -2,7 +2,7 @@
 
 namespace tiFy\Support\Proxy;
 
-use XStatic\StaticProxy;
+use ReStatic\StaticProxy;
 
 abstract class AbstractProxy extends StaticProxy
 {

@@ -32,14 +32,17 @@ class Form implements FormContract
 
         add_action('wp', function () {
             foreach ($this->manager->all() as $form) {
+                /* @var FormFactory $form */
                 $form->events()->listen('field.get.value', function(&$value) {
                     $value = wp_unslash($value);
                 });
 
-                /* @var FormFactory $form */
                 if ($form->isAuto()) {
                     $this->manager->current($form);
-                    $form->prepare()->request()->handle();
+                    if($handle = $form->prepare()->request()->handle()) {
+                        $handle->send();
+                    }
+
                     $this->manager->reset();
                 }
             }

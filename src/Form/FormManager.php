@@ -173,11 +173,11 @@ class FormManager extends Manager implements FormManagerContract
             $item = new $item();
         } elseif (is_array($item)) {
             $attrs = $item;
-            if (isset($attrs['controller'])) {
-                $controller = $attrs['controller'];
-                unset($attrs['controller']);
+            if (isset($attrs['factory'])) {
+                $factory = $attrs['factory'];
+                unset($attrs['factory']);
 
-                $item = new $controller();
+                $item = new $factory();
             } else {
                 $item = $this->getContainer()->get('form.factory');
             }
@@ -185,7 +185,7 @@ class FormManager extends Manager implements FormManagerContract
 
         if (!$item instanceof FormFactory) {
             throw new Exception(sprintf(
-                __('Déclaration de %s en erreur, le formulaire devrait être une instance de %s'),
+                __('Déclaration de [%s] en erreur, le formulaire devrait être une instance de [%s]', 'tify'),
                 $name,
                 FormFactory::class
             ));

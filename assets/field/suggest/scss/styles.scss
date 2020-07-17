@@ -8,13 +8,12 @@
   position:relative;
 }
 
-.FieldSuggest-input {
+.FieldSuggest {
   width:100%;
   padding-right:25px;
 }
 
-input[type="text"].FieldSuggest-input.ui-autocomplete-loading,
-input[type="email"].FieldSuggest-input.ui-autocomplete-loading {
+input.FieldSuggest.ui-autocomplete-loading {
   background-image: none;
 }
 

@@ -2,31 +2,69 @@
 
 namespace tiFy\Wordpress\Query;
 
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Eloquent\{
+    Collection as EloquentCollection,
+    Model as EloquentModel
+};
 use tiFy\Contracts\{PostType\PostTypeFactory, PostType\PostTypeStatus};
-use tiFy\Support\{DateTime, ParamsBag, Str};
+use tiFy\Support\{Arr, DateTime, ParamsBag, Str};
 use tiFy\Support\Proxy\{Cache, PostType};
 use tiFy\Wordpress\{
     Contracts\Database\PostBuilder,
     Contracts\Query\PaginationQuery as PaginationQueryContract,
     Contracts\Query\QueryComment as QueryCommentContract,
     Contracts\Query\QueryPost as QueryPostContract,
+    Contracts\Query\QueryUser as QueryUserContract,
     Database\Model\Post as ModelPost,
     Proxy\Media
 };
-use WP_Post;
-use WP_Query;
-use WP_Term_Query;
-use WP_User;
+use WP_Post, WP_Query, WP_Term_Query, WP_User;
 
+/**
+ * @property-read int $ID
+ * @property-read int $post_author
+ * @property-read string $post_date
+ * @property-read string $post_date_gmt
+ * @property-read string $post_content
+ * @property-read string $post_title
+ * @property-read string $post_excerpt
+ * @property-read string $post_status
+ * @property-read string $comment_status
+ * @property-read string $ping_status
+ * @property-read string $post_password
+ * @property-read string $post_name
+ * @property-read string $to_ping
+ * @property-read string $pinged
+ * @property-read string $post_modified
+ * @property-read string $post_modified_gmt
+ * @property-read string $post_content_filtered
+ * @property-read int $post_parent
+ * @property-read string $guid
+ * @property-read int $menu_order
+ * @property-read string $post_type
+ * @property-read string $post_mime_type
+ * @property-read int $comment_count
+ * @property-read string $filter
+ */
 class QueryPost extends ParamsBag implements QueryPostContract
 {
+    /**
+     * Liste des classes de rappel d'instanciation selon le type de post.
+     * @var string[][]|array
+     */
+    protected static $builtInClasses = [];
+
     /**
      * Liste des arguments de requête de récupération des éléments par défaut.
      * @var array
      */
     protected static $defaultArgs = [];
+
+    /**
+     * Classe de rappel d'instanciation.
+     * @var string|null
+     */
+    protected static $fallbackClass;
 
     /**
      * Instance de pagination de la dernière requête de récupération d'une liste d'éléments
@@ -47,8 +85,13 @@ class QueryPost extends ParamsBag implements QueryPostContract
     protected $db;
 
     /**
+     * Instance de l'auteur associé.
+     * @var QueryUserContract
+     */
+    protected $author;
+
+    /**
      * Instance du parent.
-     * {@internal Variation uniquement}
      * @var QueryPost|false|null
      */
     protected $parent;
@@ -76,6 +119,19 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
+    public static function build(WP_Post $wp_post): QueryPostContract
+    {
+        $classes = self::$builtInClasses;
+        $post_type = $wp_post->post_type;
+
+        $class = $classes[$post_type] ?? (self::$fallbackClass ?: static::class);
+
+        return class_exists($class) ? new $class($wp_post) : new static($wp_post);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function create($id = null, ...$args): ?QueryPostContract
     {
         if (is_numeric($id)) {
@@ -83,7 +139,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
         } elseif (is_string($id)) {
             return static::createFromName($id);
         } elseif ($id instanceof WP_Post) {
-            return (new static($id));
+            return static::build($id);
         } elseif ($id instanceof QueryPostContract) {
             return static::createFromId($id->getId());
         } elseif (is_null($id)) {
@@ -98,7 +154,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public static function createFromEloquent(EloquentModel $model): ?QueryPostContract
     {
-        return new static(new WP_Post((object)$model->getAttributes()));
+        return static::createFromId((new WP_Post((object)$model->getAttributes()))->ID ?: 0);
     }
 
     /**
@@ -108,11 +164,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     {
         global $post;
 
-        if ($post instanceof WP_Post) {
-            return static::is($instance = new static($post)) ? $instance : null;
-        } else {
-            return null;
-        }
+        return ($post instanceof WP_Post) ? static::createFromId($post->ID ?? 0) : null;
     }
 
     /**
@@ -121,19 +173,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     public static function createFromId(int $post_id): ?QueryPostContract
     {
         if ($post_id && ($wp_post = get_post($post_id)) && ($wp_post instanceof WP_Post)) {
-            return static::is($instance = new static($wp_post)) ? $instance : null;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function createFromPostdata(array $postdata): ?QueryPostContract
-    {
-        if (isset($postdata['ID'])) {
-            return static::is($instance = new static(new WP_Post((object)$postdata))) ? $instance : null;
+            return static::is($instance = static::build($wp_post)) ? $instance : null;
         } else {
             return null;
         }
@@ -146,11 +186,15 @@ class QueryPost extends ParamsBag implements QueryPostContract
     {
         $wpQuery = new WP_Query(static::parseQueryArgs(['name' => $name]));
 
-        if ($wpQuery->found_posts == 1) {
-            return static::is($instance = new static(current($wpQuery->posts))) ? $instance : null;
-        } else {
-            return null;
-        }
+        return ($wpQuery->found_posts == 1) ? static::createFromId(current($wpQuery->posts)->ID ?? 0) : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function createFromPostdata(array $postdata): ?QueryPostContract
+    {
+        return ($instance = static::createFromId((new WP_Post((object)$postdata))->ID ?? 0)) ? $instance : null;
     }
 
     /**
@@ -182,11 +226,9 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public static function fetchFromEloquent(EloquentCollection $collection): array
     {
-        $items = $collection->toArray();
-
         $instances = [];
-        foreach ($items as $item) {
-            if (static::is($instance = new static(new WP_Post((object)$item)))) {
+        foreach ($collection->toArray() as $item) {
+            if ($instance = static::createFromId((new WP_Post((object)$item))->ID ? : 0)) {
                 $instances[] = $instance;
             }
         }
@@ -210,11 +252,6 @@ class QueryPost extends ParamsBag implements QueryPostContract
     public static function fetchFromIds(array $ids): array
     {
         $args = static::parseQueryArgs(['post__in' => $ids, 'posts_per_page' => -1]);
-        if (!isset($args['post_type'])) {
-            $args['post_type'] = 'any';
-        }
-        $args['post__in'] = $ids;
-        $args['posts_per_page'] = -1;
 
         return static::fetchFromWpQuery(new WP_Query($args));
     }
@@ -242,7 +279,8 @@ class QueryPost extends ParamsBag implements QueryPostContract
 
         $results = [];
         foreach ($wp_posts as $wp_post) {
-            $instance = new static($wp_post);
+            $instance = static::build($wp_post);
+
             if (($postType = static::$postType) && ($postType !== 'any')) {
                 if ($instance->typeIn($postType)) {
                     $results[] = $instance;
@@ -343,6 +381,14 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
+    public static function setBuiltInClass(string $post_type, string $classname): void
+    {
+        self::$builtInClasses[$post_type] = $classname;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function setDefaultArgs(array $args): void
     {
         self::$defaultArgs = $args;
@@ -351,9 +397,17 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
+    public static function setFallbackClass(string $classname): void
+    {
+        self::$fallbackClass = $classname;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function setPostType($post_type): void
     {
-        self::$postType = $post_type;
+        static::$postType = $post_type;
     }
 
     /**
@@ -451,6 +505,26 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
+    public function getArchiveUrl(): ?string
+    {
+        return get_post_type_archive_link($this->getType()->getName()) ?: null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAuthor(): ?QueryUserContract
+    {
+        if (is_null($this->author)) {
+            $this->author = QueryUser::create($this->getAuthorId()) ?: false;
+        }
+
+        return $this->author ?: null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getAuthorId(): int
     {
         return (int)$this->get('post_author', 0);
@@ -533,7 +607,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public function getEditLink(): string
+    public function getEditUrl(): string
     {
         return get_edit_post_link($this->getId());
     }
@@ -674,8 +748,6 @@ class QueryPost extends ParamsBag implements QueryPostContract
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @deprecated
      */
     public function getPost()
@@ -719,7 +791,7 @@ class QueryPost extends ParamsBag implements QueryPostContract
         $args['taxonomy'] = $taxonomy;
         $args['object_ids'] = $this->getId();
 
-        return (new WP_Term_Query($args))->terms ? : [];
+        return (new WP_Term_Query($args))->terms ?: [];
     }
 
     /**
@@ -733,17 +805,17 @@ class QueryPost extends ParamsBag implements QueryPostContract
     /**
      * @inheritDoc
      */
-    public function getThumbnailSrc($size = 'post-thumbnail'): string
+    public function getThumbnailBase64Src($size = 'thumbnail'): ?string
     {
-        return get_the_post_thumbnail_url($this->getId(), $size);
+        return ($id = (int)get_post_thumbnail_id($this->getId())) ? Media::getBase64Src($id) : null;
     }
 
     /**
      * @inheritDoc
      */
-    public function getThumbnailBase64Src($size = 'thumbnail'): ?string
+    public function getThumbnailSrc($size = 'post-thumbnail'): string
     {
-        return ($id = (int)get_post_thumbnail_id($this->getId())) ? Media::getBase64Src($id) : null;
+        return get_the_post_thumbnail_url($this->getId(), $size);
     }
 
     /**
@@ -855,6 +927,6 @@ class QueryPost extends ParamsBag implements QueryPostContract
      */
     public function typeIn($post_types): bool
     {
-        return in_array((string)$this->getType(), (array)$post_types);
+        return in_array((string)$this->getType(), Arr::wrap($post_types));
     }
 }

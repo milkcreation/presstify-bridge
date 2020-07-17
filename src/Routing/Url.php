@@ -2,13 +2,19 @@
 
 namespace tiFy\Routing;
 
-use tiFy\Contracts\{Http\Request, Routing\Router, Routing\Url as UrlContract, Routing\UrlFactory as UrlFactoryContract};
+use tiFy\Contracts\{
+    Http\Request as RequestContract,
+    Routing\Router as RouterContract,
+    Routing\Url as UrlContract,
+    Routing\UrlFactory as UrlFactoryContract
+};
+use tiFy\Http\Request;
 
 class Url extends UrlFactory implements UrlContract
 {
     /**
      * Instance des requêtes HTTP.
-     * @var Router
+     * @var RequestContract
      */
     protected $request;
 
@@ -20,22 +26,22 @@ class Url extends UrlFactory implements UrlContract
 
     /**
      * Instance du routage.
-     * @var Router
+     * @var RouterContract
      */
     protected $router;
 
     /**
      * CONSTRUCTEUR
      *
-     * @param Router $router
-     * @param Request $request
+     * @param RouterContract $router
+     * @param RequestContract|null $request
      *
      * @return void
      */
-    public function __construct(Router $router, Request $request)
+    public function __construct(RouterContract $router, ?RequestContract $request = null)
     {
         $this->router = $router;
-        $this->request = $request;
+        $this->request = $request ?? Request::createFromGlobals();
 
         parent::__construct(app()->runningInConsole() ? (string)$this->root() : $this->request->fullUrl());
     }
@@ -53,7 +59,7 @@ class Url extends UrlFactory implements UrlContract
      */
     public function rel(string $url): ?string
     {
-        $root = (string)$this->root();
+        $root = $this->root()->render();
 
         return preg_match('/^' . preg_quote($root, '/') . '/', $url)
             ? '/'. ltrim(preg_replace('/^' . preg_quote($root, '/') . '/', '', $url), '/')

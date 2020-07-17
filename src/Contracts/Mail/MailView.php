@@ -24,6 +24,16 @@ interface MailView extends PlatesFactory
     public function driver(): MailerDriver;
 
     /**
+     * Récupération de paramètre.
+     *
+     * @param string $key
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public function param(string $key, $default = null);
+
+    /**
      * Linéarisation des informations de contact.
      *
      * @param array $contacts Informations de contact

@@ -6,7 +6,7 @@ use tiFy\Contracts\Metabox\{MetaboxDriver, MetaboxManager, MetaboxScreen as Meta
 use tiFy\Wordpress\Metabox\Context\SideContext;
 use tiFy\Wordpress\Metabox\Driver\{Filefeed\Filefeed, Imagefeed\Imagefeed, Videofeed\Videofeed};
 use tiFy\Wordpress\Routing\WpScreen;
-use tiFy\Support\Proxy\{PostType, Request, Taxonomy};
+use tiFy\Support\Proxy\{PostType, Request, Taxonomy, User};
 use WP_Post;
 use WP_Screen;
 use WP_Term;
@@ -90,20 +90,20 @@ class Metabox
             $screen = new WpScreen($wp_screen);
 
             if ($screen->getObjectType() === 'post_type') {
-                $post_type = $screen->getObjectName();
+                $type = $screen->getObjectName();
                 $boxes     = [];
 
-                if ($metaboxScreen = $this->manager->getScreen("{$post_type}@post_type")) {
+                if ($metaboxScreen = $this->manager->getScreen("{$type}@post_type")) {
                     $boxes = $metaboxScreen->getMetaboxes();
                 }
 
-                array_walk($boxes, function (MetaboxDriver $box) use ($post_type) {
+                array_walk($boxes, function (MetaboxDriver $box) use ($type) {
                     if($box->context()->getName() === 'side') {
                         add_action('add_meta_boxes', function () use ($box) {
                             add_meta_box(
                                 $box->name(),
-                                $box->title(), function () use ($box) {
-                                    echo $box->render();
+                                $box->title(), function (...$args) use ($box) {
+                                    echo $box->handle($args)->render();
                                 },
                                 null,
                                 'side'
@@ -111,8 +111,10 @@ class Metabox
                         });
                     }
 
-                    if (($name = $box->name()) && ! in_array($name, $this->postKeys)) {
-                        PostType::meta()->register($post_type, $name, true);
+                    $key = $box->name();
+
+                    if ($key && ! in_array($key, $this->postKeys) && !PostType::meta()->exists($type, $key)) {
+                        PostType::meta()->registerSingle($type, $key);
                     }
                 });
             } elseif (($screen->getHookname() === 'options')) {
@@ -129,38 +131,38 @@ class Metabox
                         return $whitelist_options;
                     });
                 }
-
                 array_walk($boxes, function (MetaboxDriver $box) use ($option_page) {
                     if ($name = $box->name()) {
                         register_setting($option_page, $name);
                     }
                 });
             } elseif ($screen->getObjectType() === 'taxonomy') {
-                $taxonomy = $screen->getObjectName();
+                $tax = $screen->getObjectName();
                 $boxes    = [];
 
-                if ($metaboxScreen = $this->manager->getScreen("{$taxonomy}@taxonomy")) {
+                if ($metaboxScreen = $this->manager->getScreen("{$tax}@taxonomy")) {
                     $boxes = $metaboxScreen->getMetaboxes();
                 }
+                array_walk($boxes, function (MetaboxDriver $box) use ($tax) {
+                    $key = $box->name();
 
-                array_walk($boxes, function (MetaboxDriver $box) use ($taxonomy) {
-                    if (($name = $box->name()) && ! in_array($name, $this->termKeys)) {
-                        Taxonomy::meta()->register($taxonomy, $name, true);
+                    if ($key && ! in_array($key, $this->termKeys) && !Taxonomy::meta()->exists($tax, $key)) {
+                        Taxonomy::meta()->registerSingle($tax, $key);
                     }
                 });
             } elseif ($screen->getObjectType() === 'user') {
-                $roles = $screen->getObjectName();
+                //$roles = $screen->getObjectName();
                 $boxes = [];
 
-                /** @todo */
-                if ($metaboxScreen = $this->manager->getScreen("{$roles}@user")) {
+                if ($metaboxScreen = $this->manager->getScreen("@user")) {
                     $boxes = $metaboxScreen->getMetaboxes();
                 }
+                array_walk($boxes, function (MetaboxDriver $box) {
+                    $key = $box->name();
 
-                array_walk($boxes, function (MetaboxDriver $box) use ($roles) {
-                    /*if (($name = $box->name()) && ! in_array($name, $this->userKeys)) {
-                        //user()->user_meta()->register($roles, $name, true);
-                    }*/
+                    if ($key && ! in_array($key, $this->userKeys) && !User::meta()->exists($key)) {
+                        User::meta()->registerSingle($key);
+                    }
                 });
             }
 
@@ -181,10 +183,14 @@ class Metabox
                          * 'edit_page_form',
                          * 'edit_form_advanced',
                          * 'dbx_post_sidebar' */
-                        add_action(
-                            $screen->getObjectName() === 'page' ? 'edit_page_form' : 'edit_form_advanced',
-                            $tabRdr
-                        );
+                        if ($screen->getScreen()->is_block_editor()) {
+                            add_meta_box('blockEditor-metabox', __('Réglages', 'tify'), $tabRdr);
+                        } else {
+                            add_action(
+                                $screen->getObjectName() === 'page' ? 'edit_page_form' : 'edit_form_advanced',
+                                $tabRdr
+                            );
+                        }
 
                         array_walk($boxes, function (MetaboxDriver $box) {
                             $box->setHandler(function (MetaboxDriver $box, WP_Post $wp_post) {

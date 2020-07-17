@@ -6,7 +6,7 @@ use Exception;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Util;
 use tiFy\Contracts\Filesystem\Filesystem;
-use tiFy\Contracts\Template\{TemplateFactory as TemplateFactoryContract};
+use tiFy\Contracts\Template\{FactoryAjax, TemplateFactory as TemplateFactoryContract};
 use tiFy\Template\TemplateFactory;
 use tiFy\Template\Templates\FileManager\Contracts\{
     Ajax,
@@ -42,9 +42,11 @@ class FileManager extends TemplateFactory implements FileManagerContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @return Ajax|null
      */
-    public function ajax(): Ajax
+    public function ajax(): FactoryAjax
     {
         return $this->resolve('ajax');
     }
