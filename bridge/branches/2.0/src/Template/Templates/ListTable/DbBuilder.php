@@ -42,6 +42,7 @@ class DbBuilder extends BaseDbBuilder implements DbBuilderContract
         }
 
         $this->queryLimit();
+
         $items = $this->query()->get();
 
         $this->factory->items()->set($items);

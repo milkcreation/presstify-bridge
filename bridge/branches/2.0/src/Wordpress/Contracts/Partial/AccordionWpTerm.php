@@ -10,7 +10,7 @@ interface AccordionWpTerm extends AccordionItem
     /**
      * Récupération du terme Wordpress associé.
      *
-     * @return WP_Term|null
+     * @return WP_Term
      */
-    public function wpTerm(): ?WP_Term;
+    public function term(): WP_Term;
 }

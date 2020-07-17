@@ -32,7 +32,7 @@ class FilesystemServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->getContainer()->share('storage', function () {
-            return new StorageManager($this->getContainer());
+            return new StorageManager([], $this->getContainer());
         });
 
         $this->registerAdapter();

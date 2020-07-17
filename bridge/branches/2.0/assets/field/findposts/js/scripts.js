@@ -1,165 +1,200 @@
-/* globals tify */
 'use strict';
 
 import jQuery from 'jquery';
+import 'jquery-ui/ui/core';
+import 'jquery-ui/ui/widget';
+import Mustache from 'mustache';
 
-let scripts;
-
-/**
- * USAGE
- * ---------------------------------------------------------------------------------------------------------------------
- * 1 - Appeler le script :
- tify_enqueue_findposts( );
- *
- * 2 - Ajouter au lien d'appel de la modale l'instruction :
- onclick=\"findPosts.open( 'target', '[id de la cible]' ); return false;"
- *
- * 3 - Personnalisation de l'action à la soumission depuis la modale (exemple) :
- jQuery(document).ready( function($){
-        $( '#find-posts-submit' ).click(function(e) {
-            e.preventDefault();
-            var $checked = $( '#find-posts-response .found-posts .found-radio > input:checked' );
-            
-            if( $checked.length )
-                $.post( tify.ajax_url, { action : 'tify_get_post_permalink', post_id : $checked.val() }, function( resp ){
-                    $( $( '#affected' ).val() ).val( resp );
-                    findPosts.close();
-                });
-            else 
-                findPosts.close();        
-            
-            return false;
-        });
-    });
- */
 jQuery(function ($) {
-    scripts = {
-        open: function (af_name, af_val) {
-            let overlay = $('.ui-find-overlay');
+  $.widget('tify.tifyFindposts', {
+    widgetEventPrefix: 'findposts:',
+    options: {},
+    // Instanciation de l'élément.
+    _create: function () {
+      this.instance = this;
 
-            if (overlay.length === 0) {
-                $('body').append('<div class="ui-find-overlay"></div>');
-                scripts.overlay();
-            }
+      this.el = this.element;
 
-            overlay.show();
+      this._initOptions();
+      this._initControls();
+      this._initEvents();
+    },
+    // INITIALISATIONS.
+    // -----------------------------------------------------------------------------------------------------------------
+    // Initialisation des attributs de configuration.
+    _initOptions: function () {
+      $.extend(
+          true,
+          this.options,
+          this.el.data('options') && $.parseJSON(decodeURIComponent(this.el.data('options'))) || {}
+      );
+    },
+    // Initialisation des agents de contrôle.
+    _initControls: function () {
+      this.id = this.option('uniqid');
 
-            if (af_name && af_val) {
-                $('#affected').attr('name', af_name).val(af_val);
-            }
+      this.wrapper = this.el.parent();
 
-            $('#find-posts').show();
+      this.opener = $('[data-control="findposts.opener"]', this.wrapper);
 
-            $('#find-posts-input').focus().keyup(function (event) {
-                if (event.which === 27) {
-                    scripts.close();
-                }
-            });
+      this.modal = $('[data-control="findposts.modal"]', this.wrapper).appendTo('body');
+      this.close = $('[data-control="findposts.modal.close"]', this.modal);
+      this.form = $('[data-control="findposts.modal.form"]', this.modal);
+      if (!this.form.length) {
+        $('.find-box-search', this.modal).wrap('<form data-control="findposts.modal.form"/>');
+        this.form = $('[data-control="findposts.modal.form"]', this.modal);
+      }
+      this.response = $('[data-control="findposts.modal.response"]', this.modal);
+      this.spinner = $('[data-control="findposts.modal.spinner"]', this.modal);
+      this.select = $('[data-control="findposts.modal.select"]', this.modal);
 
-            scripts.send();
+      this.tmpl = $('[data-control="findposts.tmpl"]', this.wrapper);
+    },
+    // Initialisation des événements.
+    _initEvents: function () {
+      this._on(this.opener, {'click': this._doOpen});
+      this._on(this.close, {'click': this._doClose});
+      this._on(this.form, {'submit': this._doSearch});
+      this._on(this.select, {'click': this._doSelect});
+      this._on(this.response, {'click tr': function (e) {
+          $(e.target).closest('tr').find('.found-radio > input').prop('checked', true);
+      }});
+    },
+    // EVENEMENTS
+    // -----------------------------------------------------------------------------------------------------------------
+    // Fermeture de la fenêtre de sélection.
+    _doClose: function (e) {
+      e.preventDefault();
 
-            return false;
-        },
+      this.response.html('');
+      this.modal.hide();
+      this.overlay.hide();
+    },
+    // Ouverture de la fenêtre de sélection.
+    _doOpen: function (e) {
+      e.preventDefault();
 
-        close: function () {
-            $('#find-posts-response').html('');
-            $('#find-posts').hide();
-            $('.ui-find-overlay').hide();
-        },
+      this._doOverlayShow(e);
 
-        overlay: function () {
-            $('.ui-find-overlay').on('click', function () {
-                scripts.close();
-            });
-        },
+      this.modal.show();
 
-        send: function () {
-            let post = {
-                    ps: $('#find-posts-input').val(),
-                    action: $('[name="found_action"]', '#find-posts').length ? $('[name="found_action"]', '#find-posts').val() : 'find_posts',
-                    query_args: $('[name="query_args"]', '#find-posts').length ? JSON.parse(decodeURIComponent($('[name="query_args"]', '#find-posts').val())) : {},
-                    _ajax_nonce: $('#_ajax_nonce').val()
-                },
-                post_type = $('[name="post_type"]', '#find-posts').val() ?
-                    $('[name="post_type"]', '#find-posts').val() : 'any',
-                $response = $('#find-posts-response'),
-                $spinner = $('.find-box-search .spinner');
+      this._doSearch(e);
 
+      return false;
+    },
+    // Affichage du fond transparent.
+    _doOverlayShow: function (e) {
+      e.preventDefault();
 
-            post.query_args = $.extend(post.query_args, {post_type: post_type});
-            $spinner.show();
+      let self = this;
 
-            $.ajax(tify.ajax_url, {
-                type: 'POST',
-                data: post,
-                dataType: 'json'
-            }).always(function () {
-                $spinner.hide();
-            }).done(function (x) {
-                if (!x.success) {
-                    $response.text(tify.findpostsl10n.error);
-                }
-
-                $response.html(x.data);
-            }).fail(function () {
-                $response.text(tify.findpostsl10n.error);
-            });
-        }
-    };
-
-    $(document).ready(function () {
-        $('#find-posts-submit').on('click', function (event) {
-            if (!$('#find-posts-response input[type="radio"]:checked').length) {
-                event.preventDefault();
-            }
+      if (!this.overlay) {
+        this.overlay = $('<div class="ui-find-overlay"></div>').appendTo('body');
+        this.overlay.on('click', function () {
+          self._doClose(e);
         });
-        $('#find-posts .find-box-search :input').keypress(function (event) {
-            if (13 === event.which) {
-                scripts.send();
-                return false;
-            }
-        });
-        $('#find-posts-search').on('click', scripts.send);
-        $('#find-posts-post_type').on('change', scripts.send);
-        $('#find-posts-close').on('click', scripts.close);
-        $('#doaction, #doaction2').on('click',function (event) {
-            $('select[name^="action"]').each(function () {
-                if ($(this).val() === 'attach') {
-                    event.preventDefault();
-                    scripts.open();
-                }
-            });
-        });
+      }
 
-        // Enable whole row to be clicked
-        $('.find-box-inside').on('click', 'tr', function () {
-            $(this).find('.found-radio input').prop('checked', true);
-        });
-    });
+      this.overlay.show();
+    },
+    // Lancement de la recherche.
+    _doSearch: function (e) {
+      e.preventDefault();
 
-    $(document).ready(function () {
-        $('#find-posts-submit').on('click', function (e) {
-            e.preventDefault();
+      let self = this,
+          ajax = $.extend(true, {}, this.option('ajax') || {}, {data: this.form.serialize()});
 
-            let $checked = $('#find-posts-response .found-posts .found-radio > input:checked');
+      this.spinner.show();
 
-            if ($checked.length) {
-                $.post(tify.ajax_url, {action: 'field_findposts_post_permalink', post_id: $checked.val()}, function (resp) {
-                    $($('#affected').val()).val(resp);
-                    scripts.close();
-                });
+      $.ajax(ajax)
+          .always(function () {
+            self.spinner.hide();
+          })
+          .done(function (resp) {
+            if (!resp.success) {
+              self.response.text(resp.data);
             } else {
+              let tmpl = self.tmpl.html();
+
+              Mustache.parse(tmpl);
+
+              self.response.html(Mustache.render(tmpl, {'posts': resp.data}));
+            }
+          })
+          .fail(function () {
+            self.response.text('Oops !');
+          });
+    },
+    // Sélection de l'élément.
+    _doSelect: function (e) {
+        e.preventDefault();
+
+      let self = this,
+          $checked = $('.found-posts .found-radio > input:checked', this.response);
+
+        if ($checked.length) {
+          let value = $checked.data('value') || $checked.val();
+
+          self.el.val(value);
+        }
+
+        this._doClose(e);
+
+        return false;
+    }
+  });
+
+  $(document).ready(function ($) {
+    $('[data-control="findposts"]').tifyFindposts();
+
+    $.tify.observe('[data-control="findposts"]', function (i, target) {
+      $(target).tifyFindposts();
+    });
+  });
+});
+
+/*scripts = {
+    open: function (af_name, af_val) {
+        if (af_name && af_val) {
+            $('#affected').attr('name', af_name).val(af_val);
+        }
+
+        $('#find-posts-input').focus().keyup(function (event) {
+            if (event.which === 27) {
                 scripts.close();
             }
-            return false;
         });
 
-        $(document).on('click', '[data-control="findposts"] > button', function() {
-            scripts
-                .open('target', '#' + $('> input[type="text"]', $(this).closest('[data-control="findposts"]'))
-                .attr('id'));
+        return false;
+    },
+};
+
+$(document).ready(function () {
+    $('#find-posts-submit').on('click', function (event) {
+        if (!$('#find-posts-response input[type="radio"]:checked').length) {
+            event.preventDefault();
+        }
+    });
+    $('#find-posts .find-box-search :input').keypress(function (event) {
+        if (13 === event.which) {
+            scripts.send();
+            return false;
+        }
+    });
+    $('#doaction, #doaction2').on('click',function (event) {
+        $('select[name^="action"]').each(function () {
+            if ($(this).val() === 'attach') {
+                event.preventDefault();
+                scripts.open();
+            }
         });
     });
 });
 
-
+$(document).ready(function () {
+    $(document).on('click', '[data-control="findposts"] > button', function() {
+        scripts
+            .open('target', '#' + $('> input[type="text"]', $(this).closest('[data-control="findposts"]'))
+            .attr('id'));
+    });
+}); */

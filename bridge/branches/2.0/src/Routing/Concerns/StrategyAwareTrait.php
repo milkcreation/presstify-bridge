@@ -4,12 +4,6 @@ namespace tiFy\Routing\Concerns;
 
 use tiFy\Contracts\Routing\StrategyAwareTrait as StrategyAwareTraitContract;
 
-/**
- * Trait StrategyAwareTrait
- * @package tiFy\Routing\Concerns
- *
- * @mixin ContainerAwareTrait
- */
 trait StrategyAwareTrait
 {
     /**

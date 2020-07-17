@@ -3,7 +3,7 @@
 namespace tiFy\Contracts\Routing;
 
 use Psr\Http\Message\UriInterface;
-use League\Uri\UriInterface as LeagueUri;
+use League\Uri\Contracts\UriInterface as LeagueUri;
 
 interface UrlFactory
 {
@@ -12,7 +12,7 @@ interface UrlFactory
      *
      * @return string
      */
-    public function __toString();
+    public function __toString(): string;
 
     /**
      * Ajout d'une portion de chemin à la fin de l'url.
@@ -21,7 +21,7 @@ interface UrlFactory
      *
      * @return static
      */
-    public function appendSegment(string $segment);
+    public function appendSegment(string $segment): UrlFactory;
 
     /**
      * Suppression d'une portion de chemin de l'url.
@@ -30,12 +30,12 @@ interface UrlFactory
      *
      * @return static
      */
-    public function deleteSegment(string $segment);
+    public function deleteSegment(string $segment): UrlFactory;
 
     /**
      * Récupération de la chaîne encodée de l'url.
      *
-     * @return LeagueUri|UriInterface
+     * @return LeagueUri|UriInterface|null
      */
     public function get();
 
@@ -46,7 +46,17 @@ interface UrlFactory
      *
      * @return string
      */
-    public function decoded(bool $raw = true);
+    public function decoded(bool $raw = true): string;
+
+    /**
+     * Récupération de paramètres de l'url.
+     *
+     * @param string|null $key Clé d'indice du paramètre. Tous si null.
+     * @param string|null $default Valeur de retour par défaut de récupération d'un paramètre unique.
+     *
+     * @return array|string|null
+     */
+    public function params(?string $key = null, ?string $default = null);
 
     /**
      * Définition de l'url.
@@ -64,7 +74,7 @@ interface UrlFactory
      *
      * @return static
      */
-    public function with(array $args);
+    public function with(array $args): UrlFactory;
 
     /**
      * Suppression d'arguments de l'url.
@@ -73,5 +83,12 @@ interface UrlFactory
      *
      * @return static
      */
-    public function without(array $args);
+    public function without(array $args): UrlFactory;
+
+    /**
+     * Récupération du rendu de l'url
+     *
+     * @return string
+     */
+    public function render(): string;
 }

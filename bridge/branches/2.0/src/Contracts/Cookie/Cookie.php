@@ -4,36 +4,40 @@ namespace tiFy\Contracts\Cookie;
 
 use Psr\Container\ContainerInterface as Container;
 use Symfony\Component\HttpFoundation\Cookie as SfCookie;
-use tiFy\Contracts\Http\Response;
 
 interface Cookie
 {
     /**
      * Suppression du cookie.
      *
-     * @return Response
+     * @return static
      */
-    public function clear(): Response;
+    public function clear(): Cookie;
 
     /**
-     * Génération du cookie.
+     * Création de l'instance du cookie.
      *
-     * @param string|array|null $value Valeur du cookie à définir.
-     * @param array ...$args {
-     *      Liste dynamique d'arguments complémentaires de définition du cookie.
-     *
-     *      @var int $expire
-     *      @var string|null $path
-     *      @var string|null $domain
-     *      @var boolean $secure
-     *      @var boolean $httpOnly
-     *      @var boolean $raw
-     *      @var string|null $sameSite
+     * @param array|null ...$args {
+     *      @type string|array|null $value Valeur du cookie à définir.
+     *      @type int $expire
+     *      @type string|null $path
+     *      @type string|null $domain
+     *      @type boolean $secure
+     *      @type boolean $httpOnly
+     *      @type boolean $raw
+     *      @type string|null $sameSite
      * }
      *
      * @return SfCookie
      */
-    public function generate($value = null, ...$args): SfCookie;
+    public function create(?array ...$args): SfCookie;
+
+    /**
+     * Récupération de la liste des cookies en attente de traitement dans la réponse globale.
+     *
+     * @return SfCookie[]|array
+     */
+    public static function fetchQueued(): array;
 
     /**
      * Récupération de la valeur d'un cookie.
@@ -46,7 +50,7 @@ interface Cookie
     public function get(?string $key = null, $default = null);
 
     /**
-     * Récupération du conteneur d'injection de dépendances.
+     * Récupération de l'instance du conteneur d'injection de dépendances.
      *
      * @return Container|null
      */
@@ -74,40 +78,27 @@ interface Cookie
     public function getPath(): ?string;
 
     /**
-     * Création ou récupération d'une instance.
+     * Vérifie si le cookie est en attente de traitement dans la réponse globale.
+     *
+     * @return bool
+     */
+    public function isQueued(): bool;
+
+    /**
+     * Implémentation d'un instance de cookie.
      *
      * @param string $alias Alias de qualification de l'instance.
      * @param string|array|null $attrs Nom de qualification lorsque celui diffère de l'alias|attributs de configuration.
      *
      * @return static
      */
-    public function instance(string $alias, $attrs = null): Cookie;
-
-    /**
-     * Récupération de la liste des arguments.
-     *
-     * @param array ...$args {
-     *      Liste dynamique d'arguments de définition du cookie.
-     *
-     *      @var string|array|null $value
-     *      @var int $expire
-     *      @var string|null $path
-     *      @var string|null $domain
-     *      @var boolean $secure
-     *      @var boolean $httpOnly
-     *      @var boolean $raw
-     *      @var string|null $sameSite
-     * }
-     *
-     * @return array
-     */
-    public function parseArgs(...$args): array;
+    public function make(string $alias, $attrs = null): Cookie;
 
     /**
      * Définition du cookie.
      *
      * @param string|array|null $value Valeur du cookie à définir.
-     * @param array ...$args {
+     * @param array|null ...$args {
      *      Liste dynamique d'arguments complémentaires de définition du cookie.
      *
      *      @var int $expire
@@ -119,9 +110,34 @@ interface Cookie
      *      @var string|null $sameSite
      * }
      *
-     * @return Response
+     * @return static
      */
-    public function set($value = null, ...$args): Response;
+    public function set($value = null, ?array ...$args): Cookie;
+
+    /**
+     * Définition de la liste des arguments par défaut.
+     *
+     * @param string|array|null $value
+     * @param int $expire
+     * @param string|null $path
+     * @param string|null $domain
+     * @param boolean|null $secure
+     * @param boolean $httpOnly
+     * @param boolean $raw
+     * @param string|null $sameSite
+     *
+     * @return static
+     */
+    public function setArgs(
+        $value = null,
+        int $expire = 0,
+        ?string $path = '/',
+        ?string $domain = null,
+        ?bool $secure = null,
+        bool $httpOnly = true,
+        bool $raw = false,
+        ?string $sameSite = null
+    ): Cookie;
 
     /**
      * Définition de l'activation de l'encodage en base64 de la valeurs des cookies.
@@ -131,6 +147,15 @@ interface Cookie
      * @return static
      */
     public function setBase64(bool $active = false): Cookie;
+
+    /**
+     * Définition du conteneur d'injection de dépendances.
+     *
+     * @param Container $container
+     *
+     * @return static
+     */
+    public function setContainer(Container $container): Cookie;
 
     /**
      * Définition du nom de qualification du domaine du site associé.
@@ -160,6 +185,15 @@ interface Cookie
     public function setPath(?string $path = null): Cookie;
 
     /**
+     * Définition de la mise en file du cookie pour un traitement dans la réponse globale.
+     *
+     * @param bool $queued
+     *
+     * @return static
+     */
+    public function setQueued(bool $queued = true): Cookie;
+
+    /**
      * Définition du suffixe de Salage du nom de qualification des cookies.
      *
      * @param string $salt
@@ -167,30 +201,5 @@ interface Cookie
      * @return static
      */
     public function setSalt(string $salt = ''): Cookie;
-
-    /**
-     * Définition de la liste des arguments par défaut.
-     *
-     * @param string|array|null $value
-     * @param int $expire
-     * @param string|null $path
-     * @param string|null $domain
-     * @param boolean|null $secure
-     * @param boolean $httpOnly
-     * @param boolean $raw
-     * @param string|null $sameSite
-     *
-     * @return static
-     */
-    public function setDefaults(
-        $value = null,
-        int $expire = 0,
-        ?string $path = '/',
-        ?string $domain = null,
-        ?bool $secure = null,
-        bool $httpOnly = true,
-        bool $raw = false,
-        ?string $sameSite = null
-    ): Cookie;
 }
 

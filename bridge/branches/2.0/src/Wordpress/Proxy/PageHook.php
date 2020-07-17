@@ -8,6 +8,7 @@ use tiFy\Wordpress\Contracts\{PageHook as PageHookContract, PageHookItem};
 /**
  * @method static array all()
  * @method static PageHookItem|null current()
+ * @method static string|null currentName()
  * @method static PageHookItem|null get(string $name)
  * @method static PageHookContract set(array|string $name, mixed $value = null)
  */

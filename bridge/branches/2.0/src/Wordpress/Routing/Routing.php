@@ -53,6 +53,8 @@ class Routing implements RoutingContract
             } catch (Exception $e) {
                 /**
                  * Suppression du slash de fin dans l'url des routes déclarées.
+                 * {@internal Si utilisation du controleur par défaut s'y référer}
+                 *
                  * @see https://symfony.com/doc/current/routing/redirect_trailing_slash.html
                  * @see https://stackoverflow.com/questions/30830462/how-to-deal-with-extra-in-phpleague-route
                  */
@@ -76,8 +78,14 @@ class Routing implements RoutingContract
                             $response = HttpRedirect::createPsr($redirect_url);
                             $this->manager->emit($response);
                             exit;
+                        } else {
+                            wp_die($e->getMessage());
                         }
+                    } else {
+                        wp_die($e->getMessage());
                     }
+                } else {
+                    wp_die($e->getMessage());
                 }
             }
         }, 0);
@@ -97,14 +105,14 @@ class Routing implements RoutingContract
         $this->manager->getContainer()->add(
             BaseRouteContract::class,
             function (string $method, string $path, callable $handler, $collection) {
-                return new Route($method, $path, $handler, $collection);
+                return (new Route($method, $path, $handler, $collection))->setContainer($this->manager->getContainer());
             }
         );
 
         $this->manager->getContainer()->add(
             BaseRouteGroupContract::class,
             function (string $prefix, callable $handler, $collection) {
-                return new RouteGroup($prefix, $handler, $collection);
+                return (new RouteGroup($prefix, $handler, $collection))->setContainer($this->manager->getContainer());
             }
         );
     }

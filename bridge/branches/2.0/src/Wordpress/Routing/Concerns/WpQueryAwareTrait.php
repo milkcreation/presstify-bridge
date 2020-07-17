@@ -24,7 +24,9 @@ trait WpQueryAwareTrait
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @return WpQueryAwareTrait
      */
     public function setWpQuery(bool $active = false): WpQueryAwareTraitContract
     {

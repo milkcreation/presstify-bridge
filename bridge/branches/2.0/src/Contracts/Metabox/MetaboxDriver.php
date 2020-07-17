@@ -36,6 +36,15 @@ interface MetaboxDriver extends ParamsBag
     public function defaultParams(): array;
 
     /**
+     * Traitement
+     *
+     * @param array $args Liste des arguments de traitement
+     *
+     * @return static
+     */
+    public function handle(array $args = []): MetaboxDriver;
+
+    /**
      * Récupération de l'instance du gestionnaire.
      *
      * @return MetaboxManager|null

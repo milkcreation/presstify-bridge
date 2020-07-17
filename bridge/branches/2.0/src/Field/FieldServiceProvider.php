@@ -8,11 +8,12 @@ use tiFy\Contracts\Field\{
     Checkbox as CheckboxContract,
     CheckboxCollection as CheckboxCollectionContract,
     Colorpicker as ColorpickerContract,
+    Datepicker as DatepickerContract,
+    DatetimeJs as DatetimeJsContract,
     Field as FieldContract,
     FieldDriver,
     File as FileContract,
     FileJs as FileJsContract,
-    DatetimeJs as DatetimeJsContract,
     Hidden as HiddenContract,
     Label as LabelContract,
     Number as NumberContract,
@@ -38,9 +39,10 @@ use tiFy\Field\Driver\{
     Checkbox\Checkbox,
     CheckboxCollection\CheckboxCollection,
     Colorpicker\Colorpicker,
+    Datepicker\Datepicker,
+    DatetimeJs\DatetimeJs,
     File\File,
     FileJs\FileJs,
-    DatetimeJs\DatetimeJs,
     Hidden\Hidden,
     Label\Label,
     Number\Number,
@@ -79,6 +81,7 @@ class FieldServiceProvider extends ServiceProvider
         ColorpickerContract::class,
         FileContract::class,
         FileJsContract::class,
+        DatepickerContract::class,
         DatetimeJsContract::class,
         HiddenContract::class,
         LabelContract::class,
@@ -138,16 +141,20 @@ class FieldServiceProvider extends ServiceProvider
             return new Colorpicker();
         });
 
+        $this->getContainer()->add(DatepickerContract::class, function (): DatepickerContract {
+            return new Datepicker();
+        });
+
+        $this->getContainer()->add(DatetimeJsContract::class, function () {
+            return new DatetimeJs();
+        });
+
         $this->getContainer()->add(FileContract::class, function () {
             return new File();
         });
 
         $this->getContainer()->add(FileJsContract::class, function () {
             return new FileJs();
-        });
-
-        $this->getContainer()->add(DatetimeJsContract::class, function () {
-            return new DatetimeJs();
         });
 
         $this->getContainer()->add(HiddenContract::class, function () {

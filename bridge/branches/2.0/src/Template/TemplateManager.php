@@ -12,10 +12,10 @@ use tiFy\Support\Proxy\Router;
 class TemplateManager extends Manager implements TemplateManagerContract
 {
     /**
-     * Url de base de routage.
+     * Chemin des requêtes HTTP et XHR.
      * @var string
      */
-    public $baseUrl = '';
+    public $basePath = '';
 
     /**
      * Liste des éléments déclarés.
@@ -72,13 +72,13 @@ class TemplateManager extends Manager implements TemplateManagerContract
      */
     public function prepareRoutes(): TemplateManagerContract
     {
-        $this->baseUrl = md5('tify:template');
+        $this->basePath = md5('tify:template');
 
         foreach(['head', 'delete', 'get', 'options', 'post', 'put', 'patch'] as $method) {
-            Router::$method($this->baseUrl . '/{name}', [$this, 'httpController']);
-            Router::xhr($this->baseUrl . '/{name}/xhr', [$this, 'httpXhrController'], $method);
+            Router::$method($this->basePath . '/{name}', [$this, 'httpController']);
+            Router::xhr($this->basePath . '/{name}/xhr', [$this, 'httpXhrController'], $method);
         }
-        Router::get($this->baseUrl . '/{name}/cache/{path:.*}', [$this, 'httpCacheController'])->strategy('app');
+        Router::get($this->basePath . '/{name}/cache/{path:.*}', [$this, 'httpCacheController'])->strategy('app');
 
         return $this;
     }

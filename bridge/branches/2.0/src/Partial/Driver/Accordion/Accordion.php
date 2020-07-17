@@ -10,17 +10,15 @@ class Accordion extends PartialDriver implements AccordionContract
     /**
      * {@inheritDoc}
      *
-     * @return array {
-     *      @var array $attrs Attributs HTML du champ.
-     *      @var string $after Contenu placé après le champ.
-     *      @var string $before Contenu placé avant le champ.
-     *      @var array $viewer Liste des attributs de configuration du pilote d'affichage.
-     *      @var string $theme Theme d'affichage. light|dark.
-     *      @var array|AccordionItem[]|AccordionWalkerItems Liste des éléments.
-     *      @var mixed $opened Définition de la liste des éléments ouverts à l'initialisation.
-     *      @var boolean $multiple Activation de l'ouverture multiple d'éléments.
-     *      @var boolean $triggered Activation de la limite d'ouverture et de fermeture par le déclencheur de l'élement.
-     * }
+     * @var array $attrs Attributs HTML du champ.
+     * @var string $after Contenu placé après le champ.
+     * @var string $before Contenu placé avant le champ.
+     * @var array $viewer Liste des attributs de configuration du pilote d'affichage.
+     * @var string $theme Theme d'affichage. light|dark.
+     * @var array|AccordionItem[]|AccordionWalker $items Liste des éléments.
+     * @var mixed $opened Définition de la liste des éléments ouverts à l'initialisation.
+     * @var boolean $multiple Activation de l'ouverture multiple d'éléments.
+     * @var boolean $triggered Activation de l'ouverture et la fermeture du volet par un déclencheur dédié.
      */
     public function defaults(): array
     {
@@ -48,24 +46,22 @@ class Accordion extends PartialDriver implements AccordionContract
             $this->set('attrs.class', trim($this->get('attrs.class') . " Accordion--{$theme}"));
         }
 
-        $this->set('attrs.data-control', 'accordion');
-
-        $this->set('attrs.data-id', $this->getId());
-
-        $this->set('attrs.data-options', [
-            'multiple'  => $this->get('multiple'),
-            'opened'    => $this->get('opened'),
-            'triggered' => $this->get('triggered'),
+        $this->set([
+            'attrs.data-control' => 'accordion',
+            'attrs.data-id'      => $this->getId(),
+            'attrs.data-options' => [
+                'multiple'  => $this->get('multiple'),
+                'opened'    => $this->get('opened'),
+                'triggered' => $this->get('triggered'),
+            ],
         ]);
 
         $items = $this->get('items', []);
-        if (!$items instanceof AccordionWalkerItems) {
-            $items = new AccordionWalkerItems($items, $this->get('opened'));
+        if (!$items instanceof AccordionWalker) {
+            $items = new AccordionWalker($items);
         }
 
-        $items->setPartial($this);
-
-        $this->set('items', $items);
+        $this->set('items', $items->setPartial($this)->build());
 
         return $this;
     }

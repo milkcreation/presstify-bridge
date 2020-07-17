@@ -12,13 +12,13 @@ use tiFy\Contracts\Container\Container;
 interface StorageManager extends FilesystemInterface
 {
     /**
-     * Récupération d'un point de montage.
+     * Récupération de l'instance d'un point de montage.
      *
-     * @param string $name Nom de qualification du disque.
+     * @param string|null $name Nom de qualification du point de montage|Point de montage par défaut.
      *
      * @return Filesystem|null
      */
-    public function disk(string $name): ?Filesystem;
+    public function disk(?string $name = null): ?Filesystem;
 
     /**
      * Récupération de l'instance du controleur d'injection de dépendances.
@@ -28,9 +28,16 @@ interface StorageManager extends FilesystemInterface
     public function getContainer(): ?Container;
 
     /**
+     * Récupération de l'instance du point de montage par défaut.
+     *
+     * @return Filesystem|null
+     */
+    public function getDefault(): ?Filesystem;
+
+    /**
      * Récupération d'une instance gestionnaire de fichier.
      *
-     * @param string $name Nom de qualification du disque.
+     * @param string $name Nom de qualification du point de montage.
      *
      * @return Filesystem
      *
@@ -129,4 +136,22 @@ interface StorageManager extends FilesystemInterface
      * @return $this
      */
     public function set(string $name, Filesystem $filesystem): StorageManager;
+
+    /**
+     * Définition du conteneur d'injection de dépendances.
+     *
+     * @param Container $container
+     *
+     * @return static
+     */
+    public function setContainer(Container $container): StorageManager;
+
+    /**
+     * Récupération de l'instance d'un point de montage du système de fichier locaux.
+     *
+     * @param string|null $name Nom de qualification du point de montage système|Point de montage système par défaut.
+     *
+     * @return LocalFilesystem|null
+     */
+    public function system(?string $name = null): ?LocalFilesystem;
 }

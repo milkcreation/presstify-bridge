@@ -2,11 +2,10 @@
 
 namespace tiFy\Template\Templates\ListTable;
 
-use tiFy\Support\ParamsBag;
-use tiFy\Template\Factory\FactoryAwareTrait;
+use tiFy\Template\Factory\{Ajax as BaseAjax, FactoryAwareTrait};
 use tiFy\Template\Templates\ListTable\Contracts\{Ajax as AjaxContract, Column};
 
-class Ajax extends ParamsBag implements AjaxContract
+class Ajax extends BaseAjax implements AjaxContract
 {
     use FactoryAwareTrait;
 
@@ -21,13 +20,7 @@ class Ajax extends ParamsBag implements AjaxContract
      */
     public function defaults()
     {
-        return [
-            'ajax'        => [
-                'url'      => $this->factory->url()->xhr(),
-                'dataType' => 'json',
-                'method'   => 'POST',
-            ],
-            'data'        => [],
+        return array_merge(parent::defaults(), [
             'columns'     => $this->getColumns(),
             'language'    => $this->getLanguage(),
             'options'     => [
@@ -35,7 +28,7 @@ class Ajax extends ParamsBag implements AjaxContract
             ],
             'total_items' => $this->factory->pagination()->getTotal(),
             'total_pages' => $this->factory->pagination()->getLastPage(),
-        ];
+        ]);
     }
 
     /**

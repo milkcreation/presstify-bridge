@@ -3,9 +3,10 @@
 namespace tiFy\Template\Factory;
 
 use Exception;
+use Laminas\Diactoros\Response;
 use Psr\Http\Message\ServerRequestInterface;
 use tiFy\Contracts\Template\FactoryHttpController as FactoryHttpControllerContract;
-use Zend\Diactoros\Response;
+use tiFy\Support\Proxy\Partial;
 
 class HttpController implements FactoryHttpControllerContract
 {
@@ -37,9 +38,9 @@ class HttpController implements FactoryHttpControllerContract
      */
     public function notice($message, $type = 'info', $attrs = []): string
     {
-        return (string)partial('notice', array_merge([
+        return Partial::get('notice', array_merge([
             'type'    => $type,
             'content' => $message
-        ], $attrs));
+        ], $attrs))->render();
     }
 }

@@ -4,19 +4,21 @@ namespace tiFy\Routing;
 
 use FastRoute\RouteParser\Std as RouteParser;
 use InvalidArgumentException;
-use League\Route\Route as LeagueRoute;
+use League\Route\{Route as LeagueRoute, RouteCollectionInterface, RouteGroup};
 use LogicException;
-use tiFy\Contracts\Routing\{Route as RouteContract, Router as RouterContract};
-use tiFy\Routing\Concerns\{ContainerAwareTrait, StrategyAwareTrait};
+use tiFy\Contracts\Http\RedirectResponse as HttpRedirect;
+use tiFy\Contracts\Routing\Route as RouteContract;
+use tiFy\Routing\Concerns\{ContainerAwareTrait, MiddlewareAwareTrait, RouteCollectionAwareTrait, StrategyAwareTrait};
 use tiFy\Support\ParamsBag;
+use tiFy\Support\Proxy\{Request, Redirect, Url};
 
 class Route extends LeagueRoute implements RouteContract
 {
-    use ContainerAwareTrait, StrategyAwareTrait;
+    use ContainerAwareTrait, MiddlewareAwareTrait, RouteCollectionAwareTrait, StrategyAwareTrait;
 
     /**
      * Instance du controleur de gestion des routes.
-     * @var RouterContract
+     * @var RouteCollectionInterface
      */
     protected $collection;
 
@@ -38,57 +40,83 @@ class Route extends LeagueRoute implements RouteContract
      * @param string $method
      * @param string $path
      * @param callable $handler
-     * @param Router $collection Instance du controleur de gestion des routes.
+     * @param RouteCollectionInterface $collection Instance du controleur de gestion des routes.
      *
      * @return void
      */
-    public function __construct(string $method, string $path, $handler, $collection)
+    public function __construct(string $method, string $path, $handler, RouteCollectionInterface $collection)
     {
         $this->collection = $collection;
 
-        parent::__construct(strtoupper($method), $path, $handler);
-
-        $this->setContainer($this->collection->getContainer());
+        parent::__construct($method, $path, $handler);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getUrl(array $params = [], bool $absolute = false): string
     {
         $routes = (new RouteParser())->parse($this->collection->parseRoutePath($this->getPath()));
+        $name = $this->name ?: __('Non qualifiée', 'tify');
 
-        foreach ($routes as $route) {
+        foreach ($routes as $segments) {
+            $_params = $params;
             $url = '';
             $paramIdx = 0;
-            foreach ($route as $part) {
-                if (is_string($part)) {
-                    $url .= $part;
+
+            foreach ($segments as $segment) {
+                if (is_string($segment)) {
+                    $url .= $segment;
                     continue;
-                } elseif ($paramIdx === count($params)) {
-                    throw new LogicException(__('Le nombre de paramètres fournis est insuffisant.', 'tify'));
+                } elseif (isset($_params[$segment[0]])) {
+                    $part = $_params[$segment[0]];
+                    unset($_params[$segment[0]]);
+                } elseif (isset($_params[$paramIdx])) {
+                    $part = $_params[$paramIdx];
+                    unset($_params[$paramIdx]);
+                    $paramIdx++;
+                } else {
+                    throw new LogicException(sprintf(__(
+                        'Url de la route invalide - Nombre de paramètres fournis insuffisants' .
+                        ' >> Fournis : %s | Requis : %s | Route : %s.',
+                        'tify'
+                    ), json_encode($params), $segment[0], $name));
                 }
 
-                $url .= $params[$paramIdx++];
+                if (!preg_match("#{$segment[1]}+#", (string)$part)) {
+                    throw new LogicException(sprintf(__(
+                        'Url de la route invalide - Typage de paramètre incorrect' .
+                        ' >> Fourni: %s | Attendu: %s | Route : %s.',
+                        'tify'
+                    ), $part, $segment[1], $name));
+                } else {
+                    $url .= $part;
+                }
             }
 
-            if ($paramIdx === count($params)) {
-                if ($absolute) {
-                    $host = $this->getHost() ?: request()->getHost();
-                    $port = $this->getPort() ?: request()->getPort();
-                    $scheme = $this->getScheme() ?: request()->getScheme();
-                    if ((($port === 80) && ($scheme = 'http')) || (($port === 443) && ($scheme = 'https'))) {
-                        $port = '';
-                    }
-
-                    $url = $scheme . '://' . $host . ($port ? ':' . $port : '') . $url;
+            if ($absolute) {
+                $host = $this->getHost() ?: Request::getHost();
+                $port = $this->getPort() ?: Request::getPort();
+                $scheme = $this->getScheme() ?: Request::getScheme();
+                if ((($port === 80) && ($scheme = 'http')) || (($port === 443) && ($scheme = 'https'))) {
+                    $port = '';
                 }
 
+                $url = $scheme . '://' . $host . ($port ? ':' . $port : '') . $url;
+            }
+
+            if (!empty($_params)) {
+                return Url::set($url)->with($_params)->render();
+            } else {
                 return $url;
             }
         }
 
-        throw new LogicException(__('Le nombre de paramètres fournis est trop important.', 'tify'));
+        throw new LogicException(sprintf(__(
+            'Url de la route invalide - Génération impossible.' .
+            ' >> Paramètres: %s | Route : %s.',
+            'tify'
+        ), json_encode($params), $name));
     }
 
     /**
@@ -132,8 +160,30 @@ class Route extends LeagueRoute implements RouteContract
     /**
      * @inheritDoc
      */
+    public function redirect(array $parameters = [], int $status = 302, array $headers = []): HttpRedirect
+    {
+        $url = $this->getUrl($parameters);
+
+        return Redirect::to($url, $status, $headers);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function setCurrent()
     {
         $this->current = true;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return LeagueRoute
+     */
+    public function setParentGroup(RouteGroup $group): LeagueRoute
+    {
+        $this->group = $group;
+
+        return $this;
     }
 }

@@ -1,10 +1,10 @@
-/* global tify */
 'use strict';
 
 import jQuery from 'jquery';
 import 'spectrum-colorpicker/spectrum';
 import 'presstify-framework/observer/js/scripts';
 
+/*
 if (tify.locale.iso[1] !== undefined) {
   try {
     require('spectrum-colorpicker/i18n/jquery.spectrum-' + tify.locale.iso[1]);
@@ -12,8 +12,10 @@ if (tify.locale.iso[1] !== undefined) {
     console.log('Unavailable spectrum language ' + tify.locale.iso[1]);
   }
 }
+*/
 
 jQuery(function ($) {
+
   $.widget('tify.tifyColorpicker', {
     widgetEventPrefix: 'colorpicker:',
     options: {

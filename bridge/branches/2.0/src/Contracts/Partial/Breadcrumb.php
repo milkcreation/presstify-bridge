@@ -24,13 +24,6 @@ interface Breadcrumb extends PartialDriver
     public function append($item): ?int;
 
     /**
-     * Réinitialisation de la liste des éléments déclarés.
-     *
-     * @return static
-     */
-    public function flush(): Breadcrumb;
-
-    /**
      * Récupération de l'instance du gestion de collection d'éléments.
      *
      * @return BreadcrumbCollection
@@ -50,6 +43,21 @@ interface Breadcrumb extends PartialDriver
      * @return static
      */
     public function enable(): Breadcrumb;
+
+
+    /**
+     * Réinitialisation de la liste des éléments déclarés.
+     *
+     * @return static
+     */
+    public function flush(): Breadcrumb;
+
+    /**
+     * Récupération de l'instance principale.
+     *
+     * @return Breadcrumb
+     */
+    public function main(): Breadcrumb;
 
     /**
      * Ajout de la déclaration d'un élément au début de la liste.

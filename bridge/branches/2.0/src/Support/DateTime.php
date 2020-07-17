@@ -38,6 +38,7 @@ class DateTime extends Carbon implements DateTimeContract
         if (is_null($tz)) {
             $tz = static::getGlobalTimeZone();
         }
+
         parent::__construct($time, $tz);
     }
 

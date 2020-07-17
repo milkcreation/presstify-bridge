@@ -269,13 +269,17 @@ jQuery(function ($) {
 
         // Initialisation du controleur de déclenchement d'affichage de la liste selection.
         _initControlTrigger: function () {
-            this.trigger = $('<div data-control="select-js.trigger"/>')
-                .appendTo(this.el)
-                .addClass(this.option('classes.trigger'));
+            this.trigger = $('[data-control="select-js.trigger"]', this.el);
+            if (!this.trigger.length) {
+                this.trigger = $('<div data-control="select-js.trigger"/>').appendTo(this.el);
+            }
+            this.trigger.addClass(this.option('classes.trigger'));
 
-            this.triggerHandler = $('<a href="#" data-control="select-js.trigger.handler"/>')
-                .appendTo(this.trigger)
-                .addClass(this.option('classes.triggerHandler'));
+            this.triggerHandler = $('[data-control="select-js.trigger.handler"]', this.trigger);
+            if (!this.triggerHandler.length) {
+                this.triggerHandler = $('<a href="#" data-control="select-js.trigger.handler"/>').appendTo(this.trigger)
+            }
+            this.triggerHandler.addClass(this.option('classes.triggerHandler'));
         },
 
         // Initialisation des éléments de listes.

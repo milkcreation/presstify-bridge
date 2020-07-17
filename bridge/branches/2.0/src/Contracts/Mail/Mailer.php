@@ -3,13 +3,20 @@
 namespace tiFy\Contracts\Mail;
 
 use DateTime;
-use Psr\Container\ContainerInterface as Container;
-use tiFy\Contracts\{View\Engine as ViewEngine};
+use Psr\Container\ContainerInterface;
+use tiFy\Contracts\Container\Container;
 
 interface Mailer
 {
     /**
-     * Définition de la liste des arguments utilisés par défaut.
+     * Récupération de la liste des paramètres globaux par défaut des mails.
+     *
+     * @return
+     */
+    public static function getDefaults(): array;
+
+    /**
+     * Définition de la liste des paramètres globaux par défaut des mails.
      *
      * @param array $attrs
      *
@@ -56,9 +63,9 @@ interface Mailer
     /**
      * Récupération du conteneur d'injection de dépendance.
      *
-     * @return Container|null
+     * @return Container|ContainerInterface|null
      */
-    public function getContainer(): ?Container;
+    public function getContainer(): ?ContainerInterface;
 
     /**
      * Récupération du pilote de traitement des e-mails.
@@ -70,7 +77,9 @@ interface Mailer
     /**
      * Récupération de l'instance de gestionnaire de file de mails.
      *
-     * @return MailerDriver
+     * @return MailerQueue
+     *
+     * @todo
      */
     public function getQueue(): MailerQueue;
 
@@ -106,21 +115,9 @@ interface Mailer
     /**
      * Définition du conteneur d'injection de dépendance.
      *
-     * @param Container $container
+     * @param ContainerInterface $container
      *
      * @return static
      */
-    public function setContainer(Container $container): Mailer;
-
-    /**
-     * Récupération d'un instance du controleur de liste des gabarits d'affichage ou d'un gabarit d'affichage.
-     * {@internal Si aucun argument n'est passé à la méthode, retourne l'instance du controleur de liste.}
-     * {@internal Sinon récupére l'instance du gabarit d'affichage et passe les variables en argument.}
-     *
-     * @param null|string view Nom de qualification du gabarit.
-     * @param array $data Liste des variables passées en argument.
-     *
-     * @return ViewEngine|string
-     */
-    public function viewer(?string $view = null, array $data = []);
+    public function setContainer(ContainerInterface $container): Mailer;
 }

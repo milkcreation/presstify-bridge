@@ -38,7 +38,7 @@ class CookieNotice extends PartialDriver implements CookieNoticeContract
     public function cookie(): CookieContract
     {
         if (is_null($this->cookie)) {
-            $this->cookie = Cookie::instance($this->getId(), array_merge(['value' => '1'], $this->get('cookie', [])));
+            $this->cookie = Cookie::make($this->getId(), array_merge($this->get('cookie', [])));
         }
 
         return $this->cookie;
@@ -149,15 +149,14 @@ class CookieNotice extends PartialDriver implements CookieNoticeContract
      */
     public function xhrResponse(...$args): array
     {
-        $id = Request::input('_id');
+        $id = Request::input('_id') ? : 'test';
 
         try {
-            $cookie = Cookie::instance($id, Request::input('_cookie', []));
+            Cookie::make($id, Request::input('_cookie', []))->set('1');
 
-            $cookie->set('1');
             return ['success' => true];
         } catch (Exception $e) {
-            return ['success' => false];
+            return ['success' => false, 'data' => $e->getMessage()];
         }
     }
 }

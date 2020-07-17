@@ -23,6 +23,13 @@ interface TemplateFactory extends ParamsBag
     public function actions(): FactoryActions;
 
     /**
+     * Récupération de l'instance du controleur de table Ajax.
+     *
+     * @return FactoryAjax|null
+     */
+    public function ajax(): ?FactoryAjax;
+
+    /**
      * Instance du controleur de gestion des assets.
      *
      * @return FactoryAssets
@@ -53,7 +60,7 @@ interface TemplateFactory extends ParamsBag
     public function cache(): FactoryCache;
 
     /**
-     * Récupération de l'instance du controleur de base de données
+     * Récupération de l'instance du controleur de base de données.
      *
      * @return FactoryDb|null
      */
@@ -65,6 +72,13 @@ interface TemplateFactory extends ParamsBag
      * @return void
      */
     public function display();
+
+    /**
+     * Récupération de l'instance du gestionnaire de formulaire.
+     *
+     * @return FactoryForm|null
+     */
+    public function form(): ?FactoryForm;
 
     /**
      * Récupération de la liste des fournisseurs de services.

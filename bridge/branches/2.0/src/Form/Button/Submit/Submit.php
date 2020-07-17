@@ -7,7 +7,7 @@ use tiFy\Form\ButtonController;
 class Submit extends ButtonController
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function defaults(): array
     {

@@ -20,7 +20,7 @@ class Recaptcha extends FieldController
      */
     public function boot()
     {
-        $this->events()->listen('request.validation.field.recaptcha', [$this, 'onRequestValidationField']);
+        $this->events()->listen('request.validate.field.recaptcha', [$this, 'onRequestValidationField']);
     }
 
     /**

@@ -28,4 +28,14 @@ interface LogManager extends LoggerInterface, Manager
      * @throws InvalidArgumentException
      */
     public function registerChannel(string $name, array $params = []): ?Logger;
+
+    /**
+     * Alias de création d'un message de succès.
+     *
+     * @param string $message Intitulé du message.
+     * @param array $context Liste des données de contexte.
+     *
+     * @return void
+     */
+    public function success(string $message, array $context = []): void;
 }

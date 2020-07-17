@@ -35,10 +35,6 @@ class PageHook implements PageHookContract
                 Metabox::add('PageHook-optionsNode', (new PageHookMetabox())->setPageHook($this))
                     ->setScreen('tify_options@options')
                     ->setContext('tab');
-
-                $this->collect()->where('admin', true)->each(function (PageHookItemContract $item) {
-                    register_setting('tify_options', $item->getOptionName());
-                });
             }
         }, 999999);
 
@@ -77,7 +73,7 @@ class PageHook implements PageHookContract
         if (is_null($this->current)) {
             $this->current = did_action('parse_query') ? false : null;
 
-            foreach($this->items as $item) {
+            foreach ($this->items as $item) {
                 if ($item->is()) {
                     $this->current = $item;
                     break;
@@ -85,7 +81,15 @@ class PageHook implements PageHookContract
             }
         }
 
-        return $this->current ? : null;
+        return $this->current ?: null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function currentName(): ?string
+    {
+        return ($current = $this->current()) ? $current->getName() : null;
     }
 
     /**
@@ -95,11 +99,7 @@ class PageHook implements PageHookContract
     {
         $hook = $this->items[$name] ?? null;
 
-        if ($hook instanceof PageHookItemContract) {
-            $hook = $hook->exists() ? $hook : null;
-        }
-
-        return $hook ? : new PageHookFaker($name);
+        return $hook ?: new PageHookItem($name);
     }
 
     /**

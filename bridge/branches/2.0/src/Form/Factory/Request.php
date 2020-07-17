@@ -2,8 +2,8 @@
 
 namespace tiFy\Form\Factory;
 
-use tiFy\Contracts\Form\FactoryRequest;
-use tiFy\Contracts\Form\FormFactory;
+use tiFy\Http\RedirectResponse;
+use tiFy\Contracts\Form\{FactoryRequest, FormFactory};
 use tiFy\Support\{ParamsBag, Proxy\Request as Req, Proxy\Url};
 
 class Request extends ParamsBag implements FactoryRequest
@@ -21,6 +21,12 @@ class Request extends ParamsBag implements FactoryRequest
      * @var string
      */
     protected $redirect;
+
+    /**
+     * Clé d'indice de la protection CSRF.
+     * @var string
+     */
+    protected $tokenKey = '_token';
 
     /**
      * CONSTRUCTEUR.
@@ -51,33 +57,45 @@ class Request extends ParamsBag implements FactoryRequest
     /**
      * @inheritDoc
      */
-    public function handle(): void
+    public function getToken(): string
+    {
+        return Req::input($this->tokenKey, '');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function handle(): ?RedirectResponse
     {
         if ($this->handled) {
-            return;
+            return null;
         } else {
             $this->handled = true;
         }
 
         if (!$this->verify()) {
-            return;
+            return null;
         }
+
+        $this->events('request.submitted', [&$this]);
 
         $this->prepare()->validate();
 
         if ($this->notices()->has('error')) {
             $this->reset();
-            return;
+            return null;
         }
-        $this->events('request.submit', [&$this]);
+
+        $this->events('request.proceed', [&$this]);
 
         if ($this->notices()->has('error')) {
             $this->reset();
-            return;
+            return null;
         }
-        $this->events('request.success', [&$this]);
 
-        wp_redirect($this->getRedirectUrl());
+        $this->events('request.successed', [&$this]);
+
+        return $this->redirect();
     }
 
     /**
@@ -87,7 +105,17 @@ class Request extends ParamsBag implements FactoryRequest
     {
         $this->form()->prepare();
 
-        $values = call_user_func([Req::getInstance(), $this->form()->getMethod()]);
+        switch ($method = $this->form()->getMethod()) {
+            case 'get' :
+                $method = 'query';
+                break;
+            case 'post' :
+                $method = 'post';
+                break;
+
+        }
+
+        $values = call_user_func([Req::getInstance(), $method]);
 
         foreach ($this->fields() as $field) {
             if (isset($values[$field->getName()])) {
@@ -95,9 +123,17 @@ class Request extends ParamsBag implements FactoryRequest
             }
         }
 
-        $this->parse()->events('request.prepare');
+        $this->parse()->events('request.prepared');
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function redirect(): RedirectResponse
+    {
+        return new RedirectResponse($this->getRedirectUrl());
     }
 
     /**
@@ -110,6 +146,7 @@ class Request extends ParamsBag implements FactoryRequest
                 $field->resetValue();
             }
         }
+
         $this->events('request.reset');
 
         return $this;
@@ -121,9 +158,19 @@ class Request extends ParamsBag implements FactoryRequest
     public function setRedirectUrl(string $url, bool $raw = false): FactoryRequest
     {
         if (!$raw) {
-            $uri = Url::set($url)->with(['success' => $this->form()->name()]);
-            $url = (string)$uri;
-            $url .= $this->form()->getAnchor();
+            $uri = Url::set($url);
+
+            if ($this->form()->getMethod() === 'get') {
+                $without = ['_token'];
+                foreach ($this->fields() as $field) {
+                    array_push($without, $field->getName());
+                }
+                $uri = $uri->without($without);
+            }
+
+            $uri = $uri->with(['success' => $this->form()->name()]);
+
+            $url = $uri->render() . $this->form()->getAnchor();
         }
 
         $this->redirect = $url;
@@ -170,10 +217,10 @@ class Request extends ParamsBag implements FactoryRequest
                 }
             }
 
-            $this->events('request.validation.field.' . $field->getType(), [&$field]);
-            $this->events('request.validation.field', [&$field]);
+            $this->events('request.validate.field.' . $field->getType(), [&$field]);
+            $this->events('request.validate.field', [&$field]);
         }
-        $this->events('request.validation', [&$this]);
+        $this->events('request.validated', [&$this]);
 
         return $this;
     }
@@ -183,6 +230,6 @@ class Request extends ParamsBag implements FactoryRequest
      */
     public function verify(): bool
     {
-        return !!wp_verify_nonce(Req::input('_token', ''), 'Form' . $this->form()->name());
+        return !!wp_verify_nonce($this->getToken(), 'Form' . $this->form()->name());
     }
 }

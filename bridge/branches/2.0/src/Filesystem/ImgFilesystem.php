@@ -43,7 +43,7 @@ class ImgFilesystem extends LocalFilesystem implements ImgFilesystemContract
     /**
      * @inheritDoc
      */
-    public function render(string $path, array $attrs = []): ?string
+    public function render(string $path, ?array $attrs = []): ?string
     {
         if ($this->has($path)) {
             try {
@@ -51,11 +51,11 @@ class ImgFilesystem extends LocalFilesystem implements ImgFilesystemContract
                 $content = $this->read($path);
 
                 if (MimeTypes::inType($filename, 'svg')) {
-                    return Partial::get('tag', [
-                        'attrs'   => array_merge(['class' => ''], $attrs),
-                        'content' => $content,
-                        'tag'     => 'div',
-                    ])->render();
+                    return is_null($attrs) ? $content : Partial::get('tag', [
+                            'attrs'   => array_merge(['class' => ''], $attrs),
+                            'content' => $content,
+                            'tag'     => 'div',
+                        ])->render();
                 } elseif ($src = $this->src($path)) {
                     return Partial::get('tag', [
                         'attrs' => array_merge([

@@ -3,7 +3,8 @@
 namespace tiFy\Filesystem;
 
 use InvalidArgumentException;
-use League\Flysystem\{AdapterInterface,
+use League\Flysystem\{
+    AdapterInterface,
     Cached\CachedAdapter,
     Cached\CacheInterface,
     Cached\Storage\Memory as MemoryStore,
@@ -19,6 +20,7 @@ use tiFy\Contracts\Filesystem\{Filesystem as FilesystemContract,
     LocalFilesystem as LocalFilesystemContract,
     StorageManager as StorageManagerContract
 };
+use tiFy\Contracts\Kernel\Path;
 
 class StorageManager extends MountManager implements StorageManagerContract
 {
@@ -31,24 +33,27 @@ class StorageManager extends MountManager implements StorageManagerContract
     /**
      * CONSTRUCTEUR.
      *
+     * @param FilesystemInterface[] $filesystems [:prefix => Filesystem,]
      * @param Container|null $container Instance du conteneur d'injection de dépendances.
      *
      * @return void
      */
-    public function __construct(?Container $container = null)
+    public function __construct(array $filesystems = [], ?Container $container = null)
     {
-        $this->container = $container;
+        if (!is_null($container)) {
+            $this->setContainer($container);
+        }
 
-        parent::__construct();
+        parent::__construct($filesystems);
     }
 
     /**
      * @inheritDoc
      */
-    public function disk(string $name): ?FilesystemContract
+    public function disk(?string $name = null): ?FilesystemContract
     {
         try {
-            return $this->getFilesystem($name);
+            return is_null($name) ? $this->getDefault() : $this->getFilesystem($name);
         } catch (FilesystemNotFoundException $e) {
             return null;
         }
@@ -60,6 +65,14 @@ class StorageManager extends MountManager implements StorageManagerContract
     public function getContainer(): ?Container
     {
         return $this->container;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDefault(): ?FilesystemContract
+    {
+        return $this->system();
     }
 
     /**
@@ -146,12 +159,12 @@ class StorageManager extends MountManager implements StorageManagerContract
         if ($filesystem instanceof FilesystemContract) {
             return parent::mountFilesystem($name, $filesystem);
         }
-        throw new InvalidArgumentException(
-            sprintf(
-                __('Impossible de monter le disque %s. Le gestionnaire de fichiers doit une instance de %s.', 'tify'),
-                $name,
-                FilesystemContract::class
-            )
+
+        throw new InvalidArgumentException(sprintf(
+            __(
+                'Impossible de monter le disque [%s]. Le gestionnaire de fichiers doit une instance de [%s].',
+                'tify'
+            ), $name, FilesystemContract::class)
         );
     }
 
@@ -219,5 +232,24 @@ class StorageManager extends MountManager implements StorageManagerContract
     public function set(string $name, FilesystemContract $filesystem): StorageManagerContract
     {
         return $this->mountFilesystem($name, $filesystem);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setContainer(Container $container): StorageManagerContract
+    {
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function system(?string $name = null): ?LocalFilesystemContract
+    {
+        /** @var Path $path */
+        return ($path = $this->container->get('path')) instanceof Path ? $path->disk($name) : null;
     }
 }

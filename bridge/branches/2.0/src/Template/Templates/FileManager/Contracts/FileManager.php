@@ -4,7 +4,7 @@ namespace tiFy\Template\Templates\FileManager\Contracts;
 
 use League\Flysystem\AdapterInterface;
 use tiFy\Contracts\Filesystem\Filesystem;
-use tiFy\Contracts\Template\{TemplateFactory as TemplateFactoryContract};
+use tiFy\Contracts\Template\{FactoryAjax, TemplateFactory as TemplateFactoryContract};
 use tiFy\Contracts\Template\TemplateFactory;
 
 interface FileManager extends TemplateFactory
@@ -17,11 +17,11 @@ interface FileManager extends TemplateFactory
     public function adapter(): AdapterInterface;
 
     /**
-     * Récupération de l'instance du controleur de traitment des requête Ajax (XHR).
+     * {@inheritDoc}
      *
-     * @return Ajax
+     * @return Ajax|null
      */
-    public function ajax(): Ajax;
+    public function ajax(): ?FactoryAjax;
 
     /**
      * Récupération de l'instance du controleur de fil d'ariane.

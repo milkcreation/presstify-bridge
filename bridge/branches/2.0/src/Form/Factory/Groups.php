@@ -66,6 +66,16 @@ class Groups extends Collection implements FactoryGroups
      */
     public function prepare(): FactoryGroups
     {
+        // Position des groupes.
+        $max = $this->collect()->max(function (FactoryGroup $group) {
+            return $group->getPosition();
+        });
+
+        $pad = 0;
+        $this->collect()->each(function (FactoryGroup $group) use (&$pad, $max) {
+            return $group->set('position', (int) $group->getPosition() ? : ++$pad+$max);
+        });
+
         $this->grouped = $this->collect()->groupBy('parent');
 
         foreach ($this->items as $group) {

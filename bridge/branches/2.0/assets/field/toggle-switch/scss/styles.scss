@@ -6,20 +6,20 @@
     vertical-align: middle;
 }
 
-.FieldToggleSwitch-wrapper::before,
-.FieldToggleSwitch-wrapper::after {
-    display: table;
-    content: "";
-}
-
-.FieldToggleSwitch-wrapper::after {
-    clear: both;
-}
-
 .FieldToggleSwitch-wrapper {
     position: relative;
     width: 80px;
     height: 20px;
+
+    &::before,
+    &::after {
+        display: table;
+        content: "";
+    }
+
+    &::after {
+        clear: both;
+    }
 }
 
 .FieldToggleSwitch-label {
@@ -34,10 +34,10 @@
     color: #CCC;
     text-align: center;
     cursor: pointer;
-}
 
-.FieldToggleSwitch-label:active {
-    font-weight: bold;
+    &:active {
+        font-weight: bold;
+    }
 }
 
 .FieldToggleSwitch-radio[type=radio] {
@@ -63,8 +63,6 @@
 }
 
 .FieldToggleSwitch-radio--off:checked + .FieldToggleSwitch-label--off ~ .FieldToggleSwitch-handler {
-    -webkit-transform: translateX(100%);
-    -ms-transform: translateX(100%);
     transform: translateX(100%);
     background: #AAA;
 }

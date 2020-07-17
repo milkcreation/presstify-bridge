@@ -2,8 +2,8 @@
 
 namespace tiFy\Wordpress\Template\Templates\FileManager;
 
-use tiFy\Template\Templates\FileManager\Contracts\{FileInfo};
-use tiFy\Template\Templates\FileManager\IconSet as BaseIconSet;
+use tiFy\Template\Templates\FileManager\{Contracts\FileInfo, IconSet as BaseIconSet};
+use tiFy\Support\Proxy\Partial;
 
 class IconSet extends BaseIconSet
 {
@@ -35,11 +35,11 @@ class IconSet extends BaseIconSet
             }
         }
 
-        return (string)partial('tag', [
+        return Partial::get('tag', [
             'tag'   => 'span',
             'attrs' => [
                 'class' => 'FileManager-icon FileManager-icon--file' . ($class ? ' ' . $class : '')
             ]
-        ]);
+        ])->render();
     }
 }

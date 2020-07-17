@@ -16,7 +16,28 @@
 }
 
 /** STYLES GENERAUX */
+.Accordion-itemContent {
+    &::before,
+    &::after {
+        display: block;
+        content: " ";
+    }
+
+    &::after {
+        clear: both;
+    }
+}
+
+.Accordion-itemPad {
+    float: left;
+    display: block;
+    width:10px;
+    height:1px;
+}
+
 .Accordion-itemContentInner {
+    float: left;
+    max-width: 90%;
     position: relative;
     margin-right: 40px;
     padding: 10px;
@@ -29,7 +50,7 @@
     right: 0;
     bottom: 0;
     display: block;
-    content: "";
+    content: " ";
     cursor: pointer;
 }
 

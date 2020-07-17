@@ -114,7 +114,7 @@ class MetaboxDriver extends ParamsBag implements MetaboxDriverContract
     /**
      * @inheritDoc
      */
-    public function handle($args): MetaboxDriverContract
+    public function handle(array $args = []): MetaboxDriverContract
     {
         $this->args = $args;
 
