@@ -399,20 +399,20 @@ jQuery(function ($) {
     },
   });
 
-  /** @param {Object} $.tify */
-  $.widget('tify.tifyModal', $.tify.tifyModal, {
-    // Instanciation.
-    _create: function () {
-      this._super();
-
-      this.el.on('modal:show', function() {
-        $('[data-control="pdfviewer"]', $(this)).tifyPdfviewer('load');
-      });
-    }
-  });
-
-
   $(document).ready(function () {
+    /** @param {Object} $.tify */
+    $.widget('tify.tifyModal', $.tify.tifyModal, {
+      // Instanciation.
+      _create: function () {
+        this._super();
+
+        this.el.on('modal:show', function() {
+          $('[data-control="pdfviewer"]', $(this)).tifyPdfviewer('load');
+        });
+      }
+    });
+    /**/
+
     $('[data-control="pdfviewer"]').tifyPdfviewer();
 
     $.tify.observe('[data-control="pdfviewer"]', function (i, target) {

@@ -25,6 +25,7 @@ class AccordionWpTermWalker extends BaseAccordionWalker
     public function __construct($terms)
     {
         $items = [];
+
         array_walk($terms, function ($term, $key) use (&$items) {
             if ($term instanceof WP_Term) {
                 $key = $term->term_id;
@@ -64,23 +65,13 @@ class AccordionWpTermWalker extends BaseAccordionWalker
     {
         static::$fetched = null;
 
-        if (!$args instanceof WP_Term_Query) {
-            $args = new WP_Term_Query($args);
-        }
+        $query = $args instanceof WP_Term_Query ? $args : new WP_Term_Query($args);
 
         /** @var WP_Term[] $terms */
-        if ($terms = $args->get_terms()) {
+        if ($terms = $query->get_terms()) {
             if ($with_parents) {
-                foreach($terms as $term) {
-                    /*if (isset($args['child_of']) && ($args['child_of'] == $term->parent)) {
-                        continue;
-                    }
-
-                    if (isset($args['parent']) && ($args['parent'] == $term->parent)) {
-                        continue;
-                    }*/
-
-                    static::fetchParents($term, $terms);
+                foreach ($terms as $k => $term) {
+                    static::fetchParents($term, $terms, $query->query_vars);
                 }
 
                 return $terms;
@@ -97,21 +88,31 @@ class AccordionWpTermWalker extends BaseAccordionWalker
      *
      * @param WP_Term $term
      * @param WP_Term[]|array $exists
-     *
+     * @param array $qv
      * @return void
      */
-    public static function fetchParents(WP_Term $term, array &$exists = []): void
+    public static function fetchParents(WP_Term $term, array &$exists = [], array $qv = []): void
     {
         if (is_null(static::$fetched)) {
-            static::$fetched = (new Collection($exists ? : []))->pluck('term_id')->all();
+            static::$fetched = (new Collection($exists ?: []))->pluck('term_id')->all();
         }
 
         if (!isset(static::$fetched[$term->term_id])) {
+            /* * /
+             if (isset($qv['child_of']) && ($qv['child_of'] == $term->parent)) {
+                return;
+            }
+
+            if (isset($qv['parent']) && ($qv['parent'] == $term->parent)) {
+                return;
+            }
+            /**/
+
             if ($term->parent && ($p = get_term($term->parent, $term->taxonomy)) && $p instanceof WP_Term) {
                 array_push($exists, $p);
 
                 if ($p->parent) {
-                    static::fetchParents($p, $exists);
+                    static::fetchParents($p, $exists, $qv);
                 }
             }
         }

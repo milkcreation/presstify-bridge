@@ -25,6 +25,12 @@ class AccordionWalker implements AccordionWalkerContract
     protected $items = [];
 
     /**
+     * Identifiant de qualification du parent initial.
+     * @var string|null
+     */
+    protected $parent;
+
+    /**
      * Instance du controleur d'affichage.
      * @var AccordionContract
      */
@@ -106,7 +112,7 @@ class AccordionWalker implements AccordionWalkerContract
      */
     public function render(): string
     {
-        return $this->walk($this->items, 0, null);
+        return $this->walk($this->items, 0, $this->parent);
     }
 
     /**
@@ -134,7 +140,17 @@ class AccordionWalker implements AccordionWalkerContract
     /**
      * @inheritDoc
      */
-    public function walk($items = [], $depth = 0, $parent = null): string
+    public function setParent(?string $parent = null): AccordionWalkerContract
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function walk($items = [], $depth = 0, ?string $parent = null): string
     {
         $opened = false;
         $output = '';
@@ -159,7 +175,7 @@ class AccordionWalker implements AccordionWalkerContract
 
             $output .= "<li " . HtmlAttrs::createFromAttrs($attrs) . ">";
             $output .= $this->partial->viewer('item', compact('item'));
-            $output .= $this->walk($items, ($depth + 1), $item->getId());
+            $output .= $this->walk($items, ($depth + 1), (string)$item->getId());
             $output .= "</li>";
         }
 
