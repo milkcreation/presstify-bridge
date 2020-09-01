@@ -99,9 +99,9 @@ class AccordionItem extends ParamsBag implements AccordionItemContract
     /**
      * @inheritDoc
      */
-    public function getParent()
+    public function getParent(): ?string
     {
-        return $this->get('parent', null) ? : null;
+        return ($parent = $this->get('parent', null)) ? (string) $parent : null;
     }
 
     /**

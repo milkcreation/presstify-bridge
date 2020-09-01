@@ -12,6 +12,13 @@ interface AccordionWalker
     public function __toString(): string;
 
     /**
+     * Initialisation.
+     *
+     * @return static
+     */
+    public function build(): AccordionWalker;
+
+    /**
      * Vérification d'existance d'éléments.
      *
      * @return bool
@@ -44,6 +51,15 @@ interface AccordionWalker
     public function setItem($item, $key = null): AccordionItem;
 
     /**
+     * Définition du parent initial.
+     *
+     * @param string|null $parent
+     *
+     * @return static
+     */
+    public function setParent(?string $parent = null): AccordionWalker;
+
+    /**
      * Définition du controleur d'affichage associé.
      *
      * @param Accordion $partial Contrôleur d'affichage associé.
@@ -57,9 +73,9 @@ interface AccordionWalker
      *
      * @param AccordionItem[] $items Liste des éléments.
      * @param int $depth Niveau de profondeur courant de l'itération.
-     * @param mixed $parent Parent courant de l'itération.
+     * @param string|null $parent Parent courant de l'itération.
      *
      * @return string
      */
-    public function walk($items = [], $depth = 0, $parent = null): string;
+    public function walk($items = [], $depth = 0, ?string $parent = null): string;
 }

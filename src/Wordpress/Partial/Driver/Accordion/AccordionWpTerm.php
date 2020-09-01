@@ -51,7 +51,7 @@ class AccordionWpTerm extends AccordionItem implements AccordionWpTermContract
         return Partial::get('tag', [
             'tag'     => 'a',
             'attrs'   => [
-                'class' => "AccordionItem-link",
+                'class' => 'Accordion-itemLink',
                 'href'  => get_term_link($this->term()),
             ],
             'content' => $this->term()->name,

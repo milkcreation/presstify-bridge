@@ -39,32 +39,45 @@ jQuery(function ($) {
     _initTrigger: function () {
       let self = this;
 
-      $('[data-control="accordion.item"]:has( > [data-control="accordion.items"])', this.el).each(function () {
+      $('.Accordion-item', this.el).each(function () {
+        if ($('.Accordion-items', $(this)).length) {
+          let $trigger = $('<span/>')
+              .addClass('Accordion-itemTrigger')
+              .data('control', 'accordion.item.trigger');
 
-        let $trigger = $('<span/>')
-            .addClass('Accordion-itemTrigger')
-            .data('control', 'accordion.item.trigger');
+          if (self.option('triggered')) {
+            $trigger.prependTo($('> .Accordion-itemContent', this));
+          } else {
+            $trigger.appendTo($('> .Accordion-itemContent', this));
+          }
 
-        if (self.option('triggered')) {
-          $trigger.prependTo($('> [data-control="accordion.item.content"]', this));
-        } else {
-          $trigger.appendTo($('> [data-control="accordion.item.content"]', this));
+          self._onTriggerClick($trigger);
         }
-
-        self._onTriggerClick($trigger);
       });
     },
     _initOpened: function () {
-      $('[data-control="accordion.items"]:has([data-control="accordion.item"][aria-open="true"])', this.el).each(function () {
-        let $closest = $(this).closest('[data-control="accordion.item"][aria-open="false"]');
-        if ($closest.length) {
-          $closest.attr('aria-open', true);
-        }
+      $('.Accordion-items', this.el).each(function () {
+        let $item = $('.Accordion-item[aria-open="true"]', $(this));
 
-        $(this).css('max-height', '100%');
-        $('> [data-control="accordion.item"][aria-open="true"] > [data-control="accordion.items"]', this).each(function () {
+        if ($item.length) {
+          let $closest = $(this).closest('.Accordion-item');
+
+          if ($closest.length) {
+            $closest.attr('aria-open', true);
+          }
+
           $(this).css('max-height', '100%');
-        });
+
+          $item.each(function () {
+            let $subItems = $('> .Accordion-items', $item);
+
+            if ($subItems.length) {
+              $subItems.each(function () {
+                $(this).css('max-height', '100%');
+              });
+            }
+          });
+        }
       });
     },
 
@@ -76,27 +89,27 @@ jQuery(function ($) {
       $trigger.click(function (e) {
         e.preventDefault();
 
-        let $closest = $(this).closest('[data-control="accordion.item"]'),
-            $parents = $(this).parents('[data-control="accordion.items"]');
+        let $closest = $(this).closest('.Accordion-item'),
+            $parents = $(this).parents('.Accordion-items');
 
         if (!self.option('multiple')) {
           $closest.siblings()
               .attr('aria-open', 'false')
-              .children('[data-control="accordion.items"]').css('max-height', 0);
+              .children('.Accordion-items').css('max-height', 0);
 
           $closest.siblings()
-              .children('[data-control="accordion.items"]')
-              .children('[data-control="accordion.item"]')
+              .children('.Accordion-items')
+              .children('.Accordion-item')
               .attr('aria-open', 'false')
-              .children('[data-control="accordion.items"]').css('max-height', 0);
+              .children('.Accordion-items').css('max-height', 0);
         }
 
         if ($closest.attr('aria-open') === 'true') {
-          $('> [data-control="accordion.items"]', $closest).css('max-height', 0);
+          $('> .Accordion-items', $closest).css('max-height', 0);
           $closest.attr('aria-open', 'false');
         } else {
-          let height = $('> [data-control="accordion.items"]', $closest).prop('scrollHeight');
-          $('> [data-control="accordion.items"]', $closest).css('max-height', height);
+          let height = $('> .Accordion-items', $closest).prop('scrollHeight');
+          $('> .Accordion-items', $closest).css('max-height', height);
           $closest.attr('aria-open', 'true');
 
           $parents.each(function () {

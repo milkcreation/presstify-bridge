@@ -54,3 +54,17 @@
   font-size:13px;
   min-width:6em;
 }
+
+[data-control="modal-pdf"] {
+  .modal-dialog {
+    max-width:640px;
+  }
+
+  .modal-content {
+    .Pdfviewer-canvas {
+      width:auto;
+      margin:0 auto;
+    }
+  }
+}
+

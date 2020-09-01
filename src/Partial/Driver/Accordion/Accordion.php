@@ -29,6 +29,7 @@ class Accordion extends PartialDriver implements AccordionContract
             'viewer'    => [],
             'items'     => [],
             'multiple'  => false,
+            'parent'    => null,
             'opened'    => null,
             'theme'     => 'light',
             'triggered' => false,
@@ -61,7 +62,9 @@ class Accordion extends PartialDriver implements AccordionContract
             $items = new AccordionWalker($items);
         }
 
-        $this->set('items', $items->setPartial($this)->build());
+        $parent = !is_null($this->get('parent', null)) ? (string) $this->get('parent', null) : null;
+
+        $this->set('items', $items->setPartial($this)->setParent($parent)->build());
 
         return $this;
     }
