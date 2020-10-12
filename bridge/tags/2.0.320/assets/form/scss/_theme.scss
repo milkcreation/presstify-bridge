@@ -1,0 +1,336 @@
+@import "../../theme/scss/variables";
+
+// Personnalisation
+// -- Variables
+$form-gutter: 15 !default;
+$form-notice-border-width: 3 !default;
+$form-field-error-border-width: $form-notice-border-width !default;
+$form-field-radius: 5 !default;
+$form-field-radius-tl: $form-field-radius !default;
+$form-field-radius-tr: $form-field-radius !default;
+$form-field-radius-br: $form-field-radius !default;
+$form-field-radius-bl: $form-field-radius !default;
+
+// -- Notices
+.FormNotice {
+  color: map-get($colors, regular);
+  padding: 0.625em 1em;
+  margin-bottom: 2em;
+
+  &[aria-type="error"],
+  &[aria-type="success"],
+  &[aria-type="info"],
+  &[aria-type="warning"] {
+    border-left-style: solid;
+    border-left-width: #{$form-notice-border-width}px;
+  }
+
+  &[aria-type="error"] {
+    border-left-color: map-get($colors, error);
+  }
+
+  &[aria-type="success"] {
+    border-left-color: map-get($colors, success);
+  }
+
+  &[aria-type="info"] {
+    border-left-color: map-get($colors, info);
+  }
+
+  &[aria-type="warning"] {
+    border-left-color: map-get($colors, warning);
+  }
+
+  a {
+    text-decoration: underline;
+
+    &,
+    &:active,
+    &:focus,
+    &:hover,
+    &:visited {
+      color: map-get($colors, primary);
+    }
+  }
+
+  b, strong {
+    font-weight: bold;
+  }
+
+  i, em {
+    font-style: italic;
+  }
+
+  .Form-noticeItems {
+    list-style-type: none;
+    margin-bottom: 0;
+    padding: 0;
+  }
+}
+
+// -- Dimensions
+.Form-field--w50 {
+  float: left;
+  width: 50%;
+}
+
+.Form-field--w66 {
+  float: left;
+  width: 66.666666%;
+}
+
+.Form-field--w33 {
+  float: left;
+  width: 33.333333%;
+}
+
+@media (max-width: 767px) {
+  .Form-field--w50,
+  .Form-field--w66,
+  .Form-field--w33 {
+    float: none;
+    width: 100%;
+  }
+}
+
+// -- Champs
+.Form-fields {
+  &::before,
+  &::after {
+    display: table;
+    content: " ";
+  }
+
+  &::after {
+    clear: both;
+  }
+}
+
+.Form-fieldsGroup {
+  margin: 0 -#{$form-gutter/2}px;
+
+  &::before,
+  &::after {
+    display: table;
+    content: " ";
+  }
+
+  &::after {
+    clear: both;
+  }
+}
+
+.Form-fieldInput--password,
+.Form-fieldInput--text,
+.Form-fieldInput--textarea {
+  width: 100%;
+}
+
+.Form-content {
+  margin-bottom: 30px;
+}
+
+.Form-field {
+  padding: 0 #{$form-gutter/2}px;
+  margin-bottom: #{$form-gutter}px;
+}
+
+.Form-fieldLabel {
+  font-size: 0.9em;
+  margin-bottom: 0;
+}
+
+.Form-fieldTag {
+  color: map-get($colors, error);
+}
+
+.Form-fieldInput--text,
+.Form-fieldInput--password,
+.Form-fieldInput--textarea {
+  border: none;
+  border-radius: #{$form-field-radius-tl}px #{$form-field-radius-tr}px #{$form-field-radius-br}px #{$form-field-radius-bl}px;
+  background-color: map-get($colors, lighter);
+  padding: 0.5em 1em;
+
+  &[aria-error="true"] {
+    border-radius: 0 #{$form-field-radius-tr}px #{$form-field-radius-br}px 0;
+    border-left-style: solid;
+    border-left-width: #{$form-field-error-border-width}px;
+    border-left-color: map-get($colors, error);
+  }
+}
+
+.Form-fieldInput--file {
+  width: 100%;
+  padding: 0;
+  background-color: transparent;
+
+  &::-webkit-file-upload-button {
+    border-style: solid;
+    border-width: 1px;
+    border-color: map-get($colors, primary);
+    padding: 0.5em 2em;
+    background-color: map-get($colors, white);
+    color: map-get($colors, primary);
+    margin-right: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: map-get($colors, primary);
+      color: map-get($colors, white);
+    }
+  }
+
+  &[aria-error="true"] {
+    padding-left: 1em;
+    border-left-style: solid;
+    border-left-width: #{$form-field-error-border-width}px;
+    border-left-color: map-get($colors, error);
+  }
+}
+
+.Form-fieldInput--textarea {
+  height: 8em;
+  resize: none;
+}
+
+.FieldCheckbox,
+.FieldRadio,
+.Form-fieldInput--checkbox,
+.Form-fieldInput--radio,
+.FieldRadioCollection-itemInput,
+.FieldCheckboxCollection-itemInput {
+  display: none;
+  cursor: pointer;
+
+  + .FieldLabel,
+  + .Form-fieldLabel,
+  + .FieldRadioCollection-itemLabel,
+  + .FieldCheckboxCollection-itemLabel {
+    position: relative;
+    display: inline-block;
+    width: auto;
+    cursor: pointer;
+    padding: 3px 0 0 22px;
+    line-height: 1.2;
+
+    &::before {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      display: block;
+      content: " ";
+      vertical-align: middle;
+      margin-top: -7px;
+      height: 14px;
+      width: 14px;
+      margin-right: 5px;
+      border: 1px solid map-get($colors, regular);
+      background-color: map-get($colors, white);
+    }
+
+    &::after {
+      position: absolute;
+      top: 50%;
+      display: block;
+      content: " ";
+      left: 3px;
+      margin-top: -4px;
+      height: 8px;
+      width: 8px;
+      background-color: map-get($colors, primary);
+      transform: scale(0);
+      transition: transform 200ms ease-in-out;
+    }
+  }
+
+  &[aria-error="true"] + .Form-fieldLabel::before {
+    border: 1px solid map-get($colors, error);
+  }
+
+  &:checked {
+    + .FieldLabel::after,
+    + .Form-fieldLabel::after,
+    + .FieldRadioCollection-itemLabel::after,
+    + .FieldCheckboxCollection-itemLabel::after {
+      transform: scale(1);
+      transition: transform 200ms ease-in-out;
+    }
+  }
+
+  &:disabled {
+    + .FieldLabel,
+    + .Form-fieldLabel,
+    + .FieldRadioCollection-itemLabel,
+    + .FieldCheckboxCollection-itemLabel {
+      opacity:0.5;
+
+      &::before {
+        opacity:0.5;
+      }
+    }
+  }
+}
+
+.FieldRadioCollection[aria-error="true"],
+.FieldCheckboxCollection[aria-error="true"] {
+  .FieldRadioCollection-itemInput + .FieldRadioCollection-itemLabel::before,
+  .FieldCheckboxCollection-itemInput + .FieldCheckboxCollection-itemLabel::before {
+    border: 1px solid map-get($colors, error);
+  }
+}
+
+.Form-fieldInput--radio,
+.FieldRadioCollection-itemInput {
+  + .Form-fieldLabel,
+  + .FieldRadioCollection-itemLabel {
+    &::before {
+      border-radius: 50%;
+    }
+
+    &::after {
+      border-radius: 50%;
+    }
+  }
+}
+
+.Form-fieldInput--select-js {
+  &.FieldSelectJs[aria-arrow="true"] {
+    .FieldSelectJs-trigger {
+      border: none;
+      border-radius: #{$form-field-radius-tl}px #{$form-field-radius-tr}px #{$form-field-radius-br}px #{$form-field-radius-bl}px;
+      background-color: map-get($colors, lighter);
+
+      &::before {
+        display: none;
+      }
+
+      .FieldSelectJs-selectionItem {
+        border-radius: #{$form-field-radius-tl}px #{$form-field-radius-tr}px #{$form-field-radius-br}px #{$form-field-radius-bl}px;
+        width: 100%;
+        background-color: map-get($colors, lighter);
+        padding: 0.5em 1em;
+        font-size: 16px;
+        line-height: 1.4;
+      }
+    }
+
+    &[aria-error="true"] {
+      border-radius: 0 #{$form-field-radius-tr}px #{$form-field-radius-br}px 0;
+
+      .FieldSelectJs-selectionItem {
+        border-radius: 0 #{$form-field-radius-tr}px #{$form-field-radius-br}px 0;
+        padding-left: 1em;
+        border-left-style: solid;
+        border-left-width: #{$form-field-error-border-width}px;
+        border-left-color: map-get($colors, error);
+      }
+    }
+  }
+}
+
+.Form-fieldInput--recaptcha {
+  &[aria-error=true] {
+    border-left: solid 3px map-get($colors, error);
+  }
+}

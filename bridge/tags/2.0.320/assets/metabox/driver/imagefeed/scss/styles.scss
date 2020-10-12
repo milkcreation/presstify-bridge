@@ -1,0 +1,50 @@
+@import '~presstify-framework/theme/scss/styles';
+
+.MetaboxImagefeed-items,
+.MetaboxImagefeed-items > * {
+  box-sizing: border-box;
+}
+
+.MetaboxImagefeed-items {
+  position: relative;
+  margin:0 -5px;
+}
+
+.MetaboxImagefeed-items::after,
+.MetaboxImagefeed-items::before {
+  display:block;
+  content: " ";
+}
+
+.MetaboxImagefeed-items::after {
+  clear: both;
+}
+
+.MetaboxImagefeed-item {
+  float:left;
+  width: 200px;
+  height: 200px;
+  padding: 5px 20px;
+  margin:0 5px 5px;
+}
+
+.MetaboxImagefeed-itemPreview {
+  position: absolute;
+  width:150px;
+  height:150px;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  border: solid 1px #E4E4E4;
+}
+
+.MetaboxImagefeed-itemPreview > img {
+  position: absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  width:100%;
+  height:100%;
+  object-fit: cover;
+}
