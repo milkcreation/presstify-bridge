@@ -4,7 +4,7 @@
 import jQuery from 'jquery';
 import 'jquery-ui/ui/core';
 import 'jquery-ui/ui/widget';
-import pdfjs from 'pdfjs-dist';
+import * as  pdfjs from 'pdfjs-dist';
 import 'presstify-framework/partial/modal/js/scripts';
 import 'presstify-framework/observer/js/scripts';
 
