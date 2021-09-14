@@ -8,19 +8,13 @@
     "presstify",
     "wordpress"
   ],
-  "homepage": "https://svn.tigreblanc.fr/presstify-plugins/bridge",
-  "time": "2020-10-12",
+  "homepage": "https://github.com/milkcreation/presstify-bridge.git",
+  "time": "2021-09-14",
   "authors": [
     {
       "name": "Jordy Manner",
       "email": "jordy.manner@milkcreation.fr",
-      "role": "Lead Developper"
-    }
-  ],
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://composer.tigreblanc.fr/presstify"
+      "role": "Developper"
     }
   ],
   "require": {
